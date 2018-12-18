@@ -1,0 +1,53 @@
+{
+  "name": "@jupyterlab/extensionmanager-extension",
+  "version": "0.19.1",
+  "description": "JupyterLab - Extension Manager Extension",
+  "homepage": "https://github.com/jupyterlab/jupyterlab",
+  "bugs": {
+    "url": "https://github.com/jupyterlab/jupyterlab/issues"
+  },
+  "license": "BSD-3-Clause",
+  "author": "Project Jupyter",
+  "files": [
+    "lib/*.d.ts",
+    "lib/*.js.map",
+    "lib/*.js",
+    "schema/*.json",
+    "style/*.css"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlab/jupyterlab.git"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rimraf lib",
+    "docs": "typedoc --options tdoptions.json --theme ../../typedoc-theme src",
+    "prepublishOnly": "npm run build",
+    "watch": "tsc -b --watch"
+  },
+  "dependencies": {
+    "@jupyterlab/application": "^0.19.1",
+    "@jupyterlab/apputils": "^0.19.1",
+    "@jupyterlab/coreutils": "^2.2.1",
+    "@jupyterlab/extensionmanager": "^0.19.1"
+  },
+  "devDependencies": {
+    "rimraf": "~2.6.2",
+    "typedoc": "~0.12.0",
+    "typescript": "~3.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "jupyterlab": {
+    "extension": true,
+    "schemaDir": "schema"
+  },
+  "gitHead": "7fc900168981e58051253ecc66a18015a052cd2f"
+}

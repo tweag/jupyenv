@@ -1,0 +1,474 @@
+/*-----------------------------------------------------------------------------
+| Copyright (c) Jupyter Development Team.
+| Distributed under the terms of the Modified BSD License.
+|----------------------------------------------------------------------------*/
+
+/*
+The following CSS variables define the main, public API for styling JupyterLab.
+These variables should be used by all plugins wherever possible. In other
+words, plugins should not define custom colors, sizes, etc unless absolutely
+necessary. This enables users to change the visual theme of JupyterLab
+by changing these variables.
+
+Many variables appear in an ordered sequence (0,1,2,3). These sequences
+are designed to work well together, so for example, `--jp-border-color1` should
+be used with `--jp-layout-color1`. The numbers have the following meanings:
+
+* 0: super-primary, reserved for special emphasis
+* 1: primary, most important under normal situations
+* 2: secondary, next most important under normal situations
+* 3: tertiary, next most important under normal situations
+
+Throughout JupyterLab, we are mostly following principles from Google's
+Material Design when selecting colors. We are not, however, following
+all of MD as it is not optimized for dense, information rich UIs.
+*/
+
+:root {
+  /* Elevation
+   *
+   * We style box-shadows using Material Design's idea of elevation. These particular numbers are taken from here:
+   *
+   * https://github.com/material-components/material-components-web
+   * https://material-components-web.appspot.com/elevation.html
+   */
+
+  --jp-shadow-base-lightness: 0;
+  --jp-shadow-umbra-color: rgba(
+    var(--jp-shadow-base-lightness),
+    var(--jp-shadow-base-lightness),
+    var(--jp-shadow-base-lightness),
+    0.2
+  );
+  --jp-shadow-penumbra-color: rgba(
+    var(--jp-shadow-base-lightness),
+    var(--jp-shadow-base-lightness),
+    var(--jp-shadow-base-lightness),
+    0.14
+  );
+  --jp-shadow-ambient-color: rgba(
+    var(--jp-shadow-base-lightness),
+    var(--jp-shadow-base-lightness),
+    var(--jp-shadow-base-lightness),
+    0.12
+  );
+  --jp-elevation-z0: none;
+  --jp-elevation-z1: 0px 2px 1px -1px var(--jp-shadow-umbra-color),
+    0px 1px 1px 0px var(--jp-shadow-penumbra-color),
+    0px 1px 3px 0px var(--jp-shadow-ambient-color);
+  --jp-elevation-z2: 0px 3px 1px -2px var(--jp-shadow-umbra-color),
+    0px 2px 2px 0px var(--jp-shadow-penumbra-color),
+    0px 1px 5px 0px var(--jp-shadow-ambient-color);
+  --jp-elevation-z4: 0px 2px 4px -1px var(--jp-shadow-umbra-color),
+    0px 4px 5px 0px var(--jp-shadow-penumbra-color),
+    0px 1px 10px 0px var(--jp-shadow-ambient-color);
+  --jp-elevation-z6: 0px 3px 5px -1px var(--jp-shadow-umbra-color),
+    0px 6px 10px 0px var(--jp-shadow-penumbra-color),
+    0px 1px 18px 0px var(--jp-shadow-ambient-color);
+  --jp-elevation-z8: 0px 5px 5px -3px var(--jp-shadow-umbra-color),
+    0px 8px 10px 1px var(--jp-shadow-penumbra-color),
+    0px 3px 14px 2px var(--jp-shadow-ambient-color);
+  --jp-elevation-z12: 0px 7px 8px -4px var(--jp-shadow-umbra-color),
+    0px 12px 17px 2px var(--jp-shadow-penumbra-color),
+    0px 5px 22px 4px var(--jp-shadow-ambient-color);
+  --jp-elevation-z16: 0px 8px 10px -5px var(--jp-shadow-umbra-color),
+    0px 16px 24px 2px var(--jp-shadow-penumbra-color),
+    0px 6px 30px 5px var(--jp-shadow-ambient-color);
+  --jp-elevation-z20: 0px 10px 13px -6px var(--jp-shadow-umbra-color),
+    0px 20px 31px 3px var(--jp-shadow-penumbra-color),
+    0px 8px 38px 7px var(--jp-shadow-ambient-color);
+  --jp-elevation-z24: 0px 11px 15px -7px var(--jp-shadow-umbra-color),
+    0px 24px 38px 3px var(--jp-shadow-penumbra-color),
+    0px 9px 46px 8px var(--jp-shadow-ambient-color);
+
+  /* Borders
+   *
+   * The following variables, specify the visual styling of borders in JupyterLab.
+   */
+
+  --jp-border-width: 1px;
+  --jp-border-color0: var(--md-grey-400);
+  --jp-border-color1: var(--md-grey-400);
+  --jp-border-color2: var(--md-grey-300);
+  --jp-border-color3: var(--md-grey-200);
+  --jp-border-radius: 2px;
+
+  /* UI Fonts
+   *
+   * The UI font CSS variables are used for the typography all of the JupyterLab
+   * user interface elements that are not directly user generated content.
+   *
+   * The font sizing here is done assuming that the body font size of --jp-ui-font-size1
+   * is applied to a parent element. When children elements, such as headings, are sized
+   * in em all things will be computed relative to that body size.
+   */
+
+  --jp-ui-font-scale-factor: 1.2;
+  --jp-ui-font-size0: 0.83333em;
+  --jp-ui-font-size1: 13px; /* Base font size */
+  --jp-ui-font-size2: 1.2em;
+  --jp-ui-font-size3: 1.44em;
+
+  --jp-ui-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+  /*
+   * Use these font colors against the corresponding main layout colors.
+   * In a light theme, these go from dark to light.
+   */
+
+  /* Defaults use Material Design specification */
+  --jp-ui-font-color0: rgba(0, 0, 0, 1);
+  --jp-ui-font-color1: rgba(0, 0, 0, 0.87);
+  --jp-ui-font-color2: rgba(0, 0, 0, 0.54);
+  --jp-ui-font-color3: rgba(0, 0, 0, 0.38);
+
+  /*
+   * Use these against the brand/accent/warn/error colors.
+   * These will typically go from light to darker, in both a dark and light theme.
+   */
+
+  --jp-ui-inverse-font-color0: rgba(255, 255, 255, 1);
+  --jp-ui-inverse-font-color1: rgba(255, 255, 255, 1);
+  --jp-ui-inverse-font-color2: rgba(255, 255, 255, 0.7);
+  --jp-ui-inverse-font-color3: rgba(255, 255, 255, 0.5);
+
+  /* Content Fonts
+   *
+   * Content font variables are used for typography of user generated content.
+   *
+   * The font sizing here is done assuming that the body font size of --jp-content-font-size1
+   * is applied to a parent element. When children elements, such as headings, are sized
+   * in em all things will be computed relative to that body size.
+   */
+
+  --jp-content-line-height: 1.6;
+  --jp-content-font-scale-factor: 1.2;
+  --jp-content-font-size0: 0.83333em;
+  --jp-content-font-size1: 14px; /* Base font size */
+  --jp-content-font-size2: 1.2em;
+  --jp-content-font-size3: 1.44em;
+  --jp-content-font-size4: 1.728em;
+  --jp-content-font-size5: 2.0736em;
+
+  /* This gives a magnification of about 125% in presentation mode over normal. */
+  --jp-content-presentation-font-size1: 17px;
+
+  --jp-content-heading-line-height: 1;
+  --jp-content-heading-margin-top: 1.2em;
+  --jp-content-heading-margin-bottom: 0.8em;
+  --jp-content-heading-font-weight: 500;
+
+  /* Defaults use Material Design specification */
+  --jp-content-font-color0: rgba(0, 0, 0, 1);
+  --jp-content-font-color1: rgba(0, 0, 0, 0.87);
+  --jp-content-font-color2: rgba(0, 0, 0, 0.54);
+  --jp-content-font-color3: rgba(0, 0, 0, 0.38);
+
+  --jp-content-link-color: var(--md-blue-700);
+
+  --jp-content-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
+
+  /*
+   * Code Fonts
+   *
+   * Code font variables are used for typography of code and other monospaces content.
+   */
+
+  --jp-code-font-size: 13px;
+  --jp-code-line-height: 1.3077; /* 17px for 13px base */
+  --jp-code-padding: 0.385em; /* 5px for 13px base */
+  --jp-code-font-family-default: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  --jp-code-font-family: var(--jp-code-font-family-default);
+
+  /* This gives a magnification of about 125% in presentation mode over normal. */
+  --jp-code-presentation-font-size: 16px;
+
+  /* Layout
+   *
+   * The following are the main layout colors use in JupyterLab. In a light
+   * theme these would go from light to dark.
+   */
+
+  --jp-layout-color0: white;
+  --jp-layout-color1: white;
+  --jp-layout-color2: var(--md-grey-200);
+  --jp-layout-color3: var(--md-grey-400);
+  --jp-layout-color4: var(--md-grey-600);
+
+  /* Inverse Layout
+   *
+   * The following are the inverse layout colors use in JupyterLab. In a light
+   * theme these would go from dark to light.
+   */
+
+  --jp-inverse-layout-color0: #111111;
+  --jp-inverse-layout-color1: var(--md-grey-900);
+  --jp-inverse-layout-color2: var(--md-grey-800);
+  --jp-inverse-layout-color3: var(--md-grey-700);
+  --jp-inverse-layout-color4: var(--md-grey-600);
+
+  /* Brand/accent */
+
+  --jp-brand-color0: var(--md-blue-700);
+  --jp-brand-color1: var(--md-blue-500);
+  --jp-brand-color2: var(--md-blue-300);
+  --jp-brand-color3: var(--md-blue-100);
+
+  --jp-accent-color0: var(--md-green-700);
+  --jp-accent-color1: var(--md-green-500);
+  --jp-accent-color2: var(--md-green-300);
+  --jp-accent-color3: var(--md-green-100);
+
+  /* State colors (warn, error, success, info) */
+
+  --jp-warn-color0: var(--md-orange-700);
+  --jp-warn-color1: var(--md-orange-500);
+  --jp-warn-color2: var(--md-orange-300);
+  --jp-warn-color3: var(--md-orange-100);
+
+  --jp-error-color0: var(--md-red-700);
+  --jp-error-color1: var(--md-red-500);
+  --jp-error-color2: var(--md-red-300);
+  --jp-error-color3: var(--md-red-100);
+
+  --jp-success-color0: var(--md-green-700);
+  --jp-success-color1: var(--md-green-500);
+  --jp-success-color2: var(--md-green-300);
+  --jp-success-color3: var(--md-green-100);
+
+  --jp-info-color0: var(--md-cyan-700);
+  --jp-info-color1: var(--md-cyan-500);
+  --jp-info-color2: var(--md-cyan-300);
+  --jp-info-color3: var(--md-cyan-100);
+
+  /* Cell specific styles */
+
+  --jp-cell-padding: 5px;
+
+  --jp-cell-collapser-width: 8px;
+  --jp-cell-collapser-min-height: 20px;
+  --jp-cell-collapser-not-active-hover-opacity: 0.6;
+
+  --jp-cell-editor-background: var(--md-grey-100);
+  --jp-cell-editor-border-color: var(--md-grey-300);
+  --jp-cell-editor-box-shadow: inset 0 0 2px var(--md-blue-300);
+  --jp-cell-editor-active-background: var(--jp-layout-color0);
+  --jp-cell-editor-active-border-color: var(--jp-brand-color1);
+
+  --jp-cell-prompt-width: 64px;
+  --jp-cell-prompt-font-family: 'Source Code Pro', monospace;
+  --jp-cell-prompt-letter-spacing: 0px;
+  --jp-cell-prompt-opacity: 1;
+  --jp-cell-prompt-not-active-opacity: 0.5;
+  --jp-cell-prompt-not-active-font-color: var(--md-grey-700);
+  /* A custom blend of MD grey and blue 600
+   * See https://meyerweb.com/eric/tools/color-blend/#546E7A:1E88E5:5:hex */
+  --jp-cell-inprompt-font-color: #307fc1;
+  /* A custom blend of MD grey and orange 600
+   * https://meyerweb.com/eric/tools/color-blend/#546E7A:F4511E:5:hex */
+  --jp-cell-outprompt-font-color: #bf5b3d;
+
+  /* Notebook specific styles */
+
+  --jp-notebook-padding: 10px;
+  --jp-notebook-scroll-padding: 100px;
+  --jp-notebook-select-background: var(--jp-layout-color1);
+  --jp-notebook-multiselected-color: var(--md-blue-50);
+
+  /* Rendermime styles */
+
+  --jp-rendermime-error-background: #fdd;
+  --jp-rendermime-table-row-background: var(--md-grey-100);
+  --jp-rendermime-table-row-hover-background: var(--md-light-blue-50);
+
+  /* Dialog specific styles */
+
+  --jp-dialog-background: rgba(0, 0, 0, 0.25);
+
+  /* Console specific styles */
+
+  --jp-console-padding: 10px;
+
+  /* Toolbar specific styles */
+
+  --jp-toolbar-border-color: var(--jp-border-color1);
+  --jp-toolbar-micro-height: 8px;
+  --jp-toolbar-background: var(--jp-layout-color1);
+  --jp-toolbar-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.24);
+  --jp-toolbar-header-margin: 4px 4px 0px 4px;
+  --jp-toolbar-active-background: var(--md-grey-300);
+
+  /* Input field styles */
+
+  --jp-input-box-shadow: inset 0 0 2px var(--md-blue-300);
+  --jp-input-active-background: var(--jp-layout-color1);
+  --jp-input-hover-background: var(--jp-layout-color1);
+  --jp-input-background: var(--md-grey-100);
+  --jp-input-border-color: var(--jp-border-color1);
+  --jp-input-active-border-color: var(--jp-brand-color1);
+
+  /* General editor styles */
+
+  --jp-editor-selected-background: #d9d9d9;
+  --jp-editor-selected-focused-background: #d7d4f0;
+  --jp-editor-cursor-color: var(--jp-ui-font-color0);
+
+  /* Code mirror specific styles */
+
+  --jp-mirror-editor-keyword-color: #008000;
+  --jp-mirror-editor-atom-color: #88f;
+  --jp-mirror-editor-number-color: #080;
+  --jp-mirror-editor-def-color: #00f;
+  --jp-mirror-editor-variable-color: var(--md-grey-900);
+  --jp-mirror-editor-variable-2-color: #05a;
+  --jp-mirror-editor-variable-3-color: #085;
+  --jp-mirror-editor-punctuation-color: #05a;
+  --jp-mirror-editor-property-color: #05a;
+  --jp-mirror-editor-operator-color: #aa22ff;
+  --jp-mirror-editor-comment-color: #408080;
+  --jp-mirror-editor-string-color: #ba2121;
+  --jp-mirror-editor-string-2-color: #708;
+  --jp-mirror-editor-meta-color: #aa22ff;
+  --jp-mirror-editor-qualifier-color: #555;
+  --jp-mirror-editor-builtin-color: #008000;
+  --jp-mirror-editor-bracket-color: #997;
+  --jp-mirror-editor-tag-color: #170;
+  --jp-mirror-editor-attribute-color: #00c;
+  --jp-mirror-editor-header-color: blue;
+  --jp-mirror-editor-quote-color: #090;
+  --jp-mirror-editor-link-color: #00c;
+  --jp-mirror-editor-error-color: #f00;
+  --jp-mirror-editor-hr-color: #999;
+
+  /* Vega extension styles */
+
+  --jp-vega-background: white;
+
+  /* Sidebar-related styles */
+
+  --jp-sidebar-min-width: 180px;
+}
+
+/*-----------------------------------------------------------------------------
+| Copyright (c) Jupyter Development Team.
+| Distributed under the terms of the Modified BSD License.
+|----------------------------------------------------------------------------*/
+
+:root {
+  /* Images
+
+  These images are included with JupyterLab for showing the Project Jupyter logo
+  */
+  --jp-image-jupyter: url("data:image/svg+xml,%3Csvg width='39' height='51' version='2' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:figma='http://www.figma.com/figma/ns'%3E%3Cg figma:type='canvas'%3E%3Cg style='mix-blend-mode:normal' figma:type='group'%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path0_fill' transform='translate(31.3 .31)' fill='%23767677' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path1_fill' transform='translate(1.74 30.98)' fill='%23F37726' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path2_fill' transform='translate(1.73 4.48)' fill='%23F37726' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path3_fill' transform='translate(1.8 42.81)' fill='%23989798' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path4_fill' transform='translate(.36 5.06)' fill='%236F7070' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cdefs%3E%3Cpath id='path0_fill' d='M5.894 2.844a2.993 2.993 0 0 1-.426 1.672A2.957 2.957 0 0 1 4.193 5.67a2.926 2.926 0 0 1-3.238-.505 2.997 2.997 0 0 1-.776-3.21C.379 1.4.737.92 1.208.574A2.932 2.932 0 0 1 4.94.783c.576.532.919 1.274.953 2.061z'/%3E%3Cpath id='path1_fill' d='M18.265 7.134C10.415 7.134 3.559 4.258 0 0a19.505 19.505 0 0 0 7.069 9.473 19.244 19.244 0 0 0 11.2 3.6c4.013 0 7.927-1.258 11.2-3.6A19.505 19.505 0 0 0 36.538 0c-3.567 4.258-10.423 7.134-18.273 7.134z'/%3E%3Cpath id='path2_fill' d='M18.273 5.94c7.85 0 14.706 2.876 18.265 7.133A19.505 19.505 0 0 0 29.469 3.6 19.243 19.243 0 0 0 18.27 0a19.243 19.243 0 0 0-11.2 3.6A19.505 19.505 0 0 0 0 13.073C3.567 8.825 10.423 5.94 18.273 5.94z'/%3E%3Cpath id='path3_fill' d='M7.428 3.583a3.772 3.772 0 0 1-.536 2.11 3.727 3.727 0 0 1-1.608 1.452 3.688 3.688 0 0 1-4.082-.638A3.754 3.754 0 0 1 .105 4.632a3.778 3.778 0 0 1 .122-2.173A3.744 3.744 0 0 1 1.526.72 3.696 3.696 0 0 1 6.23.988a3.76 3.76 0 0 1 1.198 2.595z'/%3E%3Cpath id='path4_fill' d='M2.275 4.396a2.166 2.166 0 0 1-1.227-.318 2.193 2.193 0 0 1-.845-.951A2.216 2.216 0 0 1 .575.71 2.163 2.163 0 0 1 2.931.134c.405.15.757.418 1.011.77a2.211 2.211 0 0 1-.156 2.783c-.39.43-.934.684-1.511.71z'/%3E%3C/defs%3E%3C/svg%3E");
+  --jp-image-jupyterlab: url("data:image/svg+xml,%3Csvg width='2340' height='475' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234E4E4E'%3E%3Cpath d='M532.56 293.113c0 48.748-3.721 64.664-13.644 76.414-10.832 10.002-25 15.534-39.692 15.499l3.721 28.998c22.772.316 44.847-7.911 61.936-23.081 17.778-18.5 23.98-44.082 23.98-83.33V123.287h-36.384v170.076l.083-.25zM803.937 270.902c0 21 0 39.498 1.654 55.414h-31.836l-2.067-33.332h-.827a75.447 75.447 0 0 1-27.992 27.923 74.701 74.701 0 0 1-38.16 9.825c-31.423 0-68.965-17.666-68.965-88.995V122.908h36.384v112.745c0 38.666 11.577 64.664 44.57 64.664a52.304 52.304 0 0 0 28.93-9.385 52.927 52.927 0 0 0 18.948-23.946 54.774 54.774 0 0 0 3.308-18.917V123.075h36.384v147.827h-.33zM872.51 189.373c0-25.999-.827-46.998-1.654-66.664h32.663l1.654 34.832H906a78.763 78.763 0 0 1 30.057-29.717 77.988 77.988 0 0 1 40.974-9.781c48.292 0 84.675 41.665 84.675 103.328 0 73.08-43.743 109.162-90.96 109.162a69.516 69.516 0 0 1-34.95-7.755 70.152 70.152 0 0 1-26.571-24.16h-.827V409.03h-35.97V189.04l.082.333zm35.97 54.165a83.957 83.957 0 0 0 1.654 15.082c2.964 12.318 9.946 23.276 19.827 31.118a55.87 55.87 0 0 0 34.667 12.13c38.451 0 60.695-31.915 60.695-78.496 0-40.749-21.086-75.58-59.455-75.58a57.623 57.623 0 0 0-35.265 13.352c-9.949 8.29-16.862 19.692-19.642 32.395a60.836 60.836 0 0 0-2.48 15.083V243.538zM1126.072 123.098l43.743 120.078c4.548 13.416 9.51 29.416 12.818 41.665h.826c3.721-12.166 7.856-27.749 12.818-42.415l39.691-119.245h38.451l-54.494 144.91c-26.047 69.665-43.742 105.412-68.55 127.245a97.995 97.995 0 0 1-44.57 23.915l-9.096-31.081a95.74 95.74 0 0 0 31.836-18.083 111.84 111.84 0 0 0 30.595-41.165c1.471-2.75 2.451-5.74 2.895-8.832a32.62 32.62 0 0 0-2.481-9.667l-73.926-187.242h39.692l-.248-.083zM1369.915 64.65v58.331h52.012v28.166h-52.012v109.495c0 24.999 7.028 39.498 27.288 39.498a79.667 79.667 0 0 0 21.086-2.5l1.653 27.749a87.607 87.607 0 0 1-32.249 5 49.76 49.76 0 0 1-21.336-3.382 50.088 50.088 0 0 1-17.942-12.118c-10.336-10.916-14.057-28.998-14.057-52.913v-110.83h-31.01v-28.165h31.01V74.233l35.557-9.583zM1488.96 231.356c.826 49.998 32.248 70.58 68.55 70.58 18.978.601 37.858-2.982 55.32-10.499l6.202 26.416a159.61 159.61 0 0 1-66.153 12.583c-61.522 0-98.32-41.165-98.32-102.496 0-61.33 35.558-109.579 93.772-109.579 65.243 0 82.69 58.331 82.69 95.746-.06 5.77-.474 11.53-1.24 17.25H1488.96zm106.587-26.415c.414-23.499-9.508-60.08-50.358-60.08-36.798 0-52.84 34.414-55.734 60.08h106.175-.083zM1683.93 186.457c0-23.915-.413-44.498-1.653-63.413h31.836l1.24 39.914h1.654c9.096-27.332 31.01-44.498 55.32-44.498a38.66 38.66 0 0 1 10.336 1.25v34.832a53.916 53.916 0 0 0-12.403-1.25c-25.634 0-43.743 19.75-48.705 47.415a105.449 105.449 0 0 0-1.654 17.25v108.328h-35.97V186.457z'/%3E%3C/g%3E%3Cpath d='M349.567 27.839a28.335 28.335 0 0 1-4.033 15.843 28.024 28.024 0 0 1-12.089 10.913 27.757 27.757 0 0 1-16.069 2.304 27.863 27.863 0 0 1-14.63-7.083 28.21 28.21 0 0 1-8.256-14.08 28.372 28.372 0 0 1 .899-16.331 28.145 28.145 0 0 1 9.753-13.074A27.813 27.813 0 0 1 320.459.923a27.824 27.824 0 0 1 20.081 7.388 28.256 28.256 0 0 1 9.027 19.528z' fill='%23767677'/%3E%3Cpath d='M186.61 359.01c-74.421 0-139.416-27.248-173.154-67.58 12.565 36.19 35.983 67.55 67.012 89.737 31.03 22.187 68.136 34.106 106.184 34.106 38.047 0 75.153-11.919 106.183-34.106s54.448-53.546 67.013-89.737c-33.821 40.332-98.816 67.58-173.238 67.58zM186.598 96.662c74.422 0 139.417 27.249 173.155 67.58-12.565-36.19-35.984-67.549-67.013-89.736C261.71 52.318 224.604 40.4 186.557 40.4c-38.047 0-75.153 11.918-106.183 34.106-31.03 22.187-54.448 53.546-67.013 89.736 33.82-40.248 98.815-67.58 173.237-67.58z' fill='%23F37726'/%3E%3Cpath d='M84.443 437.44a35.711 35.711 0 0 1-5.08 19.975 35.32 35.32 0 0 1-15.243 13.759 34.984 34.984 0 0 1-20.26 2.899 35.117 35.117 0 0 1-18.442-8.94 35.556 35.556 0 0 1-10.398-17.76 35.758 35.758 0 0 1 1.153-20.59 35.473 35.473 0 0 1 12.316-16.468 35.054 35.054 0 0 1 19.322-6.791 35.068 35.068 0 0 1 25.272 9.328c6.867 6.357 10.952 15.2 11.36 24.587z' fill='%23989798'/%3E%3Cpath d='M21.938 87.54a20.55 20.55 0 0 1-11.63-3.011 20.779 20.779 0 0 1-8.007-9.017A20.977 20.977 0 0 1 .618 63.53a20.899 20.899 0 0 1 5.208-10.903 20.64 20.64 0 0 1 10.343-6.146 20.522 20.522 0 0 1 11.988.684 20.69 20.69 0 0 1 9.59 7.283A20.936 20.936 0 0 1 41.7 65.874a20.927 20.927 0 0 1-5.436 14.95 20.606 20.606 0 0 1-14.327 6.716z' fill='%236F7070'/%3E%3Cpath d='M1831.476 326.154h36.983V28.008h-36.983v298.146zm252.57 0c-2.522-13.858-3.363-31.074-3.363-48.711v-76.006c0-40.733-15.13-83.145-77.327-83.145-25.635 0-50.01 7.139-66.82 18.057l8.405 24.355c14.289-9.238 34.04-15.117 52.952-15.117 41.605 0 46.228 30.234 46.228 47.031v4.2c-78.588-.42-122.294 26.455-122.294 75.586 0 29.394 21.013 58.369 62.198 58.369 28.997 0 50.85-14.277 62.197-30.234h1.26l2.943 25.615h33.62zm-39.085-68.448c0 3.78-.84 7.979-2.1 11.758-5.884 17.217-22.695 34.014-49.17 34.014-18.912 0-34.882-11.338-34.882-35.274 0-39.472 45.808-46.611 86.152-45.771v35.273zm132.797 68.448l1.68-33.594h1.261c15.13 26.875 38.664 38.213 68.082 38.213 45.387 0 91.195-36.113 91.195-108.76.42-61.729-35.301-103.721-85.732-103.721-32.78 0-56.314 14.697-69.342 37.373h-.84V28.008h-36.563v245.655c0 18.057-.84 38.633-1.68 52.49h31.939zm6.304-117.999c0-5.878 1.26-10.918 2.1-15.117 7.565-28.135 31.1-45.351 56.315-45.351 39.504 0 60.517 34.853 60.517 75.586 0 46.611-23.114 78.105-61.778 78.105-26.896 0-48.33-17.636-55.473-43.252-.841-4.199-1.681-8.818-1.681-13.437v-36.534z' fill='%23F37726'/%3E%3C/g%3E%3C/svg%3E");
+  --jp-image-jupyterlab-workmark: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1860.8 475'%3E%3Cstyle%3E.st0%7Bfill:%234e4e4e%7D%3C/style%3E%3Cg id='Canvas'%3E%3Cg id='logo'%3E%3Cg id='Group' transform='translate(480.136 64.271)'%3E%3Cg id='g'%3E%3Cg id='path' transform='translate(0 58.876)'%3E%3Cg id='path0-fill'%3E%3Cg id='path0_fill-link' transform='translate(.088 .14)'%3E%3Cpath id='path0_fill' class='st0' d='M-426.9 169.8c0 48.7-3.7 64.7-13.6 76.4-10.8 10-25 15.5-39.7 15.5l3.7 29c22.8.3 44.8-7.9 61.9-23.1 17.8-18.5 24-44.1 24-83.3V0H-427v170.1l.1-.3z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_1_' transform='translate(155.045 56.837)'%3E%3Cg id='path1-fill'%3E%3Cg id='path1_fill-link' transform='translate(1.562 1.8)'%3E%3Cpath id='path1_fill' class='st0' d='M-312 148c0 21 0 39.5 1.7 55.4h-31.8l-2.1-33.3h-.8c-6.7 11.6-16.4 21.3-28 27.9-11.6 6.6-24.8 10-38.2 9.8-31.4 0-69-17.7-69-89V0h36.4v112.7c0 38.7 11.6 64.7 44.6 64.7 10.3-.2 20.4-3.5 28.9-9.4s15.1-14.3 18.9-23.9c2.2-6.1 3.3-12.5 3.3-18.9V.2h36.4V148h-.3z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_2_' transform='translate(390.013 53.48)'%3E%3Cg id='path2-fill'%3E%3Cg id='path2_fill-link' transform='translate(1.706 .231)'%3E%3Cpath id='path2_fill' class='st0' d='M-478.6 71.4c0-26-.8-47-1.7-66.7h32.7l1.7 34.8h.8C-438 27-427.6 16.7-415 9.8c12.5-7 26.7-10.3 41-9.8 48.3 0 84.7 41.7 84.7 103.3 0 73.1-43.7 109.2-91 109.2-12.1.5-24.2-2.2-35-7.8s-19.9-13.9-26.6-24.2h-.8V291h-36V71l.1.4zm36 54.2c.1 5.1.6 10.1 1.7 15.1 3 12.3 9.9 23.3 19.8 31.1 9.9 7.8 22.1 12.1 34.7 12.1 38.5 0 60.7-31.9 60.7-78.5 0-40.7-21.1-75.6-59.5-75.6-12.9.4-25.3 5.1-35.3 13.4-9.9 8.3-16.9 19.7-19.6 32.4-1.5 4.9-2.3 10-2.5 15.1v34.9z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_3_' transform='translate(606.74 56.837)'%3E%3Cg id='path3-fill'%3E%3Cg id='path3_fill-link' transform='translate(.751 1.99)'%3E%3Cpath id='path3_fill' class='st0' d='M-440.8 0l43.7 120.1c4.5 13.4 9.5 29.4 12.8 41.7h.8c3.7-12.2 7.9-27.7 12.8-42.4L-331 .2h38.5L-346.9 145c-26 69.7-43.7 105.4-68.6 127.2-12.5 11.7-27.9 20-44.6 23.9l-9.1-31.1c11.7-3.9 22.5-10.1 31.8-18.1 13.2-11.1 23.7-25.2 30.6-41.2 1.5-2.8 2.5-5.7 2.9-8.8-.3-3.3-1.2-6.6-2.5-9.7L-480.2.1h39.7l-.3-.1z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_4_' transform='translate(822.748)'%3E%3Cg id='path4-fill'%3E%3Cg id='path4_fill-link' transform='translate(1.464 .379)'%3E%3Cpath id='path4_fill' class='st0' d='M-413.7 0v58.3h52v28.2h-52V196c0 25 7 39.5 27.3 39.5 7.1.1 14.2-.7 21.1-2.5l1.7 27.7c-10.3 3.7-21.3 5.4-32.2 5-7.3.4-14.6-.7-21.3-3.4-6.8-2.7-12.9-6.8-17.9-12.1-10.3-10.9-14.1-29-14.1-52.9V86.5h-31V58.3h31V9.6l35.4-9.6z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_5_' transform='translate(974.433 53.48)'%3E%3Cg id='path5-fill'%3E%3Cg id='path5_fill-link' transform='translate(.99 .61)'%3E%3Cpath id='path5_fill' class='st0' d='M-445.8 113c.8 50 32.2 70.6 68.6 70.6 19 .6 37.9-3 55.3-10.5l6.2 26.4c-20.9 8.9-43.5 13.1-66.2 12.6-61.5 0-98.3-41.2-98.3-102.5C-480.2 48.2-444.7 0-386.5 0c65.2 0 82.7 58.3 82.7 95.7-.1 5.8-.5 11.5-1.2 17.2H-445.8v.1zm106.6-26.4c.4-23.5-9.5-60.1-50.4-60.1-36.8 0-52.8 34.4-55.7 60.1h106.1z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_6_' transform='translate(1201.961 53.48)'%3E%3Cg id='path6-fill'%3E%3Cg id='path6_fill-link' transform='translate(1.18 .705)'%3E%3Cpath id='path6_fill' class='st0' d='M-478.6 68c0-23.9-.4-44.5-1.7-63.4h31.8l1.2 39.9h1.7c9.1-27.3 31-44.5 55.3-44.5 3.5-.1 7 .4 10.3 1.2V36c-4.1-.9-8.2-1.3-12.4-1.2-25.6 0-43.7 19.7-48.7 47.4-1 5.7-1.6 11.5-1.7 17.2v108.3h-36V68h.2z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cpath id='jupyterlab' d='M1352.3 326.2h37V28h-37v298.2zm252.5 0c-2.5-13.9-3.4-31.1-3.4-48.7v-76c0-40.7-15.1-83.1-77.3-83.1-25.6 0-50 7.1-66.8 18.1l8.4 24.4c14.3-9.2 34-15.1 53-15.1 41.6 0 46.2 30.2 46.2 47v4.2c-78.6-.4-122.3 26.5-122.3 75.6 0 29.4 21 58.4 62.2 58.4 29 0 50.9-14.3 62.2-30.2h1.3l2.9 25.6h33.6zm-39.1-68.5c0 3.8-.8 8-2.1 11.8-5.9 17.2-22.7 34-49.2 34-18.9 0-34.9-11.3-34.9-35.3 0-39.5 45.8-46.6 86.2-45.8v35.3zm132.8 68.5l1.7-33.6h1.3c15.1 26.9 38.7 38.2 68.1 38.2 45.4 0 91.2-36.1 91.2-108.8.4-61.7-35.3-103.7-85.7-103.7-32.8 0-56.3 14.7-69.3 37.4h-.8V28h-36.6v245.7c0 18.1-.8 38.6-1.7 52.5h31.8zm6.3-118c0-5.9 1.3-10.9 2.1-15.1 7.6-28.1 31.1-45.4 56.3-45.4 39.5 0 60.5 34.9 60.5 75.6 0 46.6-23.1 78.1-61.8 78.1-26.9 0-48.3-17.6-55.5-43.3-.8-4.2-1.7-8.8-1.7-13.4v-36.5z' fill='%23f37726'/%3E%3C/svg%3E");
+  --jp-image-jupyter-favicon: url("data:image/svg+xml,%3Csvg width='152' height='165' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23F37726' fill-rule='evenodd'%3E%3Cpath d='M76.021 140.163c-32.64 0-61.145-11.927-75.942-29.58 5.51 15.84 15.781 29.567 29.39 39.278a80.165 80.165 0 0 0 46.57 14.929 80.165 80.165 0 0 0 46.57-14.929c13.61-9.711 23.88-23.437 29.391-39.278-14.833 17.653-43.338 29.58-75.979 29.58zM76.016 25.331c32.64 0 61.146 11.927 75.943 29.58-5.511-15.84-15.782-29.566-29.391-39.278A80.163 80.163 0 0 0 75.998.705a80.163 80.163 0 0 0-46.57 14.928C15.818 25.345 5.548 39.071.038 54.912c14.832-17.617 43.338-29.58 75.978-29.58z'/%3E%3C/g%3E%3C/svg%3E");
+  --jp-image-caretleft: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuNWWFMmUAAABDSURBVChTnctBCgAwCANBf+3z0+YgFExr9TAEAmsA2uRZkWdFnsHd9+Q/HYFBK4rgOzqD74hGEY0iGkU38qzI8w22AMNb74XHwmKSAAAAAElFTkSuQmCC);
+  --jp-image-caretright: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuNWWFMmUAAABKSURBVChTlctBCsBACARBf+3zTeYg7GJnJIdCbJioqt8wbjBuMGbme2ZvGDVyQ4w9+hqOIOeIhtfT3EBGEDcQjG4gGDcYNxi9ige5y++FbjFqAAAAAABJRU5ErkJggg==);
+  --jp-image-caretup: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuNWWFMmUAAABHSURBVChTlctBDgAQDETR3rrHL11IlM+weBGfsYj4hlHBqGBUMCZ37we/YczBsL6lLcyD07BcaDDM/8roFUYFo4JRwXgX1gD97e+FKAUICwAAAABJRU5ErkJggg==);
+  --jp-image-caretdown: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuNWWFMmUAAABDSURBVChTlcsxCgAwCENRb+3xUzIIlUZDhzf4MQHgm4yOjI6MjoxOOzITk/uvjcgNqB1lG9ATyjQgGR0ZHRkdGXeIA38574WaLSX0AAAAAElFTkSuQmCC);
+
+  /* Icons
+
+  These icons are used throughout JupyterLab.
+  */
+
+  /* The caret used for select dropdown styling. */
+
+  --jp-ui-select-caret: url("data:image/svg+xml,%3Csvg fill='%23616161' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5.2 5.9L9 9.7l3.8-3.8L14 7.1l-4.9 5-4.9-5 1-1.2z'/%3E%3Cpath fill='none' d='M0-.6h18v18H0v-18z'/%3E%3C/svg%3E");
+
+  /* Icons used in the application. */
+
+  --jp-about-header-logo: url("data:image/svg+xml,%3Csvg width='39' height='51' version='2' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:figma='http://www.figma.com/figma/ns'%3E%3Cg figma:type='canvas'%3E%3Cg style='mix-blend-mode:normal' figma:type='group'%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path0_fill' transform='translate(31.3 .31)' fill='%23767677' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path1_fill' transform='translate(1.74 30.98)' fill='%23F37726' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path2_fill' transform='translate(1.73 4.48)' fill='%23F37726' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path3_fill' transform='translate(1.8 42.81)' fill='%23989798' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path4_fill' transform='translate(.36 5.06)' fill='%236F7070' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cdefs%3E%3Cpath id='path0_fill' d='M5.894 2.844a2.993 2.993 0 0 1-.426 1.672A2.957 2.957 0 0 1 4.193 5.67a2.926 2.926 0 0 1-3.238-.505 2.997 2.997 0 0 1-.776-3.21C.379 1.4.737.92 1.208.574A2.932 2.932 0 0 1 4.94.783c.576.532.919 1.274.953 2.061z'/%3E%3Cpath id='path1_fill' d='M18.265 7.134C10.415 7.134 3.559 4.258 0 0a19.505 19.505 0 0 0 7.069 9.473 19.244 19.244 0 0 0 11.2 3.6c4.013 0 7.927-1.258 11.2-3.6A19.505 19.505 0 0 0 36.538 0c-3.567 4.258-10.423 7.134-18.273 7.134z'/%3E%3Cpath id='path2_fill' d='M18.273 5.94c7.85 0 14.706 2.876 18.265 7.133A19.505 19.505 0 0 0 29.469 3.6 19.243 19.243 0 0 0 18.27 0a19.243 19.243 0 0 0-11.2 3.6A19.505 19.505 0 0 0 0 13.073C3.567 8.825 10.423 5.94 18.273 5.94z'/%3E%3Cpath id='path3_fill' d='M7.428 3.583a3.772 3.772 0 0 1-.536 2.11 3.727 3.727 0 0 1-1.608 1.452 3.688 3.688 0 0 1-4.082-.638A3.754 3.754 0 0 1 .105 4.632a3.778 3.778 0 0 1 .122-2.173A3.744 3.744 0 0 1 1.526.72 3.696 3.696 0 0 1 6.23.988a3.76 3.76 0 0 1 1.198 2.595z'/%3E%3Cpath id='path4_fill' d='M2.275 4.396a2.166 2.166 0 0 1-1.227-.318 2.193 2.193 0 0 1-.845-.951A2.216 2.216 0 0 1 .575.71 2.163 2.163 0 0 1 2.931.134c.405.15.757.418 1.011.77a2.211 2.211 0 0 1-.156 2.783c-.39.43-.934.684-1.511.71z'/%3E%3C/defs%3E%3C/svg%3E");
+  --jp-about-header-wordmark: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1860.8 475'%3E%3Cstyle%3E.st0%7Bfill:%234e4e4e%7D%3C/style%3E%3Cg id='Canvas'%3E%3Cg id='logo'%3E%3Cg id='Group' transform='translate(480.136 64.271)'%3E%3Cg id='g'%3E%3Cg id='path' transform='translate(0 58.876)'%3E%3Cg id='path0-fill'%3E%3Cg id='path0_fill-link' transform='translate(.088 .14)'%3E%3Cpath id='path0_fill' class='st0' d='M-426.9 169.8c0 48.7-3.7 64.7-13.6 76.4-10.8 10-25 15.5-39.7 15.5l3.7 29c22.8.3 44.8-7.9 61.9-23.1 17.8-18.5 24-44.1 24-83.3V0H-427v170.1l.1-.3z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_1_' transform='translate(155.045 56.837)'%3E%3Cg id='path1-fill'%3E%3Cg id='path1_fill-link' transform='translate(1.562 1.8)'%3E%3Cpath id='path1_fill' class='st0' d='M-312 148c0 21 0 39.5 1.7 55.4h-31.8l-2.1-33.3h-.8c-6.7 11.6-16.4 21.3-28 27.9-11.6 6.6-24.8 10-38.2 9.8-31.4 0-69-17.7-69-89V0h36.4v112.7c0 38.7 11.6 64.7 44.6 64.7 10.3-.2 20.4-3.5 28.9-9.4s15.1-14.3 18.9-23.9c2.2-6.1 3.3-12.5 3.3-18.9V.2h36.4V148h-.3z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_2_' transform='translate(390.013 53.48)'%3E%3Cg id='path2-fill'%3E%3Cg id='path2_fill-link' transform='translate(1.706 .231)'%3E%3Cpath id='path2_fill' class='st0' d='M-478.6 71.4c0-26-.8-47-1.7-66.7h32.7l1.7 34.8h.8C-438 27-427.6 16.7-415 9.8c12.5-7 26.7-10.3 41-9.8 48.3 0 84.7 41.7 84.7 103.3 0 73.1-43.7 109.2-91 109.2-12.1.5-24.2-2.2-35-7.8s-19.9-13.9-26.6-24.2h-.8V291h-36V71l.1.4zm36 54.2c.1 5.1.6 10.1 1.7 15.1 3 12.3 9.9 23.3 19.8 31.1 9.9 7.8 22.1 12.1 34.7 12.1 38.5 0 60.7-31.9 60.7-78.5 0-40.7-21.1-75.6-59.5-75.6-12.9.4-25.3 5.1-35.3 13.4-9.9 8.3-16.9 19.7-19.6 32.4-1.5 4.9-2.3 10-2.5 15.1v34.9z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_3_' transform='translate(606.74 56.837)'%3E%3Cg id='path3-fill'%3E%3Cg id='path3_fill-link' transform='translate(.751 1.99)'%3E%3Cpath id='path3_fill' class='st0' d='M-440.8 0l43.7 120.1c4.5 13.4 9.5 29.4 12.8 41.7h.8c3.7-12.2 7.9-27.7 12.8-42.4L-331 .2h38.5L-346.9 145c-26 69.7-43.7 105.4-68.6 127.2-12.5 11.7-27.9 20-44.6 23.9l-9.1-31.1c11.7-3.9 22.5-10.1 31.8-18.1 13.2-11.1 23.7-25.2 30.6-41.2 1.5-2.8 2.5-5.7 2.9-8.8-.3-3.3-1.2-6.6-2.5-9.7L-480.2.1h39.7l-.3-.1z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_4_' transform='translate(822.748)'%3E%3Cg id='path4-fill'%3E%3Cg id='path4_fill-link' transform='translate(1.464 .379)'%3E%3Cpath id='path4_fill' class='st0' d='M-413.7 0v58.3h52v28.2h-52V196c0 25 7 39.5 27.3 39.5 7.1.1 14.2-.7 21.1-2.5l1.7 27.7c-10.3 3.7-21.3 5.4-32.2 5-7.3.4-14.6-.7-21.3-3.4-6.8-2.7-12.9-6.8-17.9-12.1-10.3-10.9-14.1-29-14.1-52.9V86.5h-31V58.3h31V9.6l35.4-9.6z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_5_' transform='translate(974.433 53.48)'%3E%3Cg id='path5-fill'%3E%3Cg id='path5_fill-link' transform='translate(.99 .61)'%3E%3Cpath id='path5_fill' class='st0' d='M-445.8 113c.8 50 32.2 70.6 68.6 70.6 19 .6 37.9-3 55.3-10.5l6.2 26.4c-20.9 8.9-43.5 13.1-66.2 12.6-61.5 0-98.3-41.2-98.3-102.5C-480.2 48.2-444.7 0-386.5 0c65.2 0 82.7 58.3 82.7 95.7-.1 5.8-.5 11.5-1.2 17.2H-445.8v.1zm106.6-26.4c.4-23.5-9.5-60.1-50.4-60.1-36.8 0-52.8 34.4-55.7 60.1h106.1z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cg id='path_6_' transform='translate(1201.961 53.48)'%3E%3Cg id='path6-fill'%3E%3Cg id='path6_fill-link' transform='translate(1.18 .705)'%3E%3Cpath id='path6_fill' class='st0' d='M-478.6 68c0-23.9-.4-44.5-1.7-63.4h31.8l1.2 39.9h1.7c9.1-27.3 31-44.5 55.3-44.5 3.5-.1 7 .4 10.3 1.2V36c-4.1-.9-8.2-1.3-12.4-1.2-25.6 0-43.7 19.7-48.7 47.4-1 5.7-1.6 11.5-1.7 17.2v108.3h-36V68h.2z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cpath id='jupyterlab' d='M1352.3 326.2h37V28h-37v298.2zm252.5 0c-2.5-13.9-3.4-31.1-3.4-48.7v-76c0-40.7-15.1-83.1-77.3-83.1-25.6 0-50 7.1-66.8 18.1l8.4 24.4c14.3-9.2 34-15.1 53-15.1 41.6 0 46.2 30.2 46.2 47v4.2c-78.6-.4-122.3 26.5-122.3 75.6 0 29.4 21 58.4 62.2 58.4 29 0 50.9-14.3 62.2-30.2h1.3l2.9 25.6h33.6zm-39.1-68.5c0 3.8-.8 8-2.1 11.8-5.9 17.2-22.7 34-49.2 34-18.9 0-34.9-11.3-34.9-35.3 0-39.5 45.8-46.6 86.2-45.8v35.3zm132.8 68.5l1.7-33.6h1.3c15.1 26.9 38.7 38.2 68.1 38.2 45.4 0 91.2-36.1 91.2-108.8.4-61.7-35.3-103.7-85.7-103.7-32.8 0-56.3 14.7-69.3 37.4h-.8V28h-36.6v245.7c0 18.1-.8 38.6-1.7 52.5h31.8zm6.3-118c0-5.9 1.3-10.9 2.1-15.1 7.6-28.1 31.1-45.4 56.3-45.4 39.5 0 60.5 34.9 60.5 75.6 0 46.6-23.1 78.1-61.8 78.1-26.9 0-48.3-17.6-55.5-43.3-.8-4.2-1.7-8.8-1.7-13.4v-36.5z' fill='%23f37726'/%3E%3C/svg%3E");
+  --jp-icon-add: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='24' height='24'%3E%3Cpath d='M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'/%3E%3C/svg%3E");
+  --jp-icon-book-selected: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0,.st2%7Bfill:none;stroke:%23fff;stroke-width:1.4;stroke-miterlimit:10%7D.st2%7Bdisplay:inline;stroke:%239e9e9e;stroke-width:2.000000e-02%7D.st3%7Bfill:%23fff%7D%3C/style%3E%3Cpath class='st3' d='M18.7 3.3v15.4H3.3V3.3h15.4m1.5-1.5H1.8v18.3h18.3l.1-18.3z'/%3E%3Cpath class='st3' d='M16.5 16.5l-5.4-4.3-5.6 4.3v-11h11z'/%3E%3C/svg%3E");
+  --jp-icon-book: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0%7Bfill:none;stroke:%23fff;stroke-width:1.4;stroke-miterlimit:10%7D.st1%7Bfill:%23ef6c00%7D.st3%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath class='st1' d='M18.7 3.3v15.4H3.3V3.3h15.4m1.5-1.5H1.8v18.3h18.3l.1-18.3z'/%3E%3Cpath class='st1' d='M16.5 16.5l-5.4-4.3-5.6 4.3v-11h11z'/%3E%3C/svg%3E");
+  --jp-icon-bug: url("data:image/svg+xml,%3Csvg height='48' viewBox='0 0 24 24' width='48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M20 8h-2.81a5.985 5.985 0 0 0-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5c-.49 0-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z'/%3E%3C/svg%3E");
+  --jp-icon-build: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='24' height='24'%3E%3Cpath d='M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z'/%3E%3C/svg%3E");
+  --jp-icon-caretdown: url("data:image/svg+xml,%3Csvg height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-caretleft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M10.8 12.8L7.1 9l3.8-3.8v7.6h-.1z'/%3E%3Cpath d='M0 0h18v18H0V0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-caretright: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M7.2 5.2L10.9 9l-3.8 3.8V5.2h.1z'/%3E%3Cpath d='M0 0h18v18H0V0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-caretup: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5.2 10.5L9 6.8l3.8 3.8H5.2z'/%3E%3Cpath d='M0 0h18v18H0V0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-chat: url("data:image/svg+xml,%3Csvg height='24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z'/%3E%3C/svg%3E");
+  --jp-icon-checkmark-disabled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z' opacity='.3'/%3E%3C/svg%3E");
+  --jp-icon-checkmark: url("data:image/svg+xml,%3Csvg height='24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+  --jp-icon-circle: url("data:image/svg+xml,%3Csvg fill='%23616161' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath fill='none' d='M0 0h18v18H0V0z'/%3E%3Ccircle cx='9' cy='9' r='8'/%3E%3C/svg%3E");
+  --jp-icon-close-circle: url("data:image/svg+xml,%3Csvg fill='%23fff' height='16' width='16' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23616161'/%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E");
+  --jp-icon-close: url("data:image/svg+xml,%3Csvg fill='%23616161' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-console: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cstyle%3E.st3%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:.25;stroke-miterlimit:10%7D.st4%7Bfill:%23fff%7D%3C/style%3E%3Cpath fill='%230288d1' d='M20 19.8h160v159.9H20z'/%3E%3Cpath class='st4' d='M105 127.3h40v12.8h-40zM51.1 77L74 99.9l-23.3 23.3 10.5 10.5 23.3-23.3L95 99.9 84.5 89.4 61.6 66.5z'/%3E%3C/svg%3E");
+  --jp-icon-copy: url("data:image/svg+xml,%3Csvg fill='%23616161' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath fill='none' d='M0 0h18v18H0V0z'/%3E%3Cpath d='M11.9 1H3.2c-.8 0-1.5.7-1.5 1.5v10.2h1.5V2.5h8.7V1zm2.2 2.9h-8c-.8 0-1.5.7-1.5 1.5v10.2c0 .8.7 1.5 1.5 1.5h8c.8 0 1.5-.7 1.5-1.5V5.4c-.1-.8-.7-1.5-1.5-1.5zm0 11.6h-8V5.4h8v10.1z'/%3E%3C/svg%3E");
+  --jp-icon-cut: url("data:image/svg+xml,%3Csvg fill='%23616161' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Ccircle cx='6' cy='18' fill='none' r='2'/%3E%3Ccircle cx='12' cy='12' fill='none' r='.5'/%3E%3Ccircle cx='6' cy='6' fill='none' r='2'/%3E%3Cpath d='M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm0 12c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3z'/%3E%3C/svg%3E");
+  --jp-icon-directions-run: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='24' height='24'%3E%3Cpath d='M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z'/%3E%3C/svg%3E");
+  --jp-icon-directory-selected: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0%7Bfill:%23fff%7D.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath class='st0' d='M9.3 3.7l1.5 1.5c.5.5 1.1.7 1.8.7h5.8l-.1 12.4H3.6V3.7h5.7m.2-1.5H3.3c-.6 0-1.1.5-1.1 1.1v15.4c0 .6.5 1.1 1.1 1.1h15.4c.6 0 1.1-.5 1.1-1.1l.1-13.2c0-.6-.5-1.1-1.1-1.1h-6.2c-.3 0-.6-.1-.8-.3l-1.6-1.6c-.2-.2-.5-.3-.7-.3z'/%3E%3Cpath class='st0' d='M3.2 2.2h6.3c.3 0 .5.1.7.3l1.6 1.6c.2.2.4.3.7.3h6.3c.6 0 1 .4 1 1v1.3c0 .6-.5 1-1 1H3.2c-.6 0-1-.5-1-1V3.2c0-.5.5-1 1-1z'/%3E%3C/svg%3E");
+  --jp-icon-directory: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0%7Bfill:%23616161%7D.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath class='st0' d='M9.3 3.7l1.5 1.5c.5.5 1.1.7 1.8.7h5.8l-.1 12.4H3.6V3.7h5.7m.2-1.5H3.3c-.6 0-1.1.5-1.1 1.1v15.4c0 .6.5 1.1 1.1 1.1h15.4c.6 0 1.1-.5 1.1-1.1l.1-13.2c0-.6-.5-1.1-1.1-1.1h-6.2c-.3 0-.6-.1-.8-.3l-1.6-1.6c-.2-.2-.5-.3-.7-.3z'/%3E%3Cpath class='st0' d='M3.2 2.2h6.3c.3 0 .5.1.7.3l1.6 1.6c.2.2.4.3.7.3h6.3c.6 0 1 .4 1 1v1.3c0 .6-.5 1-1 1H3.2c-.6 0-1-.5-1-1V3.2c0-.5.5-1 1-1z'/%3E%3C/svg%3E");
+  --jp-icon-download: url("data:image/svg+xml,%3Csvg fill='%23616161' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-edit: url("data:image/svg+xml,%3Csvg fill='%23616161' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-ellipses: url("data:image/svg+xml,%3Csvg fill='%23616161' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='2'/%3E%3Ccircle cx='5' cy='12' r='2'/%3E%3Ccircle cx='19' cy='12' r='2'/%3E%3C/svg%3E");
+  --jp-icon-expand-less: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 9l-6 6 1.4 1.4 4.6-4.6 4.6 4.6L18 15l-6-6z' fill='%232196f3'/%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-expand-more: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 16l6-6-1.4-1.4-4.6 4.6-4.6-4.6L6 10l6 6z' fill='%232196f3'/%3E%3Cpath d='M24 24H0V0h24v24z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-extension: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='24' height='24'%3E%3Cpath d='M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5a2.5 2.5 0 0 0-5 0V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5a2.5 2.5 0 0 0 0-5z'/%3E%3C/svg%3E");
+  --jp-icon-file-selected: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st1%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath d='M19.3 8.2l-5.5-5.5c-.3-.3-.7-.5-1.2-.5H3.9c-.8.1-1.6.9-1.6 1.8v14.1c0 .9.7 1.6 1.6 1.6h14.2c.9 0 1.6-.7 1.6-1.6V9.4c.1-.5-.1-.9-.4-1.2zm-5.8-3.3l3.4 3.6h-3.4V4.9zm3.9 12.7H4.7c-.1 0-.2 0-.2-.2V4.7c0-.2.1-.3.2-.3h7.2v4.4s0 .8.3 1.1c.3.3 1.1.3 1.1.3h4.3v7.2s-.1.2-.2.2z' fill='%23fff'/%3E%3C/svg%3E");
+  --jp-icon-file-upload: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='24' height='24'%3E%3Cpath d='M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z'/%3E%3C/svg%3E");
+  --jp-icon-file: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st1%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath d='M19.3 8.2l-5.5-5.5c-.3-.3-.7-.5-1.2-.5H3.9c-.8.1-1.6.9-1.6 1.8v14.1c0 .9.7 1.6 1.6 1.6h14.2c.9 0 1.6-.7 1.6-1.6V9.4c.1-.5-.1-.9-.4-1.2zm-5.8-3.3l3.4 3.6h-3.4V4.9zm3.9 12.7H4.7c-.1 0-.2 0-.2-.2V4.7c0-.2.1-.3.2-.3h7.2v4.4s0 .8.3 1.1c.3.3 1.1.3 1.1.3h4.3v7.2s-.1.2-.2.2z' fill='%23757575'/%3E%3C/svg%3E");
+  --jp-icon-folder: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='24' height='24'%3E%3Cpath d='M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z'/%3E%3C/svg%3E");
+  --jp-icon-home: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='24' height='24'%3E%3Cpath d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z'/%3E%3C/svg%3E");
+  --jp-icon-image-selected: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath d='M2.2 2.2v17.5h17.5l.1-17.5H2.2zm12.1 2.2c1.2 0 2.2 1 2.2 2.2s-1 2.2-2.2 2.2-2.2-1-2.2-2.2 1-2.2 2.2-2.2zM4.4 17.6l3.3-8.8 3.3 6.6 2.2-3.2 4.4 5.4H4.4z' fill='%23fff'/%3E%3C/svg%3E");
+  --jp-icon-image: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st3%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath fill='%23fff' d='M2.2 2.2h17.5v17.5H2.2z'/%3E%3Cpath d='M2.2 2.2v17.5h17.5l.1-17.5H2.2zm12.1 2.2c1.2 0 2.2 1 2.2 2.2s-1 2.2-2.2 2.2-2.2-1-2.2-2.2 1-2.2 2.2-2.2zM4.4 17.6l3.3-8.8 3.3 6.6 2.2-3.2 4.4 5.4H4.4z' fill='%233f51b5'/%3E%3C/svg%3E");
+  --jp-icon-inverse-circle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M0 0h18v18H0V0z' fill='none'/%3E%3Ccircle cx='9' cy='9' r='8' fill='%23fff'/%3E%3C/svg%3E");
+  --jp-icon-inverse-close-circle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 .7C3.9.7.7 3.9.7 8S4 15.3 8 15.3 15.3 12 15.3 8 12.1.7 8 .7zm4.7 11l-.9.9L8 8.9l-3.7 3.7-.9-.9L7.1 8 3.3 4.3l.9-.9L8 7.1l3.7-3.7.9.9L8.9 8l3.8 3.7z' fill='%23fff'/%3E%3C/svg%3E");
+  --jp-icon-inverse-close: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M12.7 4.3l-.9-.9L8 7.1 4.3 3.3l-1 1L7.1 8l-3.7 3.7.9.9L8 8.9l3.7 3.7.9-.9L8.9 8l3.8-3.7z' fill='%23fff'/%3E%3Cpath d='M0 0h16v16H0V0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-json-selected: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st1%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D.st2%7Bfill:%23fff%7D%3C/style%3E%3Cpath class='st2' d='M20.2 11.8c-1.6 0-1.7.5-1.7 1 0 .4.1.9.1 1.3.1.5.1.9.1 1.3 0 1.7-1.4 2.3-3.5 2.3h-.9v-1.9h.5c1.1 0 1.4 0 1.4-.8 0-.3 0-.6-.1-1 0-.4-.1-.8-.1-1.2 0-1.3 0-1.8 1.3-2-1.3-.2-1.3-.7-1.3-2 0-.4.1-.8.1-1.2.1-.4.1-.7.1-1 0-.8-.4-.7-1.4-.8h-.5V4.1h.9c2.2 0 3.5.7 3.5 2.3 0 .4-.1.9-.1 1.3-.1.5-.1.9-.1 1.3 0 .5.2 1 1.7 1v1.8zM1.8 10.1c1.6 0 1.7-.5 1.7-1 0-.4-.1-.9-.1-1.3-.1-.5-.1-.9-.1-1.3 0-1.6 1.4-2.3 3.5-2.3h.9v1.9h-.5c-1 0-1.4 0-1.4.8 0 .3 0 .6.1 1 0 .2.1.6.1 1 0 1.3 0 1.8-1.3 2C6 11.2 6 11.7 6 13c0 .4-.1.8-.1 1.2-.1.3-.1.7-.1 1 0 .8.3.8 1.4.8h.5v1.9h-.9c-2.1 0-3.5-.6-3.5-2.3 0-.4.1-.9.1-1.3.1-.5.1-.9.1-1.3 0-.5-.2-1-1.7-1v-1.9z'/%3E%3Ccircle class='st2' cx='11' cy='13.8' r='2.1'/%3E%3Ccircle class='st2' cx='11' cy='8.2' r='2.1'/%3E%3C/svg%3E");
+  --jp-icon-json: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0%7Bfill:%23f9a825%7D.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath class='st0' d='M20.2 11.8c-1.6 0-1.7.5-1.7 1 0 .4.1.9.1 1.3.1.5.1.9.1 1.3 0 1.7-1.4 2.3-3.5 2.3h-.9v-1.9h.5c1.1 0 1.4 0 1.4-.8 0-.3 0-.6-.1-1 0-.4-.1-.8-.1-1.2 0-1.3 0-1.8 1.3-2-1.3-.2-1.3-.7-1.3-2 0-.4.1-.8.1-1.2.1-.4.1-.7.1-1 0-.8-.4-.7-1.4-.8h-.5V4.1h.9c2.2 0 3.5.7 3.5 2.3 0 .4-.1.9-.1 1.3-.1.5-.1.9-.1 1.3 0 .5.2 1 1.7 1v1.8zM1.8 10.1c1.6 0 1.7-.5 1.7-1 0-.4-.1-.9-.1-1.3-.1-.5-.1-.9-.1-1.3 0-1.6 1.4-2.3 3.5-2.3h.9v1.9h-.5c-1 0-1.4 0-1.4.8 0 .3 0 .6.1 1 0 .2.1.6.1 1 0 1.3 0 1.8-1.3 2C6 11.2 6 11.7 6 13c0 .4-.1.8-.1 1.2-.1.3-.1.7-.1 1 0 .8.3.8 1.4.8h.5v1.9h-.9c-2.1 0-3.5-.6-3.5-2.3 0-.4.1-.9.1-1.3.1-.5.1-.9.1-1.3 0-.5-.2-1-1.7-1v-1.9z'/%3E%3Ccircle class='st0' cx='11' cy='13.8' r='2.1'/%3E%3Ccircle class='st0' cx='11' cy='8.2' r='2.1'/%3E%3C/svg%3E");
+  --jp-icon-jupyter: url("data:image/svg+xml,%3Csvg width='39' height='51' version='2' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:figma='http://www.figma.com/figma/ns'%3E%3Cg figma:type='canvas'%3E%3Cg style='mix-blend-mode:normal' figma:type='group'%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path0_fill' transform='translate(31.3 .31)' fill='%23767677' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path1_fill' transform='translate(1.74 30.98)' fill='%23F37726' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path2_fill' transform='translate(1.73 4.48)' fill='%23F37726' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path3_fill' transform='translate(1.8 42.81)' fill='%23989798' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3Cg figma:type='group'%3E%3Cuse xlink:href='%23path4_fill' transform='translate(.36 5.06)' fill='%236F7070' style='mix-blend-mode:normal' figma:type='vector'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cdefs%3E%3Cpath id='path0_fill' d='M5.894 2.844a2.993 2.993 0 0 1-.426 1.672A2.957 2.957 0 0 1 4.193 5.67a2.926 2.926 0 0 1-3.238-.505 2.997 2.997 0 0 1-.776-3.21C.379 1.4.737.92 1.208.574A2.932 2.932 0 0 1 4.94.783c.576.532.919 1.274.953 2.061z'/%3E%3Cpath id='path1_fill' d='M18.265 7.134C10.415 7.134 3.559 4.258 0 0a19.505 19.505 0 0 0 7.069 9.473 19.244 19.244 0 0 0 11.2 3.6c4.013 0 7.927-1.258 11.2-3.6A19.505 19.505 0 0 0 36.538 0c-3.567 4.258-10.423 7.134-18.273 7.134z'/%3E%3Cpath id='path2_fill' d='M18.273 5.94c7.85 0 14.706 2.876 18.265 7.133A19.505 19.505 0 0 0 29.469 3.6 19.243 19.243 0 0 0 18.27 0a19.243 19.243 0 0 0-11.2 3.6A19.505 19.505 0 0 0 0 13.073C3.567 8.825 10.423 5.94 18.273 5.94z'/%3E%3Cpath id='path3_fill' d='M7.428 3.583a3.772 3.772 0 0 1-.536 2.11 3.727 3.727 0 0 1-1.608 1.452 3.688 3.688 0 0 1-4.082-.638A3.754 3.754 0 0 1 .105 4.632a3.778 3.778 0 0 1 .122-2.173A3.744 3.744 0 0 1 1.526.72 3.696 3.696 0 0 1 6.23.988a3.76 3.76 0 0 1 1.198 2.595z'/%3E%3Cpath id='path4_fill' d='M2.275 4.396a2.166 2.166 0 0 1-1.227-.318 2.193 2.193 0 0 1-.845-.951A2.216 2.216 0 0 1 .575.71 2.163 2.163 0 0 1 2.931.134c.405.15.757.418 1.011.77a2.211 2.211 0 0 1-.156 2.783c-.39.43-.934.684-1.511.71z'/%3E%3C/defs%3E%3C/svg%3E");
+  --jp-icon-kernel-running: url("data:image/svg+xml,%3Csvg fill='%23616161' xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'/%3E%3C/svg%3E");
+  --jp-icon-launcher: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0%7Bfill:%23757575%7D.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D.st3%7Bfill:%23fff%7D%3C/style%3E%3Cpath class='st0' d='M2.2 2.2h17.6v17.6H2.2z'/%3E%3Cpath class='st3' d='M15.4 11.1v3.2h2.2zM6.6 11v3.3H4.4zM11 3.3c4.3 5.6 3.2 11 3.2 11H7.8S6.7 8.9 11 3.3'/%3E%3Ccircle class='st0' cx='11' cy='10.4' r='1.2'/%3E%3Cpath class='st3' d='M11 18.7s-2.7-3.3 0-3.3 0 3.3 0 3.3z'/%3E%3Cpath class='st0' d='M18.7 14.3v3.3'/%3E%3Cpath class='st3' d='M17.6 16.5v-2.2h-2.2zM4.4 16.5l2.2-2.2H4.4z'/%3E%3C/svg%3E");
+  --jp-icon-link: url("data:image/svg+xml,%3Csvg height='24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z'/%3E%3C/svg%3E");
+  --jp-icon-markdown-selected: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0%7Bfill:%23fff%7D.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath class='st0' d='M5 14.9h12l-6.1 6zM14.4 8.1c0-1.3-.1-2.9-.1-4.5-.4 1.4-.9 2.9-1.3 4.3l-1.3 4.3h-2L8.5 7.9c-.4-1.3-.7-2.9-1-4.3-.1 1.6-.1 3.2-.2 4.6L7 12.4H4.8l.7-11h3.3L10 5c.4 1.2.7 2.7 1 3.9.3-1.2.7-2.6 1-3.9l1.2-3.7h3.3l.6 11h-2.4l-.3-4.2z'/%3E%3C/svg%3E");
+  --jp-icon-markdown: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0%7Bfill:%237b1fa2%7D.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath class='st0' d='M5 14.9h12l-6.1 6zM14.4 8.1c0-1.3-.1-2.9-.1-4.5-.4 1.4-.9 2.9-1.3 4.3l-1.3 4.3h-2L8.5 7.9c-.4-1.3-.7-2.9-1-4.3-.1 1.6-.1 3.2-.2 4.6L7 12.4H4.8l.7-11h3.3L10 5c.4 1.2.7 2.7 1 3.9.3-1.2.7-2.6 1-3.9l1.2-3.7h3.3l.6 11h-2.4l-.3-4.2z'/%3E%3C/svg%3E");
+  --jp-icon-more: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%239e9e9e' width='18' height='18'%3E%3Cpath d='M4 7.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5S5.5 9.83 5.5 9 4.83 7.5 4 7.5zm10 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm-5 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5S9.83 7.5 9 7.5z'/%3E%3C/svg%3E");
+  --jp-icon-new-folder: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='24' height='24'%3E%3Cpath d='M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z'/%3E%3C/svg%3E");
+  --jp-icon-palette: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='24' height='24'%3E%3Cpath d='M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z'/%3E%3C/svg%3E");
+  --jp-icon-paste: url("data:image/svg+xml,%3Csvg fill='%23616161' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-python-selected: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0%7Bfill:%23fff%7D.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath class='st0' d='M11.1 6.9V5.8H6.9c0-.5 0-1.3.2-1.6.4-.7.8-1.1 1.7-1.4 1.7-.3 2.5-.3 3.9-.1 1 .1 1.9.9 1.9 1.9v4.2c0 .5-.9 1.6-2 1.6H8.8c-1.5 0-2.4 1.4-2.4 2.8v2.2H4.7C3.5 15.1 3 14 3 13.1V9c-.1-1 .6-2 1.8-2 1.5-.1 6.3-.1 6.3-.1z' id='vJz2Qp.tif_1_'/%3E%3Cpath class='st0' d='M10.9 15.1v1.1h4.2c0 .5 0 1.3-.2 1.6-.4.7-.8 1.1-1.7 1.4-1.7.3-2.5.3-3.9.1-1-.1-1.9-.9-1.9-1.9v-4.2c0-.5.9-1.6 2-1.6h3.8c1.5 0 2.4-1.4 2.4-2.8V6.6h1.7C18.5 6.9 19 8 19 8.9V13c0 1-.7 2.1-1.9 2.1h-6.2z' id='vJz2Qp.tif_2_'/%3E%3C/svg%3E");
+  --jp-icon-python: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0%7Bfill:%230d47a1%7D.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath class='st0' d='M11.1 6.9V5.8H6.9c0-.5 0-1.3.2-1.6.4-.7.8-1.1 1.7-1.4 1.7-.3 2.5-.3 3.9-.1 1 .1 1.9.9 1.9 1.9v4.2c0 .5-.9 1.6-2 1.6H8.8c-1.5 0-2.4 1.4-2.4 2.8v2.2H4.7C3.5 15.1 3 14 3 13.1V9c-.1-1 .6-2 1.8-2 1.5-.1 6.3-.1 6.3-.1z' id='vJz2Qp.tif_1_'/%3E%3Cpath class='st0' d='M10.9 15.1v1.1h4.2c0 .5 0 1.3-.2 1.6-.4.7-.8 1.1-1.7 1.4-1.7.3-2.5.3-3.9.1-1-.1-1.9-.9-1.9-1.9v-4.2c0-.5.9-1.6 2-1.6h3.8c1.5 0 2.4-1.4 2.4-2.8V6.6h1.7C18.5 6.9 19 8 19 8.9V13c0 1-.7 2.1-1.9 2.1h-6.2z' id='vJz2Qp.tif_2_'/%3E%3C/svg%3E");
+  --jp-icon-question-mark: url("data:image/svg+xml,%3Csvg width='49' height='49' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient x1='50%25' y1='0%25' x2='50%25' y2='100%25' id='a'%3E%3Cstop stop-color='%2390CAF9' offset='0%25'/%3E%3Cstop stop-color='%232196F3' offset='100%25'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M24.5 49C38.031 49 49 38.031 49 24.5S38.031 0 24.5 0 0 10.969 0 24.5 10.969 49 24.5 49z' fill='url(%23a)'/%3E%3Cpath d='M26.214 38.412c0-1.23-.992-2.223-2.263-2.223a2.22 2.22 0 0 0-2.223 2.223c0 1.27.992 2.263 2.223 2.263 1.27 0 2.263-.992 2.263-2.263zm-.238-4.764c-.04-1.549.238-3.058.834-4.368.714-1.588 1.707-2.501 2.78-3.414 1.27-1.152 2.739-2.422 3.374-4.844.397-1.39.437-2.502.198-3.931-.317-1.588-.992-3.057-1.985-4.209a8.62 8.62 0 0 0-3.653-2.501 10.034 10.034 0 0 0-2.74-.556c-.356-.04-1.508-.08-2.977.278-1.945.516-3.613 1.549-4.884 2.978a9.626 9.626 0 0 0-2.223 5.4l4.09.397c.079-.715.317-2.144 1.27-3.375 1.707-2.184 4.328-2.025 4.447-2.025.675.04 2.382.318 3.534 1.787.516.675.873 1.548 1.032 2.5.159.914.159 1.47-.08 2.343-.317 1.35-1.072 2.065-2.144 3.137-1.23 1.191-2.7 1.906-3.811 4.328-.834 1.866-1.23 3.89-1.191 6.075h4.129z' fill='%23FFF'/%3E%3C/g%3E%3C/svg%3E");
+  --jp-icon-r-selected: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath d='M4.4 2.5c1.2-.1 2.9-.3 4.9-.3 2.5 0 4.1.4 5.2 1.3 1 .7 1.5 1.9 1.5 3.5 0 2-1.4 3.5-2.9 4.1 1.2.4 1.7 1.6 2.2 3 .6 1.9 1 3.9 1.3 4.6h-3.8c-.3-.4-.8-1.7-1.2-3.7-.4-2-1.2-2.6-2.6-2.6h-.9v6.4H4.4V2.5zm3.7 6.9h1.4c1.9 0 2.9-.9 2.9-2.3s-1-2.3-2.8-2.3c-.7 0-1.3 0-1.6.2v4.5h.1z' fill='%23fff'/%3E%3C/svg%3E");
+  --jp-icon-r: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath d='M4.4 2.5c1.2-.1 2.9-.3 4.9-.3 2.5 0 4.1.4 5.2 1.3 1 .7 1.5 1.9 1.5 3.5 0 2-1.4 3.5-2.9 4.1 1.2.4 1.7 1.6 2.2 3 .6 1.9 1 3.9 1.3 4.6h-3.8c-.3-.4-.8-1.7-1.2-3.7s-1.2-2.6-2.6-2.6h-.9v6.4H4.4V2.5zm3.7 6.9h1.4c1.9 0 2.9-.9 2.9-2.3s-1-2.3-2.8-2.3c-.7 0-1.3 0-1.6.2v4.5h.1v-.1z' fill='%232196f3'/%3E%3C/svg%3E");
+  --jp-icon-refresh: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='18' height='18'%3E%3Cpath d='M9 13.5c-2.49 0-4.5-2.01-4.5-4.5S6.51 4.5 9 4.5c1.24 0 2.36.52 3.17 1.33L10 8h5V3l-1.76 1.76A6.003 6.003 0 0 0 9 3C5.69 3 3.01 5.69 3.01 9S5.69 15 9 15a5.98 5.98 0 0 0 5.9-5h-1.52c-.46 2-2.24 3.5-4.38 3.5z'/%3E%3C/svg%3E");
+  --jp-icon-run: url("data:image/svg+xml,%3Csvg fill='%23616161' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  --jp-icon-save: url("data:image/svg+xml,%3Csvg fill='%23616161' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z'/%3E%3C/svg%3E");
+  --jp-icon-search-white: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath fill='%23FFF' d='M12.1 10.9h-.7l-.2-.2c.8-.9 1.3-2.2 1.3-3.5 0-3-2.4-5.4-5.4-5.4S1.8 4.2 1.8 7.1s2.4 5.4 5.4 5.4c1.3 0 2.5-.5 3.5-1.3l.2.2v.7l4.1 4.1 1.2-1.2-4.1-4.1zm-5 0c-2.1 0-3.7-1.7-3.7-3.7s1.7-3.7 3.7-3.7 3.7 1.7 3.7 3.7-1.6 3.7-3.7 3.7z'/%3E%3Cpath fill='none' d='M0 0h18v18H0V0z'/%3E%3C/svg%3E");
+  --jp-icon-search: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath fill='%23616161' d='M12.1 10.9h-.7l-.2-.2c.8-.9 1.3-2.2 1.3-3.5 0-3-2.4-5.4-5.4-5.4S1.8 4.2 1.8 7.1s2.4 5.4 5.4 5.4c1.3 0 2.5-.5 3.5-1.3l.2.2v.7l4.1 4.1 1.2-1.2-4.1-4.1zm-5 0c-2.1 0-3.7-1.7-3.7-3.7s1.7-3.7 3.7-3.7 3.7 1.7 3.7 3.7-1.6 3.7-3.7 3.7z'/%3E%3Cpath fill='none' d='M0 0h18v18H0V0z'/%3E%3C/svg%3E");
+  --jp-icon-settings: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cstyle%3E.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:.25;stroke-miterlimit:10%7D%3C/style%3E%3Cpath fill='%23616161' d='M20 20h160v160H20z' id='Layer_1_1_'/%3E%3Cpath d='M138.4 105.4c.2-1.6.4-3.3.4-5 0-1.7-.2-3.4-.4-5l10.9-8.5c1-.8 1.2-2.2.6-3.3l-10.3-17.8c-.6-1.1-2-1.5-3.1-1.1l-12.8 5.1c-2.7-2.1-5.6-3.8-8.7-5l-2-13.6c-.2-1.2-1.2-2.2-2.5-2.2H89.9c-1.3 0-2.4.9-2.5 2.2l-2 13.6c-3.1 1.3-6 3-8.7 5l-12.8-5.1c-1.2-.5-2.5 0-3.1 1.1L50.4 83.6c-.7 1.1-.4 2.5.6 3.3l10.9 8.5c-.2 1.6-.4 3.3-.4 5 0 1.7.2 3.4.4 5L51 113.9c-1 .8-1.2 2.2-.6 3.3L60.7 135c.6 1.1 2 1.5 3.1 1.1l12.8-5.1c2.7 2.1 5.6 3.8 8.7 5l2 13.6c.2 1.2 1.2 2.2 2.5 2.2h20.6c1.3 0 2.4-.9 2.5-2.2l2-13.6c3.1-1.3 6-3 8.7-5l12.8 5.1c1.2.5 2.5 0 3.1-1.1l10.3-17.8c.6-1.1.4-2.5-.6-3.3l-10.8-8.5zm-38.2 13c-9.9 0-18-8.1-18-18s8.1-18 18-18 18 8.1 18 18-8.1 18-18 18z' fill='%23fff'/%3E%3C/svg%3E");
+  --jp-icon-spreadsheet-selected: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath d='M2.2 2.2v17.6h17.6V2.2H2.2zm15.4 7.7h-5.5V4.4h5.5v5.5zM9.9 4.4v5.5H4.4V4.4h5.5zm-5.5 7.7h5.5v5.5H4.4v-5.5zm7.7 5.5v-5.5h5.5v5.5h-5.5z' fill='%23fff'/%3E%3C/svg%3E");
+  --jp-icon-spreadsheet: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath d='M2.2 2.2v17.6h17.6V2.2H2.2zm15.4 7.7h-5.5V4.4h5.5v5.5zM9.9 4.4v5.5H4.4V4.4h5.5zm-5.5 7.7h5.5v5.5H4.4v-5.5zm7.7 5.5v-5.5h5.5v5.5h-5.5z' fill='%234caf50'/%3E%3C/svg%3E");
+  --jp-icon-stop: url("data:image/svg+xml,%3Csvg fill='%23616161' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M6 6h12v12H6z'/%3E%3C/svg%3E");
+  --jp-icon-tab: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23616161' width='24' height='24'%3E%3Cpath d='M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h10v4h8v10z'/%3E%3C/svg%3E");
+  --jp-icon-terminal: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cstyle%3E.st1%7Bfill:%23fff%7D.st3%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:.25;stroke-miterlimit:10%7D%3C/style%3E%3Cpath fill='%23424242' d='M20 20h160v160H20z' id='Layer_1_1_'/%3E%3Cpath class='st1' d='M110 127.2h40V140h-40zM68.9 145.4v-10.6c-7.5-.3-14.7-2.3-18.9-4.8l3.3-13c4.7 2.6 11.2 4.9 18.5 4.9 6.3 0 10.7-2.4 10.7-6.9 0-4.2-3.6-6.9-11.8-9.7-11.9-4-20-9.6-20-20.4 0-9.8 6.9-17.5 18.8-19.8V54.6h10.9v9.8c7.5.3 12.5 1.9 16.1 3.7l-3.2 12.6c-2.9-1.2-8-3.8-16-3.8-7.2 0-9.6 3.1-9.6 6.2 0 3.7 3.9 6 13.4 9.6 13.2 4.7 18.6 10.8 18.6 20.8 0 9.9-7 18.4-19.8 20.6v11.4l-11-.1z'/%3E%3C/svg%3E");
+  --jp-icon-text-editor: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cstyle%3E.st0%7Bfill:%23fff%7D.st1%7Bfill:%23616161%7D.st4%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:.25;stroke-miterlimit:10%7D%3C/style%3E%3Cpath class='st0' d='M134.6 36.8V64.1H163l-28.4-27.3z'/%3E%3Cpath class='st1' d='M179.6 73v.1h.1zM126.8 20.2v.1h.1z'/%3E%3Cpath d='M20.3 20.3L20 180h160V80l-60-60-99.7.3z' fill='%23607d8b'/%3E%3Cpath fill='none' d='M50 87.5h100v64.9H50z'/%3E%3Cpath class='st0' d='M125.1 40.2L159.8 75l-34.7-.1zM50 140h100v10H50zM50 110h100v10.1H50zM50 80.1h50v10H50z'/%3E%3C/svg%3E");
+  --jp-icon-undo: url("data:image/svg+xml,%3Csvg height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z'/%3E%3C/svg%3E");
+  --jp-icon-vega: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st1,.st2,.st4%7Bfill:none;stroke-miterlimit:10%7D.st1%7Bdisplay:inline;stroke:%239e9e9e;stroke-width:2.000000e-02%7D.st2,.st4%7Bstroke:%234caf50;stroke-width:2%7D.st4%7Bstroke:%23fff;stroke-width:3%7D.st5%7Bfill:%23ff5cb4%7D%3C/style%3E%3Cpath class='st5' d='M10.6 5.4l2.2-3.2H2.2v7.3l4-6.6z'/%3E%3Cpath class='st5' d='M15.8 2.2l-4.4 6.6L7 6.3l-4.8 8v5.5h17.6V2.2h-4zm-7 15.4H5.5v-4.4h3.3v4.4zm4.4 0H9.8V9.8h3.4v7.8zm4.4 0h-3.4V6.5h3.4v11.1z'/%3E%3C/svg%3E");
+  --jp-icon-yaml-selected: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st1%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D.st2%7Bfill:%23fff%7D%3C/style%3E%3Cpath class='st2' d='M7.2 18.6v-5.4L3 5.6h3.3l1.4 3.1c.3.9.6 1.6 1 2.5.3-.8.6-1.6 1-2.5l1.4-3.1h3.4l-4.4 7.6v5.5l-2.9-.1z'/%3E%3Ccircle class='st2' cx='17.6' cy='16.5' r='2.1'/%3E%3Ccircle class='st2' cx='17.6' cy='11' r='2.1'/%3E%3C/svg%3E");
+  --jp-icon-yaml: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cstyle%3E.st0%7Bfill:%23d81b60%7D.st2%7Bdisplay:inline;fill:none;stroke:%239e9e9e;stroke-width:2.000000e-02;stroke-miterlimit:10%7D%3C/style%3E%3Cpath class='st0' d='M7.2 18.6v-5.4L3 5.6h3.3l1.4 3.1c.3.9.6 1.6 1 2.5.3-.8.6-1.6 1-2.5l1.4-3.1h3.4l-4.4 7.6v5.5l-2.9-.1z'/%3E%3Ccircle class='st0' cx='17.6' cy='16.5' r='2.1'/%3E%3Ccircle class='st0' cx='17.6' cy='11' r='2.1'/%3E%3C/svg%3E");
+}
+
+/*-----------------------------------------------------------------------------
+| Copyright (c) Jupyter Development Team.
+| Distributed under the terms of the Modified BSD License.
+|----------------------------------------------------------------------------*/
+
+/* Set the default typography for monospace elements */
+tt,
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--jp-code-font-family);
+  font-size: var(--jp-code-font-size);
+  line-height: var(--jp-code-line-height);
+}
+
