@@ -7,6 +7,19 @@
 let
   ghc = haskellPackages.ghcWithPackages (p:
     packages p ++ (with p; [
+      #ihaskell-aeson
+      #ihaskell-blaze
+      #ihaskell-charts
+      #ihaskell-diagrams
+      #ihaskell-gnuplot
+      #ihaskell-graphviz
+      #ihaskell-hatex
+      #ihaskell-juicypixels
+      #ihaskell-magic
+      #ihaskell-plot
+      #ihaskell-rlangqq
+      #ihaskell-static-canvas
+      #ihaskell-widgets
     ])
   );
 
@@ -18,7 +31,7 @@ let
       "kernel"
       "{connection_file}"
       "--ghclib"
-      "${ghc}/lib/ghc-8.2.2"
+      "${ghc}/lib/${ghc.name}"
       "+RTS"
       "-M3g"
       "-N2"

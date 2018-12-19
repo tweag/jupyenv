@@ -24,9 +24,20 @@ let
       )
     );
 
-in
-  nixLib.buildNodePackage {
+  jupyterTmp = nixLib.buildNodePackage {
     src = nixLib.removePrefixes [ "node_modules" ] ./out/staging;
     key = { name = allDeps.name; scope=""; };
     inherit (allDeps) version nodeBuildInputs;
+  };
+
+in
+  pkgs.stdenv.mkDerivation {
+    name = "jupyterlab-dir";
+    phases = "installPhase";
+    installPhase = ''
+      mkdir -p $out/static
+      cp -r ${pkgs.python36Packages.jupyterlab}/share/jupyter/lab/* $out
+      rm -r $out/static
+      cp -r ${jupyterTmp}/build $out/static
+    '';
   }
