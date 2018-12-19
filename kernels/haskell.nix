@@ -50,9 +50,9 @@ let
     };
     phases = "installPhase";
     installPhase = ''
-      mkdir -p $out
-      cp $src/html/* $out
-      echo '${builtins.toJSON kernelFile}' > $out/kernel.json
+      mkdir -p $out/kernels/ihaskell
+      cp $src/html/* $out/kernels/ihaskell
+      echo '${builtins.toJSON kernelFile}' > $out/kernels/ihaskell/kernel.json
     '';
   };
 
