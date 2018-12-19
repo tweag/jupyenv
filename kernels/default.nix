@@ -1,6 +1,6 @@
 { callPackage }:
 
 {
-  haskell = callPackage ./kernels/haskell.nix {};
-  python = callPackage ./kernels/python.nix {};
+  haskell = callPackage ./haskell.nix {};
+  python = callPackage ./python.nix {};
 }
