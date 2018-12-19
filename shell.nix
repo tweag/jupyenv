@@ -1,9 +1,9 @@
-{ nixpkgs ? <nixpkgs> }:
+{ nixpkgsPath ? import ./nixpkgs-src.nix }:
 let
   fixes = self: pkgs: {
       jupyter = pkgs.jupyter.override { extensions=[]; };
     };
-  pkgs = import nixpkgs {overlays=[fixes];};
+  pkgs = import nixpkgsPath {overlays=[fixes];};
   jupyter = pkgs.jupyter;
   jupyterlab = pkgs.python36Packages.jupyterlab;
   extension = pkgs.nodePackages."@jupyterlab/toc";
