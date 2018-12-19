@@ -83,7 +83,7 @@
         (a."html-webpack-plugin@~3.2.0")
         (a."@jupyterlab/outputarea@^0.19.1")
         (a."@jupyterlab/codemirror-extension@^0.19.1")
-        (a."@jupyterlab/toc@^0.6.0")
+        (a."@jupyterlab/toc@file:../extensions/jupyterlab-toc-0.6.0.tgz")
         (a."path-posix@~1.0.0")
         (a."@jupyterlab/csvviewer-extension@^0.19.1")
         (a."@jupyterlab/help-extension@^0.19.1")

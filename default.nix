@@ -6,8 +6,8 @@ let
   yarn2nixPath = pkgs.fetchFromGitHub {
     owner = "Profpatsch";
     repo = "yarn2nix";
-    rev = "1ec3635fd28d2180b4c07ab524ada94d8d327d48";
-    sha256 = "0hyc04plczvbilcn68hxnqsr5yfiqy29mb8spg8aj1k2grhzkds9";
+    rev = "919012b32c705e57d90409fc2d9e5ba49e05b471";
+    sha256 = "1f9gw31j7jvv6b2fk5h76qd9b78zsc9ac9hj23ws119zzxh6nbyd";
   };
 
   yarn2nix = import yarn2nixPath { inherit nixpkgsPath; };
@@ -18,15 +18,15 @@ let
     };
 
   allDeps =
-    nixLib.callTemplate ./npm-package.nix (
+    nixLib.callTemplate ./out/staging/npm-package.nix (
       nixLib.buildNodeDeps (
-        pkgs.callPackage ./npm-deps.nix {}
+        pkgs.callPackage ./out/staging/npm-deps.nix {}
       )
     );
 
 in
   nixLib.buildNodePackage {
-    src = nixLib.removePrefixes [ "node_modules" ] ./.;
+    src = nixLib.removePrefixes [ "node_modules" ] ./out/staging;
     key = { name = allDeps.name; scope=""; };
     inherit (allDeps) version nodeBuildInputs;
   }

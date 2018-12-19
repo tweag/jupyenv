@@ -23,6 +23,18 @@
                     };
                     nodeBuildInputs = deps;
                   };
+        nodeFileLocalPackage = key:
+          version:
+            path:
+              sha1:
+                deps:
+                  super._buildNodePackage {
+                    inherit key version;
+                    src = builtins.path {
+                      inherit path;
+                    };
+                    nodeBuildInputs = deps;
+                  };
         nodeGitPackage = key:
           version:
             url:
@@ -44,6 +56,7 @@
           name:
             { inherit scope name; };
         ir = identityRegistry;
+        l = nodeFileLocalPackage;
         f = nodeFilePackage;
         g = nodeGitPackage;
         n = registries.npm;
@@ -706,7 +719,7 @@
           (s."font-awesome@~4.7.0")
         ];
         "@jupyterlab/theme-light-extension@^0.19.1" = s."@jupyterlab/theme-light-extension@0.19.1";
-        "@jupyterlab/toc@0.6.0" = f (sc "jupyterlab" "toc") "0.6.0" (ir ":https://registry.yarnpkg.com/@jupyterlab/toc/-/toc-0.6.0.tgz") "393fe861404fa351ece7c4e326a4ddbd2076a39d" [
+        "@jupyterlab/toc@0.6.0" = l (sc "jupyterlab" "toc") "0.6.0" ../extensions/jupyterlab-toc-0.6.0.tgz "393fe861404fa351ece7c4e326a4ddbd2076a39d" [
           (s."@jupyterlab/application@^0.19.1")
           (s."@jupyterlab/apputils@^0.19.1")
           (s."@jupyterlab/cells@^0.19.1")
@@ -723,7 +736,7 @@
           (s."react@~16.4.2")
           (s."react-dom@~16.4.2")
         ];
-        "@jupyterlab/toc@^0.6.0" = s."@jupyterlab/toc@0.6.0";
+        "@jupyterlab/toc@file:../extensions/jupyterlab-toc-0.6.0.tgz" = s."@jupyterlab/toc@0.6.0";
         "@jupyterlab/tooltip-extension@0.19.1" = f (sc "jupyterlab" "tooltip-extension") "0.19.1" (ir "https://registry.yarnpkg.com/@jupyterlab/tooltip-extension/-/tooltip-extension-0.19.1.tgz") "d12d4fec5b6d75a3c0765cb1b21f72f4a79512fb" [
           (s."@jupyterlab/application@^0.19.1")
           (s."@jupyterlab/codeeditor@^0.19.1")
@@ -949,13 +962,13 @@
           (s."json-schema-traverse@^0.3.0")
           (s."json-stable-stringify@^1.0.1")
         ];
-        "ajv@6.6.1" = f "ajv" "6.6.1" y "6360f5ed0d80f232cc2b294c362d5dc2e538dd61" [
+        "ajv@6.6.2" = f "ajv" "6.6.2" y "caceccf474bf3fc3ce3b147443711a24063cc30d" [
           (s."fast-deep-equal@^2.0.1")
           (s."fast-json-stable-stringify@^2.0.0")
           (s."json-schema-traverse@^0.4.1")
           (s."uri-js@^4.2.2")
         ];
-        "ajv@^6.1.0" = s."ajv@6.6.1";
+        "ajv@^6.1.0" = s."ajv@6.6.2";
         "ajv@~5.1.6" = s."ajv@5.1.6";
         "alphanum-sort@1.0.2" = f "alphanum-sort" "1.0.2" y "97a1119649b211ad33691d9f9f486a8ec9fbe0a3" [];
         "alphanum-sort@^1.0.1" = s."alphanum-sort@1.0.2";
@@ -1726,8 +1739,8 @@
           (s."semver@^5.4.1")
         ];
         "duplicate-package-checker-webpack-plugin@^3.0.0" = s."duplicate-package-checker-webpack-plugin@3.0.0";
-        "electron-to-chromium@1.3.92" = f "electron-to-chromium" "1.3.92" y "9027b5abaea400045edd652c0e4838675c814399" [];
-        "electron-to-chromium@^1.2.7" = s."electron-to-chromium@1.3.92";
+        "electron-to-chromium@1.3.94" = f "electron-to-chromium" "1.3.94" y "896dba14f6fefb431295b90543874925ee0cd46e" [];
+        "electron-to-chromium@^1.2.7" = s."electron-to-chromium@1.3.94";
         "elliptic@6.4.1" = f "elliptic" "6.4.1" y "c2d0b7776911b86722c632c3c06c60f2f819939a" [
           (s."bn.js@^4.4.0")
           (s."brorand@^1.0.1")
@@ -2343,8 +2356,8 @@
           (s."is-object@^1.0.1")
         ];
         "isurl@^1.0.0-alpha5" = s."isurl@1.0.0";
-        "js-base64@2.4.9" = f "js-base64" "2.4.9" y "748911fb04f48a60c4771b375cac45a80df11c03" [];
-        "js-base64@^2.1.9" = s."js-base64@2.4.9";
+        "js-base64@2.5.0" = f "js-base64" "2.5.0" y "42255ba183ab67ce59a0dee640afdc00ab5ae93e" [];
+        "js-base64@^2.1.9" = s."js-base64@2.5.0";
         "js-tokens@3.0.2" = f "js-tokens" "3.0.2" y "9866df395102130e38f7f996bceb65443209c25b" [];
         "js-tokens@4.0.0" = f "js-tokens" "4.0.0" y "19203fb59991df98e3a287050d4647cdeaf32499" [];
         "js-tokens@^3.0.0 || ^4.0.0" = s."js-tokens@4.0.0";
@@ -2619,8 +2632,8 @@
         "ms@2.1.1" = f "ms" "2.1.1" y "30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a" [];
         "ms@^2.1.1" = s."ms@2.1.1";
         "mute-stream@0.0.7" = f "mute-stream" "0.0.7" y "3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab" [];
-        "nan@2.11.1" = f "nan" "2.11.1" y "90e22bccb8ca57ea4cd37cc83d3819b52eea6766" [];
-        "nan@^2.9.2" = s."nan@2.11.1";
+        "nan@2.12.0" = f "nan" "2.12.0" y "9d443fdb5e13a20770cc5e602eee59760a685885" [];
+        "nan@^2.9.2" = s."nan@2.12.0";
         "nanomatch@1.2.13" = f "nanomatch" "1.2.13" y "b87a8aa4fc0de8fe6be88895b38983ff265bd119" [
           (s."arr-diff@^4.0.0")
           (s."array-unique@^0.3.2")
@@ -3257,7 +3270,7 @@
           (s."string_decoder@~1.1.1")
           (s."util-deprecate@~1.0.1")
         ];
-        "readable-stream@3.0.6" = f "readable-stream" "3.0.6" y "351302e4c68b5abd6a2ed55376a7f9a25be3057a" [
+        "readable-stream@3.1.0" = f "readable-stream" "3.1.0" y "19c2e9c1ce43507c53f6eefbcf1ee3d4aaa786f5" [
           (s."inherits@^2.0.3")
           (s."string_decoder@^1.1.1")
           (s."util-deprecate@^1.0.1")
@@ -3271,7 +3284,7 @@
         "readable-stream@^2.2.2" = s."readable-stream@2.3.6";
         "readable-stream@^2.3.3" = s."readable-stream@2.3.6";
         "readable-stream@^2.3.6" = s."readable-stream@2.3.6";
-        "readable-stream@^3.0.6" = s."readable-stream@3.0.6";
+        "readable-stream@^3.0.6" = s."readable-stream@3.1.0";
         "readable-stream@~2.3.6" = s."readable-stream@2.3.6";
         "readdirp@2.2.1" = f "readdirp" "2.2.1" y "0e87622a3325aa33e892285caf8b4e846529a525" [
           (s."graceful-fs@^4.1.11")
@@ -3992,12 +4005,12 @@
           (s."vega-util@^1.7.0")
         ];
         "vega-transforms@^2.3.1" = s."vega-transforms@2.3.1";
-        "vega-typings@*" = s."vega-typings@0.3.51";
-        "vega-typings@0.3.51" = f "vega-typings" "0.3.51" y "1e7a84ae3af4fcc0784b80d50a3e1df432b18141" [
+        "vega-typings@*" = s."vega-typings@0.3.53";
+        "vega-typings@0.3.53" = f "vega-typings" "0.3.53" y "a70b9730ebe1e4c557019ccccc5fd98035b0aab0" [
           (s."vega-util@^1.7.0")
         ];
-        "vega-typings@^0.3.17" = s."vega-typings@0.3.51";
-        "vega-typings@^0.3.51" = s."vega-typings@0.3.51";
+        "vega-typings@^0.3.17" = s."vega-typings@0.3.53";
+        "vega-typings@^0.3.51" = s."vega-typings@0.3.53";
         "vega-util@1.7.0" = f "vega-util" "1.7.0" y "0ca0512bb8dcc6541165c34663d115d0712e0cf1" [];
         "vega-util@^1.7.0" = s."vega-util@1.7.0";
         "vega-view-transforms@2.0.3" = f "vega-view-transforms" "2.0.3" y "9999f83301efbe65ed1971018f538f5aeb62a16e" [
