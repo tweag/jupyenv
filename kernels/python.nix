@@ -1,16 +1,17 @@
-{ python3
-, pythonPackages
+{ python36
 , stdenv
 , packages ? (_:[])
 }:
 
 let
-  python = python3.withPackages (p:
-    packages p ++ [ p.ipykernel ]
+  python = python36.withPackages (p:
+    packages p ++ (with p; [
+      ipykernel
+    ])
   );
 
   kernelFile = {
-    displayName = "Python 3";
+    display_name = "Python 3 - Nixpkgs";
     language = "python";
     argv = [
       "${python.interpreter}"
@@ -27,9 +28,9 @@ let
     src = ./python.png;
     phases = "installPhase";
     installPhase = ''
-      mkdir -p $out
-      cp $src $out/logo-64x64.png
-      echo '${builtins.toJSON kernelFile}' > $out/kernel.json
+      mkdir -p $out/kernels/ipython
+      cp $src $out/kernels/ipython/logo-64x64.png
+      echo '${builtins.toJSON kernelFile}' > $out/kernels/ipython/kernel.json
     '';
   };
 in
