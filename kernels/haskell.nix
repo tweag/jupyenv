@@ -7,19 +7,19 @@
 let
   ghc = haskellPackages.ghcWithPackages (p:
     packages p ++ (with p; [
-      #ihaskell-aeson
-      #ihaskell-blaze
-      #ihaskell-charts
-      #ihaskell-diagrams
-      #ihaskell-gnuplot
-      #ihaskell-graphviz
-      #ihaskell-hatex
-      #ihaskell-juicypixels
-      #ihaskell-magic
-      #ihaskell-plot
+      ihaskell-aeson
+      ihaskell-blaze
+      ihaskell-charts
+      ihaskell-diagrams
+      ihaskell-gnuplot
+      ihaskell-graphviz
+      ihaskell-hatex
+      ihaskell-juicypixels
+      ihaskell-magic
+      ihaskell-plot
       #ihaskell-rlangqq
-      #ihaskell-static-canvas
-      #ihaskell-widgets
+      ihaskell-static-canvas
+      ihaskell-widgets
     ])
   );
 
