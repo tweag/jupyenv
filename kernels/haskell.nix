@@ -24,7 +24,7 @@ let
   );
 
   kernelFile = {
-    display_name = "Haskell";
+    display_name = "Haskell - Nixpkgs";
     language = "haskell";
     argv = [
       "${haskellPackages.ihaskell}/bin/ihaskell"
