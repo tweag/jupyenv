@@ -4,7 +4,7 @@ let
     overlays = [ (import ./overlay.nix) ];
   };
 
-  jupyter = pkgs.jupyter;
+  jupyter = pkgs.python36Packages.jupyter;
   jupyterlab = pkgs.python36Packages.jupyterlab;
   kernels = pkgs.callPackage ./kernels {};
 
@@ -19,6 +19,6 @@ pkgs.mkShell {
     export JUPYTERLAB=${jupyterlab}
     export JUPYTER_PATH=${kernels.haskell}:${kernels.python}
     export JUPYTERLAB_DIR=${jupyterlabDir}
-    jupyter lab --debug
+    jupyter lab
     '';
 }
