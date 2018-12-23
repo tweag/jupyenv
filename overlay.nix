@@ -1,7 +1,7 @@
-self: super:
+_: pkgs:
 
 let
-  ihaskellSrc = super.fetchFromGitHub {
+  ihaskellSrc = pkgs.fetchFromGitHub {
     owner = "gibiansky";
     repo = "IHaskell";
     rev = "376d108d1f034f4e9067f8d9e9ef7ddad2cce191";
@@ -11,28 +11,38 @@ let
 in
 
 {
-  haskellPackages = super.haskellPackages.override {
-    overrides = selfHS: superHS:
+  haskellPackages = pkgs.haskellPackages.override {
+    overrides = _: hspkgs:
       let
-        mkDisplay = name:
-          superHS.callCabal2nix "ihaskell-${name}" "${ihaskellSrc}/ihaskell-display/ihaskell-${name}" {};
+        callDisplayPackage = name:
+          hspkgs.callCabal2nix
+            "ihaskell-${name}"
+            "${ihaskellSrc}/ihaskell-display/ihaskell-${name}"
+            {};
+
+        dontCheck = pkgs.haskell.lib.dontCheck;
       in
       {
-        zeromq4-haskell = super.haskell.lib.dontCheck superHS.zeromq4-haskell;
-        ihaskell = superHS.callCabal2nix "ihaskell" ihaskellSrc {};
-        ihaskell-aeson = mkDisplay "aeson";
-        ihaskell-blaze = mkDisplay "blaze";
-        ihaskell-charts = mkDisplay "charts";
-        ihaskell-diagrams = mkDisplay "diagrams";
-        ihaskell-gnuplot = mkDisplay "gnuplot";
-        ihaskell-graphviz = mkDisplay "graphviz";
-        ihaskell-hatex = mkDisplay "hatex";
-        ihaskell-juicypixels = mkDisplay "juicypixels";
-        ihaskell-magic = mkDisplay "magic";
-        ihaskell-plot = mkDisplay "plot";
-        ihaskell-rlangqq = mkDisplay "rlangqq";
-        ihaskell-static-canvas = mkDisplay "static-canvas";
-        ihaskell-widgets = mkDisplay "widgets";
+        # the current version of hlint in nixpkgs uses a different
+        # version of haskell-src-exts, which creates incompatibilities
+        # when building ihaskell
+        hlint = hspkgs.callHackage "hlint" "2.1.11" {};
+        zeromq4-haskell = dontCheck hspkgs.zeromq4-haskell;
+        ihaskell = dontCheck (hspkgs.callCabal2nix "ihaskell" ihaskellSrc {});
+        ipython-kernel = hspkgs.callCabal2nix "ipython-kernel" "${ihaskellSrc}/ipython-kernel" {};
+        ihaskell-aeson = callDisplayPackage "aeson";
+        ihaskell-blaze = callDisplayPackage "blaze";
+        ihaskell-charts = callDisplayPackage "charts";
+        ihaskell-diagrams = callDisplayPackage "diagrams";
+        ihaskell-gnuplot = callDisplayPackage "gnuplot";
+        ihaskell-graphviz = callDisplayPackage "graphviz";
+        ihaskell-hatex = callDisplayPackage "hatex";
+        ihaskell-juicypixels = callDisplayPackage "juicypixels";
+        ihaskell-magic = callDisplayPackage "magic";
+        ihaskell-plot = callDisplayPackage "plot";
+        ihaskell-rlangqq = callDisplayPackage "rlangqq";
+        ihaskell-static-canvas = callDisplayPackage "static-canvas";
+        ihaskell-widgets = callDisplayPackage "widgets";
       };
   };
 }
