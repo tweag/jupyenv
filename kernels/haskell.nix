@@ -31,7 +31,7 @@ let
       "kernel"
       "{connection_file}"
       "--ghclib"
-      "${ghc}/lib/${ghc.name}"
+      "${ghc}/lib/ghc-${ghc.version}"
       "+RTS"
       "-M3g"
       "-N2"
@@ -49,6 +49,7 @@ let
       sha256 = "0359rn46xaspzh96sspjwklazk4qljdw2xxchlw2jmfa173miq6a";
     };
     phases = "installPhase";
+    PropagatedBuildInputs = [ ghc ];
     installPhase = ''
       mkdir -p $out/kernels/ihaskell
       cp $src/html/* $out/kernels/ihaskell
