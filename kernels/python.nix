@@ -4,17 +4,19 @@
 }:
 
 let
-  python = python36.withPackages (p:
+  kernelEnv = python36.withPackages (p:
     packages p ++ (with p; [
       ipykernel
+      numpy
+      scipy
     ])
   );
 
   kernelFile = {
-    display_name = "Python 3 - Nixpkgs";
+    display_name = "Python 3 - data";
     language = "python";
     argv = [
-      "${python.interpreter}"
+      "${kernelEnv.interpreter}"
       "-m"
       "ipykernel_launcher"
       "-f"
@@ -34,4 +36,4 @@ let
     '';
   };
 in
-  ipythonKernel
+  ipythonKernel 

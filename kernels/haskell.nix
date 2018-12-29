@@ -5,7 +5,7 @@
 }:
 
 let
-  ghc = haskellPackages.ghcWithPackages (p:
+  ihaskellEnv = haskellPackages.ghcWithPackages (p:
     packages p ++ (with p; [
       ihaskell-aeson
       ihaskell-blaze
@@ -21,7 +21,7 @@ let
       ihaskell-static-canvas
       ihaskell-widgets
     ])
-  );
+    );
 
   kernelFile = {
     display_name = "Haskell - Nixpkgs";
@@ -31,7 +31,7 @@ let
       "kernel"
       "{connection_file}"
       "--ghclib"
-      "${ghc}/lib/ghc-${ghc.version}"
+      "${ihaskellEnv}/lib/ghc-${ihaskellEnv.version}"
       "+RTS"
       "-M3g"
       "-N2"
@@ -49,7 +49,7 @@ let
       sha256 = "0359rn46xaspzh96sspjwklazk4qljdw2xxchlw2jmfa173miq6a";
     };
     phases = "installPhase";
-    PropagatedBuildInputs = [ ghc ];
+    PropagatedBuildInputs = [ ihaskellEnv ];
     installPhase = ''
       mkdir -p $out/kernels/ihaskell
       cp $src/html/* $out/kernels/ihaskell
