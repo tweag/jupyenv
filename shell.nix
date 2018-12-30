@@ -16,6 +16,6 @@ pkgs.mkShell {
     export JUPYTERLAB=${pythonEnv}
     export JUPYTER_PATH=${kernels.haskell}:${kernels.python}
     export JUPYTERLAB_DIR=${jupyterlabDir}
-    jupyter lab --app-dir=$JUPYTERLAB_DIR
+    jupyter lab --debug --app-dir=$JUPYTERLAB_DIR
     '';
 }
