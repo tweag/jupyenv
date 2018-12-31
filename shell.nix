@@ -1,12 +1,6 @@
-{ nixpkgsPath ? import ./nixpkgs-src.nix }:
+{ nixpkgsPath ? ./nix }:
 let
-  pkgs = import nixpkgsPath {
-    overlays = [ 
-                 (import ./haskell-overlay.nix)
-                 (import ./python-overlay.nix)
-               ];
-  };
-
+  pkgs = import nixpkgsPath {};
   pythonEnv = pkgs.python36.withPackages (ps: with ps; [ jupyterlab jupyter_nbextensions_configurator ]);
   kernels = pkgs.callPackage ./kernels {};
   jupyterlabDir = import ./. {};

@@ -1,12 +1,7 @@
-{ nixpkgsPath ? import ./nixpkgs-src.nix }:
+{ nixpkgsPath ? ./nix}:
 
 let
-  pkgs = import nixpkgsPath {
-    overlays = [ 
-                 (import ./haskell-overlay.nix)
-                 (import ./python-overlay.nix)
-               ];
-  };
+  pkgs = import nixpkgsPath {};
 
   yarn2nixPath = pkgs.fetchFromGitHub {
     owner = "Profpatsch";
