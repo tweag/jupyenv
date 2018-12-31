@@ -29,6 +29,7 @@ in
         hlint = hspkgs.callHackage "hlint" "2.1.11" {};
         zeromq4-haskell = dontCheck hspkgs.zeromq4-haskell;
         ihaskell = dontCheck (hspkgs.callCabal2nix "ihaskell" ihaskellSrc {});
+        ghc-parser = hspkgs.callCabal2nix "ghc-parser" "${ihaskellSrc}/ghc-parser" {};
         ipython-kernel = hspkgs.callCabal2nix "ipython-kernel" "${ihaskellSrc}/ipython-kernel" {};
         ihaskell-aeson = callDisplayPackage "aeson";
         ihaskell-blaze = callDisplayPackage "blaze";

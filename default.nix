@@ -2,7 +2,10 @@
 
 let
   pkgs = import nixpkgsPath {
-    overlays = [ (import ./overlay.nix) ];
+    overlays = [ 
+                 (import ./haskell-overlay.nix)
+                 (import ./python-overlay.nix)
+               ];
   };
 
   yarn2nixPath = pkgs.fetchFromGitHub {
