@@ -89,6 +89,7 @@
           (s."@phosphor/signaling@^1.2.2")
           (s."@phosphor/widgets@^1.6.0")
         ];
+        "@jupyterlab/application@^0.19.0" = s."@jupyterlab/application@0.19.1";
         "@jupyterlab/application@^0.19.1" = s."@jupyterlab/application@0.19.1";
         "@jupyterlab/apputils-extension@0.19.1" = f (sc "jupyterlab" "apputils-extension") "0.19.1" (ir "https://registry.yarnpkg.com/@jupyterlab/apputils-extension/-/apputils-extension-0.19.1.tgz") "dd44c4dde25b6db5e537f1d7e9b17bb5f0302932" [
           (s."@jupyterlab/application@^0.19.1")
@@ -122,6 +123,7 @@
           (s."react-dom@~16.4.2")
           (s."sanitize-html@~1.18.2")
         ];
+        "@jupyterlab/apputils@^0.19.0" = s."@jupyterlab/apputils@0.19.1";
         "@jupyterlab/apputils@^0.19.1" = s."@jupyterlab/apputils@0.19.1";
         "@jupyterlab/attachments@0.19.1" = f (sc "jupyterlab" "attachments") "0.19.1" (ir "https://registry.yarnpkg.com/@jupyterlab/attachments/-/attachments-0.19.1.tgz") "4a8dfa0e239022aaadcd03793bfe7babe7fba110" [
           (s."@jupyterlab/coreutils@^2.2.1")
@@ -332,6 +334,7 @@
           (s."@phosphor/signaling@^1.2.2")
           (s."@phosphor/widgets@^1.6.0")
         ];
+        "@jupyterlab/docregistry@^0.19.0" = s."@jupyterlab/docregistry@0.19.1";
         "@jupyterlab/docregistry@^0.19.1" = s."@jupyterlab/docregistry@0.19.1";
         "@jupyterlab/extensionmanager-extension@0.19.1" = f (sc "jupyterlab" "extensionmanager-extension") "0.19.1" (ir "https://registry.yarnpkg.com/@jupyterlab/extensionmanager-extension/-/extensionmanager-extension-0.19.1.tgz") "2484d2387fd69311e947bc28d4a956b66afb75f7" [
           (s."@jupyterlab/application@^0.19.1")
@@ -568,6 +571,7 @@
           (s."@phosphor/widgets@^1.6.0")
           (s."react@~16.4.2")
         ];
+        "@jupyterlab/notebook@^0.19.0" = s."@jupyterlab/notebook@0.19.2";
         "@jupyterlab/notebook@^0.19.1" = s."@jupyterlab/notebook@0.19.2";
         "@jupyterlab/notebook@^0.19.2" = s."@jupyterlab/notebook@0.19.2";
         "@jupyterlab/observables@2.1.1" = f (sc "jupyterlab" "observables") "2.1.1" (ir "https://registry.yarnpkg.com/@jupyterlab/observables/-/observables-2.1.1.tgz") "c5d8ad295c5b0bce914a607a342b0af4550b2187" [
@@ -650,6 +654,7 @@
           (s."@phosphor/disposable@^1.1.2")
           (s."@phosphor/signaling@^1.2.2")
         ];
+        "@jupyterlab/services@^3.0.0" = s."@jupyterlab/services@3.2.1";
         "@jupyterlab/services@^3.2.1" = s."@jupyterlab/services@3.2.1";
         "@jupyterlab/settingeditor-extension@0.14.1" = f (sc "jupyterlab" "settingeditor-extension") "0.14.1" (ir "https://registry.yarnpkg.com/@jupyterlab/settingeditor-extension/-/settingeditor-extension-0.14.1.tgz") "aa4bb4eabc1e932f1a7dbda065f1ae30e23b9fcc" [
           (s."@jupyterlab/application@^0.19.1")
@@ -817,6 +822,7 @@
         "@phosphor/disposable@1.1.2" = f (sc "phosphor" "disposable") "1.1.2" (ir "https://registry.yarnpkg.com/@phosphor/disposable/-/disposable-1.1.2.tgz") "a192dd6a2e6c69d5d09d39ecf334dab93778060e" [
           (s."@phosphor/algorithm@^1.1.2")
         ];
+        "@phosphor/disposable@^1.1.0" = s."@phosphor/disposable@1.1.2";
         "@phosphor/disposable@^1.1.2" = s."@phosphor/disposable@1.1.2";
         "@phosphor/domutils@1.1.2" = f (sc "phosphor" "domutils") "1.1.2" (ir "https://registry.yarnpkg.com/@phosphor/domutils/-/domutils-1.1.2.tgz") "e2efeb052f398c42b93b89e9bab26af15cc00514" [];
         "@phosphor/domutils@^1.1.2" = s."@phosphor/domutils@1.1.2";
@@ -1076,7 +1082,9 @@
         ];
         "base@^0.11.1" = s."base@0.11.2";
         "big.js@3.2.0" = f "big.js" "3.2.0" y "a5fc298b81b9e0dca2e458824784b65c52ba588e" [];
+        "big.js@5.2.2" = f "big.js" "5.2.2" y "65f0af382f578bcdc742bd9c281e9cb2d7768328" [];
         "big.js@^3.1.3" = s."big.js@3.2.0";
+        "big.js@^5.2.2" = s."big.js@5.2.2";
         "binary-extensions@1.12.0" = f "binary-extensions" "1.12.0" y "c2d780f53d45bba8317a8902d4ceeaf3a6385b14" [];
         "binary-extensions@^1.0.0" = s."binary-extensions@1.12.0";
         "blacklist@1.1.4" = f "blacklist" "1.1.4" y "b2dd09d6177625b2caa69835a37b28995fa9a2f2" [];
@@ -1226,10 +1234,10 @@
           (s."lodash.uniq@^4.5.0")
         ];
         "caniuse-api@^1.5.2" = s."caniuse-api@1.6.1";
-        "caniuse-db@1.0.30000921" = f "caniuse-db" "1.0.30000921" y "2aa78193e23539634abcf0248919d5901506c53b" [];
-        "caniuse-db@^1.0.30000529" = s."caniuse-db@1.0.30000921";
-        "caniuse-db@^1.0.30000634" = s."caniuse-db@1.0.30000921";
-        "caniuse-db@^1.0.30000639" = s."caniuse-db@1.0.30000921";
+        "caniuse-db@1.0.30000925" = f "caniuse-db" "1.0.30000925" y "6acaffc511dfe5e88e612409c4cae45cb5fcb394" [];
+        "caniuse-db@^1.0.30000529" = s."caniuse-db@1.0.30000925";
+        "caniuse-db@^1.0.30000634" = s."caniuse-db@1.0.30000925";
+        "caniuse-db@^1.0.30000639" = s."caniuse-db@1.0.30000925";
         "chalk@1.1.3" = f "chalk" "1.1.3" (ir "http://registry.npmjs.org/chalk/-/chalk-1.1.3.tgz") "a8115c55e4a702fe4d150abd3872822a7e09fc98" [
           (s."ansi-styles@^2.2.1")
           (s."escape-string-regexp@^1.0.2")
@@ -1371,7 +1379,7 @@
         "component-emitter@1.2.1" = f "component-emitter" "1.2.1" y "137918d6d78283f7df7a6b7c5a63e140e69425e6" [];
         "component-emitter@^1.2.1" = s."component-emitter@1.2.1";
         "concat-map@0.0.1" = f "concat-map" "0.0.1" y "d8a96bd77fd68df7793a73036a3ba0d5405d477b" [];
-        "concat-stream@1.6.2" = f "concat-stream" "1.6.2" y "904bdf194cd3122fc675c77fc4ac3d4ff0fd1a34" [
+        "concat-stream@1.6.2" = f "concat-stream" "1.6.2" (ir "http://registry.npmjs.org/concat-stream/-/concat-stream-1.6.2.tgz") "904bdf194cd3122fc675c77fc4ac3d4ff0fd1a34" [
           (s."buffer-from@^1.0.0")
           (s."inherits@^2.0.3")
           (s."readable-stream@^2.2.2")
@@ -1399,9 +1407,9 @@
         "copy-descriptor@0.1.1" = f "copy-descriptor" "0.1.1" y "676f6eb3c39997c2ee1ac3a924fd6124748f578d" [];
         "copy-descriptor@^0.1.0" = s."copy-descriptor@0.1.1";
         "core-js@1.2.7" = f "core-js" "1.2.7" (ir "http://registry.npmjs.org/core-js/-/core-js-1.2.7.tgz") "652294c14651db28fa93bd2d5ff2983a4f08c636" [];
-        "core-js@2.6.0" = f "core-js" "2.6.0" y "1e30793e9ee5782b307e37ffa22da0eacddd84d4" [];
+        "core-js@2.6.1" = f "core-js" "2.6.1" y "87416ae817de957a3f249b3b5ca475d4aaed6042" [];
         "core-js@^1.0.0" = s."core-js@1.2.7";
-        "core-js@^2.4.0" = s."core-js@2.6.0";
+        "core-js@^2.4.0" = s."core-js@2.6.1";
         "core-util-is@1.0.2" = f "core-util-is" "1.0.2" y "b5fd54220aa2bc5ab57aab7140c940754503c1a7" [];
         "core-util-is@~1.0.0" = s."core-util-is@1.0.2";
         "create-ecdh@4.0.3" = f "create-ecdh" "4.0.3" y "c9111b6f33045c4697f144787f9254cdc77c45ff" [
@@ -1539,16 +1547,16 @@
           (s."source-map@^0.5.3")
         ];
         "csso@~2.3.1" = s."csso@2.3.2";
-        "csstype@2.5.8" = f "csstype" "2.5.8" y "4ce5aa16ea0d562ef9105fa3ae2676f199586a35" [];
-        "csstype@^2.2.0" = s."csstype@2.5.8";
+        "csstype@2.6.0" = f "csstype" "2.6.0" y "6cf7b2fa7fc32aab3d746802c244d4eda71371a2" [];
+        "csstype@^2.2.0" = s."csstype@2.6.0";
         "cyclist@0.2.2" = f "cyclist" "0.2.2" y "1b33792e11e914a2fd6d6ed6447464444e5fa640" [];
         "cyclist@~0.2.2" = s."cyclist@0.2.2";
         "d3-array@1" = s."d3-array@1.2.4";
         "d3-array@1.2.4" = f "d3-array" "1.2.4" y "635ce4d5eea759f6f605863dbcfc30edc737f71f" [];
-        "d3-array@2.0.2" = f "d3-array" "2.0.2" y "c9a8a203b43403c6ced881ee66828edc6e561c61" [];
+        "d3-array@2.0.3" = f "d3-array" "2.0.3" y "9c0531eda701e416f28a030e3d4e6179ba74f19f" [];
         "d3-array@^1.1.1" = s."d3-array@1.2.4";
         "d3-array@^1.2.0" = s."d3-array@1.2.4";
-        "d3-array@^2.0.2" = s."d3-array@2.0.2";
+        "d3-array@^2.0.2" = s."d3-array@2.0.3";
         "d3-collection@1" = s."d3-collection@1.0.7";
         "d3-collection@1.0.7" = f "d3-collection" "1.0.7" y "349bd2aa9977db071091c13144d5e4f16b5b310e" [];
         "d3-collection@^1.0.7" = s."d3-collection@1.0.7";
@@ -1739,8 +1747,8 @@
           (s."semver@^5.4.1")
         ];
         "duplicate-package-checker-webpack-plugin@^3.0.0" = s."duplicate-package-checker-webpack-plugin@3.0.0";
-        "electron-to-chromium@1.3.94" = f "electron-to-chromium" "1.3.94" y "896dba14f6fefb431295b90543874925ee0cd46e" [];
-        "electron-to-chromium@^1.2.7" = s."electron-to-chromium@1.3.94";
+        "electron-to-chromium@1.3.96" = f "electron-to-chromium" "1.3.96" y "25770ec99b8b07706dedf3a5f43fa50cb54c4f9a" [];
+        "electron-to-chromium@^1.2.7" = s."electron-to-chromium@1.3.96";
         "elliptic@6.4.1" = f "elliptic" "6.4.1" y "c2d0b7776911b86722c632c3c06c60f2f819939a" [
           (s."bn.js@^4.4.0")
           (s."brorand@^1.0.1")
@@ -1828,15 +1836,6 @@
         ];
         "evp_bytestokey@^1.0.0" = s."evp_bytestokey@1.0.3";
         "evp_bytestokey@^1.0.3" = s."evp_bytestokey@1.0.3";
-        "execa@0.10.0" = f "execa" "0.10.0" y "ff456a8f53f90f8eccc71a96d11bdfc7f082cb50" [
-          (s."cross-spawn@^6.0.0")
-          (s."get-stream@^3.0.0")
-          (s."is-stream@^1.1.0")
-          (s."npm-run-path@^2.0.0")
-          (s."p-finally@^1.0.0")
-          (s."signal-exit@^3.0.0")
-          (s."strip-eof@^1.0.0")
-        ];
         "execa@0.7.0" = f "execa" "0.7.0" y "944becd34cc41ee32a63a9faf27ad5a65fc59777" [
           (s."cross-spawn@^5.0.1")
           (s."get-stream@^3.0.0")
@@ -1846,8 +1845,17 @@
           (s."signal-exit@^3.0.0")
           (s."strip-eof@^1.0.0")
         ];
-        "execa@^0.10.0" = s."execa@0.10.0";
+        "execa@1.0.0" = f "execa" "1.0.0" y "c6236a5bb4df6d6f15e88e7f017798216749ddd8" [
+          (s."cross-spawn@^6.0.0")
+          (s."get-stream@^4.0.0")
+          (s."is-stream@^1.1.0")
+          (s."npm-run-path@^2.0.0")
+          (s."p-finally@^1.0.0")
+          (s."signal-exit@^3.0.0")
+          (s."strip-eof@^1.0.0")
+        ];
         "execa@^0.7.0" = s."execa@0.7.0";
+        "execa@^1.0.0" = s."execa@1.0.0";
         "expand-brackets@2.1.4" = f "expand-brackets" "2.1.4" y "b77735e315ce30f6b6eff0f83b04151a22449622" [
           (s."debug@^2.3.3")
           (s."define-property@^0.2.5")
@@ -1995,7 +2003,11 @@
         "get-caller-file@1.0.3" = f "get-caller-file" "1.0.3" y "f978fa4c90d1dfe7ff2d6beda2a515e713bdcf4a" [];
         "get-caller-file@^1.0.1" = s."get-caller-file@1.0.3";
         "get-stream@3.0.0" = f "get-stream" "3.0.0" (ir "http://registry.npmjs.org/get-stream/-/get-stream-3.0.0.tgz") "8e943d1358dc37555054ecbe2edb05aa174ede14" [];
+        "get-stream@4.1.0" = f "get-stream" "4.1.0" y "c1b255575f3dc21d59bfc79cd3d2b46b1c3a54b5" [
+          (s."pump@^3.0.0")
+        ];
         "get-stream@^3.0.0" = s."get-stream@3.0.0";
+        "get-stream@^4.0.0" = s."get-stream@4.1.0";
         "get-value@2.0.6" = f "get-value" "2.0.6" y "dc15ca1c672387ca76bd37ac0a395ba2042a2c28" [];
         "get-value@^2.0.3" = s."get-value@2.0.6";
         "get-value@^2.0.6" = s."get-value@2.0.6";
@@ -2221,8 +2233,8 @@
           (s."through@^2.3.6")
         ];
         "inquirer@~3.3.0" = s."inquirer@3.3.0";
-        "interpret@1.1.0" = f "interpret" "1.1.0" y "7ed1b1410c6a0e0f78cf95d3b8440c63f78b8614" [];
-        "interpret@^1.1.0" = s."interpret@1.1.0";
+        "interpret@1.2.0" = f "interpret" "1.2.0" y "d5061a6224be58e8083985f5014d844359576296" [];
+        "interpret@^1.1.0" = s."interpret@1.2.0";
         "into-stream@3.1.0" = f "into-stream" "3.1.0" (ir "http://registry.npmjs.org/into-stream/-/into-stream-3.1.0.tgz") "96fb0a936c12babd6ff1752a17d05616abd094c6" [
           (s."from2@^2.1.1")
           (s."p-is-promise@^1.1.0")
@@ -2387,13 +2399,26 @@
         "json-stringify-pretty-compact@1.2.0" = f "json-stringify-pretty-compact" "1.2.0" y "0bc316b5e6831c07041fc35612487fb4e9ab98b8" [];
         "json-stringify-pretty-compact@^1.2.0" = s."json-stringify-pretty-compact@1.2.0";
         "json5@0.5.1" = f "json5" "0.5.1" (ir "http://registry.npmjs.org/json5/-/json5-0.5.1.tgz") "1eade7acc012034ad84e2396767ead9fa5495821" [];
+        "json5@1.0.1" = f "json5" "1.0.1" (ir "http://registry.npmjs.org/json5/-/json5-1.0.1.tgz") "779fb0018604fa854eacbf6252180d83543e3dbe" [
+          (s."minimist@^1.2.0")
+        ];
         "json5@^0.5.0" = s."json5@0.5.1";
+        "json5@^1.0.1" = s."json5@1.0.1";
         "jsonfile@4.0.0" = f "jsonfile" "4.0.0" y "8771aae0799b64076b76640fca058f9c10e33ecb" [
           (s."graceful-fs@^4.1.6")
         ];
         "jsonfile@^4.0.0" = s."jsonfile@4.0.0";
         "jsonify@0.0.0" = f "jsonify" "0.0.0" y "2c74b6ee41d93ca51b7b5aaee8f503631d252a73" [];
         "jsonify@~0.0.0" = s."jsonify@0.0.0";
+        "jupyterlab-ihaskell@0.0.8" = l "jupyterlab-ihaskell" "0.0.8" ../extensions/jupyterlab-ihaskell-0.0.8-5150a051e24daade309f75fe884dc293e144e1e7.tgz "52887f0013caa285791b9bc61b40ff8de9b9fc74" [
+          (s."@jupyterlab/application@^0.19.0")
+          (s."@jupyterlab/apputils@^0.19.0")
+          (s."@jupyterlab/docregistry@^0.19.0")
+          (s."@jupyterlab/notebook@^0.19.0")
+          (s."@jupyterlab/services@^3.0.0")
+          (s."@phosphor/disposable@^1.1.0")
+        ];
+        "jupyterlab-ihaskell@file:../extensions/jupyterlab-ihaskell-0.0.8-5150a051e24daade309f75fe884dc293e144e1e7.tgz" = s."jupyterlab-ihaskell@0.0.8";
         "keyv@3.0.0" = f "keyv" "3.0.0" y "44923ba39e68b12a7cec7df6c3268c031f2ef373" [
           (s."json-buffer@3.0.0")
         ];
@@ -2430,14 +2455,14 @@
           (s."json5@^0.5.0")
           (s."object-assign@^4.0.1")
         ];
-        "loader-utils@1.1.0" = f "loader-utils" "1.1.0" y "c98aef488bcceda2ffb5e2de646d6a754429f5cd" [
-          (s."big.js@^3.1.3")
+        "loader-utils@1.2.3" = f "loader-utils" "1.2.3" y "1ff5dc6911c9f0a062531a4c04b609406108c2c7" [
+          (s."big.js@^5.2.2")
           (s."emojis-list@^2.0.0")
-          (s."json5@^0.5.0")
+          (s."json5@^1.0.1")
         ];
         "loader-utils@^0.2.16" = s."loader-utils@0.2.17";
-        "loader-utils@^1.0.2" = s."loader-utils@1.1.0";
-        "loader-utils@^1.1.0" = s."loader-utils@1.1.0";
+        "loader-utils@^1.0.2" = s."loader-utils@1.2.3";
+        "loader-utils@^1.1.0" = s."loader-utils@1.2.3";
         "locate-path@2.0.0" = f "locate-path" "2.0.0" y "2b568b265eec944c6d9c0de9c3dbbbca0354cd8e" [
           (s."p-locate@^2.0.0")
           (s."path-exists@^3.0.0")
@@ -2631,9 +2656,9 @@
         "ms@2.0.0" = f "ms" "2.0.0" y "5608aeadfc00be6c2901df5f9861788de0d597c8" [];
         "ms@2.1.1" = f "ms" "2.1.1" y "30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a" [];
         "ms@^2.1.1" = s."ms@2.1.1";
-        "mute-stream@0.0.7" = f "mute-stream" "0.0.7" y "3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab" [];
-        "nan@2.12.0" = f "nan" "2.12.0" y "9d443fdb5e13a20770cc5e602eee59760a685885" [];
-        "nan@^2.9.2" = s."nan@2.12.0";
+        "mute-stream@0.0.7" = f "mute-stream" "0.0.7" (ir "http://registry.npmjs.org/mute-stream/-/mute-stream-0.0.7.tgz") "3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab" [];
+        "nan@2.12.1" = f "nan" "2.12.1" y "7b1aa193e9aa86057e3c7bbd0ac448e770925552" [];
+        "nan@^2.9.2" = s."nan@2.12.1";
         "nanomatch@1.2.13" = f "nanomatch" "1.2.13" y "b87a8aa4fc0de8fe6be88895b38983ff265bd119" [
           (s."arr-diff@^4.0.0")
           (s."array-unique@^0.3.2")
@@ -2806,13 +2831,13 @@
           (s."lcid@^1.0.0")
           (s."mem@^1.1.0")
         ];
-        "os-locale@3.0.1" = f "os-locale" "3.0.1" y "3b014fbf01d87f60a1e5348d80fe870dc82c4620" [
-          (s."execa@^0.10.0")
+        "os-locale@3.1.0" = f "os-locale" "3.1.0" y "a802a6ee17f24c10483ab9935719cef4ed16bf1a" [
+          (s."execa@^1.0.0")
           (s."lcid@^2.0.0")
           (s."mem@^4.0.0")
         ];
         "os-locale@^2.0.0" = s."os-locale@2.1.0";
-        "os-locale@^3.0.0" = s."os-locale@3.0.1";
+        "os-locale@^3.0.0" = s."os-locale@3.1.0";
         "os-tmpdir@1.0.2" = f "os-tmpdir" "1.0.2" (ir "http://registry.npmjs.org/os-tmpdir/-/os-tmpdir-1.0.2.tgz") "bbe67406c79aa85c5cfec766fe5734555dfa1274" [];
         "os-tmpdir@^1.0.0" = s."os-tmpdir@1.0.2";
         "os-tmpdir@~1.0.2" = s."os-tmpdir@1.0.2";
@@ -2832,11 +2857,11 @@
         "p-limit@1.3.0" = f "p-limit" "1.3.0" y "b86bd5f0c25690911c7590fcbfc2010d54b3ccb8" [
           (s."p-try@^1.0.0")
         ];
-        "p-limit@2.0.0" = f "p-limit" "2.0.0" y "e624ed54ee8c460a778b3c9f3670496ff8a57aec" [
+        "p-limit@2.1.0" = f "p-limit" "2.1.0" y "1d5a0d20fb12707c758a655f6bbc4386b5930d68" [
           (s."p-try@^2.0.0")
         ];
         "p-limit@^1.1.0" = s."p-limit@1.3.0";
-        "p-limit@^2.0.0" = s."p-limit@2.0.0";
+        "p-limit@^2.0.0" = s."p-limit@2.1.0";
         "p-locate@2.0.0" = f "p-locate" "2.0.0" y "20a0103b222a70c8fd39cc2e580680f3dde5ec43" [
           (s."p-limit@^1.1.0")
         ];
@@ -3160,8 +3185,13 @@
           (s."end-of-stream@^1.1.0")
           (s."once@^1.3.1")
         ];
+        "pump@3.0.0" = f "pump" "3.0.0" y "b4a2116815bde2f4e1ea602354e8c75565107a64" [
+          (s."end-of-stream@^1.1.0")
+          (s."once@^1.3.1")
+        ];
         "pump@^2.0.0" = s."pump@2.0.1";
         "pump@^2.0.1" = s."pump@2.0.1";
+        "pump@^3.0.0" = s."pump@3.0.0";
         "pumpify@1.5.1" = f "pumpify" "1.5.1" y "36513be246ab27570b1a374a5ce278bfd74370ce" [
           (s."duplexify@^3.6.0")
           (s."inherits@^2.0.3")
@@ -3236,12 +3266,12 @@
           (s."prop-types@^15.6.0")
         ];
         "react-highlighter@^0.4.0" = s."react-highlighter@0.4.3";
-        "react-json-tree@0.11.0" = f "react-json-tree" "0.11.0" y "f5b17e83329a9c76ae38be5c04fda3a7fd684a35" [
+        "react-json-tree@0.11.1" = f "react-json-tree" "0.11.1" y "81c789ce95e9982dc09e234c7c83f34f160c106c" [
           (s."babel-runtime@^6.6.1")
           (s."prop-types@^15.5.8")
           (s."react-base16-styling@^0.5.1")
         ];
-        "react-json-tree@^0.11.0" = s."react-json-tree@0.11.0";
+        "react-json-tree@^0.11.0" = s."react-json-tree@0.11.1";
         "react-paginate@5.3.1" = f "react-paginate" "5.3.1" y "bb8da341774e154c89b9e091ccb74ab1efa28ac2" [
           (s."prop-types@^15.6.1")
         ];
@@ -3270,7 +3300,7 @@
           (s."string_decoder@~1.1.1")
           (s."util-deprecate@~1.0.1")
         ];
-        "readable-stream@3.1.0" = f "readable-stream" "3.1.0" y "19c2e9c1ce43507c53f6eefbcf1ee3d4aaa786f5" [
+        "readable-stream@3.1.1" = f "readable-stream" "3.1.1" y "ed6bbc6c5ba58b090039ff18ce670515795aeb06" [
           (s."inherits@^2.0.3")
           (s."string_decoder@^1.1.1")
           (s."util-deprecate@^1.0.1")
@@ -3284,7 +3314,7 @@
         "readable-stream@^2.2.2" = s."readable-stream@2.3.6";
         "readable-stream@^2.3.3" = s."readable-stream@2.3.6";
         "readable-stream@^2.3.6" = s."readable-stream@2.3.6";
-        "readable-stream@^3.0.6" = s."readable-stream@3.1.0";
+        "readable-stream@^3.0.6" = s."readable-stream@3.1.1";
         "readable-stream@~2.3.6" = s."readable-stream@2.3.6";
         "readdirp@2.2.1" = f "readdirp" "2.2.1" y "0e87622a3325aa33e892285caf8b4e846529a525" [
           (s."graceful-fs@^4.1.11")
@@ -3451,8 +3481,8 @@
         "semver@^5.3.0" = s."semver@5.6.0";
         "semver@^5.4.1" = s."semver@5.6.0";
         "semver@^5.5.0" = s."semver@5.6.0";
-        "serialize-javascript@1.5.0" = f "serialize-javascript" "1.5.0" y "1aa336162c88a890ddad5384baebc93a655161fe" [];
-        "serialize-javascript@^1.4.0" = s."serialize-javascript@1.5.0";
+        "serialize-javascript@1.6.1" = f "serialize-javascript" "1.6.1" y "4d1f697ec49429a847ca6f442a2a755126c4d879" [];
+        "serialize-javascript@^1.4.0" = s."serialize-javascript@1.6.1";
         "set-blocking@2.0.0" = f "set-blocking" "2.0.0" y "045f9782d011ae9a6803ddd382b24392b3d890f7" [];
         "set-blocking@^2.0.0" = s."set-blocking@2.0.0";
         "set-blocking@~2.0.0" = s."set-blocking@2.0.0";
@@ -3634,7 +3664,7 @@
           (s."schema-utils@^0.4.5")
         ];
         "style-loader@~0.21.0" = s."style-loader@0.21.0";
-        "supports-color@2.0.0" = f "supports-color" "2.0.0" y "535d045ce6b6363fa40117084629995e9df324c7" [];
+        "supports-color@2.0.0" = f "supports-color" "2.0.0" (ir "http://registry.npmjs.org/supports-color/-/supports-color-2.0.0.tgz") "535d045ce6b6363fa40117084629995e9df324c7" [];
         "supports-color@3.2.3" = f "supports-color" "3.2.3" y "65ac0504b3954171d8a64946b2ae3cbb8a5f54f6" [
           (s."has-flag@^1.0.0")
         ];
@@ -4011,8 +4041,8 @@
         ];
         "vega-typings@^0.3.17" = s."vega-typings@0.3.53";
         "vega-typings@^0.3.51" = s."vega-typings@0.3.53";
-        "vega-util@1.7.0" = f "vega-util" "1.7.0" y "0ca0512bb8dcc6541165c34663d115d0712e0cf1" [];
-        "vega-util@^1.7.0" = s."vega-util@1.7.0";
+        "vega-util@1.7.1" = f "vega-util" "1.7.1" y "0b95bbe6058895c332596c215247507caa68ab61" [];
+        "vega-util@^1.7.0" = s."vega-util@1.7.1";
         "vega-view-transforms@2.0.3" = f "vega-view-transforms" "2.0.3" y "9999f83301efbe65ed1971018f538f5aeb62a16e" [
           (s."vega-dataflow@^4.0.4")
           (s."vega-scenegraph@^3.2.3")

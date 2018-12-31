@@ -14,6 +14,7 @@
         (a."@jupyterlab/apputils-extension@^0.19.1")
         (a."@jupyterlab/rendermime-extension@^0.13.1")
         (a."@jupyterlab/running@^0.19.1")
+        (a."jupyterlab-ihaskell@file:../extensions/jupyterlab-ihaskell-0.0.8-5150a051e24daade309f75fe884dc293e144e1e7.tgz")
         (a."react-dom@~16.4.2")
         (a."@phosphor/commands@^1.6.1")
         (a."@jupyterlab/shortcuts-extension@^0.19.3")

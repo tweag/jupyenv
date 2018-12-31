@@ -103,6 +103,7 @@
         "semver": "^5.5.0",
         "url-parse": "~1.4.3",
         "xterm": "~3.3.0",
+        "jupyterlab-ihaskell": "file:../extensions/jupyterlab-ihaskell-0.0.8-5150a051e24daade309f75fe884dc293e144e1e7.tgz",
         "@jupyterlab/toc": "file:../extensions/jupyterlab-toc-0.6.0.tgz"
     },
     "devDependencies": {
@@ -158,6 +159,7 @@
             "@jupyterlab/theme-dark-extension": "",
             "@jupyterlab/theme-light-extension": "",
             "@jupyterlab/tooltip-extension": "",
+            "jupyterlab-ihaskell": "",
             "@jupyterlab/toc": "lib/extension.js"
         },
         "mimeExtensions": {
@@ -222,7 +224,9 @@
             "xterm"
         ],
         "version": "0.35.4",
-        "linkedPackages": {},
+        "linkedPackages": {
+            "jupyterlab-ihaskell": "/home/matto/Programs/IHaskell/ihaskell_labextension"
+        },
         "staticDir": "../static"
     }
 }

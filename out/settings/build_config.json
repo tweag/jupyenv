@@ -1,0 +1,5 @@
+{
+    "local_extensions": {
+        "jupyterlab-ihaskell": "/home/matto/Programs/IHaskell/ihaskell_labextension"
+    }
+}
