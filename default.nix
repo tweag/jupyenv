@@ -28,6 +28,10 @@ let
     src = nixLib.removePrefixes [ "node_modules" ] ./out/staging;
     key = { name = allDeps.name; scope=""; };
     inherit (allDeps) version nodeBuildInputs;
+    propagatedBuildInputs = [ pkgs.nodejs pkgs.nodePackages.webpack pkgs.nodePackages.webpack-cli ];
+    postInstall = ''
+      npm run build
+      '';
   };
 
 in
