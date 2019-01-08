@@ -1,7 +1,8 @@
 { writeScriptBin
 , haskellPackages
 , stdenv
-, packages ? (_:[]) 
+, name ? "default"
+, packages ? (_:[])
 }:
 
 let
@@ -11,15 +12,19 @@ let
     #! ${stdenv.shell}
     export GHC_PACKAGE_PATH="$(echo ${ihaskellEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
     export PATH="${stdenv.lib.makeBinPath ([ ihaskellEnv ])}:$PATH"
-    ${ihaskellEnv}/bin/ihaskell --debug -l $(${ihaskellEnv}/bin/ghc --print-libdir) "$@"'';
+    ${ihaskellEnv}/bin/ihaskell -l $(${ihaskellEnv}/bin/ghc --print-libdir) "$@"'';
 
   kernelFile = {
-    display_name = "Haskell - Nixpkgs";
+    display_name = "Haskell - " + name;
     language = "haskell";
     argv = [
       "${ihaskellSh}/bin/ihaskell"
       "kernel"
       "{connection_file}"
+      "+RTS"
+      "-M3g"
+      "-N2"
+      "-RTS"
     ];
     logo64 = "logo-64x64.svg";
   };
@@ -29,8 +34,8 @@ let
     phases = "installPhase";
     buildInputs = [ ihaskellEnv ];
     installPhase = ''
-      mkdir -p $out/kernels/ihaskell
-      echo '${builtins.toJSON kernelFile}' > $out/kernels/ihaskell/kernel.json
+      mkdir -p $out/kernels/ihaskell_${name}
+      echo '${builtins.toJSON kernelFile}' > $out/kernels/ihaskell_${name}/kernel.json
     '';
   };
 in
