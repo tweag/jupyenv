@@ -1,12 +1,33 @@
-{ nixpkgsPath ? ./nix }:
-let
-  pkgs = import nixpkgsPath {};
-  jupyterlab-extended = import ./. {};
-in
-pkgs.mkShell {
-  name="jupyterlab-shell";
-  buildInputs=[ jupyterlab-extended ];
-  shellHook = ''
-    export JUPYTERLAB=${jupyterlab-extended}
-    '';
+with (import ./. {});
+
+jupyterWith {
+  kernels = with kernels; [
+    # Sample Haskell kernel
+    ( haskellWith {
+        name = "sample";
+        packages = p: with p; [
+          hvega
+          PyF
+          formatting
+          string-qq
+        ];
+      })
+
+    # Sample Python kernel
+    ( pythonWith {
+        name = "sample";
+        packages = p: with p; [
+          numpy
+        ];
+      })
+  ];
+
+  directory = import ./generate-directory.nix {
+    extensions = [
+      "jupyterlab-ihaskell"
+      "jupyterlab_bokeh"
+      "@jupyterlab/toc"
+      "qgrid"
+    ];
+  };
 }

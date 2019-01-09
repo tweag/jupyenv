@@ -1,7 +1,7 @@
 { writeScriptBin
 , haskellPackages
 , stdenv
-, name ? "default"
+, name ? "nixpkgs"
 , packages ? (_:[])
 }:
 

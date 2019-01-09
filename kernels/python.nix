@@ -1,5 +1,6 @@
 { python36
 , stdenv
+, name ? "nixpkgs"
 , packages ? (_:[])
 }:
 
@@ -13,7 +14,7 @@ let
   );
 
   kernelFile = {
-    display_name = "Python 3 - data";
+    display_name = "Python 3 - ${name}";
     language = "python";
     argv = [
       "${kernelEnv.interpreter}"
@@ -36,4 +37,4 @@ let
     '';
   };
 in
-  ipythonKernel 
+  ipythonKernel
