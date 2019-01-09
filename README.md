@@ -74,3 +74,13 @@ This can be done either by:
 
 - running `nix-shell --option build-use-sandbox false`; or
 - setting `build-use-sandbox = false` in `/etc/nix/nix.conf`.
+
+## Building the Docker image
+
+Just run:
+
+```
+$ nix-build docker.nix
+$ cat result | docker load
+$ docker run -v $(pwd)/example:/data -p 8888:8888 jupyterlab:latest
+```
