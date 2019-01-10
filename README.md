@@ -34,14 +34,7 @@ with (import ./. {});
       })
   ];
 
-  directory = import ./generate-directory.nix {
-    extensions = [
-      "jupyterlab-ihaskell"
-      "jupyterlab_bokeh"
-      "@jupyterlab/toc"
-      "qgrid"
-    ];
-  };
+  directory = ./jupyterlab;
 }).env
 ```
 
