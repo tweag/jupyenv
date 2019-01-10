@@ -90,3 +90,10 @@ $ nix-build docker.nix
 $ cat result | docker load
 $ docker run -v $(pwd)/example:/data -p 8888:8888 jupyterlab-ihaskell:latest
 ```
+
+## Changes and Additions to the default package sets
+
+The kernels rely on the default package sets that are provided by the imported
+nix repositories. These package sets can be modified with a nix overlay, for
+example to add a new python package from PIP. You can see examples of this
+in the `./nix/python-overlay.nix` or `./nix/haskell-overlay.nix` files.
