@@ -5,11 +5,14 @@ let
   python3 = pkgs.python3.pkgs;
   pythonPath = python3.makePythonPath [
     python3.ipykernel
+    python3.jupyter_contrib_core
+    python3.jupyter_nbextensions_configurator
+    python3.tornado
   ];
 
   # Kernel generators.
   kernels = pkgs.callPackage ./kernels {};
-  kernelsDefault = [ (kernels.pythonWith {}) ];
+  kernelsDefault = [ (kernels.iPythonWith {}) ];
   mkKernelsString = pkgs.lib.concatMapStringsSep ":" (k: "${k}");
 
   # Default JUPYTERLAB_DIR to be distributed statically.
@@ -21,33 +24,28 @@ let
   };
 
   # JupyterLab with the appropriate kernel and directory setup.
-  jupyterlabRunner = { directory ? jupyterlabDir , kernels ? kernelsDefault }:
-    python3.toPythonModule (
-      python3.jupyterlab.overridePythonAttrs (oldAttrs: {
-        makeWrapperArgs = [
-          "--set JUPYTERLAB_DIR ${directory}"
-          "--set JUPYTER_PATH ${mkKernelsString kernels}"
-          "--set PYTHONPATH ${pythonPath}"
-        ];
-      })
-    );
-
-  # Shell that launches JupyterLab with the correct directory
-  # and kernel configuration.
-  jupyterWith = { directory ? jupyterlabDir, kernels ? kernelsDefault }:
-    let
-      jupyterlab = jupyterlabRunner {
-        inherit directory kernels;
-      };
+  jupyterlabWith = { directory ? jupyterlabDir , kernels ? kernelsDefault }:
+      let
+       jupyterlab=python3.toPythonModule (
+           python3.jupyterlab.overridePythonAttrs (oldAttrs: {
+             makeWrapperArgs = [
+               "--set JUPYTERLAB_DIR ${directory}"
+               "--set JUPYTER_PATH ${mkKernelsString kernels}"
+               "--set PYTHONPATH ${pythonPath}"
+             ];
+           })
+           );
+       env=pkgs.mkShell {
+             name="jupyterlab-shell";
+             buildInputs=[ jupyterlab ];
+             shellHook = ''
+               export JUPYTERLAB=${jupyterlab}
+               jupyter lab
+             '';
+           };
     in
-      pkgs.mkShell {
-        name="jupyterlab-shell";
-        buildInputs=[ jupyterlab ];
-        shellHook = ''
-          export JUPYTERLAB=${jupyterlab}
-          jupyter lab
-        '';
-      };
+      jupyterlab.override (oldAttrs: { 
+        passthru=oldAttrs.passthru or {} // {inherit env;};
+      });
 in
-  { inherit jupyterlabRunner jupyterWith kernels;
-  }
+  { inherit jupyterlabWith kernels; }

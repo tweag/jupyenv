@@ -1,11 +1,11 @@
-{ python36
+{ python3
 , stdenv
 , name ? "nixpkgs"
 , packages ? (_:[])
 }:
 
 let
-  kernelEnv = python36.withPackages (p:
+  kernelEnv = python3.withPackages (p:
     packages p ++ (with p; [
       ipykernel
       numpy

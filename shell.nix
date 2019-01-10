@@ -1,10 +1,10 @@
 with (import ./. {});
 
-jupyterWith {
+(jupyterlabWith {
   kernels = with kernels; [
     # Sample Haskell kernel
-    ( haskellWith {
-        name = "sample";
+    ( iHaskellWith {
+        name = "hvega";
         packages = p: with p; [
           hvega
           PyF
@@ -14,8 +14,8 @@ jupyterWith {
       })
 
     # Sample Python kernel
-    ( pythonWith {
-        name = "sample";
+    ( iPythonWith {
+        name = "numpy";
         packages = p: with p; [
           numpy
         ];
@@ -30,4 +30,4 @@ jupyterWith {
       "qgrid"
     ];
   };
-}
+}).env

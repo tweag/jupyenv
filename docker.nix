@@ -5,11 +5,11 @@ with (import ./. { inherit nixpkgsPath; });
 let
   pkgs = import nixpkgsPath {};
 
-  jupyterLab = jupyterlabRunner {
+  jupyterLab = jupyterlabWith {
     kernels = with kernels; [
     # Sample Haskell kernel
-    ( haskellWith {
-        name = "sample";
+    ( iHaskellWith {
+        name = "hvega";
         packages = p: with p; [
           hvega
           PyF
@@ -19,8 +19,8 @@ let
       })
 
     # Sample Python kernel
-    ( pythonWith {
-        name = "sample";
+    ( iPythonWith {
+        name = "numpy";
         packages = p: with p; [
           numpy
         ];
@@ -39,12 +39,18 @@ let
 
 in
   pkgs.dockerTools.buildImage {
-    name = "jupyterlab";
+    name = "jupyterlab-ihaskell";
     tag = "latest";
     created = "now";
-    contents = jupyterLab;
+    contents = [ jupyterLab pkgs.glibcLocales ];
     config = {
-      Entrypoint = [ "/bin/jupyter-lab" "--ip=0.0.0.0" "--no-browser" "--allow-root" ];
+      Env = [
+           "LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive"
+           "LANG=en_US.UTF-8"
+           "LANGUAGE=en_US:en" 
+           "LC_ALL=en_US.UTF-8"
+            ];
+      CMD = [ "/bin/jupyter-lab" "--ip=0.0.0.0" "--no-browser" "--allow-root" ];
       WorkingDir = "/data";
       ExposedPorts = {
         "8888" = {};
