@@ -12,11 +12,11 @@ For example, write a `shell.nix` containing:
 ``` nix
 with (import ./. {});
 
-jupyterWith {
+(jupyterlabWith {
   kernels = with kernels; [
     # Sample Haskell kernel
-    ( haskellWith {
-        name = "sample";
+    ( iHaskellWith {
+        name = "hvega";
         packages = p: with p; [
           hvega
           PyF
@@ -26,17 +26,23 @@ jupyterWith {
       })
 
     # Sample Python kernel
-    ( pythonWith {
-        name = "sample";
+    ( iPythonWith {
+        name = "numpy";
         packages = p: with p; [
           numpy
         ];
       })
   ];
 
-  # If not declared, a default path will be used.
-  directory = ./jupyterlab-path;
-}
+  directory = import ./generate-directory.nix {
+    extensions = [
+      "jupyterlab-ihaskell"
+      "jupyterlab_bokeh"
+      "@jupyterlab/toc"
+      "qgrid"
+    ];
+  };
+}).env
 ```
 
 Kernels must be derivations containing a `kernel.json` file following the JupyterLab format.
@@ -82,5 +88,5 @@ Just run:
 ```
 $ nix-build docker.nix
 $ cat result | docker load
-$ docker run -v $(pwd)/example:/data -p 8888:8888 jupyterlab:latest
+$ docker run -v $(pwd)/example:/data -p 8888:8888 jupyterlab-ihaskell:latest
 ```
