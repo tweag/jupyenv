@@ -3,7 +3,7 @@
 The goal of this repo is to give a way to package Jupyter with arbitrary
 extensions and kernels via Nix.
 
-## Using
+## How to use 
 
 This folder has two components, `jupyterWith`, which allows to use arbitrary Nix-defined kernels and JupyterLab paths.
 
@@ -52,9 +52,9 @@ And finally, run `nix-shell`, which will generate the necessary environment and 
 
 ## Generating the directory with Nix
 
-This process can also be done declaratively using Nix.
-However, this is an impure process, due to the network access and dependency resolution performed by Jupyter.
-In the above, one can use instead:
+The `generate-directory.sh` process can also be done declaratively using Nix.
+However, this is an impure process, due to the network access and dependency
+resolution performed by Jupyter. In the above `shell.nix` file you can use:
 
 ``` nix
 directory = import ./generate-directory.nix {
@@ -67,9 +67,8 @@ directory = import ./generate-directory.nix {
 };
 ```
 
-In this case, you must be sure that sandboxing is disabled in Nix.
-It is enabled by default in newer versions of Nix.
-This can be done either by:
+In this case, you must be sure that sandboxing is disabled in Nix.  It is
+enabled by default in newer versions of Nix.  This can be done either by:
 
 - running `nix-shell --option build-use-sandbox false`; or
 - setting `build-use-sandbox = false` in `/etc/nix/nix.conf`.
