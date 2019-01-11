@@ -14,7 +14,7 @@ with (import ./. {});
 
 (jupyterlabWith {
   kernels = with kernels; [
-    # Sample Haskell kernel
+
     ( iHaskellWith {
         name = "hvega";
         packages = p: with p; [
@@ -25,13 +25,13 @@ with (import ./. {});
         ];
       })
 
-    # Sample Python kernel
     ( iPythonWith {
         name = "numpy";
         packages = p: with p; [
           numpy
         ];
       })
+
   ];
 
   directory = ./jupyterlab;
