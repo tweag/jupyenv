@@ -1,7 +1,6 @@
 # JupyterWith
 
-The goal of this repo is to give a way to package Jupyter with arbitrary
-extensions and kernels via Nix.
+Jupyterlab with arbitrary extensions and kernels packaged via Nix.
 
 ## How to use 
 
