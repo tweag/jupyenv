@@ -19,12 +19,12 @@ let
   jupyterlabDir = pkgs.stdenv.mkDerivation {
     name = "jupyterlab-directory";
     phases = "installPhase";
-    src = ./jupyter-path;
+    src = ./jupyterlab;
     installPhase = "cp -r $src $out";
   };
 
   # JupyterLab with the appropriate kernel and directory setup.
-  jupyterlabWith = { directory ? jupyterlabDir , kernels ? kernelsDefault }:
+  jupyterlabWith = { directory ? jupyterlabDir, kernels ? kernelsDefault }:
       let
        jupyterlab=python3.toPythonModule (
            python3.jupyterlab.overridePythonAttrs (oldAttrs: {

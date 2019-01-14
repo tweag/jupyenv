@@ -7,7 +7,7 @@ let
 
   jupyterLab = jupyterlabWith {
     kernels = with kernels; [
-    # Sample Haskell kernel
+
     ( iHaskellWith {
         name = "hvega";
         packages = p: with p; [
@@ -18,7 +18,6 @@ let
         ];
       })
 
-    # Sample Python kernel
     ( iPythonWith {
         name = "numpy";
         packages = p: with p; [
@@ -26,15 +25,6 @@ let
         ];
       })
     ];
-
-    directory = import ./generate-directory.nix {
-      extensions = [
-        "jupyterlab-ihaskell"
-        "jupyterlab_bokeh"
-        "@jupyterlab/toc"
-        "qgrid"
-      ];
-    };
   };
 
 in

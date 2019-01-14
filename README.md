@@ -38,17 +38,20 @@ with (import ./. {});
 }).env
 ```
 
-Kernels must be derivations containing a `kernel.json` file following the JupyterLab format.
-Examples can be found in the [kernels](kernels) folder.
+Kernels must be derivations containing a `kernel.json` file following the
+JupyterLab format.  Examples can be found in the [kernels](kernels) folder.
 
-JupyterLab directories containing desired extensions can be generated using the `generate-directory.sh` script:
+A custom JupyterLab app that contains a set of extensions can be generated
+using the `generate-directory.sh` script:
 
 ``` bash
-$ ./generate-directory.sh DIRECTORY [EXTENSIONS]
-$ ./generate-directory.sh jupyterlab-path jupyterlab-ihaskell jupyterlab_bokeh
+$ ./generate-directory.sh [EXTENSIONS]
+$ ./generate-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
 ```
 
-And finally, run `nix-shell`, which will generate the necessary environment and run JupyterLab.
+The custom Jupyterlab app will be build by default into the ./jupyterlab
+directory, that can then be passed to the jupyterWith function. Running
+`nix-shell` will generate the environment and start JupyterLab.
 
 ## Generating the directory with Nix
 
@@ -72,6 +75,34 @@ enabled by default in newer versions of Nix.  This can be done either by:
 
 - running `nix-shell --option build-use-sandbox false`; or
 - setting `build-use-sandbox = false` in `/etc/nix/nix.conf`.
+
+## Custom Kernels
+A custom kernel file can also be provided via command line argument. The cities
+wordcloud example contains the example file [`kernelWith.nix`](./example/cities-wordcloud/kernelWith.nix)
+that defines the kernel as follows:
+
+```
+{ iHaskellWith }:
+
+iHaskellWith {
+  name="cities-wordcloud";
+  packages = p: with p; [
+          hvega
+          PyF
+          formatting
+          string-qq
+        ];
+      }
+```
+
+Jupyterlab can be run with this kernel with `nix-shell --arg kernelFile ./example/cities-wordcloud/kernelWith.nix`
+from the root of this repository.
+
+The example file `kernelWith.nix` depends on the `iHaskellWith` function and is
+therefore not a fully isolated description of the compute environment in which
+the notebook should be executed. It is possible to add a longer fully
+self-contained `kernelWith.nix` file to get a truly reproducible setup for the
+notebook.
 
 ## Building the Docker image
 
