@@ -5,9 +5,12 @@ extensions and kernels via Nix.
 
 ## How to use 
 
-This folder has two components, `jupyterWith`, which allows to use arbitrary Nix-defined kernels and JupyterLab paths.
+The `default.nix` file in this folder contains two components: the
+`jupyterlabWith` takes a list of kernel derivations and a path with a prebuild
+jupyterapp as input. The prebuild jupyterlab can contain a set of extensions.
 
-For example, write a `shell.nix` containing:
+For example, a `shell.nix` that starts Jupyterlab with two kernels could look
+like:
 
 ``` nix
 with (import ./. {});
@@ -38,20 +41,18 @@ with (import ./. {});
 }).env
 ```
 
-Kernels must be derivations containing a `kernel.json` file following the
-JupyterLab format.  Examples can be found in the [kernels](kernels) folder.
+Kernels must be derivations containing a `kernel.json` file in the JupyterLab
+format. Examples can be found in the [kernels](kernels) folder.
 
-A custom JupyterLab app that contains a set of extensions can be generated
-using the `generate-directory.sh` script:
+The custom JupyterLab app that contains a set of extensions can be generated in
+`./jupyterlab` with the `generate-directory.sh` script:
 
 ``` bash
 $ ./generate-directory.sh [EXTENSIONS]
 $ ./generate-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
 ```
 
-The custom Jupyterlab app will be build by default into the ./jupyterlab
-directory, that can then be passed to the jupyterWith function. Running
-`nix-shell` will generate the environment and start JupyterLab.
+Running `nix-shell` will generate the environment and start JupyterLab.
 
 ## Generating the directory with Nix
 
