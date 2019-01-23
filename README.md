@@ -65,7 +65,7 @@ $ ./generate-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
 which will generate a `jupyterlab` directory with the right extensions on it.
 It can be input to `jupyterWith` with:
 
-```
+``` nix
 jupyterlabWith {
   directory = ./jupyterlab;
 }
