@@ -1,72 +1,92 @@
 # JupyterWith
 
-Jupyterlab with arbitrary extensions and kernels packaged via Nix.
+This repository defines Nix expressions for JupyterLab allowing the use of
+arbitrary extensions and kernels.
 
-## How to use 
+## Getting started
 
-The `default.nix` file in this folder contains two components: the
-`jupyterlabWith` takes a list of kernel derivations and a path with a prebuild
-jupyterapp as input. The prebuild jupyterlab can contain a set of extensions.
-
-For example, a `shell.nix` that starts Jupyterlab with two kernels could look
-like:
+Write a `shell.nix` such as:
 
 ``` nix
-with (import ./. {});
+let
+  jupyterWith = builtins.fetchGit {
+    url = https://github.com/tweag/jupyterWith;
+    rev = null;
+  };
+in
 
-(jupyterlabWith {
-  kernels = with kernels; [
+with (import jupyterWith {});
 
-    ( iHaskellWith {
-        name = "hvega";
-        packages = p: with p; [
-          hvega
-          PyF
-          formatting
-          string-qq
-        ];
-      })
+let
+  jupyter =
+    jupyterlabWith {
+      kernels = with kernels; [
 
-    ( iPythonWith {
-        name = "numpy";
-        packages = p: with p; [
-          numpy
-        ];
-      })
+        # IHaskell kernel
+        ( iHaskellWith {
+            name = "hvega";
+            packages = p: with p; [
+              # Desired dependencies go here
+              hvega
+              formatting
+            ];
+        })
 
-  ];
-
-  directory = ./jupyterlab;
-}).env
+        # IPython kernel
+        ( iPythonWith {
+            name = "numpy";
+            packages = p: with p; [
+              # Desired dependencies go here
+              numpy
+            ];
+        })
+      ];
+    };
+in
+  jupyter.env
 ```
 
-Kernels must be derivations containing a `kernel.json` file in the JupyterLab
-format. Examples can be found in the [kernels](kernels) folder.
+and run `nix-shell`.
 
-The custom JupyterLab app that contains a set of extensions can be generated in
-`./jupyterlab` with the `generate-directory.sh` script:
+## Adding extensions
+
+JupyterLab uses a solver for installing extensions. Since this process is
+impure, Nix integration is hard. There are two options to overcome this
+problem.
+
+The first it to generate a JupyterLab forder manually, using the
+`generate-directory.sh` script:
 
 ``` bash
 $ ./generate-directory.sh [EXTENSIONS]
 $ ./generate-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
 ```
 
-Running `nix-shell` will generate the environment and start JupyterLab.
+which will generate a `jupyterlab` directory with the right extensions on it.
+It can be input to `jupyterWith` with:
 
-## Generating the directory with Nix
+```
+jupyterlabWith {
+  ...
+  directory = ./jupyterlab;
+}
 
-The `generate-directory.sh` process can also be done declaratively using Nix.
-However, this is an impure process, due to the network access and dependency
-resolution performed by Jupyter. In the above `shell.nix` file you can use:
+```
+
+Another option is to use the `mkDirectoryWith` function that comes with this
+repo:
+
 
 ``` nix
-directory = import ./generate-directory.nix {
-  extensions = [
-    "jupyterlab-ihaskell"
-    "jupyterlab_bokeh"
-    "@jupyterlab/toc"
-    "qgrid"
-  ];
+jupyterlabWith {
+  ...
+  directory = mkDirectoryWith {
+    extensions = [
+      "jupyterlab-ihaskell"
+      "jupyterlab_bokeh"
+      "@jupyterlab/toc"
+      "qgrid"
+    ];
 };
 ```
 
@@ -76,35 +96,14 @@ enabled by default in newer versions of Nix.  This can be done either by:
 - running `nix-shell --option build-use-sandbox false`; or
 - setting `build-use-sandbox = false` in `/etc/nix/nix.conf`.
 
-## Custom Kernels
-A custom kernel file can also be provided via command line argument. The cities
-wordcloud example contains the example file [`kernelWith.nix`](./example/cities-wordcloud/kernelWith.nix)
-that defines the kernel as follows:
+The first option may need the use of `sudo`, depending on the version of Nix.
 
-```
-{ iHaskellWith }:
+## Defining other kernels
 
-iHaskellWith {
-  name="cities-wordcloud";
-  packages = p: with p; [
-          hvega
-          PyF
-          formatting
-          string-qq
-        ];
-      }
-```
+Kernels are derivations containing a `kernel.json` file in the JupyterLab
+format. Examples can be found in the [kernels](kernels) folder.
 
-Jupyterlab can be run with this kernel with `nix-shell --arg kernelFile ./example/cities-wordcloud/kernelWith.nix`
-from the root of this repository.
-
-The example file `kernelWith.nix` depends on the `iHaskellWith` function and is
-therefore not a fully isolated description of the compute environment in which
-the notebook should be executed. It is possible to add a longer fully
-self-contained `kernelWith.nix` file to get a truly reproducible setup for the
-notebook.
-
-## Building the Docker image
+## Building the Docker images
 
 Just run:
 
@@ -114,9 +113,13 @@ $ cat result | docker load
 $ docker run -v $(pwd)/example:/data -p 8888:8888 jupyterlab-ihaskell:latest
 ```
 
-## Changes and Additions to the default package sets
+The creation of these images is managed by the `mkDockerImage` function. An
+example can be seen on the [`docker.nix`](docker.nix) file.
+
+## Changes to the default package sets
 
 The kernels rely on the default package sets that are provided by the imported
-nix repositories. These package sets can be modified with a nix overlay, for
-example to add a new python package from PIP. You can see examples of this
-in the `./nix/python-overlay.nix` or `./nix/haskell-overlay.nix` files.
+Nix repositories. These package sets can be modified using overlays, for
+example to add a new Python package from PIP. You can see examples of this
+in the [`./nix/python-overlay.nix`](nix/python-overlay.nix) and
+[`./nix/haskell-overlay.nix`](nix/haskell-overlay.nix) files.
