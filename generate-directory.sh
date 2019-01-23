@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#! nix-shell -I nixpkgs=./nix -i bash --pure -p python36Packages.jupyterlab nodejs
+#! nix-shell --pure -I nixpkgs=./nix -i bash -p python36Packages.jupyterlab -p nodejs
 
 if [ $# -eq 0 ]
   then
