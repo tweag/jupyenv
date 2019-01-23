@@ -64,11 +64,11 @@ custom JupyterLab version with extensions that can then be passed to the
 `jupyterlabWith` function. Two options are available to prebuild JupyterLab
 with extensions:
 
-The first one is to use the `generate-jupyterlab-directory.sh` script:
+The first one is to use the `generate-directory.sh` script:
 
 ``` bash
-$ generate-jupyterlab-directory.sh [EXTENSIONS]
-$ generate-jupyterlab-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
+$ generate-directory.sh [EXTENSIONS]
+$ generate-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
 ```
 
 It will build JupyterLab with extensions into a `jupyterlab` directory folder
