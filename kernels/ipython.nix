@@ -8,13 +8,11 @@ let
   kernelEnv = python3.withPackages (p:
     packages p ++ (with p; [
       ipykernel
-      numpy
-      scipy
     ])
   );
 
   kernelFile = {
-    display_name = "Python 3 - ${name}";
+    display_name = "Python3 - ${name}";
     language = "python";
     argv = [
       "${kernelEnv.interpreter}"
@@ -27,13 +25,13 @@ let
   };
 
   ipythonKernel = stdenv.mkDerivation {
-    name = "ipython-kernel";
+    name = "ipython-${name}";
     src = ./python.png;
     phases = "installPhase";
     installPhase = ''
-      mkdir -p $out/kernels/ipython
-      cp $src $out/kernels/ipython/logo-64x64.png
-      echo '${builtins.toJSON kernelFile}' > $out/kernels/ipython/kernel.json
+      mkdir -p $out/kernels/ipython_${name}
+      cp $src $out/kernels/ipython_${name}/logo-64x64.png
+      echo '${builtins.toJSON kernelFile}' > $out/kernels/ipython_${name}/kernel.json
     '';
   };
 in

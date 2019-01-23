@@ -42,7 +42,7 @@ in
 
 JupyterLab can be started from the same folder with `nix-shell --command
 "jupyter lab"`. This can take a while, especially when it is run for the first
-time because all dependencies of jupyter-lab have to be installed. Subsequent
+time because all dependencies of JupyterLab have to be installed. Subsequent
 runs should be much faster, even when some packages or kernels are changed.
 
 ## Changes to the default package sets
