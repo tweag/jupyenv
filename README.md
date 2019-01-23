@@ -1,11 +1,15 @@
 # JupyterWith
 
-This repository defines Nix expressions for JupyterLab. It can be configured to
-use arbitrary extensions and kernels.
+This repository defines various Nix expressions, in particular a function
+`jupyterlabWith`, that can be used to setup JupyterLab with various extensions
+and various kernels. The kernels environments are also defined with nix
+functions such as `iPythonWith` or `iHaskellWith` and configurable with
+different libraries.
 
 ## Getting started
 
-The simplest use case is to write a `shell.nix` such as:
+The simplest use case (JupyterLab without extensions) is to write a `shell.nix`
+such as:
 
 ``` nix
 let
@@ -35,29 +39,29 @@ in
   jupyter.env
 ```
 
-and run `nix-shell --command "jupyter lab"`. This can take a while, especially
-when it is run for the first time because all dependencies of jupyter-lab have
-to be installed. Subsequent runs should be much faster, even when some packages
-or kernels are changed.
+JupyterLab can be started from the same folder with `nix-shell --command
+"jupyter lab"`. This can take a while, especially when it is run for the first
+time because all dependencies of jupyter-lab have to be installed. Subsequent
+runs should be much faster, even when some packages or kernels are changed.
 
 ## Adding extensions
 
-JupyterLab uses a solver that determines which the precise versions of the
-jupyterlab core modules and the extensions that are used. This process is
-and impure process and difficult to integrate directly in Nix. We have setup
-two methods to overcome this problem:
+When a new extension is installed by JupyterLab, it runs the yarn solver that
+determines the precise versions of the jupyterlab core modules, extensions, and
+all of their dependencies. This resolver process is difficult to do directly in
+Nix. We therefore use the JupyterLab build system to prebuild a custom
+JupyterLab version with extensions that can then be passed to the
+`jupyterlabWith` function:
 
-The first it to prebuild the JupyterLab app into a folder using the
-`generate-jupyterlab-directory.sh` script:
+The first possibility is to use the `generate-jupyterlab-directory.sh` script:
 
 ``` bash
 $ generate-jupyterlab-directory.sh [EXTENSIONS]
 $ generate-jupyterlab-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
 ```
 
-It will generate a `jupyterlab` directory that with a compiled jupyterlab app
-with the right extensions on it. This custom jupyterlab folder can then be
-passed to `jupyterWith` with:
+It will build JupyterLab with extensions into a `jupyterlab` directory folder
+that can then be passed to `jupyterWith` with:
 
 ``` nix
     jupyterlabWith {
@@ -75,19 +79,30 @@ passed to `jupyterWith` with:
     };
 ```
 
-Another option is to use the impure `mkDirectoryWith` nix function that comes
-with this repo:
+The second option is to use the impure `mkDirectoryWith` nix function that
+comes with this repo:
 
 
 ``` nix
 jupyterlabWith {
-  directory = mkDirectoryWith {
-    extensions = [
-      "jupyterlab-ihaskell"
-      "jupyterlab_bokeh"
-      "@jupyterlab/toc"
-      "qgrid"
-    ];
+      kernels = with kernels; [
+        ( iHaskellWith {
+            name = "hvega";
+            packages = p: with p; [ hvega formatting ];
+          })
+        ( iPythonWith {
+            name = "numpy";
+            packages = p: with p; [ numpy ];
+          })
+      ];
+
+      directory = mkDirectoryWith {
+        extensions = [
+          "jupyterlab-ihaskell"
+          "jupyterlab_bokeh"
+          "@jupyterlab/toc"
+          "qgrid"
+        ];
 };
 ```
 
