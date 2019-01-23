@@ -1,7 +1,6 @@
-{ nixpkgsPath ? ./nix }:
+{ pkgs ? import ./nix {} }:
 
 let
-  pkgs = import nixpkgsPath {};
   python3 = pkgs.python3.pkgs;
   pythonPath = python3.makePythonPath [
     python3.ipykernel
@@ -44,8 +43,11 @@ let
              '';
            };
     in
-      jupyterlab.override (oldAttrs: { 
+      jupyterlab.override (oldAttrs: {
         passthru=oldAttrs.passthru or {} // {inherit env;};
       });
+
+  mkDirectory = { extensions }:
+    import ./generate-directory.nix { inherit pkgs extensions; };
 in
-  { inherit jupyterlabWith kernels; }
+  { inherit jupyterlabWith kernels mkDirectory; }
