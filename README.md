@@ -71,7 +71,7 @@ $ generate-directory.sh [EXTENSIONS]
 $ generate-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
 ```
 
-It will build JupyterLab with extensions into a `jupyterlab` directory folder
+It will build JupyterLab with extensions into the `jupyterlab` folder
 that can then be passed to `jupyterWith` with:
 
 ``` nix
