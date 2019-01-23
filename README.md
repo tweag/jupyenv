@@ -1,5 +1,9 @@
 # JupyterWith
 
+**disclaimer:**
+this is an experimental setup to find a comfortable way to setup JupyterLab
+with various kernels with Nix.
+
 This repository defines various Nix expressions that can be used to setup
 JupyterLab with various extensions and kernels. The JupyterLab environment is
 setup by a nix function `jupyterlabWith` that takes kernel environments and a
