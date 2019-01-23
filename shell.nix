@@ -4,23 +4,14 @@ let
   jupyter =
     jupyterlabWith {
       kernels = with kernels; [
-        # Sample Haskell kernel
         ( iHaskellWith {
             name = "hvega";
-            packages = p: with p; [
-              hvega
-              PyF
-              formatting
-              string-qq
-            ];
+            packages = p: with p; [ hvega PyF formatting string-qq ];
         })
 
-        # Sample Python kernel
         ( iPythonWith {
             name = "numpy";
-            packages = p: with p; [
-              numpy
-            ];
+            packages = p: with p; [ numpy ];
         })
       ];
 
