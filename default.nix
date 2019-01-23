@@ -1,6 +1,7 @@
 { pkgs ? import ./nix {} }:
 
 let
+  # Python version setup.
   python3 = pkgs.python3.pkgs;
   pythonPath = python3.makePythonPath [
     python3.ipykernel
@@ -14,12 +15,17 @@ let
   kernelsDefault = [ (kernels.iPythonWith {}) ];
   mkKernelsString = pkgs.lib.concatMapStringsSep ":" (k: "${k}");
 
+  # Extension directory generation.
+  mkDirectoryWith = { extensions }:
+    import ./generate-directory.nix { inherit pkgs extensions; };
   directoryDefault = "${python3.jupyterlab}/share/jupyter/lab";
 
   # JupyterLab with the appropriate kernel and directory setup.
   jupyterlabWith = { directory ? directoryDefault, kernels ? kernelsDefault }:
       let
-       jupyterlab=python3.toPythonModule (
+       # Wrapped JupyteLab with environment variables setup to the correct
+       # folders.
+       jupyterlab = python3.toPythonModule (
            python3.jupyterlab.overridePythonAttrs (oldAttrs: {
              makeWrapperArgs = [
                "--set JUPYTERLAB_DIR ${directory}"
@@ -28,7 +34,9 @@ let
              ];
            })
            );
-       env=pkgs.mkShell {
+
+       # Shell with the appropriate JupyterLab, launching it at startup.
+       env = pkgs.mkShell {
              name="jupyterlab-shell";
              buildInputs=[ jupyterlab ];
              shellHook = ''
@@ -38,10 +46,32 @@ let
            };
     in
       jupyterlab.override (oldAttrs: {
-        passthru=oldAttrs.passthru or {} // {inherit env;};
+        passthru = oldAttrs.passthru or {} // {inherit env;};
       });
 
-  mkDirectory = { extensions }:
-    import ./generate-directory.nix { inherit pkgs extensions; };
+  mkDockerImage = jupyterLab:
+    pkgs.dockerTools.buildImage {
+      name = "jupyterlab-ihaskell";
+      tag = "latest";
+      created = "now";
+      contents = [ jupyterLab pkgs.glibcLocales ];
+      config = {
+        Env = [
+             "LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive"
+             "LANG=en_US.UTF-8"
+             "LANGUAGE=en_US:en"
+             "LC_ALL=en_US.UTF-8"
+              ];
+        CMD = [ "/bin/jupyter-lab" "--ip=0.0.0.0" "--no-browser" "--allow-root" ];
+        WorkingDir = "/data";
+        ExposedPorts = {
+          "8888" = {};
+        };
+        Volumes = {
+          "/data" = {};
+        };
+      };
+    };
+
 in
-  { inherit jupyterlabWith kernels mkDirectory; }
+  { inherit jupyterlabWith kernels mkDirectoryWith mkDockerImage; }
