@@ -1,8 +1,8 @@
 { nixpkgs ? import ./nix {}
 , kernelFile ? null }:
-let 
+let
   jupyter = import ./. {};
-  defaultKernels = 
+  defaultKernels =
       with jupyter.kernels; [
               # Sample Haskell kernel
               ( iHaskellWith {
@@ -14,7 +14,7 @@ let
                     string-qq
                   ];
                 })
-          
+
               # Sample Python kernel
               ( iPythonWith {
                   name = "numpy";
