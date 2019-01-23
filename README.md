@@ -14,18 +14,16 @@ file such as:
 
 ``` nix
 let
-  jupyterWith = builtins.fetchGit {
+  jupyterWithSrc = builtins.fetchGit {
     url = https://github.com/tweag/jupyterWith;
     rev = "";
   };
-in
 
-with (import jupyterWith {});
+  jupyter = import jupyterWithSrc {};
 
-let
-  jupyter =
-    jupyterlabWith {
-      kernels = with kernels; [
+  jupyterlabWithKernels =
+    jupyter.jupyterlabWith {
+      kernels = with jupyter.kernels; [
         ( iHaskellWith {
             name = "hvega";
             packages = p: with p; [ hvega formatting ];
@@ -37,7 +35,7 @@ let
       ];
     };
 in
-  jupyter.env
+  jupyterlabWithKernels.env
 ```
 
 JupyterLab can be started from the same folder with `nix-shell --command

@@ -1,9 +1,9 @@
-with (import ./. {});
-
 let
-  jupyter =
-    jupyterlabWith {
-      kernels = with kernels; [
+  jupyter = import ./. {};
+
+  jupyterlabWithKernels =
+    jupyter.jupyterlabWith {
+      kernels = with jupyter.kernels; [
         ( iHaskellWith {
             name = "hvega";
             packages = p: with p; [ hvega PyF formatting string-qq ];
@@ -15,7 +15,7 @@ let
         })
       ];
 
-      directory = mkDirectoryWith {
+      directory = jupyter.mkDirectoryWith {
         extensions = [
           "jupyterlab-ihaskell"
           "jupyterlab_bokeh"
@@ -25,4 +25,4 @@ let
       };
     };
 in
-  jupyter.env
+  jupyterlabWithKernels.env
