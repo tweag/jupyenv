@@ -67,7 +67,6 @@ It can be input to `jupyterWith` with:
 
 ```
 jupyterlabWith {
-  ...
   directory = ./jupyterlab;
 }
 
@@ -79,7 +78,6 @@ repo:
 
 ``` nix
 jupyterlabWith {
-  ...
   directory = mkDirectoryWith {
     extensions = [
       "jupyterlab-ihaskell"
