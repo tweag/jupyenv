@@ -1,15 +1,16 @@
 # JupyterWith
 
-This repository defines various Nix expressions, in particular a function
-`jupyterlabWith`, that can be used to setup JupyterLab with various extensions
-and various kernels. The kernels environments are also defined with nix
-functions such as `iPythonWith` or `iHaskellWith` and configurable with
-different libraries.
+This repository defines various Nix expressions that can be used to setup
+JupyterLab with various extensions and various kernels. The JupyterLab
+environment is setup by a nix function `jupyterlabWith` that takes kernel
+environments and a optionally a custom jupyterlab app with extensions as input.
+The kernel environments are also setup by nix functions such as `iPythonWith`
+or `iHaskellWith` and configurable with different libraries.
 
 ## Getting started
 
 The simplest use case (JupyterLab without extensions) is to write a `shell.nix`
-such as:
+file such as:
 
 ``` nix
 let
@@ -44,16 +45,26 @@ JupyterLab can be started from the same folder with `nix-shell --command
 time because all dependencies of jupyter-lab have to be installed. Subsequent
 runs should be much faster, even when some packages or kernels are changed.
 
+## Changes to the default package sets
+
+The kernel environments rely on the default package sets that are provided by
+the nixpkgs repository that is defined in [the nix folder](nix). These package
+sets can be modified using overlays, for example to add a new Python package
+from PIP. You can see examples of this in the
+[`./nix/python-overlay.nix`](nix/python-overlay.nix) and
+[`./nix/haskell-overlay.nix`](nix/haskell-overlay.nix) files.
+
 ## Adding extensions
 
-When a new extension is installed by JupyterLab, it runs the yarn solver that
-determines the precise versions of the jupyterlab core modules, extensions, and
-all of their dependencies. This resolver process is difficult to do directly in
-Nix. We therefore use the JupyterLab build system to prebuild a custom
-JupyterLab version with extensions that can then be passed to the
-`jupyterlabWith` function:
+When a new extension is installed, JupyterLab runs yarn to resolve the precise
+versions of the jupyterlab core modules, extensions, and all of their
+dependencies. This resolver process is difficult to replicate with Nix. We
+therefore decided to use the JupyterLab build system for now to prebuild a
+custom JupyterLab version with extensions that can then be passed to the
+`jupyterlabWith` function. Two options are available to prebuild JupyterLab
+with extensions:
 
-The first possibility is to use the `generate-jupyterlab-directory.sh` script:
+The first one is to use the `generate-jupyterlab-directory.sh` script:
 
 ``` bash
 $ generate-jupyterlab-directory.sh [EXTENSIONS]
@@ -134,10 +145,3 @@ $ docker run -v $(pwd)/example:/data -p 8888:8888 jupyterlab-ihaskell:latest
 The creation of these images is managed by the `mkDockerImage` function. An
 example can be seen on the [`docker.nix`](docker.nix) file.
 
-## Changes to the default package sets
-
-The kernels rely on the default package sets that are provided by the imported
-Nix repositories. These package sets can be modified using overlays, for
-example to add a new Python package from PIP. You can see examples of this
-in the [`./nix/python-overlay.nix`](nix/python-overlay.nix) and
-[`./nix/haskell-overlay.nix`](nix/haskell-overlay.nix) files.
