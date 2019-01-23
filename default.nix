@@ -23,7 +23,6 @@ let
   # JupyterLab with the appropriate kernel and directory setup.
   jupyterlabWith = { directory ? directoryDefault, kernels ? kernelsDefault }:
       let
-       # Wrapped JupyteLab with environment variables setup to the correct
        # folders.
        jupyterlab = python3.toPythonModule (
            python3.jupyterlab.overridePythonAttrs (oldAttrs: {
@@ -37,8 +36,8 @@ let
 
        # Shell with the appropriate JupyterLab, launching it at startup.
        env = pkgs.mkShell {
-             name="jupyterlab-shell";
-             buildInputs=[ jupyterlab ];
+             name = "jupyterlab-shell";
+             buildInputs = [ jupyterlab ];
              shellHook = ''
                export JUPYTERLAB=${jupyterlab}
                jupyter lab
@@ -46,7 +45,7 @@ let
            };
     in
       jupyterlab.override (oldAttrs: {
-        passthru = oldAttrs.passthru or {} // {inherit env;};
+        passthru = oldAttrs.passthru or {} // { inherit env; };
       });
 
   mkDockerImage = jupyterLab:
