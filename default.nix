@@ -20,6 +20,20 @@ let
     import ./generate-directory.nix { inherit pkgs extensions; };
   directoryDefault = "${python3.jupyterlab}/share/jupyter/lab";
 
+  generator = pkgs.writeScriptBin "generate-jupyterlab-directory" ''
+    if [ $# -eq 0 ]
+      then
+        echo "Usage: generate-jupyterlab-directory [EXTENSION]"
+      else
+        DIRECTORY="./jupyterlab"
+        echo "Generating directory '$DIRECTORY' with extensions:"
+        for EXT in "$@"; do echo "- $EXT"; done
+        ${python3.jupyterlab}/bin/jupyter labextension install "$@" --app-dir="$DIRECTORY"
+        chmod -R +w "$DIRECTORY"/*
+        rm -rf "$DIRECTORY"/staging
+    fi
+  '';
+
   # JupyterLab with the appropriate kernel and directory setup.
   jupyterlabWith = { directory ? directoryDefault, kernels ? kernelsDefault }:
       let
@@ -37,10 +51,9 @@ let
        # Shell with the appropriate JupyterLab, launching it at startup.
        env = pkgs.mkShell {
              name = "jupyterlab-shell";
-             buildInputs = [ jupyterlab ];
+             buildInputs = [ jupyterlab generator ];
              shellHook = ''
                export JUPYTERLAB=${jupyterlab}
-               jupyter lab
              '';
            };
     in

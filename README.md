@@ -46,7 +46,7 @@ in
   jupyter.env
 ```
 
-and run `nix-shell`.
+and run `nix-shell --command "jupyter lab"`.
 
 ## Adding extensions
 
