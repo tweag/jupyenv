@@ -55,11 +55,11 @@ impure, Nix integration is hard. There are two options to overcome this
 problem.
 
 The first it to generate a JupyterLab forder manually, using the
-`generate-directory.sh` script:
+`generate-jupyterlab-directory.sh` script:
 
 ``` bash
-$ ./generate-directory.sh [EXTENSIONS]
-$ ./generate-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
+$ generate-jupyterlab-directory.sh [EXTENSIONS]
+$ generate-jupyterlab-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
 ```
 
 which will generate a `jupyterlab` directory with the right extensions on it.
