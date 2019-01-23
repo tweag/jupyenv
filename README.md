@@ -1,11 +1,11 @@
 # JupyterWith
 
 This repository defines various Nix expressions that can be used to setup
-JupyterLab with various extensions and various kernels. The JupyterLab
-environment is setup by a nix function `jupyterlabWith` that takes kernel
-environments and a optionally a custom jupyterlab app with extensions as input.
-The kernel environments are also setup by nix functions such as `iPythonWith`
-or `iHaskellWith` and configurable with different libraries.
+JupyterLab with various extensions and kernels. The JupyterLab environment is
+setup by a nix function `jupyterlabWith` that takes kernel environments and a
+optionally a custom jupyterlab app with extensions as input. The kernel
+environments are also setup by nix functions such as `iPythonWith` or
+`iHaskellWith` and configurable with different libraries.
 
 ## Getting started
 
