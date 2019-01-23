@@ -1,8 +1,9 @@
 # JupyterWith
 
 **disclaimer:**
-the goal of this experimental repository is to find a comfortable way to setup
-JupyterLab with various kernels with Nix.
+This is an experimental repository that we want to use to find a comfortable
+way to setup JupyterLab with various kernels with Nix. It might therefore
+change significantly.
 
 This repository defines various Nix expressions that can be used to setup
 JupyterLab with various extensions and kernels. The JupyterLab environment is
