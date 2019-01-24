@@ -1,12 +1,19 @@
 _: pkgs:
 
 let
- ihaskellSrc = pkgs.fetchFromGitHub {
-      owner = "gibiansky";
-      repo = "IHaskell";
-      rev = "376d108d1f034f4e9067f8d9e9ef7ddad2cce191";
-      sha256 = "0359rn46xaspzh96sspjwklazk4qljdw2xxchlw2jmfa173miq6a";
-};
+  ihaskellSrc = pkgs.fetchFromGitHub {
+    owner = "gibiansky";
+    repo = "IHaskell";
+    rev = "376d108d1f034f4e9067f8d9e9ef7ddad2cce191";
+    sha256 = "0359rn46xaspzh96sspjwklazk4qljdw2xxchlw2jmfa173miq6a";
+  };
+
+  dataHaskellCoreSrc = pkgs.fetchFromGitHub {
+    owner = "DataHaskell";
+    repo = "dh-core";
+    rev = "3fd4d8d62e12452745dc484459d1a5874f523df9";
+    sha256 = "12z0jfhwpvk5gd1wckasy346aqm0280pv5h7jl1grpk797zjdswx";
+  };
 in
 
 {
@@ -21,6 +28,7 @@ in
         dontCheck = pkgs.haskell.lib.dontCheck;
       in
       {
+        # -- ihaskell overrides
         # the current version of hlint in nixpkgs uses a different
         # version of haskell-src-exts, which creates incompatibilities
         # when building ihaskell
@@ -54,6 +62,17 @@ in
         ihaskell-rlangqq = callDisplayPackage "rlangqq";
         ihaskell-static-canvas = callDisplayPackage "static-canvas";
         ihaskell-widgets = callDisplayPackage "widgets";
+
+        # -- dh-core integration
+        # the new datasets module from dh-core doesn't build because one of the
+        # dependencies doesn't build due to a missing dependency. We therefore
+        # use the one that comes with nixpkgs (vs 0.2.5) for now
+        # datasets = hspkgs.callCabal2nix "datasets" "${dataHaskellCoreSrc}/datasets" {};
+        dh-core = hspkgs.callCabal2nix "dh-core" "${dataHaskellCoreSrc}/dh-core" {};
+        analyze = hspkgs.callCabal2nix "analyze" "${dataHaskellCoreSrc}/analyze" {};
+
+        # -- for Frames
+        vinyl_0_10_0 = hspkgs.vinyl_0_10_0_1;
       };
   };
 }
