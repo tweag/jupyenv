@@ -42,7 +42,7 @@ let
         sha256 = "9c81c9cdc46cc8a87adf1972eeac5ec69bbe9cec440c0e4995fc68a015aafeb9";
       };
 
-      propagatedBuildInputs = with pkgs.python36Packages; [
+      propagatedBuildInputs = with pkgs.python3Packages; [
         numpy
         scipy
         numba
