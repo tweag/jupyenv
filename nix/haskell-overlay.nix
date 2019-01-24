@@ -75,8 +75,7 @@ in
         vinyl_0_10_0 = hspkgs.vinyl_0_10_0_1;
 
         # -- for funflow
-        # funflow = pkgs.haskell.lib.overrideCabal hskpgs.funflow (_drv: {
-        # })
+        funflow = pkgs.haskell.lib.dontCheck hspkgs.funflow;
       };
   };
 }
