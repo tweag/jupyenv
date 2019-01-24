@@ -5,6 +5,7 @@ let
   jupyter = import jupyterLibPath { pkgs=pkgs; };
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
+      #extraIHaskellFlags = "--debug";
       name = "Funflow";
       packages = p: with p; [
         funflow
