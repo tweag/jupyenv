@@ -12,6 +12,11 @@ let
         ( iPythonWith {
             name = "numpy";
             packages = p: with p; [ numpy ];
+          })
+
+        ( iRubyWith {
+            name = "test";
+            packages = p: with p; [ ];
         })
       ];
 
