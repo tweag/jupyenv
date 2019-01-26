@@ -3,7 +3,7 @@ let
     jupyter_contrib_core = pkgs.python3Packages.buildPythonPackage rec {
       pname = "jupyter_contrib_core";
       version = "0.3.3";
-    
+
       src = pkgs.python3.pkgs.fetchPypi {
         inherit pname version;
         sha256 = "e65bc0e932ff31801003cef160a4665f2812efe26a53801925a634735e9a5794";
@@ -19,7 +19,7 @@ let
     jupyter_nbextensions_configurator = pkgs.python3Packages.buildPythonPackage rec {
       pname = "jupyter_nbextensions_configurator";
       version = "0.4.1";
-    
+
       src = pkgs.python3.pkgs.fetchPypi {
         inherit pname version;
         sha256 = "e5e86b5d9d898e1ffb30ebb08e4ad8696999f798fef3ff3262d7b999076e4e83";
@@ -36,7 +36,7 @@ let
     umaplearn = pkgs.python3Packages.buildPythonPackage rec {
       pname = "umap-learn";
       version = "0.3.7";
-    
+
       src = pkgs.python3.pkgs.fetchPypi {
         inherit pname version;
         sha256 = "9c81c9cdc46cc8a87adf1972eeac5ec69bbe9cec440c0e4995fc68a015aafeb9";
@@ -63,6 +63,9 @@ in
        '';});
       jupyter_contrib_core=jupyter_contrib_core;
       jupyter_nbextensions_configurator=jupyter_nbextensions_configurator;
+      pathpy = pythonPackages.pathpy.overridePythonAttrs (_:{
+        doCheck = false;
+      });
     };
   };
 }
