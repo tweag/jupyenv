@@ -1,5 +1,7 @@
 # JupyterWith
 
+[![Build Status](https://travis-ci.com/tweag/jupyterWith.svg?branch=master)](https://travis-ci.com/tweag/jupyterWith)
+
 **disclaimer:**
 This is an experimental repository that we want to use to find a comfortable
 way to setup JupyterLab with various kernels with Nix. It might therefore
