@@ -1,5 +1,5 @@
 language: nix
-script: cd tests && run-tests.sh
+script: cd tests && ./run-tests.sh
 notifications:
   email:
     recipients:
