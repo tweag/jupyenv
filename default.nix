@@ -28,7 +28,7 @@ let
         DIRECTORY="./jupyterlab"
         echo "Generating directory '$DIRECTORY' with extensions:"
         for EXT in "$@"; do echo "- $EXT"; done
-        ${python3.jupyterlab}/bin/jupyter labextension install "$@" --app-dir="$DIRECTORY"
+        ${python3.jupyterlab}/bin/jupyter-labextension install "$@" --app-dir="$DIRECTORY"
         chmod -R +w "$DIRECTORY"/*
         rm -rf "$DIRECTORY"/staging
     fi
