@@ -18,7 +18,7 @@ in
 
 {
   haskellPackages = pkgs.haskell.packages.ghc844.override {
-    overrides = _: hspkgs:
+    overrides = self: hspkgs:
       let
         callDisplayPackage = name:
           hspkgs.callCabal2nix
@@ -70,6 +70,11 @@ in
         # datasets = hspkgs.callCabal2nix "datasets" "${dataHaskellCoreSrc}/datasets" {};
         dh-core = hspkgs.callCabal2nix "dh-core" "${dataHaskellCoreSrc}/dh-core" {};
         analyze = hspkgs.callCabal2nix "analyze" "${dataHaskellCoreSrc}/analyze" {};
+
+        megaparsec = hspkgs.megaparsec_6_5_0;
+
+        # -- missing dependency
+        aeson = pkgs.haskell.lib.addBuildDepends hspkgs.aeson [ self.contravariant ];
 
         # -- for Frames
         vinyl_0_10_0 = hspkgs.vinyl_0_10_0_1;
