@@ -53,6 +53,7 @@ let
              name = "jupyterlab-shell";
              buildInputs = [ jupyterlab generator ];
              shellHook = ''
+               export JUPYTER_PATH=${mkKernelsString kernels}
                export JUPYTERLAB=${jupyterlab}
              '';
            };
