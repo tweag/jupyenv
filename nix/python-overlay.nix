@@ -51,18 +51,42 @@ let
 
       doCheck = false;  # too much
     };
+
+    jupyter_c_kernel = pkgs.python3Packages.buildPythonPackage rec {
+      pname = "jupyter_c_kernel";
+      version = "1.2.2";
+      doCheck = false;
+
+      src = pkgs.python3Packages.fetchPypi {
+        inherit pname version;
+        sha256 = "e4b34235b42761cfc3ff08386675b2362e5a97fb926c135eee782661db08a140";
+      };
+
+      meta = with pkgs.stdenv.lib; {
+        description = "Minimalistic C kernel for Jupyter";
+        homepage = https://github.com/brendanrius/jupyter-c-kernel/;
+        license = licenses.mit;
+        maintainers = [];
+      };
+    };
+
 in
 {
   python3 = pkgs.python3.override {
     packageOverrides = _: pythonPackages:
     {
-      umaplearn=umaplearn;
-      rsa=pythonPackages.rsa.overridePythonAttrs (oldAttrs: {
-          preConfigure =  ''
-              substituteInPlace setup.py --replace "open('README.md')" "open('README.md',encoding='utf-8')"
-       '';});
-      jupyter_contrib_core=jupyter_contrib_core;
-      jupyter_nbextensions_configurator=jupyter_nbextensions_configurator;
+      inherit
+        umaplearn
+        jupyter_contrib_core
+        jupyter_nbextensions_configurator
+        jupyter_c_kernel;
+
+      rsa = pythonPackages.rsa.overridePythonAttrs (oldAttrs: {
+        preConfigure =  ''
+          substituteInPlace setup.py --replace "open('README.md')" "open('README.md',encoding='utf-8')"
+          '';
+       });
+
       pathpy = pythonPackages.pathpy.overridePythonAttrs (_:{
         doCheck = false;
       });
