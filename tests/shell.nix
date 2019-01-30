@@ -15,6 +15,10 @@ let
         ( cKernel {
             name = "c-sample";
         })
+        ( ansibleKernel {
+            name = "sample";
+        })
+
       ];
 
     };

@@ -2,7 +2,7 @@
 
 let
   # Python version setup.
-  python3 = pkgs.python3.pkgs;
+  python3 = pkgs.python3Packages;
   pythonPath = python3.makePythonPath [
     python3.ipykernel
     python3.jupyter_contrib_core

@@ -6,4 +6,5 @@
   iPythonWith = callPackage ./ipython.nix;
   iRubyWith = callPackage ./iruby.nix;
   cKernel = callPackage ./ckernel.nix;
+  ansibleKernel = callPackage ./ansible-kernel.nix;
 }
