@@ -12,6 +12,9 @@ let
             name = "python-sample";
             packages = p: with p; [ numpy ];
         })
+        ( cKernel {
+            name = "c-sample";
+        })
       ];
 
     };

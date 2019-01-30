@@ -3,4 +3,5 @@
 {
   iHaskellWith = callPackage ./ihaskell.nix;
   iPythonWith = callPackage ./ipython.nix;
+  cKernel = callPackage ./ckernel.nix;
 }
