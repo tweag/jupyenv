@@ -1,6 +1,7 @@
 _: pkgs:
 let
-    jupyter_contrib_core = pkgs.python3Packages.buildPythonPackage rec {
+  pythonOverrides = selfPythonPackages: pythonPackages: {
+    jupyter_contrib_core = pythonPackages.buildPythonPackage rec {
       pname = "jupyter_contrib_core";
       version = "0.3.3";
 
@@ -10,13 +11,13 @@ let
       };
       doCheck = false;  # too much
       propagatedBuildInputs = [
-        pkgs.python3Packages.traitlets
-        pkgs.python3Packages.notebook
-        pkgs.python3Packages.tornado
+        pythonPackages.traitlets
+        pythonPackages.notebook
+        pythonPackages.tornado
         ];
     };
 
-    jupyter_nbextensions_configurator = pkgs.python3Packages.buildPythonPackage rec {
+    jupyter_nbextensions_configurator = pythonPackages.buildPythonPackage rec {
       pname = "jupyter_nbextensions_configurator";
       version = "0.4.1";
 
@@ -26,14 +27,14 @@ let
       };
 
       propagatedBuildInputs = [
-        jupyter_contrib_core
-        pkgs.python3Packages.pyyaml
+        selfPythonPackages.jupyter_contrib_core
+        pythonPackages.pyyaml
         ];
 
       doCheck = false;  # too much
     };
 
-    umaplearn = pkgs.python3Packages.buildPythonPackage rec {
+    umaplearn = pythonPackages.buildPythonPackage rec {
       pname = "umap-learn";
       version = "0.3.7";
 
@@ -42,7 +43,7 @@ let
         sha256 = "9c81c9cdc46cc8a87adf1972eeac5ec69bbe9cec440c0e4995fc68a015aafeb9";
       };
 
-      propagatedBuildInputs = with pkgs.python3Packages; [
+      propagatedBuildInputs = with pythonPackages; [
         numpy
         scipy
         numba
@@ -51,21 +52,42 @@ let
 
       doCheck = false;  # too much
     };
+
+    jupyter_c_kernel = pythonPackages.buildPythonPackage rec {
+      pname = "jupyter_c_kernel";
+      version = "1.2.2";
+      doCheck = false;
+
+      src = pythonPackages.fetchPypi {
+        inherit pname version;
+        sha256 = "e4b34235b42761cfc3ff08386675b2362e5a97fb926c135eee782661db08a140";
+      };
+
+      meta = with pkgs.stdenv.lib; {
+        description = "Minimalistic C kernel for Jupyter";
+        homepage = https://github.com/brendanrius/jupyter-c-kernel/;
+        license = licenses.mit;
+        maintainers = [];
+      };
+    };
+
+    rsa = pythonPackages.rsa.overridePythonAttrs (oldAttrs: {
+      preConfigure =  ''
+        substituteInPlace setup.py --replace "open('README.md')" "open('README.md',encoding='utf-8')"
+        '';
+    });
+
+    # Performance tests failing on different computers
+    pathpy = pythonPackages.pathpy.overridePythonAttrs (_:{
+      doCheck = false;
+    });
+
+  };
+
 in
 {
   python3 = pkgs.python3.override {
-    packageOverrides = _: pythonPackages:
-    {
-      umaplearn=umaplearn;
-      rsa=pythonPackages.rsa.overridePythonAttrs (oldAttrs: {
-          preConfigure =  ''
-              substituteInPlace setup.py --replace "open('README.md')" "open('README.md',encoding='utf-8')"
-       '';});
-      jupyter_contrib_core=jupyter_contrib_core;
-      jupyter_nbextensions_configurator=jupyter_nbextensions_configurator;
-      pathpy = pythonPackages.pathpy.overridePythonAttrs (_:{
-        doCheck = false;
-      });
-    };
+    packageOverrides = selfPythonPackages: pythonPackages:
+      pythonOverrides selfPythonPackages pythonPackages;
   };
 }
