@@ -21,14 +21,16 @@ let
       "kernel"
       "{connection_file}"
     ];
-    logo64 = "logo-64x64.png";
+    logo64 = "logo-64x64.svg";
   };
 
   irubyKernel = stdenv.mkDerivation {
     name = "iruby-${name}";
     phases = "installPhase";
+    src = ./ruby.svg;
     installPhase = ''
       mkdir -p $out/kernels/iruby_${name}
+      cp $src $out/kernels/iruby_${name}/logo-64x64.svg
       echo '${builtins.toJSON kernelFile}' > $out/kernels/iruby_${name}/kernel.json
     '';
   };
