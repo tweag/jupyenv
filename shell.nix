@@ -18,6 +18,10 @@ let
             name = "test";
             packages = p: with p; [ ];
         })
+
+        ( cKernel {
+            name = "test";
+        })
       ];
 
       directory = jupyter.mkDirectoryWith {
