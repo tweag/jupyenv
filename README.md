@@ -100,7 +100,7 @@ comes with this repo:
 
 
 ``` nix
-jupyterlabWith {
+    jupyterlabWith {
       kernels = with kernels; [
         ( iHaskellWith {
             name = "hvega";
@@ -119,7 +119,8 @@ jupyterlabWith {
           "@jupyterlab/toc"
           "qgrid"
         ];
-};
+      };
+    };
 ```
 
 In this case, you must make sure that sandboxing is disabled in your Nix
