@@ -29,7 +29,7 @@ let
     buildInputs = [];
     installPhase = ''
       mkdir -p $out/kernels/juniper_${name}
-      cp $src $out/kernels/juniper_${name}/logo-64x64.png
+      cp $src $out/kernels/juniper_${name}/logo-64x64.svg
       echo '${builtins.toJSON kernelFile}' > $out/kernels/juniper_${name}/kernel.json
     '';
   };
