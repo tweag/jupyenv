@@ -25,11 +25,11 @@ let
   jKernel = stdenv.mkDerivation {
     name = "juniper";
     phases = "installPhase";
-    src = ./R.svg;
+    src = ./juniper.png;
     buildInputs = [];
     installPhase = ''
       mkdir -p $out/kernels/juniper_${name}
-      cp $src $out/kernels/juniper_${name}/logo-64x64.svg
+      cp $src $out/kernels/juniper_${name}/logo-64x64.png
       echo '${builtins.toJSON kernelFile}' > $out/kernels/juniper_${name}/kernel.json
     '';
   };
