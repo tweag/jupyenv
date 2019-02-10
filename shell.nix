@@ -19,6 +19,11 @@ let
             packages = p: with p; [ ];
         })
 
+        ( juniperWith {
+            name = "test";
+            packages = p: with p; [ ggplot2 ];
+        })
+
         ( cKernel {
             name = "test";
         })
