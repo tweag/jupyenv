@@ -50,6 +50,14 @@ JupyterLab can be started from the same folder with `nix-shell --command
 time because all dependencies of JupyterLab have to be installed. Subsequent
 runs should be much faster, even when some packages or kernels are changed.
 
+## Currently Supported Kernels
+
+* [iPython](https://github.com/ipython/ipykernel)
+* [iHaskell](https://github.com/gibiansky/IHaskell)
+* [CKernel](https://github.com/brendan-rius/jupyter-c-kernel)
+* [IRuby](https://github.com/SciRuby/iruby)
+* [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel)
+
 ## Changes to the default package sets
 
 The kernel environments rely on the default package sets that are provided by
