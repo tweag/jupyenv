@@ -20,10 +20,10 @@ let
     import ./generate-directory.nix { inherit pkgs extensions; };
   directoryDefault = "${python3.jupyterlab}/share/jupyter/lab";
 
-  generator = pkgs.writeScriptBin "generate-jupyterlab-directory" ''
+  generator = pkgs.writeScriptBin "generate-directory" ''
     if [ $# -eq 0 ]
       then
-        echo "Usage: generate-jupyterlab-directory [EXTENSION]"
+        echo "Usage: generate-directory [EXTENSION]"
       else
         DIRECTORY="./jupyterlab"
         echo "Generating directory '$DIRECTORY' with extensions:"

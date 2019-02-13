@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/tweag/jupyterWith.svg?branch=master)](https://travis-ci.com/tweag/jupyterWith)
 
-**disclaimer:**
+**Disclaimer:**
 This is an experimental repository that we want to use to find a comfortable
 way to setup JupyterLab with various kernels with Nix. It might therefore
 change significantly.
@@ -16,6 +16,7 @@ environments are also setup by nix functions such as `iPythonWith` or
 
 ## Getting started
 
+In order to use JupyterWith, [nix](https://nixos.org/nix/) must be installed.
 The simplest use case (JupyterLab without extensions) is to write a `shell.nix`
 file such as:
 
@@ -48,15 +49,17 @@ in
 JupyterLab can be started from the same folder with `nix-shell --command
 "jupyter lab"`. This can take a while, especially when it is run for the first
 time because all dependencies of JupyterLab have to be installed. Subsequent
-runs should be much faster, even when some packages or kernels are changed.
+runs should be much faster, even when some packages or kernels are changed,
+since all the common dependencies will be cached.
 
 ## Currently Supported Kernels
 
-* [iPython](https://github.com/ipython/ipykernel)
-* [iHaskell](https://github.com/gibiansky/IHaskell)
+* [IPython](https://github.com/ipython/ipykernel)
+* [IHaskell](https://github.com/gibiansky/IHaskell)
 * [CKernel](https://github.com/brendan-rius/jupyter-c-kernel)
 * [IRuby](https://github.com/SciRuby/iruby)
 * [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel)
+* [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
 
 ## Changes to the default package sets
 
@@ -84,6 +87,8 @@ $ generate-directory.sh [EXTENSIONS]
 $ generate-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
 ```
 
+This executable is also available from inside the JupyterWith Nix shell.
+
 It will build JupyterLab with extensions into the `jupyterlab` folder
 that can then be passed to `jupyterWith` with:
 
@@ -103,7 +108,7 @@ that can then be passed to `jupyterWith` with:
     };
 ```
 
-The second option is to use the impure `mkDirectoryWith` nix function that
+The second option is to use the impure `mkDirectoryWith` Nix function that
 comes with this repo:
 
 
@@ -132,7 +137,7 @@ comes with this repo:
 ```
 
 In this case, you must make sure that sandboxing is disabled in your Nix
-configuration. Newer Nix versions have it enabled by default. 
+configuration. Newer Nix versions have it enabled by default.
 Sandboxing can be disabled:
 
 - either by running `nix-shell --option build-use-sandbox false`; or
