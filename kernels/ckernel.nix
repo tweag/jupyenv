@@ -1,7 +1,8 @@
 { stdenv
 , python3
 , name ? "nixpkgs"
-, packages ? []
+, packages ? p: []
+, pkgs
 }:
 
 let
@@ -34,5 +35,5 @@ let
 in
   {
     spec = cKernel;
-    runtimePackages = packages;
+    runtimePackages = packages pkgs;
   }
