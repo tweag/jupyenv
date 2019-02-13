@@ -32,4 +32,7 @@ let
     '';
   };
 in
-  ansibleKernel
+  {
+    spec = ansibleKernel;
+    runtimePackages = [ python3.pkgs.ansible ];
+  }

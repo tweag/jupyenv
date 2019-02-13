@@ -4,7 +4,7 @@
 , name ? "nixpkgs"
 , packages ? (_:[])
 }:
-let 
+let
   iRubyEnv = bundlerApp {
       pname = "iruby";
       gemdir = ./iruby;
@@ -35,4 +35,7 @@ let
     '';
   };
 in
-  irubyKernel
+  {
+    spec = irubyKernel;
+    runtimePackages = [];
+  }

@@ -32,4 +32,7 @@ let
     '';
   };
 in
-  cKernel
+  {
+    spec = cKernel;
+    runtimePackages = packages;
+  }

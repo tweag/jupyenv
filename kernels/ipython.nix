@@ -35,4 +35,7 @@ let
     '';
   };
 in
-  ipythonKernel
+  {
+    spec = ipythonKernel;
+    runtimePackages = [];
+  }

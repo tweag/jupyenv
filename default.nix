@@ -13,7 +13,7 @@ let
   # Kernel generators.
   kernels = pkgs.callPackage ./kernels {};
   kernelsDefault = [ (kernels.iPythonWith {}) ];
-  mkKernelsString = pkgs.lib.concatMapStringsSep ":" (k: "${k}");
+  mkKernelsString = pkgs.lib.concatMapStringsSep ":" (k: "${k.spec}");
 
   # Extension directory generation.
   mkDirectoryWith = { extensions }:
@@ -51,7 +51,8 @@ let
        # Shell with the appropriate JupyterLab, launching it at startup.
        env = pkgs.mkShell {
              name = "jupyterlab-shell";
-             buildInputs = [ jupyterlab generator ];
+             buildInputs =
+               [ jupyterlab generator ] ++ (map (k: k.runtimePackages) kernels);
              shellHook = ''
                export JUPYTER_PATH=${mkKernelsString kernels}
                export JUPYTERLAB=${jupyterlab}

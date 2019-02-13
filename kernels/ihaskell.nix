@@ -42,4 +42,7 @@ let
     '';
   };
 in
-  ihaskellKernel
+  {
+    spec = ihaskellKernel;
+    runtimePackages = [];
+  }
