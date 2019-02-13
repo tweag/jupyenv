@@ -34,4 +34,7 @@ let
     '';
   };
 in
-  jKernel
+  {
+    spec = jKernel;
+    runtimePackages = [];
+  }

@@ -23,6 +23,10 @@ let
             name = "sample";
         })
 
+        ( juniperWith {
+            name = "sample";
+        })
+
       ];
 
     };
