@@ -17,6 +17,8 @@ let
         tensorflow-mnist
         tensorflow-records-conduit
         HUnit
+        datasets
+        random-shuffle
       ];
     };
 
