@@ -7,7 +7,7 @@
 let
   iRubyEnv = bundlerApp {
       pname = "iruby";
-      gemdir = ./iruby;
+      gemdir = ./gemdir;
       exes = [ "iruby" ];
     };
 

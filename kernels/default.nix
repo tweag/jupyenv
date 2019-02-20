@@ -1,10 +1,10 @@
 { callPackage }:
 
 {
-  iHaskellWith = callPackage ./ihaskell.nix;
-  juniperWith = callPackage ./juniper.nix;
-  iPythonWith = callPackage ./ipython.nix;
-  iRubyWith = callPackage ./iruby.nix;
-  cKernel = callPackage ./ckernel.nix;
-  ansibleKernel = callPackage ./ansible-kernel.nix;
+  iHaskellWith = callPackage ./ihaskell;
+  juniperWith = callPackage ./juniper;
+  iPythonWith = callPackage ./ipython;
+  iRubyWith = callPackage ./iruby;
+  cKernel = callPackage ./ckernel;
+  ansibleKernel = callPackage ./ansible-kernel;
 }
