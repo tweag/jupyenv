@@ -1,7 +1,7 @@
 with (import ./. {});
 
 let
-  jupyterLab = jupyterlabWith {
+  jupyterlab = jupyterlabWith {
     kernels = with kernels; [
 
     ( iHaskellWith {
@@ -24,4 +24,4 @@ let
   };
 
 in
-  mkDockerImage jupyterLab
+  mkDockerImage { inherit jupyterlab; }

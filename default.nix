@@ -63,12 +63,12 @@ let
         passthru = oldAttrs.passthru or {} // { inherit env; };
       });
 
-  mkDockerImage = jupyterLab:
+  mkDockerImage = { name ? "jupyterwith", jupyterlab }:
     pkgs.dockerTools.buildImage {
-      name = "jupyterlab-ihaskell";
+      name = "jupyterwith";
       tag = "latest";
       created = "now";
-      contents = [ jupyterLab pkgs.glibcLocales ];
+      contents = [ jupyterlab pkgs.glibcLocales ];
       config = {
         Env = [
              "LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive"
