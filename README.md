@@ -2,75 +2,74 @@
 
 [![Build Status](https://travis-ci.com/tweag/jupyterWith.svg?branch=master)](https://travis-ci.com/tweag/jupyterWith)
 
-**Disclaimer:**
-This is an experimental repository that we want to use to find a comfortable
-way to setup JupyterLab with various kernels with Nix. It might therefore
-change significantly.
+This repository provides a Nix-based framework for the definition of
+declarative and reproducible Jupyter environments.
+It provides:
 
-This repository defines various Nix expressions that can be used to setup
-JupyterLab with various extensions and kernels. The JupyterLab environment is
-setup by a nix function `jupyterlabWith` that takes kernel environments and a
-optionally a custom jupyterlab app with extensions as input. The kernel
-environments are also setup by nix functions such as `iPythonWith` or
-`iHaskellWith` and configurable with different libraries.
+- a declarative setup of Jupyter kernels;
+- a declarative setup of the libraries exposed to these kernels;
+- a flexible use of arbitrary extensions.
+
+All the setup needed by Jupyter notebook can be written in a single `shell.nix`
+file, which can be distributed together with the notebook, guaranteeing a
+reproducible experience.
+
+The currently supported kernels are:
+
+- [IPython](https://github.com/ipython/ipykernel)
+- [IHaskell](https://github.com/gibiansky/IHaskell)
+- [CKernel](https://github.com/brendan-rius/jupyter-c-kernel)
+- [IRuby](https://github.com/SciRuby/iruby)
+- [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel)
+- [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
 
 ## Getting started
 
 In order to use JupyterWith, [nix](https://nixos.org/nix/) must be installed.
-The simplest use case (JupyterLab without extensions) is to write a `shell.nix`
-file such as:
+A simple JupyterLab environment with kernels, but without extensions can be
+setup by writing a `shell.nix` file such as:
 
 ``` nix
 let
-  jupyterWithSrc = builtins.fetchGit {
+  # Import this repository
+  jupyter = import (builtins.fetchGit {
     url = https://github.com/tweag/jupyterWith;
     rev = "";
+  });
+
+  # Declare Python kernel setup
+  iPython = iPythonWith {
+    name = "python kernel name";
+    packages = p: with p; [ numpy ];
   };
 
-  jupyter = import jupyterWithSrc {};
+  # Declare Haskell kernel setup
+  iHaskell = iHaskellWith {
+    name = "hvega";
+    packages = p: with p; [ hvega formatting ];
+  };
 
-  jupyterlabWithKernels =
+  # Expose kernels to JupyterLab
+  jupyterEnvironment =
     jupyter.jupyterlabWith {
-      kernels = with jupyter.kernels; [
-        ( iHaskellWith {
-            name = "hvega";
-            packages = p: with p; [ hvega formatting ];
-          })
-        ( iPythonWith {
-            name = "numpy";
-            packages = p: with p; [ numpy ];
-          })
-      ];
+      kernels = [ iPython iHaskell ];
     };
 in
-  jupyterlabWithKernels.env
+  jupyterEnvironment.env
 ```
 
-JupyterLab can be started from the same folder with `nix-shell --command
-"jupyter lab"`. This can take a while, especially when it is run for the first
-time because all dependencies of JupyterLab have to be installed. Subsequent
-runs should be much faster, even when some packages or kernels are changed,
-since all the common dependencies will be cached.
+JupyterLab can then be started by running:
 
-## Currently Supported Kernels
+```
+nix-shell --command "jupyter lab"
+```
 
-* [IPython](https://github.com/ipython/ipykernel)
-* [IHaskell](https://github.com/gibiansky/IHaskell)
-* [CKernel](https://github.com/brendan-rius/jupyter-c-kernel)
-* [IRuby](https://github.com/SciRuby/iruby)
-* [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel)
-* [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
+This can take a while, especially when it is run for the first time because all
+dependencies of JupyterLab have to be installed. Subsequent runs should be much
+faster, even when some packages or kernels are changed, since all the common
+dependencies will be cached.
 
-## Changes to the default package sets
-
-The kernel environments rely on the default package sets that are provided by
-the nixpkgs repository that is defined in [the nix folder](nix). These package
-sets can be modified using overlays, for example to add a new Python package
-from PIP. You can see examples of this in the
-[`./nix/python-overlay.nix`](nix/python-overlay.nix) and
-[`./nix/haskell-overlay.nix`](nix/haskell-overlay.nix) files.
-
-## Adding extensions
+## Using extensions
 
 When a new extension is installed, JupyterLab runs yarn to resolve the precise
 versions of the jupyterlab core modules, extensions, and all of their
@@ -144,6 +143,16 @@ Sandboxing can be disabled:
 - by setting `build-use-sandbox = false` in `/etc/nix/nix.conf`.
 
 The first option may require using `sudo`, depending on the version of Nix.
+
+## Changes to the default package sets
+
+The kernel environments rely on the default package sets that are provided by
+the nixpkgs repository that is defined in [the nix folder](nix). These package
+sets can be modified using overlays, for example to add a new Python package
+from PIP. You can see examples of this in the
+[`./nix/python-overlay.nix`](nix/python-overlay.nix) and
+[`./nix/haskell-overlay.nix`](nix/haskell-overlay.nix) files.
+
 
 ## Defining other kernels
 
