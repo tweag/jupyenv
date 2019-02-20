@@ -87,6 +87,9 @@ in
 
         # For TensorFlow, tests not passing
         conduit-extra = dontCheck hspkgs.conduit-extra;
+
+        # For diagrams
+        diagrams-contrib = dontCheck hspkgs.diagrams-contrib;
       };
   };
 }
