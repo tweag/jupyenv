@@ -1,7 +1,5 @@
 # JupyterWith
 
-[![Build Status](https://travis-ci.com/tweag/jupyterWith.svg?branch=master)](https://travis-ci.com/tweag/jupyterWith)
-
 This repository provides a Nix-based framework for the definition of
 declarative and reproducible Jupyter environments.
 It provides:

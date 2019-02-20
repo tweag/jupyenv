@@ -1,9 +1,0 @@
-language: nix
-script: cd tests && ./run-tests.sh
-notifications:
-  email:
-    recipients:
-      - juan.simoes@tweag.io
-      - matthias.meschede@tweag.io
-    on_success: never
-    on_failure: always
