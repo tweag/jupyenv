@@ -43,7 +43,7 @@ let
   };
 
   iHaskell = iHaskellWith {
-    name = "hvega";
+    name = "haskell kernel name";
     packages = p: with p; [ hvega formatting ];
   };
 
