@@ -65,7 +65,7 @@ let
 
   mkDockerImage = { name ? "jupyterwith", jupyterlab }:
     pkgs.dockerTools.buildImage {
-      name = "jupyterwith";
+      inherit name;
       tag = "latest";
       created = "now";
       contents = [ jupyterlab pkgs.glibcLocales ];
