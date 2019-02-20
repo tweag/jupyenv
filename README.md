@@ -23,7 +23,7 @@ The currently supported kernels are:
 - [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel)
 - [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
 
-## Getting started
+# Getting started
 
 In order to use JupyterWith, [nix](https://nixos.org/nix/) must be installed.
 A simple JupyterLab environment with kernels, but without extensions can be
@@ -71,73 +71,70 @@ dependencies will be cached.
 
 ## Using extensions
 
-When a new extension is installed, JupyterLab runs yarn to resolve the precise
-versions of the jupyterlab core modules, extensions, and all of their
-dependencies. This resolver process is difficult to replicate with Nix. We
-therefore decided to use the JupyterLab build system for now to prebuild a
-custom JupyterLab version with extensions that can then be passed to the
-`jupyterlabWith` function. Two options are available to prebuild JupyterLab
-with extensions:
-
-The first one is to use the `generate-directory.sh` script:
+Extensions can be added by generating a JupyterLab frontend directory.
+This can be done by running `nix-shell` from the folder with the `shell.nix`
+file and then using the `generate-directory` executable that is available from
+inside the shell.
 
 ``` bash
-$ generate-directory.sh [EXTENSIONS]
-$ generate-directory.sh jupyterlab-ihaskell jupyterlab_bokeh
+$ generate-directory [EXTENSIONS]
+$ generate-directory jupyterlab-ihaskell jupyterlab_bokeh
 ```
 
-This executable is also available from inside the JupyterWith Nix shell.
-
-It will build JupyterLab with extensions into the `jupyterlab` folder
-that can then be passed to `jupyterWith` with:
+This will generate a folder called `jupyterlab` that can then be passed to
+`jupyterWith`. With extensions, the example above becomes:
 
 ``` nix
-    jupyterlabWith {
-      kernels = with kernels; [
-        ( iHaskellWith {
-            name = "hvega";
-            packages = p: with p; [ hvega formatting ];
-          })
-        ( iPythonWith {
-            name = "numpy";
-            packages = p: with p; [ numpy ];
-          })
-      ];
+let
+  # Import this repository
+  jupyter = import (builtins.fetchGit {
+    url = https://github.com/tweag/jupyterWith;
+    rev = "";
+  });
+
+  # Declare Python kernel setup
+  iPython = iPythonWith {
+    name = "python kernel name";
+    packages = p: with p; [ numpy ];
+  };
+
+  # Declare Haskell kernel setup
+  iHaskell = iHaskellWith {
+    name = "hvega";
+    packages = p: with p; [ hvega formatting ];
+  };
+
+  # Expose kernels to JupyterLab
+  jupyterEnvironment =
+    jupyter.jupyterlabWith {
+      kernels = [ iPython iHaskell ];
+      # The generated directory goes here
       directory = ./jupyterlab;
     };
+in
+  jupyterEnvironment.env
 ```
 
-The second option is to use the impure `mkDirectoryWith` Nix function that
-comes with this repo:
-
+Another option is to use the impure `mkDirectoryWith` Nix function that comes
+with this repo:
 
 ``` nix
-    jupyterlabWith {
-      kernels = with kernels; [
-        ( iHaskellWith {
-            name = "hvega";
-            packages = p: with p; [ hvega formatting ];
-          })
-        ( iPythonWith {
-            name = "numpy";
-            packages = p: with p; [ numpy ];
-          })
-      ];
-
+  jupyterEnvironment =
+    jupyter.jupyterlabWith {
+      kernels = [ iPython iHaskell ];
+      # The directory is generated here
       directory = mkDirectoryWith {
         extensions = [
           "jupyterlab-ihaskell"
           "jupyterlab_bokeh"
-          "@jupyterlab/toc"
-          "qgrid"
         ];
       };
     };
 ```
 
 In this case, you must make sure that sandboxing is disabled in your Nix
-configuration. Newer Nix versions have it enabled by default.
-Sandboxing can be disabled:
+configuration. Newer Nix versions have it enabled by default. Sandboxing can be
+disabled:
 
 - either by running `nix-shell --option build-use-sandbox false`; or
 - by setting `build-use-sandbox = false` in `/etc/nix/nix.conf`.
@@ -147,29 +144,77 @@ The first option may require using `sudo`, depending on the version of Nix.
 ## Changes to the default package sets
 
 The kernel environments rely on the default package sets that are provided by
-the nixpkgs repository that is defined in [the nix folder](nix). These package
+the Nixpkgs repository that is defined in the [nix folder](nix). These package
 sets can be modified using overlays, for example to add a new Python package
 from PIP. You can see examples of this in the
 [`./nix/python-overlay.nix`](nix/python-overlay.nix) and
 [`./nix/haskell-overlay.nix`](nix/haskell-overlay.nix) files.
 
-
-## Defining other kernels
-
-Kernels are derivations with a `kernel.json` file that has the JupyterLab
-format. Examples of kernel derivations can be found in the [kernels](kernels)
-folder.
-
 ## Building the Docker images
 
-Just run:
+One can easily Docker images from Jupyter environments defined with
+JupyterWith. All that is needed is to write a `docker.nix` file in the model
+of:
+
+``` nix
+let
+  jupyter = import (builtins.fetchGit {
+    url = https://github.com/tweag/jupyterWith;
+    rev = "";
+  });
+
+  jupyterEnvironment = jupyter.jupyterlabWith {
+  };
+in
+  # Build the Docker image.
+  jupyter.mkDockerImage {
+    name = "jupyter-image";
+    jupyterlab = jupyterEnvironment;
+  }
+```
+
+And run `nix-build docker.nix`. The resulting image can be run as follows:
 
 ```
-$ nix-build docker.nix
 $ cat result | docker load
-$ docker run -v $(pwd)/example:/data -p 8888:8888 jupyterlab-ihaskell:latest
+$ docker run -v $(pwd)/example:/data -p 8888:8888 jupyter-image:latest
 ```
 
-The creation of these images is managed by the `mkDockerImage` function. An
-example can be seen on the [`docker.nix`](docker.nix) file.
+# Example Notebooks
 
+Many example notebooks are available from the [example](example) folder.  There
+you can find Notebooks with various languages and different applications, and
+their respective setup using JupyterWith.
+
+# Contributing
+
+## Kernels
+
+JupyterWith is designed so that new kernels can be easily added, and kernel
+contributions are welcome. Kernels are derivations with a `kernel.json` file
+that has the JupyterLab format. Examples of these can be found in the
+[kernels](kernels) folder.
+
+## About extensions
+
+In order to install extensions, JupyterLab runs `yarn` to resolve the precise
+versions of the JupyterLab core modules, extensions, and all of their
+dependencies in a way that is compatible. This resolution process is difficult
+to replicate with Nix. That's why we decided to use the JupyterLab build system
+for now to prebuild a custom JupyterLab version with extensions.
+
+If you have ideas on how to make this process more declarative, feel free to
+create an issue or PR.
+
+## Nixpkgs
+
+The final goal of this project is to be completely integrated into Nixpkgs
+eventually. However, the migration path, in part due to extensions, is not
+completely clear.
+
+If you have ideas, feel free to create an issue so that we can discuss.
+
+# License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE)
+file for details.
