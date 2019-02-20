@@ -37,12 +37,12 @@ let
     rev = "";
   });
 
-  iPython = jupyter.iPythonWith {
+  iPython = jupyter.kernels.iPythonWith {
     name = "python kernel name";
     packages = p: with p; [ numpy ];
   };
 
-  iHaskell = jupyter.iHaskellWith {
+  iHaskell = jupyter.kernels.iHaskellWith {
     name = "haskell kernel name";
     packages = p: with p; [ hvega formatting ];
   };
@@ -88,13 +88,13 @@ let
     rev = "";
   });
 
-  iPython = iPythonWith {
+  iPython = jupyter.kernels.iPythonWith {
     name = "python kernel name";
     packages = p: with p; [ numpy ];
   };
 
-  iHaskell = iHaskellWith {
-    name = "hvega";
+  iHaskell = jupyter.kernels.iHaskellWith {
+    name = "haskell kernel name";
     packages = p: with p; [ hvega formatting ];
   };
 
