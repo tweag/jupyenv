@@ -11,7 +11,7 @@ let
             name = "python-sample";
         })
 
-        ( cKernel {
+        ( cKernelWith {
             name = "c-sample";
         })
 

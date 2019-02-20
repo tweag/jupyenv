@@ -5,6 +5,6 @@
   juniperWith = callPackage ./juniper;
   iPythonWith = callPackage ./ipython;
   iRubyWith = callPackage ./iruby;
-  cKernel = callPackage ./ckernel;
+  cKernelWith = callPackage ./ckernel;
   ansibleKernel = callPackage ./ansible-kernel;
 }

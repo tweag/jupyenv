@@ -23,6 +23,9 @@ The currently supported kernels are:
 - [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel)
 - [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
 
+The documentation for these kernels can be found on the [kernels](kernels)
+folder.
+
 ## Getting started
 
 In order to use JupyterWith, [nix](https://nixos.org/nix/) must be installed.
@@ -31,25 +34,21 @@ setup by writing a `shell.nix` file such as:
 
 ``` nix
 let
-  ## Import this repository
   jupyter = import (builtins.fetchGit {
     url = https://github.com/tweag/jupyterWith;
     rev = "";
   });
 
-  ## Declare Python kernel setup
   iPython = iPythonWith {
     name = "python kernel name";
     packages = p: with p; [ numpy ];
   };
 
-  ## Declare Haskell kernel setup
   iHaskell = iHaskellWith {
     name = "hvega";
     packages = p: with p; [ hvega formatting ];
   };
 
-  ## Expose kernels to JupyterLab
   jupyterEnvironment =
     jupyter.jupyterlabWith {
       kernels = [ iPython iHaskell ];
@@ -86,25 +85,21 @@ This will generate a folder called `jupyterlab` that can then be passed to
 
 ``` nix
 let
-  ## Import this repository
   jupyter = import (builtins.fetchGit {
     url = https://github.com/tweag/jupyterWith;
     rev = "";
   });
 
-  ## Declare Python kernel setup
   iPython = iPythonWith {
     name = "python kernel name";
     packages = p: with p; [ numpy ];
   };
 
-  ## Declare Haskell kernel setup
   iHaskell = iHaskellWith {
     name = "hvega";
     packages = p: with p; [ hvega formatting ];
   };
 
-  ## Expose kernels to JupyterLab
   jupyterEnvironment =
     jupyter.jupyterlabWith {
       kernels = [ iPython iHaskell ];
@@ -168,7 +163,6 @@ let
   jupyterEnvironment = jupyter.jupyterlabWith {
   };
 in
-  ## Build the Docker image.
   jupyter.mkDockerImage {
     name = "jupyter-image";
     jupyterlab = jupyterEnvironment;

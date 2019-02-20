@@ -24,7 +24,7 @@ let
             packages = p: with p; [ ggplot2 ];
         })
 
-        ( cKernel {
+        ( cKernelWith {
             name = "test";
         })
       ];
