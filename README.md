@@ -119,6 +119,7 @@ Another option is to use the impure `mkDirectoryWith` Nix function that comes
 with this repo:
 
 ``` nix
+{
   jupyterEnvironment =
     jupyter.jupyterlabWith {
       kernels = [ iPython iHaskell ];
@@ -130,6 +131,7 @@ with this repo:
         ];
       };
     };
+}
 ```
 
 In this case, you must make sure that sandboxing is disabled in your Nix
