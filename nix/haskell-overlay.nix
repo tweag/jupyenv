@@ -76,11 +76,17 @@ in
         # -- missing dependency
         aeson = pkgs.haskell.lib.addBuildDepends hspkgs.aeson [ self.contravariant ];
 
-        # -- for Frames
+        # For Frames
+        # Latest version of singletons incompatible with GHC 8.4.4
         vinyl_0_10_0 = hspkgs.vinyl_0_10_0_1;
+        singletons = dontCheck (hspkgs.callHackage "singletons" "2.4.1" {});
+        th-desugar = hspkgs.callHackage "th-desugar" "1.8" {};
 
-        # -- for funflow
+        # For funflow
         funflow = pkgs.haskell.lib.dontCheck hspkgs.funflow;
+
+        # For TensorFlow, tests not passing
+        conduit-extra = dontCheck hspkgs.conduit-extra;
       };
   };
 }

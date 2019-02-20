@@ -1,6 +1,6 @@
 with (import ../. {});
 let
-  jupyter =
+  jupyterlab =
     jupyterlabWith {
       kernels = with kernels; [
         ( iHaskellWith {
@@ -28,7 +28,11 @@ let
         })
 
       ];
-
     };
+
+  shell = jupyterlab.env;
+
+  docker = mkDockerImage { inherit jupyterlab; };
+
 in
-  jupyter.env
+  { inherit docker shell; }
