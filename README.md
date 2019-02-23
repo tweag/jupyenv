@@ -1,18 +1,16 @@
 # JupyterWith
 
 This repository provides a Nix-based framework for the definition of
-declarative and reproducible Jupyter environments.
-It provides:
+declarative and reproducible Jupyter environments including:
 
-- a declarative setup of Jupyter kernels;
-- a declarative setup of the libraries exposed to these kernels;
-- a flexible use of arbitrary extensions.
+- a declarative setup of Jupyter kernels
+- a declarative setup of the libraries exposed to these kernels
+- a flexible use of arbitrary extensions
 
-All the setup needed by Jupyter notebook can be written in a single `shell.nix`
-file, which can be distributed together with the notebook, guaranteeing a
-reproducible experience.
+A jupyter environment can be defined in a single `shell.nix` file
+which can be distributed together with a notebook to ensure reproducibility.
 
-The currently supported kernels are:
+Currently, the supported kernels are:
 
 - [IPython](https://github.com/ipython/ipykernel)
 - [IHaskell](https://github.com/gibiansky/IHaskell)
@@ -21,14 +19,10 @@ The currently supported kernels are:
 - [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel)
 - [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
 
-The documentation for these kernels can be found on the [kernels](kernels)
-folder.
-
 ## Getting started
 
-In order to use JupyterWith, [nix](https://nixos.org/nix/) must be installed.
-A simple JupyterLab environment with kernels, but without extensions can be
-setup by writing a `shell.nix` file such as:
+[nix](https://nixos.org/nix/) must be installed in order to use JupyterWith.
+A simple JupyterLab environment with kernels can be defined in a `shell.nix` file such as:
 
 ``` nix
 let
@@ -62,13 +56,15 @@ nix-shell --command "jupyter lab"
 ```
 
 This can take a while, especially when it is run for the first time because all
-dependencies of JupyterLab have to be installed. Subsequent runs should be much
-faster, even when some packages or kernels are changed, since all the common
-dependencies will be cached.
+dependencies of JupyterLab have to be downloaded, built and installed. Subsequent
+runs are instant for the same environment, or much faster even when some
+packages or kernels are changed, since a lot will be cached.
 
-### Using extensions
+Example notebooks are for various kernels available in the [example](example) folder.
 
-Extensions can be added by generating a JupyterLab frontend directory.
+### Using jupyterlab extensions
+
+Lab extensions can be added by generating a JupyterLab frontend directory.
 This can be done by running `nix-shell` from the folder with the `shell.nix`
 file and then using the `generate-directory` executable that is available from
 inside the shell.
@@ -143,13 +139,14 @@ the Nixpkgs repository that is defined in the [nix folder](nix). These package
 sets can be modified using overlays, for example to add a new Python package
 from PIP. You can see examples of this in the
 [`./nix/python-overlay.nix`](nix/python-overlay.nix) and
-[`./nix/haskell-overlay.nix`](nix/haskell-overlay.nix) files.
+[`./nix/haskell-overlay.nix`](nix/haskell-overlay.nix) files. You can also modify
+the package set directly in the `shell.nix` file, as demonstrated in [this](./example/Haskell/bayesMonad/shell.nix)
+example that adds a new Haskell package to the package set.
 
 ### Building the Docker images
 
-One can easily Docker images from Jupyter environments defined with
-JupyterWith. All that is needed is to write a `docker.nix` file in the model
-of:
+One can easily generate Docker images from Jupyter environments defined with
+JupyterWith with a `docker.nix` file:
 
 ``` nix
 let
@@ -167,34 +164,27 @@ in
   }
 ```
 
-And run `nix-build docker.nix`. The resulting image can be run as follows:
+`nix-build docker.nix` builds the image and it can be passed to Docker with:
 
 ```
 $ cat result | docker load
 $ docker run -v $(pwd)/example:/data -p 8888:8888 jupyter-image:latest
 ```
 
-## Example Notebooks
-
-Many example notebooks are available from the [example](example) folder.  There
-you can find Notebooks with various languages and different applications, and
-their respective setup using JupyterWith.
-
 ## Contributing
 
 ### Kernels
 
-JupyterWith is designed so that new kernels can be easily added, and kernel
-contributions are welcome. Kernels are derivations with a `kernel.json` file
-that has the JupyterLab format. Examples of these can be found in the
-[kernels](kernels) folder.
+New kernels are easy to add to jupyterWith. Kernels are derivations that expose
+a `kernel.json` file with all information that is required to run a kernel
+to the main Jupyter derivation. Examples can be found in the [kernels](kernels) folder.
 
 ### About extensions
 
 In order to install extensions, JupyterLab runs `yarn` to resolve the precise
-versions of the JupyterLab core modules, extensions, and all of their
-dependencies in a way that is compatible. This resolution process is difficult
-to replicate with Nix. That's why we decided to use the JupyterLab build system
+compatible versions of the JupyterLab core modules, extensions, and all of their
+dependencies. This resolution process is difficult
+to replicate with Nix. We therefore decided to use the JupyterLab build system
 for now to prebuild a custom JupyterLab version with extensions.
 
 If you have ideas on how to make this process more declarative, feel free to
