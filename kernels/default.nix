@@ -7,4 +7,5 @@
   iRubyWith = callPackage ./iruby;
   cKernelWith = callPackage ./ckernel;
   ansibleKernel = callPackage ./ansible-kernel;
+  xeusCling = callPackage ./xeus-cling;
 }
