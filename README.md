@@ -18,6 +18,7 @@ These kernels are currently included by default:
 - [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel) (limited jupyterlab support)
 - [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
 - [Xeus-Cling CPP](https://github.com/QuantStack/xeus-cling) (not yet configurable with packages, takes long to build)
+- [IJavascript](https://github.com/n-riesco/ijavascript) (not yet configurable with packages)
 
 Example notebooks are [here](example).
 
