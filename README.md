@@ -5,7 +5,7 @@ declarative and reproducible Jupyter environments. The environments
 include jupyterlab - configurable with extension - the classic notebook,
 and configurable Jupyter kernels with their libraries.
 
-In pratice, a jupyter environment is defined in a single `shell.nix` file
+In practice, a jupyter environment is defined in a single `shell.nix` file
 which can be distributed together with a notebook as a self-contained
 reproducible package.
 
