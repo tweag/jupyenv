@@ -15,8 +15,9 @@ These kernels are currently included by default:
 - [IHaskell](https://github.com/gibiansky/IHaskell)
 - [CKernel](https://github.com/brendan-rius/jupyter-c-kernel)
 - [IRuby](https://github.com/SciRuby/iruby)
-- [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel)
+- [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel) (limited jupyterlab support)
 - [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
+- [Xeus-Cling CPP](https://github.com/QuantStack/xeus-cling) (not yet configurable with packages, takes long to build)
 
 Example notebooks are [here](example).
 
