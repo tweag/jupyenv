@@ -8,4 +8,5 @@
   cKernelWith = callPackage ./ckernel;
   ansibleKernel = callPackage ./ansible-kernel;
   xeusCling = callPackage ./xeus-cling;
+  iJavascript = callPackage ./ijavascript;
 }
