@@ -18,6 +18,8 @@ Currently, the supported kernels are:
 - [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel)
 - [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
 
+Example notebooks are for various kernels available in the [example](example) folder.
+
 ## Getting started
 
 [nix](https://nixos.org/nix/) must be installed in order to use JupyterWith.
@@ -58,8 +60,6 @@ This can take a while, especially when it is run for the first time because all
 dependencies of JupyterLab have to be downloaded, built and installed. Subsequent
 runs are instant for the same environment, or much faster even when some
 packages or kernels are changed, since a lot will be cached.
-
-Example notebooks are for various kernels available in the [example](example) folder.
 
 ### Using jupyterlab extensions
 
