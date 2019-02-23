@@ -9,7 +9,7 @@ In pratice, a jupyter environment is defined in a single `shell.nix` file
 which can be distributed together with a notebook as a self-contained
 reproducible package.
 
-Currently, the supported kernels are:
+These kernels are currently included by default:
 
 - [IPython](https://github.com/ipython/ipykernel)
 - [IHaskell](https://github.com/gibiansky/IHaskell)
@@ -18,7 +18,7 @@ Currently, the supported kernels are:
 - [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel)
 - [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
 
-Example notebooks are for various kernels available in the [example](example) folder.
+Example notebooks are [here](example).
 
 ## Getting started
 
