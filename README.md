@@ -1,14 +1,13 @@
 # JupyterWith
 
 This repository provides a Nix-based framework for the definition of
-declarative and reproducible Jupyter environments including:
+declarative and reproducible Jupyter environments. The environments
+include jupyterlab - configurable with extension - the classic notebook,
+and configurable Jupyter kernels with their libraries.
 
-- a declarative setup of Jupyter kernels
-- a declarative setup of the libraries exposed to these kernels
-- a flexible use of arbitrary extensions
-
-A jupyter environment can be defined in a single `shell.nix` file
-which can be distributed together with a notebook to ensure reproducibility.
+In pratice, a jupyter environment is defined in a single `shell.nix` file
+which can be distributed together with a notebook as a self-contained
+reproducible package.
 
 Currently, the supported kernels are:
 
