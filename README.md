@@ -14,12 +14,12 @@ reproducible package.
 These kernels are currently included by default:
 
 - [IPython](https://github.com/ipython/ipykernel)
-- [IHaskell](https://github.com/gibiansky/IHaskell)
+- [IHaskell](https://github.com/gibiansky/IHaskell) (long build time)
 - [CKernel](https://github.com/brendan-rius/jupyter-c-kernel)
 - [IRuby](https://github.com/SciRuby/iruby)
 - [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel) (limited jupyterlab support)
 - [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
-- [Xeus-Cling CPP](https://github.com/QuantStack/xeus-cling) (not yet configurable with packages, takes long to build)
+- [Xeus-Cling CPP](https://github.com/QuantStack/xeus-cling) (not yet configurable with packages, long build time)
 - [IJavascript](https://github.com/n-riesco/ijavascript) (not yet configurable with packages)
 - [gophernotes](https://github.com/gopherdata/gophernotes) (not yet configurable with packages)
 
