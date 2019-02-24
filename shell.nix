@@ -27,6 +27,18 @@ let
         ( cKernelWith {
             name = "test";
         })
+
+        ( ansibleKernel {
+            name = "test";
+        })
+
+        ( xeusCling {
+            name = "test";
+        })
+
+        ( iJavascript {
+            name = "test";
+        })
       ];
 
       directory = jupyter.mkDirectoryWith {

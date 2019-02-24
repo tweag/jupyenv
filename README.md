@@ -1,5 +1,7 @@
 # JupyterWith
 
+![jupyterWith kernels](kernels.png)
+
 This repository provides a Nix-based framework for the definition of
 declarative and reproducible Jupyter environments. The environments
 include jupyterlab - configurable with extension - the classic notebook,
