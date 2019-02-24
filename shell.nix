@@ -39,6 +39,10 @@ let
         ( iJavascript {
             name = "test";
         })
+
+        ( gophernotes {
+            name = "test";
+        })
       ];
 
       directory = jupyter.mkDirectoryWith {
