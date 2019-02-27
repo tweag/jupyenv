@@ -3,28 +3,41 @@ let
   jupyterlab =
     jupyterlabWith {
       kernels = with kernels; [
-        ( iHaskellWith {
-            name = "haskell-sample";
-        })
 
-        ( iPythonWith {
-            name = "python-sample";
+        ( ansibleKernel {
+            name = "test";
         })
 
         ( cKernelWith {
-            name = "c-sample";
+            name = "test";
+        })
+
+        ( gophernotes {
+            name = "test";
+        })
+
+        ( iHaskellWith {
+            name = "test";
+        })
+
+        ( iJavascript {
+            name = "test";
+        })
+
+        ( iPythonWith {
+            name = "test";
         })
 
         ( iRubyWith {
-            name = "sample";
-        })
-
-        ( ansibleKernel {
-            name = "sample";
+            name = "test";
         })
 
         ( juniperWith {
-            name = "sample";
+            name = "test";
+        })
+
+        ( xeusCling {
+            name = "test";
         })
 
       ];
