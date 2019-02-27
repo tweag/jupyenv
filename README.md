@@ -3,11 +3,11 @@
 ![jupyterWith kernels](kernels.png)
 
 This repository provides a Nix-based framework for the definition of
-declarative and reproducible Jupyter environments. The environments
-include jupyterlab - configurable with extension - the classic notebook,
-and configurable Jupyter kernels with their libraries.
+declarative and reproducible Jupyter environments. These environments
+include JupyterLab - configurable with extensions - the classic notebook,
+and configurable Jupyter kernels.
 
-In practice, a jupyter environment is defined in a single `shell.nix` file
+In practice, a Jupyter environment is defined in a single `shell.nix` file
 which can be distributed together with a notebook as a self-contained
 reproducible package.
 
@@ -27,7 +27,7 @@ Example notebooks are [here](example).
 
 ## Getting started
 
-[nix](https://nixos.org/nix/) must be installed in order to use JupyterWith.
+[Nix](https://nixos.org/nix/) must be installed in order to use JupyterWith.
 A simple JupyterLab environment with kernels can be defined in a `shell.nix` file such as:
 
 ``` nix
@@ -63,10 +63,10 @@ nix-shell --command "jupyter lab"
 
 This can take a while, especially when it is run for the first time because all
 dependencies of JupyterLab have to be downloaded, built and installed. Subsequent
-runs are instant for the same environment, or much faster even when some
-packages or kernels are changed, since a lot will be cached.
+runs are instantaneous for the same environment, or much faster even when some
+packages or kernels are changed, since a lot will already be cached.
 
-### Using jupyterlab extensions
+### Using JupyterLab extensions
 
 Lab extensions can be added by generating a JupyterLab frontend directory.
 This can be done by running `nix-shell` from the folder with the `shell.nix`
@@ -179,7 +179,7 @@ $ docker run -v $(pwd)/example:/data -p 8888:8888 jupyter-image:latest
 
 ### Kernels
 
-New kernels are easy to add to jupyterWith. Kernels are derivations that expose
+New kernels are easy to add to `jupyterWith`. Kernels are derivations that expose
 a `kernel.json` file with all information that is required to run a kernel
 to the main Jupyter derivation. Examples can be found in the [kernels](kernels) folder.
 
