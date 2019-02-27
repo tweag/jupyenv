@@ -1,11 +1,10 @@
 { writeScriptBin
 , stdenv
-, buildGoPackage 
+, buildGoPackage
 , fetchFromGitHub
 , zeromq
 , pkgconfig
 , name ? "nixpkgs"
-, packages ? (_:[])
 }:
 
 let
