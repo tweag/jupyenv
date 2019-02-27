@@ -11,9 +11,9 @@ let
     gophernotes = buildGoPackage rec {
         name = "gophernotes-${version}";
         version = "1.0.0";
-      
+
         goPackagePath = "github.com/gopherdata/gophernotes";
-      
+
         src = fetchFromGitHub {
           owner = "gopherdata";
           repo = "gophernotes";
@@ -22,9 +22,9 @@ let
         };
 
         buildInputs = [ zeromq pkgconfig ];
-      
+
         goDeps = ./deps.nix;
-      
+
         buildFlags = "--tags release";
       };
 
