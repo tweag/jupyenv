@@ -38,12 +38,12 @@ let
   }) {};
 
   iPython = jupyter.kernels.iPythonWith {
-    name = "python kernel name";
+    name = "python";
     packages = p: with p; [ numpy ];
   };
 
   iHaskell = jupyter.kernels.iHaskellWith {
-    name = "haskell kernel name";
+    name = "haskell";
     packages = p: with p; [ hvega formatting ];
   };
 
