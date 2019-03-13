@@ -66,6 +66,12 @@ dependencies of JupyterLab have to be downloaded, built and installed. Subsequen
 runs are instantaneous for the same environment, or much faster even when some
 packages or kernels are changed, since a lot will already be cached.
 
+This process can be largely accelerated by using [cachix](https://cachix.org):
+
+```
+cachix use jupyterwith
+```
+
 ### Using JupyterLab extensions
 
 Lab extensions can be added by generating a JupyterLab frontend directory.

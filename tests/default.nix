@@ -43,9 +43,13 @@ let
       ];
     };
 
+  # Made for uploading to cachix:
+  # nix-build -A build | cachix push jupyterwith
+  build = jupyterlab;
+
   shell = jupyterlab.env;
 
   docker = mkDockerImage { inherit jupyterlab; };
 
 in
-  { inherit docker shell; }
+  { inherit build docker shell; }
