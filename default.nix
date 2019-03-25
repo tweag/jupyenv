@@ -1,4 +1,6 @@
-{ pkgs ? import ./nix {} }:
+{overlays ? []
+, pkgs ? import ./nix {inherit overlays;}
+}:
 
 with (import ./lib/directory.nix { inherit pkgs; });
 with (import ./lib/docker.nix { inherit pkgs; });
