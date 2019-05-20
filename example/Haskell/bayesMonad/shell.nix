@@ -36,6 +36,8 @@ let
       packages = p: with p; [
         monad-bayes
         hvega
+        statistics 
+        vector
         ihaskell-hvega
         aeson
         aeson-pretty
