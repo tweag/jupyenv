@@ -36,6 +36,10 @@ let
             name = "test";
         })
 
+        ( iRWith {
+            name = "test";
+        })
+
         ( xeusCling {
             name = "test";
         })
