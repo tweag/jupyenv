@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   preserveAspectRatio="xMidYMid"
+   width="398"
+   height="406.12399"
+   viewBox="0 0 398 406.12399"
+   version="1.1"
+   id="svg16"
+   sodipodi:docname="irkernel-logo.svg"
+   inkscape:version="0.92.0 r">
+  <metadata
+     id="metadata20">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     id="namedview18"
+     showgrid="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="0.84135472"
+     inkscape:cx="116.18057"
+     inkscape:cy="219.86117"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg16">
+    <inkscape:grid
+       type="xygrid"
+       id="grid5081"
+       spacingx="41.3"
+       spacingy="29.3"
+       originx="0"
+       originy="406.12" />
+  </sodipodi:namedview>
+  <defs
+     id="defs10">
+    <linearGradient
+       id="jupyter"
+       gradientUnits="userSpaceOnUse"
+       x1="298"
+       y1="152.938"
+       x2="696.03491"
+       y2="152.95509"
+       gradientTransform="translate(-298,-152.938)">
+      <stop
+         offset="5.220520e-02"
+         style="stop-color:#F78D26"
+         id="stop3660" />
+      <stop
+         offset="0.2056"
+         style="stop-color:#F68826"
+         id="stop3662" />
+      <stop
+         offset="0.4323"
+         style="stop-color:#F37A25"
+         id="stop3664" />
+      <stop
+         offset="0.4766"
+         style="stop-color:#F37625"
+         id="stop3666" />
+      <stop
+         offset="0.6159"
+         style="stop-color:#E76623"
+         id="stop3668" />
+      <stop
+         offset="0.8356"
+         style="stop-color:#DC5221"
+         id="stop3670" />
+      <stop
+         offset="0.9873"
+         style="stop-color:#D84B21"
+         id="stop3672" />
+    </linearGradient>
+  </defs>
+  <path
+     d="m 252,224.062 c 0,0 21.822,6.585 34.5,13 4.399,2.226 12.01,6.668 17.5,12.5 5.378,5.712 8,11.5 8,11.5 l 86,145 -139,0.062 -65,-122.062 c 0,0 -13.31,-22.869 -21.5,-29.5 -6.832,-5.531 -9.745,-7.5 -16.5,-7.5 -4.702,0 -33.026,0 -33.026,0 L 123,406.036 0,406.088 V 0 h 247 c 0,0 112.5,2.029 112.5,109.062 0,107.033 -107.5,115 -107.5,115 z M 198.5,88.086 124.037,88.038 124,157.088 l 74.5,-0.024 c 0,0 34.5,-0.107 34.5,-35.125 0,-35.722 -34.5,-33.853 -34.5,-33.853 z"
+     id="path14"
+     inkscape:connector-curvature="0"
+     style="fill:url(#jupyter);fill-rule:evenodd" />
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1"
+     id="path0_fill"
+     d="m 41.393839,236.08495 c 0,55.37853 -4.223789,73.45954 -15.487495,86.80675 -12.295484,11.36282 -28.3776502,17.64744 -45.054476,17.60756 l 4.223859,32.94238 c 25.848686,0.3587 50.906274,-8.98778 70.303877,-26.22085 20.180589,-21.01566 27.220397,-50.07756 27.220397,-94.66356 V 43.161436 H 41.3 V 236.36907 l 0.09408,-0.2842 z" />
+</svg>
