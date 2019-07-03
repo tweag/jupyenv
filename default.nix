@@ -43,7 +43,7 @@ let
       env = pkgs.mkShell {
         name = "jupyterlab-shell";
         buildInputs =
-          [ jupyterlab generateDirectory pkgs.nodejs ] ++ (map (k: k.runtimePackages) kernels);
+          [ jupyterlab generateDirectory pkgs.nodejs pkgs.pandoc pkgs.texlive.combined.scheme-full ] ++ (map (k: k.runtimePackages) kernels);
         shellHook = ''
           export JUPYTER_PATH=${kernelsString kernels}
           export JUPYTERLAB=${jupyterlab}
