@@ -1,0 +1,12 @@
+name:                my-haskell-package
+version:             0.1.0.0
+license:             BSD3
+author:              guaraqe
+maintainer:          mail@guaraqe.gq
+build-type:          Simple
+cabal-version:       >=1.10
+
+library
+  exposed-modules:     MyHaskellPackage
+  build-depends:       base
+  default-language:    Haskell2010
