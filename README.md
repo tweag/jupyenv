@@ -137,10 +137,10 @@ In this case, you must make sure that sandboxing is disabled in your Nix
 configuration. Newer Nix versions have it enabled by default. Sandboxing can be
 disabled:
 
-- either by running `nix-shell --option build-use-sandbox false`; or
-- by setting `build-use-sandbox = false` in `/etc/nix/nix.conf`.
+- either by running `nix-shell --option sandbox false`; or
+- by setting `sandbox = false` in `/etc/nix/nix.conf`.
 
-The first option may require using `sudo`, depending on the version of Nix.
+For this to work, your user must be in the `nix.trustedUsers` list in `configuration.nix`.
 
 ### Changes to the default package sets
 
