@@ -1,5 +1,5 @@
-{overlays ? []
-, pkgs ? import ./nix {inherit overlays;}
+{ overlays ? []
+, pkgs ? import ./nix { inherit overlays; }
 }:
 
 with (import ./lib/directory.nix { inherit pkgs; });

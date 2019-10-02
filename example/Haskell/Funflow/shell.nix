@@ -4,10 +4,12 @@ let
   pkgs = import nixpkgsPath {};
   jupyter = import jupyterLibPath { pkgs=pkgs; };
 
+  funflow = pkgs.haskell.lib.dontCheck pkgs.haskellPackages.funflow;
+
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
       #extraIHaskellFlags = "--debug";
       name = "Funflow";
-      packages = p: with p; [
+      packages = p: [
         funflow
       ];
     };
