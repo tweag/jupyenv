@@ -92,7 +92,7 @@ in
 
 {
   haskellPackages = pkgs.haskell.packages.ghc844.override (old: {
-    overrides = pkgs.lib.
+    overrides =
       pkgs.lib.composeExtensions
         (old.overrides or (_: _: {}))
         overrides;
