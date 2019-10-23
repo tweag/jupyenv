@@ -181,6 +181,30 @@ $ cat result | docker load
 $ docker run -v $(pwd)/example:/data -p 8888:8888 jupyter-image:latest
 ```
 
+## Using as an overlay
+
+You can import JupyterWith as an overlay as follows:
+
+```
+let
+  path = import (builtins.fetchGit {
+    url = https://github.com/tweag/jupyterWith;
+    rev = "";
+  }) {};
+
+  overlays = [
+    # Only necessary for Haskell kernel
+    (import (path ++ /nix/haskell-overlay.nix))
+    # Necessary for Jupyter
+    (import (path ++ /nix/python-overlay.nix))
+    (import (path ++ /nix/overlay.nix))
+  ];
+
+  pkgs = import <nixpkgs> { inherit overlays; };
+in
+  pkgs.jupyterWith;
+```
+
 ## Contributing
 
 ### Kernels
