@@ -4,8 +4,8 @@ let
   ihaskellSrc = pkgs.fetchFromGitHub {
     owner = "gibiansky";
     repo = "IHaskell";
-    rev = "c070adf8828dad378bb0048483c16f2640a339b5";
-    sha256 = "1v8hvr75lg3353qgm18k43b3wl040zkbhkklw6ygv5w8zzb3x826";
+    rev = "e15dd63d2efdcfda599dc022732b33589005a6d5";
+    sha256 = "1p2j7jlygvnw7gpgl28fv5yh6cl87s5pk080i6vk5r0ipx3yjmqj";
   };
 
   overrides = self: hspkgs:
@@ -16,14 +16,9 @@ let
           "${ihaskellSrc}/ihaskell-display/ihaskell-${name}"
           {};
       dontCheck = pkgs.haskell.lib.dontCheck;
+      dontHaddock = pkgs.haskell.lib.dontHaddock;
     in
     {
-      # -- ihaskell overrides
-      # the current version of hlint in nixpkgs uses a different
-      # version of haskell-src-exts, which creates incompatibilities
-      # when building ihaskell
-      hlint = hspkgs.callHackage "hlint" "2.1.11" {};
-      zeromq4-haskell = dontCheck hspkgs.zeromq4-haskell;
       ihaskell = pkgs.haskell.lib.overrideCabal
         (hspkgs.callCabal2nix "ihaskell" ihaskellSrc {})
         (_drv: {
@@ -56,7 +51,21 @@ let
 
       megaparsec = hspkgs.megaparsec_6_5_0;
 
-      # missing dependency
+      # Marked as broken in this version of Nixpkgs.
+      chell = hspkgs.callHackage "chell" "0.4.0.2" {};
+      patience = hspkgs.callHackage "patience" "0.1.1" {};
+
+      # Version compatible with ghc-lib-parser.
+      hlint = hspkgs.callHackage "hlint" "2.2.1" {};
+
+      # Tests not passing.
+      Diff = dontCheck hspkgs.Diff;
+      zeromq4-haskell = dontCheck hspkgs.zeromq4-haskell;
+
+      # Haddocks not building.
+      ghc-lib-parser = dontHaddock hspkgs.ghc-lib-parser;
+
+      # Missing dependency.
       aeson = pkgs.haskell.lib.addBuildDepends hspkgs.aeson [ self.contravariant ];
     };
 in
