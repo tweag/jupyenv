@@ -1,14 +1,13 @@
 let
   jupyterLibPath = ../../..;
-  jupyter = import jupyterLibPath {
-    overlays = [ (import ./overlay.nix) ];
-  };
+  nixpkgsPath = jupyterLibPath + "/nix";
+  pkgs = import nixpkgsPath {};
+  jupyter = import jupyterLibPath { pkgs=pkgs; };
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
-      name = "Frames";
-      packages = p: with p; [
-        diagrams
-        ihaskell-diagrams
+      name = "Local";
+      packages = p: [
+        (p.callPackage ./my-haskell-package {})
       ];
     };
 

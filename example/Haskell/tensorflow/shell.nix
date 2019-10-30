@@ -2,7 +2,9 @@ let
   jupyterLibPath = ../../..;
   nixpkgsPath = jupyterLibPath + "/nix";
   pkgs = import nixpkgsPath {};
-  jupyter = import jupyterLibPath { pkgs=pkgs; };
+  jupyter = import jupyterLibPath {
+    overlays = [ (import ./overlay.nix) ];
+  };
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
       name = "Tensorflow";

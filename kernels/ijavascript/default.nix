@@ -1,29 +1,17 @@
-{nodejs-6_x
-,stdenv
-,python2
-,utillinux
-,runCommand
-,writeTextFile
-,fetchurl
-,fetchgit
-,writeScriptBin
-,name?"default"
-}:
+{ stdenv, callPackage, writeScriptBin, name ? "default" }:
 
 let
-  nodejs = nodejs-6_x;
+  nodePackages = callPackage ./ijavascript-node {};
 
-  nodeEnv = import ./node-env.nix {
-    inherit nodejs stdenv python2 utillinux runCommand writeTextFile;
-    libtool = null;
+  iJavascriptEnv = nodePackages."ijavascript-5.2.0".override {
+    dontNpmInstall = true;
   };
-
-  iJavascriptEnv = (import ./node-packages.nix {inherit nodeEnv fetchurl fetchgit;}).ijavascript;
 
   iJavascriptSh = writeScriptBin "ijavascript" ''
     #! ${stdenv.shell}
     export PATH="${stdenv.lib.makeBinPath ([ iJavascriptEnv ])}:$PATH"
-    ${iJavascriptEnv}/bin/ijskernel "$@"'';
+    ${iJavascriptEnv}/lib/node_modules/ijavascript/lib/kernel.js "$@"
+  '';
 
   kernelFile = {
     display_name = "Javascript - " + name;

@@ -2,6 +2,14 @@ _: pkgs:
 let
   packageOverrides = selfPythonPackages: pythonPackages: {
 
+    jupyterlab = pythonPackages.jupyterlab.overridePythonAttrs (_:{
+      doCheck = false;
+    });
+
+    nbconvert = pythonPackages.nbconvert.overridePythonAttrs (_:{
+      doCheck = false;
+    });
+
     jupyter_contrib_core = pythonPackages.buildPythonPackage rec {
       pname = "jupyter_contrib_core";
       version = "0.3.3";
@@ -196,4 +204,11 @@ let
 
 in
 
-{ python3 = pkgs.python3.override { inherit packageOverrides; }; }
+{
+  python3 = pkgs.python3.override (old: {
+    packageOverrides =
+      pkgs.lib.composeExtensions
+        (old.packageOverrides or (_: _: {}))
+        packageOverrides;
+  });
+}
