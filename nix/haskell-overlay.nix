@@ -49,8 +49,6 @@ let
       ihaskell-static-canvas = callDisplayPackage "static-canvas";
       ihaskell-widgets = callDisplayPackage "widgets";
 
-      megaparsec = hspkgs.megaparsec_6_5_0;
-
       # Marked as broken in this version of Nixpkgs.
       chell = hspkgs.callHackage "chell" "0.4.0.2" {};
       patience = hspkgs.callHackage "patience" "0.1.1" {};
