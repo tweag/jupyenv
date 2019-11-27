@@ -181,6 +181,25 @@ $ cat result | docker load
 $ docker run -v $(pwd)/example:/data -p 8888:8888 jupyter-image:latest
 ```
 
+## Adding packages to the environment
+
+It is possible to add extra packages to the JupyterWith environment.
+For example, if you want to add `pandoc` to the environment in order to convert notebooks to PDF, you can do the following.
+
+``` nix
+let
+  jupyter = import (builtins.fetchGit {
+    url = https://github.com/tweag/jupyterWith;
+    rev = "";
+  });
+
+  jupyterEnvironment = jupyter.jupyterlabWith {
+    extraPackages = p: [p.pandoc];
+  };
+``
+
+Here, the `p` argument corresponds to Nixpkgs checkout being used.
+
 ## Using as an overlay
 
 You can import JupyterWith as an overlay as follows:
