@@ -196,7 +196,7 @@ let
   jupyterEnvironment = jupyter.jupyterlabWith {
     extraPackages = p: [p.pandoc];
   };
-``
+```
 
 Here, the `p` argument corresponds to Nixpkgs checkout being used.
 
