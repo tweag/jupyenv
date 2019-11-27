@@ -1,6 +1,8 @@
 let
   jupyterLibPath = ../../..;
-  jupyter = import jupyterLibPath {};
+  jupyter = import jupyterLibPath {
+    extraPackages = p: [p.hello];
+  };
 
   iPythonWithPackages = jupyter.kernels.iPythonWith {
     name = "local-package";
