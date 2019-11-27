@@ -10,7 +10,7 @@ let
             pandas
             matplotlib
             seaborn
-            umaplearn
+            umap-learn
             scikitlearn
             ];
       };

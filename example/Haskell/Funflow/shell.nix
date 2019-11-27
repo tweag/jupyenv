@@ -1,16 +1,15 @@
 let
   jupyterLibPath = ../../..;
   nixpkgsPath = jupyterLibPath + "/nix";
+  jupyter = import jupyterLibPath {};
   pkgs = import nixpkgsPath {};
-  jupyter = import jupyterLibPath { pkgs=pkgs; };
-
-  funflow = pkgs.haskell.lib.dontCheck pkgs.haskellPackages.funflow;
+  dontCheck = pkgs.haskell.lib.dontCheck;
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
       #extraIHaskellFlags = "--debug";
       name = "Funflow";
       packages = p: [
-        funflow
+        (dontCheck (p.callHackage "funflow" "1.5.0" {}))
       ];
     };
 
