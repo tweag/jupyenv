@@ -60,19 +60,6 @@ let
         maintainers = [];
       };
     };
-
-
-    rsa = pythonPackages.rsa.overridePythonAttrs (oldAttrs: {
-      preConfigure =  ''
-        substituteInPlace setup.py --replace "open('README.md')" "open('README.md',encoding='utf-8')"
-        '';
-    });
-
-    # Performance tests failing on different computers
-    pathpy = pythonPackages.pathpy.overridePythonAttrs (_:{
-      doCheck = false;
-    });
-
   };
 
 in
