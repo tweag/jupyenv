@@ -1,5 +1,6 @@
 { overlays ? []
-, pkgs ? import ./nix { inherit overlays; }
+, config ? {}
+, pkgs ? import ./nix { inherit config overlays; }
 , extraPackages ? (_: [])
 }:
 
