@@ -163,7 +163,7 @@ let
   jupyter = import (builtins.fetchGit {
     url = https://github.com/tweag/jupyterWith;
     rev = "";
-  });
+  }) {};
 
   jupyterEnvironment = jupyter.jupyterlabWith {
   };
