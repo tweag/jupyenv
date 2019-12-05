@@ -1,7 +1,6 @@
 { overlays ? []
 , config ? {}
 , pkgs ? import ./nix { inherit config overlays; }
-, extraPackages ? (_: [])
 }:
 
 with (import ./lib/directory.nix { inherit pkgs; });
@@ -18,9 +17,14 @@ let
   # Default configuration.
   defaultDirectory = "${python3.jupyterlab}/share/jupyter/lab";
   defaultKernels = [ (kernels.iPythonWith {}) ];
+  defaultExtraPackages = p: [];
 
   # JupyterLab with the appropriate kernel and directory setup.
-  jupyterlabWith = { directory ? defaultDirectory, kernels ? defaultKernels }:
+  jupyterlabWith = {
+    directory ? defaultDirectory,
+    kernels ? defaultKernels,
+    extraPackages ? defaultExtraPackages
+    }:
     let
       # PYTHONPATH setup for JupyterLab
       pythonPath = python3.makePythonPath [
