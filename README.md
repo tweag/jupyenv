@@ -165,8 +165,7 @@ let
     rev = "";
   }) {};
 
-  jupyterEnvironment = jupyter.jupyterlabWith {
-  };
+  jupyterEnvironment = jupyter.jupyterlabWith {};
 in
   jupyter.mkDockerImage {
     name = "jupyter-image";
@@ -191,7 +190,7 @@ let
   jupyter = import (builtins.fetchGit {
     url = https://github.com/tweag/jupyterWith;
     rev = "";
-  });
+  }) {};
 
   jupyterEnvironment = jupyter.jupyterlabWith {
     extraPackages = p: [p.pandoc];
