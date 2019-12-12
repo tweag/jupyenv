@@ -2,6 +2,7 @@
 , stdenv
 , name ? "nixpkgs"
 , packages ? (_:[])
+, writeScriptBin
 }:
 
 let
@@ -24,6 +25,10 @@ let
     logo64 = "logo-64x64.png";
   };
 
+  pythonBin = writeScriptBin "python-${name}" ''
+    ${kernelEnv.interpreter} "$@"
+  '';
+
   ipythonKernel = stdenv.mkDerivation {
     name = "ipython-${name}";
     src = ./python.png;
@@ -37,5 +42,8 @@ let
 in
   {
     spec = ipythonKernel;
-    runtimePackages = [];
+    runtimePackages = [
+      # Lets the user to use libraries from the Python command.
+      pythonBin
+    ];
   }
