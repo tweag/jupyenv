@@ -3,6 +3,9 @@
 , pkgs ? import ./nix { inherit config overlays; }
 }:
 
+with (import ./lib/directory.nix { inherit pkgs; });
+with (import ./lib/docker.nix { inherit pkgs; });
+
 let
   # Kernel generators.
   kernels = pkgs.callPackage ./kernels {};
@@ -47,7 +50,5 @@ let
 in
 
 {
-  inherit jupyterlabWith serviceWith kernels;
-  mkDirectoryWith = pkgs.callPackage ./lib/directory.nix {};
-  mkDockerImage = pkgs.callPackage ./lib/docker.nix {};
+  inherit jupyterlabWith serviceWith kernels mkDirectoryWith mkDockerImage;
 }
