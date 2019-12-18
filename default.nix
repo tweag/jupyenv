@@ -28,10 +28,26 @@ let
       base = mkBase { inherit directory kernels extraPackages; };
     in
       base.jupyterlab;
+
+  # JupyterLab with the appropriate kernel and directory setup.
+  serviceWith = {
+    directory ? defaultDirectory,
+    kernels ? defaultKernels,
+    extraPackages ? defaultExtraPackages
+  }:
+    let
+      base = mkBase { inherit directory kernels extraPackages; };
+    in
+      import ./lib/service.nix {
+        inherit directory kernels extraPackages;
+        jupyterlab = base.jupyterlab;
+        environment = base.environment;
+        path = base.path;
+      };
 in
 
 {
-  inherit jupyterlabWith kernels;
+  inherit jupyterlabWith serviceWith kernels;
   mkDirectoryWith = pkgs.callPackage ./lib/directory.nix {};
   mkDockerImage = pkgs.callPackage ./lib/docker.nix {};
 }
