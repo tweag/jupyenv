@@ -69,10 +69,14 @@ let
 in
 
 {
-  haskellPackages = pkgs.haskell.packages.ghc844.override (old: {
-    overrides =
-      pkgs.lib.composeExtensions
-        (old.overrides or (_: _: {}))
-        overrides;
-  });
+  haskell = pkgs.haskell // {
+    packages = pkgs.haskell.packages // {
+      "ghc844" = pkgs.haskell.packages.ghc844.override (old: {
+          overrides =
+              pkgs.lib.composeExtensions
+                (old.overrides or (_: _: {}))
+                overrides;}
+              );
+            };
+          };
 }
