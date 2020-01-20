@@ -23,7 +23,8 @@ let
   jupyterlabWith = {
     directory ? defaultDirectory,
     kernels ? defaultKernels,
-    extraPackages ? defaultExtraPackages
+    extraPackages ? defaultExtraPackages,
+    extraJupyterPath ? ""
     }:
     let
       # PYTHONPATH setup for JupyterLab
@@ -39,8 +40,8 @@ let
         python3.jupyterlab.overridePythonAttrs (oldAttrs: {
           makeWrapperArgs = [
             "--set JUPYTERLAB_DIR ${directory}"
-            "--set JUPYTER_PATH ${kernelsString kernels}"
-            "--set PYTHONPATH ${pythonPath}"
+            "--set JUPYTER_PATH ${extraJupyterPath}:${kernelsString kernels}"
+            "--set PYTHONPATH ${extraJupyterPath}:${pythonPath}"
           ];
         })
       );
