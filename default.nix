@@ -53,7 +53,7 @@ let
         name = "jupyterlab-shell";
         inputsFrom = extraInputsFrom pkgs;
         buildInputs =
-          [ jupyterlab generateDirectory pkgs.nodejs ] ++
+          [ jupyterlab generateDirectory generateLockFile pkgs.nodejs ] ++
           (map (k: k.runtimePackages) kernels) ++
           (extraPackages pkgs);
         shellHook = ''
@@ -66,4 +66,10 @@ let
         passthru = oldAttrs.passthru or {} // { inherit env; };
       });
 in
-  { inherit jupyterlabWith kernels mkDirectoryWith mkDockerImage; }
+  { inherit
+      jupyterlabWith
+      kernels
+      mkDirectoryWith
+      mkDirectoryFromLockFile
+      mkDockerImage;
+  }

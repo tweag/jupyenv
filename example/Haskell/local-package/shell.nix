@@ -1,8 +1,6 @@
 let
   jupyterLibPath = ../../..;
-  nixpkgsPath = jupyterLibPath + "/nix";
-  pkgs = import nixpkgsPath {};
-  jupyter = import jupyterLibPath { pkgs=pkgs; };
+  jupyter = import jupyterLibPath {};
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
       name = "Local";
@@ -14,10 +12,10 @@ let
   jupyterlabWithKernels =
     jupyter.jupyterlabWith {
       kernels = [ ihaskellWithPackages ];
-      directory = jupyter.mkDirectoryWith {
-        extensions = [
-          "jupyterlab-ihaskell"
-        ];
+      directory = jupyter.mkDirectoryFromLockFile {
+        yarnlock = ./yarn.lock;
+        packagejson = ./package.json;
+        sha256 = "1ak8i3kydn4l3vk24lp19j185s2gi0gck26k77v2rkj9ql6j9wci";
       };
     };
 in
