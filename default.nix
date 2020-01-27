@@ -18,12 +18,14 @@ let
   defaultDirectory = "${python3.jupyterlab}/share/jupyter/lab";
   defaultKernels = [ (kernels.iPythonWith {}) ];
   defaultExtraPackages = p: [];
+  defaultExtraInputsFrom = p: [];
 
   # JupyterLab with the appropriate kernel and directory setup.
   jupyterlabWith = {
     directory ? defaultDirectory,
     kernels ? defaultKernels,
     extraPackages ? defaultExtraPackages,
+    extraInputsFrom ? defaultExtraInputsFrom,
     extraJupyterPath ? ""
     }:
     let
@@ -49,6 +51,7 @@ let
       # Shell with the appropriate JupyterLab, launching it at startup.
       env = pkgs.mkShell {
         name = "jupyterlab-shell";
+        inputsFrom = extraInputsFrom pkgs;
         buildInputs =
           [ jupyterlab generateDirectory pkgs.nodejs ] ++
           (map (k: k.runtimePackages) kernels) ++
