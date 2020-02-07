@@ -1,11 +1,15 @@
 let
   jupyterLibPath = ../../..;
-  jupyter = import jupyterLibPath {};
+  nixpkgsPath = jupyterLibPath + "/nix";
+  pkgs = import nixpkgsPath {};
+  jupyter = import jupyterLibPath { pkgs=pkgs; };
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
-      name = "cities-wordcloud";
-      packages = p: with p; [ hvega PyF formatting string-qq ];
-      };
+      name = "Local";
+      packages = p: [
+        (p.callPackage ./my-haskell-package {})
+      ];
+    };
 
   jupyterlabWithKernels =
     jupyter.jupyterlabWith {

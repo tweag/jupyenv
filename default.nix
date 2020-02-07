@@ -1,5 +1,6 @@
-{overlays ? []
-, pkgs ? import ./nix {inherit overlays;}
+{ overlays ? []
+, config ? {}
+, pkgs ? import ./nix { inherit config overlays; }
 }:
 
 with (import ./lib/directory.nix { inherit pkgs; });
@@ -16,9 +17,14 @@ let
   # Default configuration.
   defaultDirectory = "${python3.jupyterlab}/share/jupyter/lab";
   defaultKernels = [ (kernels.iPythonWith {}) ];
+  defaultExtraPackages = p: [];
 
   # JupyterLab with the appropriate kernel and directory setup.
-  jupyterlabWith = { directory ? defaultDirectory, kernels ? defaultKernels }:
+  jupyterlabWith = {
+    directory ? defaultDirectory,
+    kernels ? defaultKernels,
+    extraPackages ? defaultExtraPackages
+    }:
     let
       # PYTHONPATH setup for JupyterLab
       pythonPath = python3.makePythonPath [
@@ -43,7 +49,9 @@ let
       env = pkgs.mkShell {
         name = "jupyterlab-shell";
         buildInputs =
-          [ jupyterlab generateDirectory pkgs.nodejs ] ++ (map (k: k.runtimePackages) kernels);
+          [ jupyterlab generateDirectory pkgs.nodejs ] ++
+          (map (k: k.runtimePackages) kernels) ++
+          (extraPackages pkgs);
         shellHook = ''
           export JUPYTER_PATH=${kernelsString kernels}
           export JUPYTERLAB=${jupyterlab}

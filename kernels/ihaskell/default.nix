@@ -9,6 +9,14 @@
 let
   ihaskellEnv = haskellPackages.ghcWithPackages (self: [ self.ihaskell ] ++ packages self);
 
+  ghciBin = writeScriptBin "ghci-${name}" ''
+    ${ihaskellEnv}/bin/ghci "$@"
+  '';
+
+  ghcBin = writeScriptBin "ghc-${name}" ''
+    ${ihaskellEnv}/bin/ghc "$@"
+  '';
+
   ihaskellSh = writeScriptBin "ihaskell" ''
     #! ${stdenv.shell}
     export GHC_PACKAGE_PATH="$(echo ${ihaskellEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
@@ -44,5 +52,10 @@ let
 in
   {
     spec = ihaskellKernel;
-    runtimePackages = [];
+    runtimePackages = [
+      # Give access to compiler and interpreter with the libraries accessible
+      # from the kernel.
+      ghcBin
+      ghciBin
+    ];
   }

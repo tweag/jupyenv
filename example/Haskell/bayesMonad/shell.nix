@@ -1,21 +1,21 @@
 let
-  jupyterLibPath = ../../..;
-  nixpkgsPath = jupyterLibPath + "/nix";
+  jupyterLib = ../../..;
+  nixpkgsPath = jupyterLib + "/nix";
 
   pkgs = import nixpkgsPath {};
 
   monadBayesSrc = pkgs.fetchFromGitHub {
     owner = "adscib";
     repo = "monad-bayes";
-    rev = "647ba7cb5a98ae028600f3d828828616891b40fb";
-    sha256 = "1z4i03idsjnxqds3b5zk52gic2m8zflhh2v64yp11k0idxggiv2d";
+    rev = "f55d9fa9d24d169d53bb03598306ee8c46b5fc11";
+    sha256 = "1w2s5kgvdp8zfj464xmjb4kzpfsq6vc2jjakgixhs8wppq9vbvda";
   };
 
   hVegaSrc = pkgs.fetchFromGitHub {
     owner = "DougBurke";
     repo = "hvega";
-    rev = "56d543aef10ba31bd5f0de73d8d773d309a51960";
-    sha256 = "0kpy7ar0gjxwqgpq88612jl695mgr55a8lbby58wrghlwzqrznr9";
+    rev = "hvega-0.4.0.0";
+    sha256 = "1pg655a36nsz7h2l1sbyk4zzzjjw4dlah8794bc0flpigr7iik13";
   };
 
   haskellPackages = pkgs.haskellPackages.override (old: {
@@ -27,13 +27,15 @@ let
         });
       });
 
-  jupyter = import jupyterLibPath { pkgs=pkgs; };
+  jupyter = import jupyterLib { pkgs=pkgs; };
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
       #extraIHaskellFlags = "--debug";
       haskellPackages=haskellPackages;
       name = "bayes-monad";
       packages = p: with p; [
+        matrix
+        hmatrix
         monad-bayes
         hvega
         statistics 
