@@ -18,6 +18,7 @@ These kernels are currently included by default:
 - [CKernel](https://github.com/brendan-rius/jupyter-c-kernel)
 - [IRuby](https://github.com/SciRuby/iruby)
 - [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel) (limited jupyterlab support)
+- [IRkernel](https://github.com/IRkernel/IRkernel)
 - [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
 - [Xeus-Cling CPP](https://github.com/QuantStack/xeus-cling) (experimental, not yet configurable with packages, long build time)
 - [IJavascript](https://github.com/n-riesco/ijavascript) (not yet configurable with packages)
