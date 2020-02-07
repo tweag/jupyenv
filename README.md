@@ -198,7 +198,28 @@ let
   };
 ```
 
-Here, the `p` argument corresponds to Nixpkgs checkout being used.
+Here, the `p` argument corresponds to Nixpkgs checkout being used. Note that
+this can easily be made to use packages from outside `jupyterWith`'s scope, by
+providing a function that ignores its argument:
+
+```nix
+  extraPackages = _ : [ pkgs.pandoc ];
+```
+
+You may also bring all inputs from a package in scope using the
+"extraInputsFrom" argument:
+
+``` nix
+let
+  jupyter = import (builtins.fetchGit {
+    url = https://github.com/tweag/jupyterWith;
+    rev = "";
+  }) {};
+
+  jupyterEnvironment = jupyter.jupyterlabWith {
+    extraInputsFrom = p: [p.pythonPackages.numpy];
+  };
+```
 
 ## Using as an overlay
 
@@ -223,6 +244,24 @@ let
 in
   pkgs.jupyterWith;
 ```
+
+## Importing local python packages
+
+You may use the `extraJupyterPath` arguments to add local
+python packages in scope:
+
+```
+let
+  jupyter = import (builtins.fetchGit {
+    url = https://github.com/tweag/jupyterWith;
+    rev = "";
+  }) {};
+
+  jupyterEnvironment = jupyter.jupyterlabWith {
+    extraJupyterPath = "${builtins.toPath ./.}/local_module/";
+  };
+```
+
 
 ## Contributing
 
