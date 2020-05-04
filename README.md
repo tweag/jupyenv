@@ -245,10 +245,11 @@ in
   pkgs.jupyterWith;
 ```
 
-## Importing local python packages
+## Adding extra packages to the Jupyter PATH
 
-You may use the `extraJupyterPath` arguments to add local
-python packages in scope:
+You may use the `extraJupyterPath` arguments to add extra packages to the scope
+of Jupyter itself (i.e. not the kernel). For example, a local package can be
+added to the path as follows:
 
 ```
 let
@@ -258,10 +259,9 @@ let
   }) {};
 
   jupyterEnvironment = jupyter.jupyterlabWith {
-    extraJupyterPath = "${builtins.toPath ./.}/local_module/";
+    extraJupyterPath = pkgs: "${builtins.toPath ./.}/local_module/";
   };
 ```
-
 
 ## Contributing
 
