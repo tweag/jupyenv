@@ -6,11 +6,11 @@
 }:
 
 let
-  kernelEnv = python3.withPackages (p:
+  kernelEnv = (python3.withPackages (p:
     packages p ++ (with p; [
       ipykernel
     ])
-  );
+  )).override (args: { ignoreCollisions = true;});
 
   kernelFile = {
     display_name = "Python3 - ${name}";
