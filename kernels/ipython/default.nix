@@ -3,14 +3,15 @@
 , name ? "nixpkgs"
 , packages ? (_:[])
 , writeScriptBin
+, ignoreCollisions ? false
 }:
 
 let
-  kernelEnv = python3.withPackages (p:
+  kernelEnv = (python3.withPackages (p:
     packages p ++ (with p; [
       ipykernel
     ])
-  );
+  )).override (args: { inherit ignoreCollisions;});
 
   kernelFile = {
     display_name = "Python3 - ${name}";
