@@ -12,6 +12,8 @@ The IPython kernel can be used as follows:
     # Optional definition of `python3` to be used.
     # Useful for overlaying packages.
     python3 = pkgs.python3Packages;
+    # Optional value to true that ignore file collisions inside the packages environment
+    ignoreCollisions = false;
   };
 }
 ```
