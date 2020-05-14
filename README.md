@@ -115,8 +115,13 @@ in
   jupyterEnvironment.env
 ```
 
-Another option is to use the impure `mkDirectoryWith` Nix function that comes
-with this repo:
+#### Impure generator
+
+WARNING: This is not guaranteed to work every time. Read this section
+thoroughly before trying.
+
+Another option, which is useful for simple tests, is to use the impure
+`mkDirectoryWith` Nix function that comes with this repo:
 
 ``` nix
 {
