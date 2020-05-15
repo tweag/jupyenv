@@ -226,6 +226,32 @@ let
   };
 ```
 
+## Adding packages to the Jupyter PATH
+
+Jupyter is ran within its own environment, meaning that packages added with the
+method above will not be visible by Jupyter. The `extraJupyterPath` argument
+can be used to add extra packages to the scope of Jupyter itself (i.e. not the
+kernel). A possible use case of this is to make accessible libraries to the
+Python executable that is used by Jupyter itself, which can be necessary when
+installing server extensions (see, for example, this
+[issue](https://github.com/tweag/jupyterWith/issues/86)).
+
+Using the example in the linked issue, one can add the `jupytext` package to
+the Jupyter scope with:
+
+```
+let
+  jupyter = import (builtins.fetchGit {
+    url = https://github.com/tweag/jupyterWith;
+    rev = "";
+  }) {};
+
+  jupyterEnvironment = jupyter.jupyterlabWith {
+    extraJupyterPath = pkgs:
+      "${pkgs.python3Packages.jupytext}/lib/python3.7/site-packages";
+  };
+```
+
 ## Using as an overlay
 
 You can import JupyterWith as an overlay as follows:
@@ -248,30 +274,6 @@ let
   pkgs = import <nixpkgs> { inherit overlays; };
 in
   pkgs.jupyterWith;
-```
-
-## Adding extra packages to the Jupyter PATH
-
-The `extraJupyterPath` argument can be used to add extra packages to the scope
-of Jupyter itself (i.e. not the kernel). A possible use case of this is to make
-accessible libraries to the Python executable that is used by Jupyter itself,
-which can be necessary when installing server extensions (see, for example,
-this [issue](https://github.com/tweag/jupyterWith/issues/86)).
-
-Using the example in the linked issue, one can add the `jupytext` package to
-the Jupyter scope with:
-
-```
-let
-  jupyter = import (builtins.fetchGit {
-    url = https://github.com/tweag/jupyterWith;
-    rev = "";
-  }) {};
-
-  jupyterEnvironment = jupyter.jupyterlabWith {
-    extraJupyterPath = pkgs:
-      "${pkgs.python3Packages.jupytext}/lib/python3.7/site-packages";
-  };
 ```
 
 ## Contributing
