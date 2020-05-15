@@ -252,9 +252,14 @@ in
 
 ## Adding extra packages to the Jupyter PATH
 
-You may use the `extraJupyterPath` arguments to add extra packages to the scope
-of Jupyter itself (i.e. not the kernel). For example, a local package can be
-added to the path as follows:
+The `extraJupyterPath` argument can be used to add extra packages to the scope
+of Jupyter itself (i.e. not the kernel). A possible use case of this is to make
+accessible libraries to the Python executable that is used by Jupyter itself,
+which can be necessary when installing server extensions (see, for example,
+this [issue](https://github.com/tweag/jupyterWith/issues/86)).
+
+Using the example in the linked issue, one can add the `jupytext` package to
+the Jupyter scope with:
 
 ```
 let
@@ -264,7 +269,8 @@ let
   }) {};
 
   jupyterEnvironment = jupyter.jupyterlabWith {
-    extraJupyterPath = pkgs: "${builtins.toPath ./.}/local_module/";
+    extraJupyterPath = pkgs:
+      "${pkgs.python3Packages.jupytext}/lib/python3.7/site-packages";
   };
 ```
 
