@@ -1,4 +1,5 @@
 { nixpkgs ? import (builtins.fetchTarball "https://github.com/GTrunSec/nixpkgs/tarball/39247f8d04c04b3ee629a1f85aeedd582bf41cac"){}
+, cudapkgs ? import (builtins.fetchTarball "https://github.com/GTrunSec/nixpkgs/tarball/927fcf37933ddd24a0e16c6a45b9c0a687a40607"){}
 , stdenv
 , name ? "nixpkgs"
 , packages ? (_:[])
@@ -18,33 +19,39 @@ let
     # ImageMagick.jl
     imagemagickBig
     # GZip.jl # Required by DataFrames.jl
-    gzip
+    gzip    
     zlib
   ] ++ (extraPackages  nixpkgs) ++ nixpkgs.lib.optionals cuda
     [
-    # Flux.jl
-    cudatoolkit
-    cudnn
-    linuxPackages.nvidia_x11
-    git gitRepo gnupg autoconf curl
-    procps gnumake utillinux m4 gperf unzip
-  ];
+      # Flux.jl
+      cudatoolkit_10_2
+      cudapkgs.linuxPackages.nvidia_x11_beta
+      libGLU
+		  xorg.libXi xorg.libXmu freeglut
+      xorg.libXext xorg.libX11 xorg.libXv xorg.libXrandr zlib
+		  ncurses5
+		  stdenv.cc
+		  binutils
+      git gitRepo gnupg autoconf curl      
+      procps gnumake utillinux m4 gperf unzip
+    ];
 
- julia_wrapped = nixpkgs.runCommand "julia_wrapped" {
+ julia_wrapped = nixpkgs.stdenv.mkDerivation rec {
     name = "julia_wrapped";
-    buildInputs = [julia nixpkgs.makeWrapper] ++ extraLibs;
-    propagatedBuildInputs = [julia];
- }
-    ''
-      mkdir -p $out/bin
+    buildInputs = [julia ] ++ extraLibs;
+    nativeBuildInputs = with nixpkgs; [ makeWrapper cacert git pkgconfig which ];
+    phases = [ "installPhase" ];
+    installPhase = ''
+      export CUDA_PATH="${cudapkgs.cudatoolkit_10_2}"
       export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}
        ${if cuda then ''
       makeWrapper ${julia}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
+      --prefix LD_LIBRARY_PATH ":" "${cudapkgs.linuxPackages.nvidia_x11_beta}/lib" \
       --set JULIA_PKGDIR ${directory} \
       --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
-       --set CUDA_PATH "${nixpkgs.cudatoolkit}"
+       --set CUDA_PATH "${cudapkgs.cudatoolkit_10_2}"
       ''
          else ''
       makeWrapper ${julia}/bin/julia $out/bin/julia_wrapped \
@@ -55,6 +62,7 @@ let
          ''
         }
     '';
+ };
 
   kernelFile = {
     display_name = "Julia - ${name}";
@@ -69,17 +77,11 @@ let
     ];
     logo64 = "logo-64x64.png";
 
-    env =  (if (NUM_THREADS > 1) then {
+    env = {
       LD_LIBRARY_PATH = "${nixpkgs.lib.makeLibraryPath extraLibs}";
       JULIA_DEPOT_PATH = "${directory}";
       JULIA_PKGDIR = "${directory}";
-      JULIA_NUM_THREADS= "${toString NUM_THREADS}";
-    } else
-      {
-        LD_LIBRARY_PATH = "${nixpkgs.lib.makeLibraryPath extraLibs}";
-        JULIA_DEPOT_PATH = "${directory}";
-        JULIA_PKGDIR = "${directory}";
-      });
+    };
   };
 
 
