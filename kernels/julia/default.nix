@@ -39,10 +39,12 @@ let
  julia_wrapped = nixpkgs.stdenv.mkDerivation rec {
     name = "julia_wrapped";
     buildInputs = [julia ] ++ extraLibs;
-    nativeBuildInputs = with nixpkgs; [ makeWrapper cacert git pkgconfig which ];
+    nativeBuildInputs = with nixpkgs; [ makeWrapper cacert git pkgconfig which cudapkgs.linuxPackages.nvidia_x11_beta];
     phases = [ "installPhase" ];
     installPhase = ''
       export CUDA_PATH="${cudapkgs.cudatoolkit_10_2}"
+      export EXTRA_LDFLAGS="-L/lib -L${cudapkgs.linuxPackages.nvidia_x11_beta}/lib"
+      export EXTRA_CCFLAGS="-I/usr/include"
       export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}
        ${if cuda then ''
       makeWrapper ${julia}/bin/julia $out/bin/julia_wrapped \
@@ -77,14 +79,27 @@ let
     ];
     logo64 = "logo-64x64.png";
 
-    env = {
+
+    env =  (if (NUM_THREADS > 1) then {
       LD_LIBRARY_PATH = "${nixpkgs.lib.makeLibraryPath extraLibs}";
       JULIA_DEPOT_PATH = "${directory}";
       JULIA_PKGDIR = "${directory}";
-    };
+      JULIA_NUM_THREADS= "${toString NUM_THREADS}";
+    } else
+      {
+        LD_LIBRARY_PATH = "${nixpkgs.lib.makeLibraryPath extraLibs}";
+        JULIA_DEPOT_PATH = "${directory}";
+        JULIA_PKGDIR = "${directory}";
+      });
   };
 
-
+  Install_JuliaCUDA = writeScriptBin "Install_Julia_CUDA" ''
+  ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.add(["CUDAdrv", "CUDAnative", "CuArrays"]); using CUDAdrv, CUDAnative, CuArrays' \
+    && ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.test("CUDAnative");'
+  get_nvdisasm=$(dirname ${directory}/artifacts/*/bin/nvdisasm)
+  rm -rf $get_nvdisasm/nvdisasm
+  ln -s ${cudapkgs.cudatoolkit_10_2}/bin/nvdisasm  $get_nvdisasm/nvdisasm
+  '';
   InstalliJulia = writeScriptBin "Install_iJulia" ''
      if [ ! -d "${directory}/registries/Genera/" ]; then
      mkdir -p ${directory}/registries/General && git clone https://github.com/JuliaRegistries/General.git --depth=1 ${directory}/registries/General
@@ -108,5 +123,5 @@ in
      runtimePackages = [
       julia_wrapped
     ];
-    inherit InstalliJulia julia_wrapped;
+    inherit InstalliJulia julia_wrapped Install_JuliaCUDA;
   }

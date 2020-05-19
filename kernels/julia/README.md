@@ -3,14 +3,16 @@
 the nixpkgs doesn't have a package's manager for Julia lang.
 So, run command `Install_iJulia` to install `Ijulia` and initialize JULIA_PKGDIR (in your first time of running environment)  before you launch `Jupyter notbook`.
 
+- Julia CUDA run Command `/result/bin/Install_Julia_CUDA` to install CUDA environment
 ```nix
 ## for buildEnv
  paths = [
            iJulia.InstalliJulia
            julia_wrapped
+           iJulia.Install_JuliaCUDA
           ];
  ##or nix-shell BuildInputs
- buildInputs = [ iJulia.InstalliJulia julia_wrapped
+ buildInputs = [ iJulia.InstalliJulia julia_wrapped iJulia.Install_JuliaCUDA
  ]
 ```
 
