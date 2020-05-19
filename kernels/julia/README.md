@@ -1,7 +1,7 @@
 # JupyterWith IJulia
 
-the nixpkgs doesn't have an julia package manager support.
-So, run command `Install_iJulia` to install `Ijulia` before you launch `Jupyter notbook`.
+the nixpkgs doesn't have a package's manager for Julia lang.
+So, run command `Install_iJulia` to install `Ijulia` and initialize JULIA_PKGDIR (in your first time of running environment)  before you launch `Jupyter notbook`.
 
 ```nix
 ## for buildEnv

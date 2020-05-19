@@ -6,7 +6,7 @@
 , writeScriptBin
 , runCommand
 , directory
-, NUM_THREADS ? 0
+, NUM_THREADS ? 1
 , cuda ? false
 }:
 
@@ -43,12 +43,14 @@ let
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
       --set JULIA_PKGDIR ${directory} \
+      --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
        --set CUDA_PATH "${nixpkgs.cudatoolkit}"
       ''
          else ''
       makeWrapper ${julia}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
+      --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
       --set JULIA_PKGDIR ${directory}
          ''
         }
@@ -67,7 +69,7 @@ let
     ];
     logo64 = "logo-64x64.png";
 
-    env =  (if (NUM_THREADS > 0) then {
+    env =  (if (NUM_THREADS > 1) then {
       LD_LIBRARY_PATH = "${nixpkgs.lib.makeLibraryPath extraLibs}";
       JULIA_DEPOT_PATH = "${directory}";
       JULIA_PKGDIR = "${directory}";
@@ -82,8 +84,6 @@ let
 
 
   InstalliJulia = writeScriptBin "Install_iJulia" ''
-     export JULIA_PKGDIR=${directory}
-     export JULIA_DEPOT_PATH=${directory}
      if [ ! -d "${directory}/registries/Genera/" ]; then
      mkdir -p ${directory}/registries/General && git clone https://github.com/JuliaRegistries/General.git --depth=1 ${directory}/registries/General
      fi
