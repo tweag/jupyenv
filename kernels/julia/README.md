@@ -7,9 +7,11 @@ So, run command `Install_iJulia` to install `Ijulia` before you launch `Jupyter 
 ## for buildEnv
  paths = [
            iJulia.InstalliJulia
+           julia_wrapped
           ];
  ##or nix-shell BuildInputs
- buildInputs = [ iJulia.InstalliJulia ]
+ buildInputs = [ iJulia.InstalliJulia julia_wrapped
+ ]
 ```
 
 The IJulia kernel can be used as follows:
@@ -27,5 +29,9 @@ The IJulia kernel can be used as follows:
       gzip
       zlib
     ];
-  };
+    # enabke multi-threads
+    NUM_THREADS = 8;
+    ##  enable CUDA support (for Flux.jl package)
+    cuda = true;
+};
 ```

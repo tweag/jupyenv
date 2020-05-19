@@ -6,7 +6,8 @@
 , writeScriptBin
 , runCommand
 , directory
-, NUM_THREADS ? 8
+, NUM_THREADS ? 0
+, cuda ? false
 }:
 
 let
@@ -19,9 +20,15 @@ let
     # GZip.jl # Required by DataFrames.jl
     gzip
     zlib
+  ] ++ (extraPackages  nixpkgs) ++ nixpkgs.lib.optionals cuda
+    [
+    # Flux.jl
+    cudatoolkit
+    cudnn
+    linuxPackages.nvidia_x11
     git gitRepo gnupg autoconf curl
     procps gnumake utillinux m4 gperf unzip
-  ] ++ (extraPackages  nixpkgs);
+  ];
 
  julia_wrapped = nixpkgs.runCommand "julia_wrapped" {
     name = "julia_wrapped";
@@ -31,10 +38,20 @@ let
     ''
       mkdir -p $out/bin
       export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}
+       ${if cuda then ''
+      makeWrapper ${julia}/bin/julia $out/bin/julia_wrapped \
+      --set JULIA_DEPOT_PATH ${directory} \
+      --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
+      --set JULIA_PKGDIR ${directory} \
+       --set CUDA_PATH "${nixpkgs.cudatoolkit}"
+      ''
+         else ''
       makeWrapper ${julia}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
       --set JULIA_PKGDIR ${directory}
+         ''
+        }
     '';
 
   kernelFile = {
@@ -50,18 +67,23 @@ let
     ];
     logo64 = "logo-64x64.png";
 
-    env = {
+    env =  (if (NUM_THREADS > 0) then {
       LD_LIBRARY_PATH = "${nixpkgs.lib.makeLibraryPath extraLibs}";
       JULIA_DEPOT_PATH = "${directory}";
       JULIA_PKGDIR = "${directory}";
-    };
+      JULIA_NUM_THREADS= "${toString NUM_THREADS}";
+    } else
+      {
+        LD_LIBRARY_PATH = "${nixpkgs.lib.makeLibraryPath extraLibs}";
+        JULIA_DEPOT_PATH = "${directory}";
+        JULIA_PKGDIR = "${directory}";
+      });
   };
 
 
   InstalliJulia = writeScriptBin "Install_iJulia" ''
      export JULIA_PKGDIR=${directory}
      export JULIA_DEPOT_PATH=${directory}
-     export JULIA_NUM_THREADS=8
      if [ ! -d "${directory}/registries/Genera/" ]; then
      mkdir -p ${directory}/registries/General && git clone https://github.com/JuliaRegistries/General.git --depth=1 ${directory}/registries/General
      fi
@@ -84,5 +106,5 @@ in
      runtimePackages = [
       julia_wrapped
     ];
-    inherit InstalliJulia;
+    inherit InstalliJulia julia_wrapped;
   }
