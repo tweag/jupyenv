@@ -3,9 +3,7 @@
 let
   nodePackages = callPackage ./ijavascript-node {};
 
-  iJavascriptEnv = nodePackages."ijavascript-5.2.0".override {
-    dontNpmInstall = true;
-  };
+  iJavascriptEnv = nodePackages."ijavascript-5.2.0";
 
   iJavascriptSh = writeScriptBin "ijavascript" ''
     #! ${stdenv.shell}

@@ -4,7 +4,10 @@
 }:
 
 let
-  kernelEnv = python3.withPackages (p: [ p.ansible-kernel p.ansible ]);
+  kernelEnv =
+    ( python3.withPackages
+        (p: [ p.ansible-kernel p.ansible ])
+    ).override (args: { ignoreCollisions = true; });
 
   kernelFile = {
     argv = [

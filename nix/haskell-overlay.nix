@@ -4,8 +4,8 @@ let
   ihaskellSrc = pkgs.fetchFromGitHub {
     owner = "gibiansky";
     repo = "IHaskell";
-    rev = "e15dd63d2efdcfda599dc022732b33589005a6d5";
-    sha256 = "1p2j7jlygvnw7gpgl28fv5yh6cl87s5pk080i6vk5r0ipx3yjmqj";
+    rev = "d7dc460a421abaa41e04fe150e264bc2bab5cbad";
+    sha256 = "157mqfprjbjal5mvrqwpgnfvc93fn1pqwwkhfpcs7jm5c34bkv3q";
   };
 
   overrides = self: hspkgs:
@@ -50,26 +50,18 @@ let
       ihaskell-widgets = callDisplayPackage "widgets";
 
       # Marked as broken in this version of Nixpkgs.
-      chell = hspkgs.callHackage "chell" "0.4.0.2" {};
-      patience = hspkgs.callHackage "patience" "0.1.1" {};
-
-      # Version compatible with ghc-lib-parser.
-      hlint = hspkgs.callHackage "hlint" "2.2.1" {};
+      #chell = hspkgs.callHackage "chell" "0.4.0.2" {};
+      #patience = hspkgs.callHackage "patience" "0.1.1" {};
 
       # Tests not passing.
-      Diff = dontCheck hspkgs.Diff;
-      zeromq4-haskell = dontCheck hspkgs.zeromq4-haskell;
+      #Diff = dontCheck hspkgs.Diff;
+      #zeromq4-haskell = dontCheck hspkgs.zeromq4-haskell;
 
-      # Haddocks not building.
-      ghc-lib-parser = dontHaddock hspkgs.ghc-lib-parser;
-
-      # Missing dependency.
-      aeson = pkgs.haskell.lib.addBuildDepends hspkgs.aeson [ self.contravariant ];
     };
 in
 
 {
-  haskellPackages = pkgs.haskell.packages.ghc844.override (old: {
+  haskellPackages = pkgs.haskellPackages.override (old: {
     overrides =
       pkgs.lib.composeExtensions
         (old.overrides or (_: _: {}))
