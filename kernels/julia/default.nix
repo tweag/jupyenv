@@ -1,5 +1,5 @@
-{ nixpkgs 
-, cudapkgs
+{ nixpkgs
+, cudapkgs ? ""
 , stdenv
 , name ? "nixpkgs"
 , packages ? (_:[])
@@ -9,7 +9,7 @@
 , directory
 , NUM_THREADS ? 1
 , cuda ? false
-, cudaVersion 
+, cudaVersion ? ""
 }:
 
 let
