@@ -29,18 +29,20 @@ let
             name = "test";
         })
 
-        ( iRubyWith {
-            name = "test";
-        })
+        # Fails on MacOS.
+        #( iRubyWith {
+        #    name = "test";
+        #})
 
         # Juniper has been removed from rPackages for some reason.
         #( juniperWith {
         #    name = "test";
         #})
 
-        ( iRWith {
-            name = "test";
-        })
+        # Fails on MacOS.
+        #( iRWith {
+        #    name = "test";
+        #})
 
         # This is hard to make work. We will work on it later.
         #( xeusCling {

@@ -1,0 +1,16 @@
+name: nix-macos
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: cachix/install-nix-action@v8
+    - uses: cachix/cachix-action@v6
+      with:
+        name: jupyterwith
+        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+    - run: nix-build tests -A build
