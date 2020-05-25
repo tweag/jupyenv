@@ -10,3 +10,12 @@ The IJavaScript kernel can be used as follows:
   };
 }
 ```
+
+## Development notes
+
+In order to rebuild the Nix files:
+
+```
+node2nix -i node-packages.json
+```
+

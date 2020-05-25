@@ -1,32 +1,24 @@
 { writeScriptBin
 , stdenv
-, buildGoPackage
+, buildGoModule
 , fetchFromGitHub
-, zeromq
-, pkgconfig
 , name ? "nixpkgs"
 }:
 
 let
-    gophernotes = buildGoPackage rec {
-        name = "gophernotes-${version}";
-        version = "1.0.0";
+  gophernotes = buildGoModule rec {
+      name = "gophernotes-${version}";
+      version = "0.7.0";
 
-        goPackagePath = "github.com/gopherdata/gophernotes";
-
-        src = fetchFromGitHub {
-          owner = "gopherdata";
-          repo = "gophernotes";
-          rev = "3e31b9592d59cdd8ee38436edbf16fcee9e60258";
-          sha256 = "00xfa0n3vkgssjqzz2f1aaf7x2y48s92s6nnjpj34zmj4nv5pgi5";
-        };
-
-        buildInputs = [ zeromq pkgconfig ];
-
-        goDeps = ./deps.nix;
-
-        buildFlags = "--tags release";
+      src = fetchFromGitHub {
+        owner = "gopherdata";
+        repo = "gophernotes";
+        rev = "7bdc956a8aceb1ebf3e7a92417aabbe05a6f9f95";
+        sha256 = "00fx5z7zp5yzj8dw9v02b1d1pg07pmrhp7gxkhg5xcndbdd1isgs";
       };
+
+      vendorSha256 = "1fn8ayld039p1j5xgrk5a9y72ssks20p10bdac4nill4rqmw7cxk";
+  };
 
   gophernotesSh = writeScriptBin "gophernotes" ''
     #! ${stdenv.shell}

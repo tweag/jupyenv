@@ -6,7 +6,9 @@
 }:
 
 let
-  kernelEnv = rWrapper.override{ packages =  (packages rPackages)  ++ [ rPackages.JuniperKernel ]; };
+  kernelEnv = rWrapper.override {
+    packages = (packages rPackages) ++ [ rPackages.JuniperKernel ];
+  };
 
   kernelFile = {
     argv = [
