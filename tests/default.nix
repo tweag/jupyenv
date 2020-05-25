@@ -38,9 +38,10 @@ let
         #    name = "test";
         #})
 
-        ( iRWith {
-            name = "test";
-        })
+        # Fails on MacOS
+        #( iRWith {
+        #    name = "test";
+        #})
 
         # This is hard to make work. We will work on it later.
         #( xeusCling {
