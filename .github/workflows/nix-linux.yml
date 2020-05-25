@@ -15,5 +15,5 @@ jobs:
         nix-build tests -A build
 #    - uses: cachix/cachix-action@v2
 #      with:
-#        name: juptyerwith
+#        name: jupyterwith
 #        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
