@@ -7,6 +7,7 @@
   iPythonWith = callPackage ./ipython;
   iRubyWith = callPackage ./iruby;
   iJuliaWith = callPackage ./julia;
+  iNixKernel = callPackage ./inix;
   cKernelWith = callPackage ./ckernel;
   ansibleKernel = callPackage ./ansible-kernel;
   xeusCling = callPackage ./xeus-cling;
