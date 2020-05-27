@@ -29,6 +29,10 @@ let
             name = "test";
         })
 
+        ( iNixKernel {
+            name = "test";
+        })
+
         # Fails on MacOS.
         #( iRubyWith {
         #    name = "test";
