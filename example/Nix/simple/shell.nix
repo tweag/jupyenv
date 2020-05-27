@@ -1,11 +1,12 @@
 let
-  jupyterLibPath = ../..;
+  jupyterLibPath = ../../..;
   jupyter = import jupyterLibPath {};
 
   iNix = jupyter.kernels.iNixKernel {
     name = "nix-kernel";
   };
-jupyterEnvironment =
+
+  jupyterEnvironment =
     jupyter.jupyterlabWith {
       kernels = [ iNix ];
     };
