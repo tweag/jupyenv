@@ -23,13 +23,14 @@ The IJulia kernel can be used as follows:
 
 ```nix
 {
+    currentDir = builtins.getEnv "PWD";
     iJulia = jupyter.kernels.iJuliaWith {
     name =  "julia";
     ##JULIA_PKGDIR and JULIA_DEPOT_PATH which are your realpath(or in current project path).
-    # EXAMPLE: echo $(realpath ./.julia_pkgs) 
-    directory = "/home/gtrun/data/master-jupyter/.julia_pkgs";
+    # EXAMPLE: or echo $(realpath ./.julia_pkgs) 
+    directory = currentDir + "/.julia_pkgs";
     ##LD_LIBRARY_PATH that is dependence of LIBRARY's ennvironemt.(For Julia packages)
-    extraPackages = p: with p;[  
+    extraPackages = p: with p;[
     # GZip.jl # Required by DataFrames.jl
       gzip
       zlib
