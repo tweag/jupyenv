@@ -239,7 +239,7 @@ installing server extensions (see, for example, this
 Using the example in the linked issue, one can add the `jupytext` package to
 the Jupyter scope with:
 
-```
+``` nix
 let
   jupyter = import (builtins.fetchGit {
     url = https://github.com/tweag/jupyterWith;
@@ -256,7 +256,7 @@ let
 
 You can import JupyterWith as an overlay as follows:
 
-```
+``` nix
 let
   path = import (builtins.fetchGit {
     url = https://github.com/tweag/jupyterWith;
