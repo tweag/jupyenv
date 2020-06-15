@@ -254,26 +254,46 @@ let
 
 ## Using as an overlay
 
-You can import JupyterWith as an overlay as follows:
+JupyterWith can be used as an overlay. That is, you can add JupyterWith's
+packages to your own Nixpkgs snapshot, with some caveats:
+
+- Some overrides need to be added so that kernels work correctly. That's why we
+  import the overlays in the file below.
+
+- There are chances that the overrides defined here will not be compatible with
+  your snapshot. Your mileage may vary.
+
+In order to use it as an overlay, add the following (replacing `commit-hash`
+and `<nixpkgs>` with suitable values) to a `shell.nix` file:
 
 ``` nix
 let
-  path = import (builtins.fetchGit {
+  # Path to the JupyterWith folder.
+  jupyterWithPath = builtins.fetchGit {
     url = https://github.com/tweag/jupyterWith;
-    rev = "";
-  }) {};
+    rev = "commit-hash";
+  };
 
+  # Importing overlays from that path.
   overlays = [
     # Only necessary for Haskell kernel
-    (import (path ++ /nix/haskell-overlay.nix))
+    (import "${jupyterWithPath}/nix/haskell-overlay.nix")
     # Necessary for Jupyter
-    (import (path ++ /nix/python-overlay.nix))
-    (import (path ++ /nix/overlay.nix))
+    (import "${jupyterWithPath}/nix/python-overlay.nix")
+    (import "${jupyterWithPath}/nix/overlay.nix")
   ];
 
+  # Your Nixpkgs snapshot, with JupyterWith packages.
   pkgs = import <nixpkgs> { inherit overlays; };
+
+  # From here, everything happens as in other examples.
+  jupyter = pkgs.jupyterWith;
+
+  jupyterEnvironment =
+    jupyter.jupyterlabWith {
+    };
 in
-  pkgs.jupyterWith;
+  jupyterEnvironment.env
 ```
 
 ## Contributing
