@@ -11,12 +11,10 @@ So, run command `Install_iJulia` to install `Ijulia` before you launch `Jupyter 
 ```nix
 ## for buildEnv
  paths = [
-           iJulia.InstalliJulia
-           julia_wrapped
-           iJulia.Install_JuliaCUDA
+           iJulia.runtimePackages
           ];
  ##or nix-shell BuildInputs
- buildInputs = [ iJulia.InstalliJulia julia_wrapped iJulia.Install_JuliaCUDA ]
+ buildInputs = [ iJulia.runtimePackages ]
 ```
 
 The IJulia kernel can be used as follows:
