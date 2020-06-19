@@ -75,17 +75,33 @@ cachix use jupyterwith
 
 ### Using JupyterLab extensions
 
-Lab extensions can be added by generating a JupyterLab frontend directory.
+Lab extensions can be used with JupyterWith by generating a JupyterLab frontend
+directory. This is so for two reasons:
+
+- Jupyter expects this folder to be mutable, so extensions can be turned on and
+  off. This makes it impossible for it to be in the Nix store and be completely
+  useful.
+
+- Jupyter manages its own packages, which is hard to do deterministically. It
+  is easier to just manage extensions manually for the moment.
+
 This can be done by running `nix-shell` from the folder with the `shell.nix`
 file and then using the `generate-directory` executable that is available from
 inside the shell.
 
 ``` bash
 $ generate-directory [EXTENSIONS]
+```
+
+That is, if you want to install the `jupyterlab-ihaskell` and
+`jupyterlab_boken` extensions, you can do:
+
+```
 $ generate-directory jupyterlab-ihaskell jupyterlab_bokeh
 ```
 
-This will generate a folder called `jupyterlab` that can then be passed to
+This will generate a folder called `jupyterlab` (this name is always the same,
+and it is not configurable for the moment). This folder can then be passed to
 `jupyterWith`. With extensions, the example above becomes:
 
 ``` nix
@@ -114,6 +130,11 @@ let
 in
   jupyterEnvironment.env
 ```
+
+After the folder is generated, it can be manipulated as a [regular Jupyter
+folder](https://jupyterlab.readthedocs.io/en/stable/user/extensions.html#advanced-usage).
+Take a look at the source of the [`generateDirectory`](lib/directory.nix)
+function for more advanced usage.
 
 #### Impure generator
 
