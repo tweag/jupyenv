@@ -12,5 +12,5 @@
   xeusCling = callPackage ./xeus-cling;
   iJavascript = callPackage ./ijavascript;
   gophernotes = callPackage ./gophernotes;
-  rust = callPackage ./rust;
+  rustWith = callPackage ./rust;
 }

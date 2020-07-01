@@ -53,6 +53,9 @@ let
         #    name = "test";
         #})
 
+        ( rustWith {
+            name = "test";
+        })
       ];
     };
 
