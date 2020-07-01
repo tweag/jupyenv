@@ -1,8 +1,12 @@
 { stdenv
 , name ? "nixpkgs"
+, packages ? []
 , callPackage
 , evcxr
 , writeScriptBin
+, cargo
+, gcc
+, binutils-unwrapped
 }:
 
 let
@@ -33,5 +37,5 @@ let
 in
   {
     spec = RustKernel;
-    runtimePackages = [];
+    runtimePackages = [ cargo gcc binutils-unwrapped ] ++ packages;
   }
