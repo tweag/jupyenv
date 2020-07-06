@@ -48,6 +48,7 @@ let
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
       --prefix LD_LIBRARY_PATH ":" "${nvidiaVersion}/lib" \
+      --set JULIA_PKG_SERVER pkg.julialang.org \
       --set JULIA_PKGDIR ${directory} \
       --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
        --set CUDA_PATH "${cudaVersion}"
@@ -56,6 +57,7 @@ let
       makeWrapper ${julia_override}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
+      --set JULIA_PKG_SERVER pkg.julialang.org \
       --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
       --set JULIA_PKGDIR ${directory}
          ''
@@ -94,10 +96,10 @@ let
   '';
 
   InstalliJulia = writeScriptBin "Install_iJulia" ''
-     if [ ! -d "${directory}/registries/Genera/" ]; then
-     mkdir -p ${directory}/registries/General && git clone https://github.com/JuliaRegistries/General.git --depth=1 ${directory}/registries/General
-     fi
-     ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.add("IJulia")'
+     ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.update(); Pkg.add("IJulia")'
+     ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.add("MbedTLS")'
+     ## specific a MbedTLS version that fixes the MbedTls(Nix) can not load library
+       ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.pin(PackageSpec(name="MbedTLS", version="0.7.0")); using MbedTLS; using IJulia'
 '';
 
   JuliaKernel = stdenv.mkDerivation {
