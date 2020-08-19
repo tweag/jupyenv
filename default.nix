@@ -69,6 +69,7 @@ in
   { inherit
       jupyterlabWith
       kernels
+      mkBuildExtension
       mkDirectoryWith
       mkDirectoryFromLockFile
       mkDockerImage;

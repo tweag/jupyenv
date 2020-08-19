@@ -3,6 +3,8 @@ let
   jupyter = import jupyterLibPath {
     overlays = [ (import ./overlay.nix) ];
   };
+  nixpkgsPath = jupyterLibPath + "/nix";
+  pkgs = import nixpkgsPath {};
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
       name = "Frames";
@@ -12,12 +14,14 @@ let
       ];
     };
 
+  ihaskell_labextension = import ../ihaskell_labextension.nix { inherit jupyter pkgs; };
+
   jupyterlabWithKernels =
     jupyter.jupyterlabWith {
       kernels = [ ihaskellWithPackages ];
       directory = jupyter.mkDirectoryWith {
         extensions = [
-          "jupyterlab-ihaskell"
+        ihaskell_labextension
         ];
       };
     };
