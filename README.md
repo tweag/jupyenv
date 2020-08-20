@@ -169,6 +169,20 @@ disabled:
 
 For this to work, your user must be in the `nix.trustedUsers` list in `configuration.nix`.
 
+The
+[JupyterLab docs say that the `extensions` list elements can be](https://jupyterlab.readthedocs.io/en/stable/user/extensions.html#installing-extensions)
+ “the name of a valid JupyterLab
+extension npm package on npm,” or “can be a local directory containing
+the extension, a gzipped tarball, or a URL to a gzipped tarball.”
+
+For a “local directory containing the extension” use the impure `mkBuildExtension` function, for example:
+
+```nix
+        extensions = [
+          jupyter.mkBuildExtension "${ihaskellSrc}/ihaskell_labextension"
+        ];
+```
+
 ### Changes to the default package sets
 
 The kernel environments rely on the default package sets that are provided by

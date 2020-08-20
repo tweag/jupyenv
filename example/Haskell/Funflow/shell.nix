@@ -13,12 +13,14 @@ let
       ];
     };
 
+  ihaskell_labextension = import ../ihaskell_labextension.nix { inherit jupyter pkgs; };
+
   jupyterlabWithKernels =
     jupyter.jupyterlabWith {
       kernels = [ ihaskellWithPackages ];
       directory = jupyter.mkDirectoryWith {
         extensions = [
-          "jupyterlab-ihaskell"
+          ihaskell_labextension
         ];
       };
     };
