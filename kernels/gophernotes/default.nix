@@ -6,18 +6,20 @@
 }:
 
 let
+  # gophernotes is available in a newer version of the nixpkgs. Thus, this
+  # package might be used after bumping those.
   gophernotes = buildGoModule rec {
-      name = "gophernotes-${version}";
-      version = "0.7.0";
+    pname = "gophernotes";
+    version = "0.7.1";
 
-      src = fetchFromGitHub {
-        owner = "gopherdata";
-        repo = "gophernotes";
-        rev = "7bdc956a8aceb1ebf3e7a92417aabbe05a6f9f95";
-        sha256 = "00fx5z7zp5yzj8dw9v02b1d1pg07pmrhp7gxkhg5xcndbdd1isgs";
-      };
+    src = fetchFromGitHub {
+      owner = "gopherdata";
+      repo = "gophernotes";
+      rev = "v${version}";
+      sha256 = "0hs92bdrsjqafdkhg2fk3z16h307i32mvbm9f6bb80bgsciysh27";
+    };
 
-      vendorSha256 = "1fn8ayld039p1j5xgrk5a9y72ssks20p10bdac4nill4rqmw7cxk";
+    vendorSha256 = "1ylqf1sx0h2kixnq9f3prn3sha43q3ybd5ay57yy5z79qr8zqvxs";
   };
 
   gophernotesSh = writeScriptBin "gophernotes" ''
