@@ -53,7 +53,7 @@ let
         name = "jupyterlab-shell";
         inputsFrom = extraInputsFrom pkgs;
         buildInputs =
-          [ jupyterlab generateDirectory generateLockFile pkgs.nodejs ] ++
+          [ jupyterlab generateDirectory generateLockFile pkgs.nodejs pkgs.ghc ] ++
           (map (k: k.runtimePackages) kernels) ++
           (extraPackages pkgs);
         shellHook = ''
