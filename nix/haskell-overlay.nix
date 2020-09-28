@@ -4,10 +4,9 @@ let
   ihaskellSrc = pkgs.fetchFromGitHub {
     owner = "gibiansky";
     repo = "IHaskell";
-    rev = "d7dc460a421abaa41e04fe150e264bc2bab5cbad";
-    sha256 = "157mqfprjbjal5mvrqwpgnfvc93fn1pqwwkhfpcs7jm5c34bkv3q";
+    rev = "ef698157f44960566687a308e3455b5ba031eb43";
+    sha256 = "1y054m6fndsjiypsjgmipmhbpp3spj3fw1x53z4qrixkl43mz3mi";
   };
-
   overrides = self: hspkgs:
     let
       callDisplayPackage = name:
