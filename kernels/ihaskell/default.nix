@@ -14,7 +14,7 @@ let
   # ghc as the one used by `haskellPackages`.
   ihaskell = if customIHaskell == null then haskellPackages.ihaskell else customIHaskell;
 
-  ghcEnv = haskellPackages.ghcWithPackages (self: packages self);
+  ghcEnv = haskellPackages.ghcWithPackages (self: [ihaskell] ++ packages self);
 
   ghciBin = writeScriptBin "ghci-${name}" ''
     ${ghcEnv}/bin/ghci "$@"
