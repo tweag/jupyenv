@@ -15,4 +15,4 @@ jobs:
       with:
         name: jupyterwith
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-    - run: nix-build tests -A build
+    - run: nix-build tests -A build -A kernel-tests
