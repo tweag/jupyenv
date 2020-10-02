@@ -94,8 +94,14 @@ let
 
   kernel-tests = {
     # Note: joining these to avoid creating so many "result" directories in the working directory
-    core = pkgs.symlinkJoin {name="test-kernel-paths-core"; paths=(builtins.map test-kernel-path includedKernels);};
-    customIHaskell = pkgs.symlinkJoin {name="test-kernel-paths-ihaskell"; paths=(builtins.map test-kernel-path customIHaskellKernels);};
+    core = pkgs.symlinkJoin {
+      name="test-kernel-paths-core";
+      paths=(builtins.map test-kernel-path includedKernels);
+    };
+    customIHaskell = pkgs.symlinkJoin {
+      name="test-kernel-paths-ihaskell";
+      paths=(builtins.map test-kernel-path customIHaskellKernels);
+    };
   };
-  
+
 in { inherit build build-custom-ihaskell docker shell kernel-tests; }
