@@ -1,27 +1,34 @@
 { writeScriptBin
 , haskellPackages
 , stdenv
+, customIHaskell ? null
 , extraIHaskellFlags ? ""
 , name ? "nixpkgs"
 , packages ? (_:[])
 }:
 
 let
-  ihaskellEnv = haskellPackages.ghcWithPackages (self: [ self.ihaskell ] ++ packages self);
+  # By default we use the ihaskell included in the `haskellPackages` set, but you can 
+  # also specify one explicitely in case the ihaskell you want to use resides somewhere
+  # else. Note that you will likely need an ihaskell which was built using the same
+  # ghc as the one used by `haskellPackages`.
+  ihaskell = if customIHaskell == null then haskellPackages.ihaskell else customIHaskell;
+
+  ghcEnv = haskellPackages.ghcWithPackages (self: [ihaskell] ++ packages self);
 
   ghciBin = writeScriptBin "ghci-${name}" ''
-    ${ihaskellEnv}/bin/ghci "$@"
+    ${ghcEnv}/bin/ghci "$@"
   '';
 
   ghcBin = writeScriptBin "ghc-${name}" ''
-    ${ihaskellEnv}/bin/ghc "$@"
+    ${ghcEnv}/bin/ghc "$@"
   '';
 
   ihaskellSh = writeScriptBin "ihaskell" ''
     #! ${stdenv.shell}
-    export GHC_PACKAGE_PATH="$(echo ${ihaskellEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
-    export PATH="${stdenv.lib.makeBinPath ([ ihaskellEnv ])}:$PATH"
-    ${ihaskellEnv}/bin/ihaskell ${extraIHaskellFlags} -l $(${ihaskellEnv}/bin/ghc --print-libdir) "$@"'';
+    export GHC_PACKAGE_PATH="$(echo ${ghcEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
+    export PATH="${stdenv.lib.makeBinPath ([ ghcEnv ])}:$PATH"
+    ${ihaskell}/bin/ihaskell ${extraIHaskellFlags} -l $(${ghcEnv}/bin/ghc --print-libdir) "$@"'';
 
   kernelFile = {
     display_name = "Haskell - " + name;
@@ -42,7 +49,7 @@ let
     name = "ihaskell-kernel";
     phases = "installPhase";
     src = ./haskell.svg;
-    buildInputs = [ ihaskellEnv ];
+    buildInputs = [ ghcEnv ];
     installPhase = ''
       mkdir -p $out/kernels/ihaskell_${name}
       cp $src $out/kernels/ihaskell_${name}/logo-64x64.svg
