@@ -12,7 +12,7 @@
   };
 
   outputs =
-    inputs@{ self
+    { self
     , nixpkgs
     , ihaskell
     , flake-utils
@@ -54,7 +54,7 @@
             };
           };
 
-        defaultPackage = self.packages."${system}".jupyterEnvironment;
+        defaultPackage = self.packages.${system}.jupyterEnvironment;
       })
     ) //
     {

@@ -8,7 +8,7 @@ with (import ./lib/docker.nix { inherit pkgs; });
 
 let
   # Kernel generators.
-  kernels = pkgs.callPackage ./kernels {};
+  kernelsAvailable = pkgs.callPackage ./kernels {};
   kernelsString = pkgs.lib.concatMapStringsSep ":" (k: "${k.spec}");
 
   # Python version setup.
@@ -16,7 +16,7 @@ let
 
   # Default configuration.
   defaultDirectory = "$out/share/jupyter/lab";
-  defaultKernels = [ (kernels.iPythonWith {}) ];
+  defaultKernels = [ (kernelsAvailable.iPythonWith {}) ];
   defaultExtraPackages = p: [];
   defaultExtraInputsFrom = p: [];
 
@@ -29,8 +29,32 @@ let
     extraJupyterPath ? _: ""
     }:
     let
+      myPython = pkgs.python3.override {
+        packageOverrides = final: prev: {
+          jupyter = prev.jupyter.overridePythonAttrs (oldAttrs: {
+            inherit makeWrapperArgs;
+          });
+          jupyterlab = prev.jupyterlab.overridePythonAttrs (oldAttrs: {
+            inherit makeWrapperArgs;
+          });
+          notebook = prev.notebook.overridePythonAttrs (oldAttrs: {
+            inherit makeWrapperArgs;
+          });
+          jupyter_console = prev.jupyter_console.overridePythonAttrs (oldAttrs: {
+            inherit makeWrapperArgs;
+          });
+        };
+      };
+
+      makeWrapperArgs = [
+        "--set JUPYTERLAB_DIR ${directory}"
+        "--set JUPYTER_PATH ${extraJupyterPath pkgs}:${kernelsString kernels}"
+        "--set PYTHONPATH ${extraJupyterPath pkgs}:${pythonPath}"
+        "--prefix PATH : ${extraPath}"
+      ];
+
       # PYTHONPATH setup for JupyterLab
-      pythonPath = python3.makePythonPath [
+      pythonPath = myPython.pkgs.makePythonPath [
         python3.ipykernel
         python3.jupyter_contrib_core
         python3.jupyter_nbextensions_configurator
@@ -39,42 +63,31 @@ let
       # NodeJS is required for extensions
       extraPath = pkgs.lib.makeBinPath ([ pkgs.nodejs ] ++ extraPackages pkgs);
 
-      # JupyterLab executable wrapped with suitable environment variables.
-      jupyterlab = python3.toPythonModule (
-        python3.jupyterlab.overridePythonAttrs (oldAttrs: {
-          makeWrapperArgs = oldAttrs.makeWrapperArgs or [] ++ [
-            "--set JUPYTERLAB_DIR ${directory}"
-            "--set JUPYTER_PATH ${extraJupyterPath pkgs}:${kernelsString kernels}"
-            "--set PYTHONPATH ${extraJupyterPath pkgs}:${pythonPath}"
-            "--prefix PATH : ${extraPath}"
-          ];
-        })
-      );
-
       # Shell with the appropriate JupyterLab, launching it at startup.
       env = pkgs.mkShell {
         name = "jupyterlab-shell";
         inputsFrom = extraInputsFrom pkgs;
         buildInputs =
-          [ jupyterlab generateDirectory generateLockFile pkgs.nodejs ] ++
+          [ myPython.pkgs.jupyterlab generateDirectory generateLockFile pkgs.nodejs ] ++
           (map (k: k.runtimePackages) kernels) ++
           (extraPackages pkgs);
         shellHook = ''
           export JUPYTER_PATH=${kernelsString kernels}
-          export JUPYTERLAB=${jupyterlab}
+          export JUPYTERLAB=${myPython.pkgs.jupyterlab}
         '';
       };
     in
-      jupyterlab.override (oldAttrs: {
+      myPython.pkgs.jupyterlab.override (oldAttrs: {
         passthru = oldAttrs.passthru or {} // { inherit env; };
       });
 in
   { inherit
       jupyterlabWith
-      kernels
       mkBuildExtension
       mkDirectoryWith
       mkDirectoryFromLockFile
       mkDockerImage;
+
+    kernels = kernelsAvailable;
     nixpkgs = pkgs;
   }
