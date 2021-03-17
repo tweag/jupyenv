@@ -24,7 +24,7 @@ let
 
   gophernotesSh = writeScriptBin "gophernotes" ''
     #! ${stdenv.shell}
-    export PATH="${stdenv.lib.makeBinPath ([ gophernotes ])}:$PATH"
+    export PATH="${lib.makeBinPath ([ gophernotes ])}:$PATH"
     ${gophernotes}/bin/gophernotes "$@"'';
 
   kernelFile = {
