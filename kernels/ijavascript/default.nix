@@ -1,7 +1,6 @@
 { stdenv, callPackage, writeScriptBin, name ? "default" }:
-
 let
-  nodePackages = callPackage ./ijavascript-node {};
+  nodePackages = callPackage ./ijavascript-node { };
 
   iJavascriptEnv = nodePackages."ijavascript-5.2.0";
 
@@ -33,7 +32,7 @@ let
     '';
   };
 in
-  {
-    spec = iJavascriptKernel;
-    runtimePackages = [];
-  }
+{
+  spec = iJavascriptKernel;
+  runtimePackages = [ ];
+}

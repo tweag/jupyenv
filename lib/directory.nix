@@ -1,9 +1,7 @@
 { pkgs }:
-
 let
   jupyter = pkgs.python3Packages.jupyterlab;
 in
-
 {
   generateDirectory = pkgs.writeScriptBin "generate-directory" ''
     if [ $# -eq 0 ]
@@ -64,14 +62,14 @@ in
 
       npm install
       npm run build
-      '';
+    '';
     installPhase = ''
       mkdir -p $out/
       cp -r * $out/
-      '';
+    '';
   };
 
-  mkDirectoryFromLockFile = { yarnlock, packagefile, extensions ? [], sha256 }:
+  mkDirectoryFromLockFile = { yarnlock, packagefile, extensions ? [ ], sha256 }:
     let
       # Should this exist?
       copyExtension = { name, version }: ''
