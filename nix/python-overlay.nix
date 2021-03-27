@@ -2,6 +2,16 @@ _: pkgs:
 let
   packageOverrides = selfPythonPackages: pythonPackages: {
 
+    notebook = (if pkgs.stdenv.isDarwin then
+      pythonPackages.notebook.overridePythonAttrs
+        (_: {
+          patches = [
+            ./disable-check-trash-on-darwin.patch
+          ];
+        }) else
+      pythonPackages.notebook.overrideAttrs (_: { }));
+
+
     jupyterlab = pythonPackages.jupyterlab.overridePythonAttrs (_: {
       doCheck = false;
     });
