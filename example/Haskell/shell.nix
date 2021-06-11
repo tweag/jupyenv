@@ -1,13 +1,13 @@
 let
-  jupyterLibPath = ../../..;
-  jupyter = import jupyterLibPath {};
+  jupyter = import ../.. {};
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
-      name = "Local";
-      packages = p: [
-        (p.callPackage ./my-haskell-package {})
-      ];
-    };
+    name = "Local";
+    packages = p: [
+      (p.callPackage ./my-haskell-package {})
+      p.text
+    ];
+  };
 
   jupyterlabWithKernels =
     jupyter.jupyterlabWith {
