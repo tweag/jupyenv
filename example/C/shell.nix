@@ -1,5 +1,5 @@
 let
-  jupyterLibPath = ../../..;
+  jupyterLibPath = ../..;
   jupyter = import jupyterLibPath {};
 
   jupyterlabWithKernels = jupyter.jupyterlabWith {
