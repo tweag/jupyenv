@@ -1,8 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.6.0)
-      public_suffix (>= 2.0.2, < 4.0)
+    addressable (2.8.0)
+      public_suffix (>= 2.0.2, < 5.0)
     amq-protocol (2.0.1)
     amqp (1.6.0)
       amq-protocol (>= 2.0.1)
@@ -40,11 +40,19 @@ GEM
       data_uri (~> 0.1)
       mimemagic (~> 0.3)
       multi_json (~> 1.11)
-    mimemagic (0.3.3)
+    mimemagic (0.4.3)
+      nokogiri (~> 1)
+      rake
+    mini_portile2 (2.5.3)
     multi_json (1.13.1)
+    nokogiri (1.11.7)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     oj (2.18.1)
     parse-cron (0.1.4)
-    public_suffix (3.0.3)
+    public_suffix (4.0.6)
+    racc (1.5.2)
+    rake (13.0.6)
     rbczmq (1.7.9)
     sensu (1.6.2)
       em-http-request (= 1.1.5)
