@@ -1,0 +1,88 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1623875721,
+        "narHash": "sha256-A8BU7bjS5GirpAUv4QA+QnJ4CceLHkcXdRp4xITDB0s=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "f7e004a55b120c02ecb6219596820fcd32ca8772",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_2": {
+      "locked": {
+        "lastModified": 1623660459,
+        "narHash": "sha256-OTmOsh43po7r5F9s9H6lVCBQ2b0FikWbmiwLbMAGRdw=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "98c8d36b1828009b20f12544214683c7489935a1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "jupyterWith": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "narHash": "sha256-sd9ZA3+BXEY1ZEx4quzdKUakZ1kArGF/5gS0hqEjmnk=",
+        "path": "../../.",
+        "type": "path"
+      },
+      "original": {
+        "path": "../../.",
+        "type": "path"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1623798125,
+        "narHash": "sha256-I6xUuLZWCkdNNvZdNm7P4NtmqMaCI2QHQcrAYvTB3B0=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "c0c5925832c1da45b1100a10ae5c5a55a6952acf",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "release-21.05",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1624583608,
+        "narHash": "sha256-KJ5VB90FXmQAp0B2jNptu9g9rzrZBQFMVqJuoeKMRIg=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "8112fbe212f6086151acb19fe464b00c8ac1aebd",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "release-21.05",
+        "type": "indirect"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "jupyterWith": "jupyterWith",
+        "nixpkgs": "nixpkgs_2"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
