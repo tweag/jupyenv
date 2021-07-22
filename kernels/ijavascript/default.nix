@@ -1,9 +1,14 @@
-{ stdenv, callPackage, writeScriptBin, name ? "default" }:
+{ stdenv
+, lib
+, callPackage
+, writeScriptBin
+, name ? "default"
+}:
 
 let
   nodePackages = callPackage ./ijavascript-node {};
 
-  iJavascriptEnv = nodePackages."ijavascript-5.2.0";
+  iJavascriptEnv = nodePackages.package;
 
   iJavascriptSh = writeScriptBin "ijavascript" ''
     #! ${stdenv.shell}
