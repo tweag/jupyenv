@@ -1,10 +1,10 @@
 let
-  jupyterLibPath = ../../../..;
+  jupyterLibPath = ../..;
   jupyter = import jupyterLibPath {};
 
   jupyterlabWithKernels = jupyter.jupyterlabWith {
     kernels = [
-      (jupyter.kernels.iRWith {
+      (jupyter.kernels.juniperWith {
         name = "ggplot";
         packages = p: with p; [ ggplot2 ];
       })
