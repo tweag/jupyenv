@@ -11,7 +11,7 @@ let
     packages p ++ (with p; [
       ipykernel
     ])
-  )).override (args: { inherit ignoreCollisions;});
+  )).override (args: { inherit ignoreCollisions; });
 
   kernelFile = {
     display_name = "Python3 - ${name}";
