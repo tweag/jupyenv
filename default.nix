@@ -73,4 +73,5 @@ in
       mkDirectoryWith
       mkDirectoryFromLockFile
       mkDockerImage;
+    nixpkgs = pkgs;
   }
