@@ -1,5 +1,8 @@
 {
-  description = "JupyterWith :: Flakes";
+  description = "JupyterWith :: Flakes Template";
+
+  nixConfig.extra-substituters = "https://jupyterwith.cachix.org";
+  nixConfig.extra-trusted-public-keys = "jupyterwith.cachix.org-1:/kDy2B6YEhXGJuNguG1qyqIodMyO4w8KwWH4/vAc7CI=";
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
