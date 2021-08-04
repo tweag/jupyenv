@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, python, wget, fetchFromGitHub, libffi, cacert, git, cmake, llvm, ncurses, zlib, fetchgit }:
+{ stdenv, fetchurl, python, wget, fetchFromGitHub, libffi, cacert, git, cmake, llvm, ncurses, zlib, fetchgit, glibc, makeWrapper }:
 
 stdenv.mkDerivation rec {
   name = "cling";
@@ -6,23 +6,23 @@ stdenv.mkDerivation rec {
   clingSrc = fetchFromGitHub {
     owner = "root-project";
     repo = "cling";
-    rev = "5789f5b2eb14ff8e14e6297fe3a449d0ef794f17";
-    sha256 = "06l0c9p8102prhanhv8xawzq4k8g587d46aykc2y5j7rrzsbs5hs";
+    rev = "3d789b131ae6cb41686fb799f35f8f4760eb2cea";
+    sha256 = "sha256-PLXNnIehHoXfuXPIapFRXLp0+J6Jp44b5xFMideB1qs=";
   };
 
   clangSrc = fetchgit {
     url = "http://root.cern.ch/git/clang.git";
-    rev = "7fd3024be56d751958d68ea3abeca4ab2f89dd91"; # This is the head of the cling-patches branch
-    sha256 = "1ln199gsdvcjaafm2ff4fs31n8w931hiqxqcwrny9q69w6c8fyn9";
+    rev = "7a13d39940cfd2bd1f486cb8b70a4ce09c076222"; # This is the head of the cling-patches branch
+    sha256 = "sha256-x7BxgKQ9X7eocxpz1M3ncfIYjhs/TMRZOYMeEwPa4PE=";
   };
 
   llvmSrc = fetchgit {
     url = "http://root.cern.ch/git/llvm.git";
-    rev = "e0b472e46eb5861570497c2b9efabf96f2d4a485"; # This is the head of the cling-patches branch
-    sha256 = "0yls35vyfcb14wghryss9xsin4cbpgkqckg72czh5jd2w0vjcmbx";
+    rev = "cling-v0.6"; # This is the head of the cling-patches branch
+    sha256 = "sha256-fVUmN+CiyQI/E+dNhue7ixEbdU9a+wwfJ2Ex53cZmno=";
   };
 
-  srcs = [clingSrc llvmSrc clangSrc];
+  srcs = [ clingSrc llvmSrc clangSrc ];
 
   unpackCmd = ''
     mkdir -p ./all
@@ -35,7 +35,7 @@ stdenv.mkDerivation rec {
     fi
   '';
 
-  buildInputs = [python wget cacert git cmake llvm libffi];
+  buildInputs = [ python wget cacert git cmake llvm libffi makeWrapper ];
   propagatedBuildInputs = [ ncurses zlib ];
   configurePhase = "true";
 
@@ -45,10 +45,13 @@ stdenv.mkDerivation rec {
     mkdir -p $out
     mkdir build
     cd build
-    cmake -DCMAKE_INSTALL_PREFIX=$out -DLLVM_ENABLE_FFI=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_INSTALL_UTILS=ON -DCMAKE_BUILD_TYPE=Release ../llvm
-    cmake --build .
+    cmake -DCMAKE_INSTALL_PREFIX=$out -DLLVM_BUILD_TOOLS=Off -DLLVM_ENABLE_FFI=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_INSTALL_UTILS=ON -DCMAKE_BUILD_TYPE=Release ../llvm
+    cmake --build . --config Release --target cling -j $NIX_BUILD_CORES
     cmake --build . --target install
   '';
 
-  installPhase = "echo asdf";
+  postFixup = ''
+    wrapProgram $out/bin/cling \
+    --add-flags "-idirafter ${glibc.dev}/include"
+  '';
 }
