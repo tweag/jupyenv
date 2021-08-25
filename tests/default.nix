@@ -50,11 +50,11 @@ let
     #})
 
     # This is hard to make work. We will work on it later.
-    (xeusCling {
+    (rustWith {
       name = "test";
     })
-
-    (rustWith {
+  ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+    (xeusCling {
       name = "test";
     })
   ];
