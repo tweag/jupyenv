@@ -1,4 +1,4 @@
-{ config ? {}, overlays ? [] }:
+{ config ? { }, overlays ? [ ] }:
 
 let
   defaultOverlays = [
@@ -7,4 +7,4 @@ let
   ];
   overlaysAll = defaultOverlays ++ overlays;
 in
-  import ./nixpkgs.nix { inherit config; overlays=overlaysAll; }
+import ./nixpkgs.nix { config = { allowUnsupportedSystem = true; }; overlays = overlaysAll; }

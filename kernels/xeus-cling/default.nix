@@ -1,5 +1,6 @@
 { writeScriptBin
 , stdenv
+, lib
 , fetchurl
 , python
 , wget
@@ -9,7 +10,13 @@
 , git
 , cmake
 , llvm
+, cppzmq
+, openssl
+, glibc
+, makeWrapper
+, cryptopp
 , ncurses
+, llvmPackages
 , zlib
 , zeromq
 , pkgconfig
@@ -17,12 +24,14 @@
 , pugixml
 , fetchgit
 , name ? "nixpkgs"
-, packages ? (_:[])
+, packages ? (_: [ ])
 }:
 
 let
-  cling = import ./cling.nix {inherit stdenv fetchurl python wget fetchFromGitHub libffi cacert git cmake llvm ncurses zlib fetchgit;};
-  xeusCling = import ./xeusCling.nix {inherit stdenv fetchFromGitHub cmake zeromq pkgconfig libuuid cling pugixml;};
+  cling = import ./cling.nix { inherit stdenv fetchurl python wget fetchFromGitHub libffi cacert git cmake llvm ncurses zlib fetchgit glibc makeWrapper; };
+  xeusCling = import ./xeusCling.nix {
+    inherit stdenv fetchFromGitHub cmake zeromq pkgconfig libuuid cling llvmPackages pugixml llvm cppzmq openssl glibc makeWrapper cryptopp;
+  };
 
   xeusClingSh = writeScriptBin "xeusCling" ''
     #! ${stdenv.shell}
@@ -37,7 +46,7 @@ let
       "-f"
       "{connection_file}"
       "-std=c++11"
-      ];
+    ];
     logo64 = "logo-64x64.svg";
   };
 
@@ -53,7 +62,7 @@ let
     '';
   };
 in
-  {
-    spec = xeusClingKernel;
-    runtimePackages = [];
-  }
+{
+  spec = xeusClingKernel;
+  runtimePackages = [ ];
+}
