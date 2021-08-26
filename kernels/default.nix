@@ -13,4 +13,5 @@
   iJavascript = callPackage ./ijavascript;
   gophernotes = callPackage ./gophernotes;
   rustWith = callPackage ./rust;
+  ocamlWith = callPackage ./ocaml;
 }
