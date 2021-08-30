@@ -8,7 +8,6 @@
 }:
 
 let 
-  pkgs = import <nixpkgs> {};
   kernelSpecFile = pkgs.writeText "kernel.json" (builtins.toJSON {
     argv = [
     "{out-path}/bin/ocaml-jupyter-kernel" 
