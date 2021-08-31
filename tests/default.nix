@@ -53,6 +53,9 @@ let
     (rustWith {
       name = "test";
     })
+    (ocamlWith {
+      name = "test";
+    })
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     (xeusCling {
       name = "test";
