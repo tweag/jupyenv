@@ -17,11 +17,7 @@
         pkgs = import nixpkgs
           {
             inherit system;
-            overlays = [
-              self.overlay
-              (import ./nix/haskell-overlay.nix)
-              (import ./nix/python-overlay.nix)
-            ];
+            overlays = nixpkgs.lib.attrValues self.overlays;
           };
       in
       rec {
@@ -41,6 +37,10 @@
       )
     ) //
     {
-      overlay = final: prev: { jupyterWith = prev.callPackage ./. { pkgs = final; }; };
+      overlays = {
+        jupyterWith = final: prev: { jupyterWith = prev.callPackage ./. { pkgs = final; }; };
+        haskell = import ./nix/haskell-overlay.nix;
+        python = import ./nix/python-overlay.nix;
+      };
     };
 }
