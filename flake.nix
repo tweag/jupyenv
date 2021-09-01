@@ -11,7 +11,7 @@
     , nixpkgs
     , flake-utils
     }:
-    (flake-utils.lib.eachDefaultSystem
+    (flake-utils.lib.eachSystem ["x86_64-linux"]
       (system:
       let
         pkgs = import nixpkgs
@@ -21,7 +21,10 @@
           };
       in
       rec {
-        defaultPackage = pkgs.jupyterWith;
+
+        defaultPackage = pkgs.jupyterWith.jupyterlabWith {
+          kernels = [];
+        };
 
         lib = {
           inherit (pkgs.jupyterWith)
