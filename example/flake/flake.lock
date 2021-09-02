@@ -36,7 +36,7 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "narHash": "sha256-+wbpRn3AjBUR/GJbBJ/ti2qnOmpuzmAjdLN+djPUiCE=",
+        "narHash": "sha256-OUfD1rMoUsoESbOgpVtNtuIz5dUD8dJM/ktPNEzh++E=",
         "path": "../../.",
         "type": "path"
       },

@@ -11,21 +11,20 @@
     , nixpkgs
     , flake-utils
     }:
-    (flake-utils.lib.eachDefaultSystem
+    (flake-utils.lib.eachSystem ["x86_64-linux"]
       (system:
       let
         pkgs = import nixpkgs
           {
             inherit system;
-            overlays = [
-              self.overlay
-              (import ./nix/haskell-overlay.nix)
-              (import ./nix/python-overlay.nix)
-            ];
+            overlays = nixpkgs.lib.attrValues self.overlays;
           };
       in
       rec {
-        defaultPackage = pkgs.jupyterWith;
+
+        defaultPackage = pkgs.jupyterWith.jupyterlabWith {
+          kernels = [];
+        };
 
         lib = {
           inherit (pkgs.jupyterWith)
@@ -41,6 +40,10 @@
       )
     ) //
     {
-      overlay = final: prev: { jupyterWith = prev.callPackage ./. { pkgs = final; }; };
+      overlays = {
+        jupyterWith = final: prev: { jupyterWith = prev.callPackage ./. { pkgs = final; }; };
+        haskell = import ./nix/haskell-overlay.nix;
+        python = import ./nix/python-overlay.nix;
+      };
     };
 }

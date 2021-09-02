@@ -1,7 +1,7 @@
-_: pkgs:
+final: prev:
 
 let
-  ihaskellSrc = pkgs.fetchFromGitHub {
+  ihaskellSrc = prev.fetchFromGitHub {
     owner = "gibiansky";
     repo = "IHaskell";
     rev = "4e1a2a132c165e1669faaeac355eb853e1f628a3";
@@ -15,15 +15,15 @@ let
           "ihaskell-${name}"
           "${ihaskellSrc}/ihaskell-display/ihaskell-${name}"
           {};
-      dontCheck = pkgs.haskell.lib.dontCheck;
-      dontHaddock = pkgs.haskell.lib.dontHaddock;
+      dontCheck = prev.haskell.lib.dontCheck;
+      dontHaddock = prev.haskell.lib.dontHaddock;
     in
     {
-      ihaskell = pkgs.haskell.lib.overrideCabal
+      ihaskell = prev.haskell.lib.overrideCabal
         (hspkgs.callCabal2nix "ihaskell" ihaskellSrc {})
         (_drv: {
           preCheck = ''
-            export HOME=$(${pkgs.pkgs.coreutils}/bin/mktemp -d)
+            export HOME=$(${prev.pkgs.coreutils}/bin/mktemp -d)
             export PATH=$PWD/dist/build/ihaskell:$PATH
             export GHC_PACKAGE_PATH=$PWD/dist/package.conf.inplace/:$GHC_PACKAGE_PATH
           '';
@@ -61,9 +61,9 @@ let
 in
 
 {
-  haskellPackages = pkgs.haskellPackages.override (old: {
+  haskellPackages = prev.haskellPackages.override (old: {
     overrides =
-      pkgs.lib.composeExtensions
+      prev.lib.composeExtensions
         (old.overrides or (_: _: {}))
         overrides;
   });

@@ -1,4 +1,7 @@
-{ overlays ? []
+{ overlays ? [
+              (import ./nix/haskell-overlay.nix)
+              (import ./nix/python-overlay.nix)
+             ]
 , config ? {}
 , pkgs ? import ./nix { inherit config overlays; }
 }:

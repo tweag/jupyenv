@@ -1,4 +1,4 @@
-_: pkgs:
+final: prev:
 let
   packageOverrides = selfPythonPackages: pythonPackages: {
 
@@ -53,7 +53,7 @@ let
         sha256 = "e4b34235b42761cfc3ff08386675b2362e5a97fb926c135eee782661db08a140";
       };
 
-      meta = with pkgs.lib; {
+      meta = with prev.lib; {
         description = "Minimalistic C kernel for Jupyter";
         homepage = https://github.com/brendanrius/jupyter-c-kernel/;
         license = licenses.mit;
@@ -65,9 +65,9 @@ let
 in
 
 {
-  python3 = pkgs.python3.override (old: {
+  python3 = prev.python3.override (old: {
     packageOverrides =
-      pkgs.lib.composeExtensions
+      prev.lib.composeExtensions
         (old.packageOverrides or (_: _: {}))
         packageOverrides;
   });
