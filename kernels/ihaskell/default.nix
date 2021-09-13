@@ -49,11 +49,12 @@ let
   ihaskellKernel = stdenv.mkDerivation {
     name = "ihaskell-kernel";
     phases = "installPhase";
-    src = ./haskell.svg;
+    src = ./.;
     buildInputs = [ ghcEnv ];
     installPhase = ''
       mkdir -p $out/kernels/ihaskell_${name}
-      cp $src $out/kernels/ihaskell_${name}/logo-64x64.svg
+      cp $src/haskell.svg $out/kernels/ihaskell_${name}/logo-64x64.svg
+      cp $src/kernel.js $out/kernels/ihaskell_${name}/kernel.js
       echo '${builtins.toJSON kernelFile}' > $out/kernels/ihaskell_${name}/kernel.json
     '';
   };
