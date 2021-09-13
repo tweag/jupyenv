@@ -1,4 +1,5 @@
 { writeScriptBin
+, buildEnv
 , haskellPackages
 , stdenv
 , lib
@@ -46,8 +47,8 @@ let
     logo64 = "logo-64x64.svg";
   };
 
-  ihaskellKernel = stdenv.mkDerivation {
-    name = "ihaskell-kernel";
+  ihaskellNotebookKernel = stdenv.mkDerivation {
+    name = "ihaskell-notebook-kernel";
     phases = "installPhase";
     src = ./.;
     buildInputs = [ ghcEnv ];
@@ -57,6 +58,21 @@ let
       cp $src/kernel.js $out/kernels/ihaskell_${name}/kernel.js
       echo '${builtins.toJSON kernelFile}' > $out/kernels/ihaskell_${name}/kernel.json
     '';
+  };
+
+  ihaskellLabextensionPrebuilt = stdenv.mkDerivation {
+    name = "jupyterlab-ihaskell";
+    phases = "installPhase";
+    src = ./jupyterlab-ihaskell;
+    installPhase = ''
+      mkdir -p $out/labextensions/jupyterlab-ihaskell
+      cp -R $src/* $out/labextensions/jupyterlab-ihaskell
+    '';
+  };
+
+  ihaskellKernel = buildEnv {
+    name = "ihaskell-kernel";
+    paths = [ ihaskellNotebookKernel ihaskellLabextensionPrebuilt ];
   };
 in
   {

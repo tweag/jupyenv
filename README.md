@@ -44,7 +44,6 @@ let
   };
 
   iHaskell = jupyter.kernels.iHaskellWith {
-    extraIHaskellFlags = "--codemirror Haskell";  # for jupyterlab syntax highlighting
     name = "haskell";
     packages = p: with p; [ hvega formatting ];
   };
