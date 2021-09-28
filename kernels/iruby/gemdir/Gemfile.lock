@@ -43,10 +43,10 @@ GEM
     mimemagic (0.4.3)
       nokogiri (~> 1)
       rake
-    mini_portile2 (2.5.3)
+    mini_portile2 (2.6.1)
     multi_json (1.13.1)
-    nokogiri (1.11.7)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.12.5)
+      mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     oj (2.18.1)
     parse-cron (0.1.4)
