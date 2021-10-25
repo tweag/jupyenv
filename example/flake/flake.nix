@@ -7,7 +7,7 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "nixpkgs/a5d03577f0161c8a6e713b928ca44d9b3feb2c37";
-    jupyterWith = { url = "path:../../."; };
+    jupyterWith.url = github:tweag/jupyterWith;
   };
 
   outputs =
@@ -28,9 +28,27 @@
             allowUnsupportedSystem = true;
           };
         };
-      in
-      rec {
-        devShell = import ./devshell.nix { inherit pkgs; };
+
+        iPython = pkgs.kernels.iPythonWith {
+          name = "Python-data-env";
+          ignoreCollisions = true;
+        };
+
+        iHaskell = pkgs.kernels.iHaskellWith {
+          extraIHaskellFlags = "--codemirror Haskell"; # for jupyterlab syntax highlighting
+          name = "ihaskell-flake";
+        };
+      in {
+        packages = {
+          inherit iPython iHaskell;
+
+          jupyterEnvironment = pkgs.jupyterlabWith {
+              kernels = [ iPython iHaskell ];
+              directory = "./.jupyterlab";
+            };
+        };
+
+        defaultPackage = self.packages.${system}.jupyterEnvironment;
       }
       )
     ) // {
