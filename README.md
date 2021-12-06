@@ -35,7 +35,7 @@ A simple JupyterLab environment with kernels can be defined in a `shell.nix` fil
 let
   jupyter = import (builtins.fetchGit {
     url = https://github.com/tweag/jupyterWith;
-    -- Example working revision, check out the latest one.
+    # Example working revision, check out the latest one.
     rev = "e580ebf867a70237363285ab8630cfe5a20b92d8";
   }) {};
 
