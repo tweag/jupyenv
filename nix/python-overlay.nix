@@ -1,7 +1,7 @@
 final: prev:
 let
   packageOverrides = selfPythonPackages: pythonPackages:
-    (prev.lib.optionalString
+    (prev.lib.optionalAttrs
       prev.stdenv.isDarwin
       {
         notebook = pythonPackages.notebook.overridePythonAttrs (_: {

@@ -7,7 +7,7 @@
       url = github:/teto/flake-compat/support-packages;
       flake = false;
     };
-    nixpkgs.url = "github:nixos/nixpkgs/a5d03577f0161c8a6e713b928ca44d9b3feb2c37";
+    nixpkgs.url = "github:nixos/nixpkgs/release-21.11";
     ihaskell.url = github:gibiansky/IHaskell;
   };
 
@@ -18,7 +18,7 @@
     , flake-utils
     , ...
     }:
-    (flake-utils.lib.eachSystem ["x86_64-linux"]
+    (flake-utils.lib.eachSystem ["x86_64-linux" "x86_64-darwin"]
       (system:
       let
         pkgs = import nixpkgs
