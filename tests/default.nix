@@ -25,6 +25,10 @@ let
     #( iJavascript {
     #   name = "test";
     #})
+    (iJuliaWith {
+      name = "test";
+    })
+
 
     (iPythonWith {
       name = "test";

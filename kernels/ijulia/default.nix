@@ -7,6 +7,7 @@
 , writeScriptBin
 , JULIA_DEPOT_PATH ? "~/.julia"
 , activateDir ? ""
+, rev ? "e8kqU"
 }:
 let
   startupFile = pkgs.writeText "startup.jl" ''
@@ -24,7 +25,7 @@ let
       "-i"
       "--startup-file=yes"
       "--color=yes"
-      "${JULIA_DEPOT_PATH}/packages/IJulia/e8kqU/src/kernel.jl"
+      "${JULIA_DEPOT_PATH}/packages/IJulia/${rev}/src/kernel.jl"
       "{connection_file}"
     ];
 

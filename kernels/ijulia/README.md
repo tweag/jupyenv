@@ -20,28 +20,30 @@ So, run command `Install_iJulia` to install `Ijulia` before you launch `Jupyter 
 The IJulia kernel can be used as follows:
 
 ```nix
-{
-    currentDir = builtins.getEnv "PWD";
-    iJulia = jupyter.kernels.iJuliaWith {
-    name =  "julia";
-    ##JULIA_PKGDIR and JULIA_DEPOT_PATH which are your realpath(or in current project path).
-    # EXAMPLE: or echo $(realpath ./.julia_pkgs) 
-    directory = currentDir + "/.julia_pkgs";
-    ##LD_LIBRARY_PATH that is dependence of LIBRARY's ennvironemt.(For Julia packages)
-    extraPackages = p: with p;[
-    # GZip.jl # Required by DataFrames.jl
-      gzip
-      zlib
-    # HDF5.jl
-     hdf5
-    # Cairo.jl
-    cairo
-    ];
-    # enabke multi-threads
-    NUM_THREADS = 8;
-    ##  enable CUDA support (for Flux.jl package)
-    cuda = true;
-    cudaVersion = pkgs.cudatoolkit_10_2;
-    nvidiaVersion = pkgs.linuxPackages.nvidia_x11;
-  };
+let
+    custom-python-env = pkgs.python3.buildEnv.override
+    {
+      extraLibs = with pkgs.python3Packages; [ xlrd ];
+      ignoreCollisions = true;
+    };
+  in {
+  iJulia =
+    let
+      juliaPackages = builtins.getEnv "PRJ_ROOT" + "/packages/julia/";
+    in
+    jupyterWith.kernels.iJuliaWith rec {
+      name = "Julia-data-env";
+      #Project.toml directory
+      activateDir = juliaPackages;
+      # JuliaPackages directory
+      JULIA_DEPOT_PATH = juliaPackages + "/julia_depot";
+      extraEnv = {
+        #TODO NEXT VERSION or PATCH
+        #https://github.com/JuliaLang/julia/issues/40585#issuecomment-834096490
+        PYTHON = "${custom-python-env}/bin/python";
+      };
+    };
+}
+
+
 ```
