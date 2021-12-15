@@ -25,11 +25,6 @@ let
     #( iJavascript {
     #   name = "test";
     #})
-    (iJuliaWith {
-      name = "test";
-    })
-
-
     (iPythonWith {
       name = "test";
     })
@@ -62,6 +57,9 @@ let
     })
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     (xeusCling {
+      name = "test";
+    })
+    (iJuliaWith {
       name = "test";
     })
   ];

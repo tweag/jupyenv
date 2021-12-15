@@ -8,6 +8,7 @@
 , JULIA_DEPOT_PATH ? "~/.julia"
 , activateDir ? ""
 , rev ? "e8kqU"
+, package ? pkgs.julia_16-bin
 }:
 let
   startupFile = pkgs.writeText "startup.jl" ''
@@ -19,7 +20,7 @@ let
     display_name = "Julia - ${name}";
     language = "julia";
     argv = [
-      "${pkgs.julia_16-bin}/bin/julia"
+      "${package}/bin/julia"
       "-L"
       "${startupFile}"
       "-i"
@@ -51,6 +52,6 @@ in
 {
   spec = JuliaKernel;
   runtimePackages = [
-    pkgs.julia_16-bin
+    package
   ];
 }
