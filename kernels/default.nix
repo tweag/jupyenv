@@ -9,6 +9,7 @@
   iNixKernel = callPackage ./inix;
   cKernelWith = callPackage ./ckernel;
   ansibleKernel = callPackage ./ansible-kernel;
+  bashKernel = callPackage ./bash-kernel;
   xeusCling = callPackage ./xeus-cling;
   iJavascript = callPackage ./ijavascript;
   gophernotes = callPackage ./gophernotes;

@@ -9,6 +9,10 @@ let
       name = "test";
     })
 
+    (bashKernel {
+      name = "test";
+    })
+
     (cKernelWith {
       name = "test";
     })
