@@ -2,11 +2,11 @@
   "nodes": {
     "flake-utils": {
       "locked": {
-        "lastModified": 1623875721,
-        "narHash": "sha256-A8BU7bjS5GirpAUv4QA+QnJ4CceLHkcXdRp4xITDB0s=",
+        "lastModified": 1634851050,
+        "narHash": "sha256-N83GlSGPJJdcqhUxSCS/WwW5pksYf3VP1M13cDRTSVA=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "f7e004a55b120c02ecb6219596820fcd32ca8772",
+        "rev": "c91f3de5adaf1de973b797ef7485e441a65b8935",
         "type": "github"
       },
       "original": {
@@ -36,13 +36,17 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "narHash": "sha256-OUfD1rMoUsoESbOgpVtNtuIz5dUD8dJM/ktPNEzh++E=",
-        "path": "../../.",
-        "type": "path"
+        "lastModified": 1632811339,
+        "narHash": "sha256-tnYHyxjDwn2vdELhRXrbi1J6SQ8m7VgCuw8O8HrJ8/o=",
+        "owner": "tweag",
+        "repo": "jupyterWith",
+        "rev": "73bdac9ca036c0303fc3a487129e23f9c4ad0bcf",
+        "type": "github"
       },
       "original": {
-        "path": "../../.",
-        "type": "path"
+        "owner": "tweag",
+        "repo": "jupyterWith",
+        "type": "github"
       }
     },
     "nixpkgs": {

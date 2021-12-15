@@ -1,7 +1,32 @@
 final: prev:
 let
-  packageOverrides = selfPythonPackages: pythonPackages: {
+  packageOverrides = selfPythonPackages: pythonPackages:
+    (prev.lib.optionalAttrs
+      prev.stdenv.isDarwin
+      {
+        notebook = pythonPackages.notebook.overridePythonAttrs (_: {
+          doCheck = false;
+        });
+        jupyter_server = pythonPackages.jupyter_server.overridePythonAttrs (_: {
+          doCheck = false;
+        });
 
+        send2trash = pythonPackages.send2trash.overridePythonAttrs
+          (_: {
+            version = "1.8";
+            doCheck = false;
+            src = prev.fetchFromGitHub
+              {
+                owner = "arsenetar";
+                repo = "send2trash";
+                rev = "484913ba0f024caf0fdac462f9b608d2b06d7c38";
+                sha256 = "sha256-HZeN/kpisPRrVwg1xGGUjxspztZKRbacGY5gpa537cw=";
+              };
+            preConfigure = ''
+              sed -i  's|find_library("Foundation")|"/System/Library/Frameworks/Foundation.framework/Versions/C/Resources/BridgeSupport/Foundation.dylib"|g' send2trash/plat_osx_ctypes.py
+            '';
+          });
+      }) // {
     jupyterlab = pythonPackages.jupyterlab.overridePythonAttrs (_:{
       doCheck = false;
     });
