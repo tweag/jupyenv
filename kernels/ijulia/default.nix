@@ -14,7 +14,15 @@ let
   startupFile = pkgs.writeText "startup.jl" ''
     import Pkg
     Pkg.activate("${activateDir}")
+    Pkg.update()
     Pkg.instantiate()
+  '';
+  activateJuliaPkg = writeScriptBin "activateJuliaPkg" ''
+    export JULIA_DEPOT_PATH=${JULIA_DEPOT_PATH}
+    julia -L ${startupFile} -e 'println("Initializating DONE")'
+  '';
+  juliaStartup = writeScriptBin "juliaStartup" ''
+    julia -L ${startupFile}
   '';
   kernelFile = {
     display_name = "Julia - ${name}";
@@ -53,5 +61,7 @@ in
   spec = JuliaKernel;
   runtimePackages = [
     package
+    activateJuliaPkg
+    juliaStartup
   ];
 }
