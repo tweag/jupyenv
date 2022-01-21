@@ -37,10 +37,9 @@ let
       name = "test";
     })
 
-    # Fails on MacOS.
-    #( iRubyWith {
-    #    name = "test";
-    #})
+    (iRubyWith {
+      name = "test";
+    })
 
     # Juniper has been removed from rPackages for some reason.
     #( juniperWith {
