@@ -15,4 +15,6 @@ jobs:
       with:
         name: jupyterwith
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+    - name: Setup upterm session
+      uses: lhotari/action-upterm@v1
     - run: nix-build tests -A build -A kernel-tests.core

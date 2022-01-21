@@ -15,7 +15,10 @@ let
       makeWrapperArgs = oldAttrs.makeWrapperArgs or [] ++ [
        "--add-flags '--KernelSpecManager.ensure_native_kernel=False'"
       ];
-    });
+    } // (prev.lib.optionalAttrs prev.stdenv.isDarwin {
+        doCheck = false;
+      })
+    );
 
     jupyter_server = pythonPackages.jupyter_server.overridePythonAttrs (oldAttrs:
       prev.lib.optionalAttrs prev.stdenv.isDarwin {
