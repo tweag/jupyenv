@@ -15,10 +15,7 @@ let
       makeWrapperArgs = oldAttrs.makeWrapperArgs or [] ++ [
        "--add-flags '--KernelSpecManager.ensure_native_kernel=False'"
       ];
-    } // (prev.lib.optionalAttrs prev.stdenv.isDarwin {
-        doCheck = false;
-      })
-    );
+    });
 
     jupyter_server = pythonPackages.jupyter_server.overridePythonAttrs (oldAttrs:
       prev.lib.optionalAttrs prev.stdenv.isDarwin {
@@ -50,10 +47,6 @@ let
       doCheck = false;
     });
 
-    nbconvert = pythonPackages.nbconvert.overridePythonAttrs (_:{
-      doCheck = false;
-    });
-
     jupyter_contrib_core = pythonPackages.buildPythonPackage rec {
       pname = "jupyter_contrib_core";
       version = "0.3.3";
@@ -61,10 +54,9 @@ let
         inherit pname version;
         sha256 = "e65bc0e932ff31801003cef160a4665f2812efe26a53801925a634735e9a5794";
       };
-      doCheck = false;  # too much
       propagatedBuildInputs = [
         pythonPackages.traitlets
-        pythonPackages.notebook
+        selfPythonPackages.notebook
         pythonPackages.tornado
         ];
     };
@@ -80,7 +72,6 @@ let
         selfPythonPackages.jupyter_contrib_core
         pythonPackages.pyyaml
         ];
-      doCheck = false;  # too much
     };
 
     jupyter_c_kernel = pythonPackages.buildPythonPackage rec {
