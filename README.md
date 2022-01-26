@@ -1,6 +1,6 @@
 # JupyterWith
 
-![jupyterWith kernels](kernels.png)
+![jupyterWith kernels](kernels2.png)
 
 This repository provides a Nix-based framework for the definition of
 declarative and reproducible Jupyter environments. These environments
@@ -17,7 +17,6 @@ These kernels are currently included by default:
 - [IHaskell](https://github.com/gibiansky/IHaskell) (long build time)
 - [CKernel](https://github.com/brendan-rius/jupyter-c-kernel)
 - [IRuby](https://github.com/SciRuby/iruby)
-- [Juniper RKernel](https://github.com/JuniperKernel/JuniperKernel) (limited jupyterlab support)
 - [IRkernel](https://github.com/IRkernel/IRkernel)
 - [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
 - [Xeus-Cling CPP](https://github.com/QuantStack/xeus-cling) (experimental, not yet configurable with packages, long build time)
