@@ -1,6 +1,6 @@
 # JupyterWith
 
-![jupyterWith kernels](kernels2.png)
+![jupyterWith kernels](kernels.png)
 
 This repository provides a Nix-based framework for the definition of
 declarative and reproducible Jupyter environments. These environments
@@ -13,15 +13,20 @@ reproducible package.
 
 These kernels are currently included by default:
 
-- [IPython](https://github.com/ipython/ipykernel)
-- [IHaskell](https://github.com/gibiansky/IHaskell) (long build time)
-- [CKernel](https://github.com/brendan-rius/jupyter-c-kernel)
-- [IRuby](https://github.com/SciRuby/iruby)
-- [IRkernel](https://github.com/IRkernel/IRkernel)
-- [Ansible Kernel](https://github.com/ansible/ansible-jupyter-kernel)
-- [Xeus-Cling CPP](https://github.com/QuantStack/xeus-cling) (experimental, not yet configurable with packages, long build time)
-- [IJavascript](https://github.com/n-riesco/ijavascript) (not yet configurable with packages)
-- [gophernotes](https://github.com/gopherdata/gophernotes) (not yet configurable with packages)
+- [Ansible kernel](https://github.com/ansible/ansible-jupyter-kernel)
+- [Bash kernel](https://github.com/takluyver/bash_kernel)
+- [C kernel](https://github.com/brendan-rius/jupyter-c-kernel)
+- [C++ kernel (Xeus-Cling)](https://github.com/QuantStack/xeus-cling) (experimental, not yet configurable with packages, long build time)
+- [Go kernel (gophernotes)](https://github.com/gopherdata/gophernotes) (not yet configurable with packages)
+- [Haskell kernel (IHaskell)](https://github.com/gibiansky/IHaskell) (long build time)
+- [Javascript kernel (ijavascript)](https://github.com/n-riesco/ijavascript) (not yet configurable with packages)
+- [Julia kernel (IJulia.jl)](https://github.com/JuliaLang/IJulia.jl)
+- [Nix Kernel](https://github.com/corps/nix-kernel)
+- [OCaml kernel](https://github.com/akabe/ocaml-jupyter)
+- [Python kernel (ipykernel)](https://github.com/ipython/ipykernel)
+- [R kernel (IRkernel)](https://github.com/IRkernel/IRkernel)
+- [Ruby kernel (iruby)](https://github.com/SciRuby/iruby)
+- [Rust kernel (evcxr)](https://github.com/google/evcxr)
 
 Example notebooks are [here](example).
 
