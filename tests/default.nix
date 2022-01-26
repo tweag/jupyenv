@@ -25,10 +25,9 @@ let
       name = "test";
     })
 
-    # Doesn't build without a nmp install due to zeromq. Needs sandbox off.
-    #( iJavascript {
-    #   name = "test";
-    #})
+    (iJavascript {
+      name = "test";
+    })
 
     (iPythonWith {
       name = "test";
