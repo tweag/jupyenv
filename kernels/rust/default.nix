@@ -11,7 +11,7 @@
 
 let
   kernelFile = {
-    display_name = "Rust - ${name}";
+    display_name = "Rust" + (if name=="" then "" else " - ${name}");
     language = "Rust";
     argv = [
       "${evcxr}/bin/evcxr_jupyter"

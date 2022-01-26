@@ -39,7 +39,7 @@ let
     ${xeusCling}/bin/xeus-cling "$@"'';
 
   kernelFile = {
-    display_name = "C++ - " + name;
+    display_name = "C++" + (if name=="" then "" else " - ${name}");
     language = "C++11";
     argv = [
       "${xeusClingSh}/bin/xeusCling"

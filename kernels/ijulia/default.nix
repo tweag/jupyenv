@@ -25,7 +25,7 @@ let
     julia -L ${startupFile}
   '';
   kernelFile = {
-    display_name = "Julia - ${name}";
+    display_name = "Julia" + (if name=="" then "" else " - ${name}");
     language = "julia";
     argv = [
       "${package}/bin/julia"

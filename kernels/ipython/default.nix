@@ -14,7 +14,7 @@ let
   )).override (args: { inherit ignoreCollisions; });
 
   kernelFile = {
-    display_name = "Python3 - ${name}";
+    display_name = "Python3" + (if name=="" then "" else " - ${name}");
     language = "python";
     argv = [
       "${kernelEnv.interpreter}"

@@ -16,7 +16,7 @@ let
       "-f"
       "{connection_file}"
     ];
-    display_name = "C - " + name;
+    display_name = "C" + (if name=="" then "" else " - ${name}");
     language = "c";
     logo64 = "logo-64x64.svg";
   };

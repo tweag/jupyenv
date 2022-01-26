@@ -20,7 +20,7 @@ let
     "--connection-file"
     "{connection_file}"
     ];
-    display_name = "OCaml - ${name}";
+    display_name = "OCaml" + (if name=="" then "" else " - ${name}");
     language = "OCaml";
   });
   OcamlKernel = ocamlPackages.buildDunePackage rec {

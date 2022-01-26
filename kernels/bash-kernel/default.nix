@@ -19,7 +19,7 @@ let
       "{connection_file}"
     ];
     codemirror_mode = "shell";
-    display_name = "Bash - " + name;
+    display_name = "Bash" + (if name=="" then "" else " - ${name}");
     language = "bash";
     logo64 = "logo-64x64.svg";
   };

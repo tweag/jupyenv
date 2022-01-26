@@ -33,7 +33,7 @@ let
     ${ihaskell}/bin/ihaskell ${extraIHaskellFlags} -l $(${ghcEnv}/bin/ghc --print-libdir) "$@"'';
 
   kernelFile = {
-    display_name = "Haskell - " + name;
+    display_name = "Haskell" + (if name=="" then "" else " - ${name}");
     language = "haskell";
     argv = [
       "${ihaskellSh}/bin/ihaskell"
