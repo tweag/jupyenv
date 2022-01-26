@@ -1,7 +1,4 @@
-{ overlays ? [
-              (import ./nix/haskell-overlay.nix)
-              (import ./nix/python-overlay.nix)
-             ]
+{ overlays ? []
 , config ? {}
 , pkgs ? import ./nix { inherit config overlays; }
 }:
@@ -43,7 +40,7 @@ let
       # JupyterLab executable wrapped with suitable environment variables.
       jupyterlab = python3.toPythonModule (
         python3.jupyterlab.overridePythonAttrs (oldAttrs: {
-          makeWrapperArgs = [
+          makeWrapperArgs = oldAttrs.makeWrapperArgs or [] ++ [
             "--set JUPYTERLAB_DIR ${directory}"
             "--set JUPYTER_PATH ${extraJupyterPath pkgs}:${kernelsString kernels}"
             "--set PYTHONPATH ${extraJupyterPath pkgs}:${pythonPath}"
