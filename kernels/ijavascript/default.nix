@@ -1,19 +1,18 @@
 { stdenv
 , lib
 , callPackage
+, nodePackages
 , writeScriptBin
 , name ? "default"
 }:
 
 let
-  nodePackages = callPackage ./ijavascript-node {};
-
-  iJavascriptEnv = nodePackages.package;
+  iJavascriptEnv = nodePackages.ijavascript;
 
   iJavascriptSh = writeScriptBin "ijavascript" ''
     #! ${stdenv.shell}
     export PATH="${lib.makeBinPath ([ iJavascriptEnv ])}:$PATH"
-    ${iJavascriptEnv}/lib/node_modules/ijavascript/lib/kernel.js "$@"
+    ${iJavascriptEnv}/bin/ijskernel "$@"
   '';
 
   kernelFile = {
@@ -29,7 +28,6 @@ let
   iJavascriptKernel = stdenv.mkDerivation {
     name = "ijavascript-kernel";
     src = ./javascript.png;
-    buildInputs = [ iJavascriptEnv ];
     phases = "installPhase";
     installPhase = ''
       mkdir -p $out/kernels/ijavascript_${name}
