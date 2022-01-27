@@ -42,11 +42,6 @@ let
       name = "test";
     })
 
-    # Juniper has been removed from rPackages for some reason.
-    #( juniperWith {
-    #    name = "test";
-    #})
-
     # Fails on MacOS.
     #( iRWith {
     #    name = "test";

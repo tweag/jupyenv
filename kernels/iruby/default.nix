@@ -14,7 +14,7 @@ let
   pythonEnv = python3.withPackages (p: with p; [ jupyter ipykernel ] );
 
   kernelFile = {
-    display_name = "IRuby - ${name}";
+    display_name = "Ruby" + (if name=="" then "" else " - ${name}");
     language = "ruby";
     argv = [
       "${iRubyEnv}/bin/iruby"

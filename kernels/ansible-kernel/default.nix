@@ -18,7 +18,7 @@ let
       "{connection_file}"
     ];
     codemirror_mode = "yaml";
-    display_name = "Ansible - " + name;
+    display_name = "Ansible" + (if name=="" then "" else " - ${name}");
     language = "ansible";
     logo64 = "logo-64x64.svg";
   };

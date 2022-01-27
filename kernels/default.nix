@@ -2,7 +2,6 @@
 
 {
   iHaskellWith = callPackage ./ihaskell;
-  juniperWith = callPackage ./juniper;
   iRWith = callPackage ./irkernel;
   iPythonWith = callPackage ./ipython;
   iRubyWith = callPackage ./iruby;

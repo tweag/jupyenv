@@ -29,7 +29,7 @@ let
     ${gophernotes}/bin/gophernotes "$@"'';
 
   kernelFile = {
-    display_name = "Go - " + name;
+    display_name = "Go" + (if name=="" then "" else " - ${name}");
     language = "go";
     argv = [
       "${gophernotesSh}/bin/gophernotes"

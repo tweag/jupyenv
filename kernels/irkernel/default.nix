@@ -17,7 +17,7 @@ let
       "--args"
       "{connection_file}"
     ];
-    display_name = "R - " + name;
+    display_name = "R" + (if name=="" then "" else " - ${name}");
     language = "R";
     logo64 = "logo-64x64.png";
   };

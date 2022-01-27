@@ -17,7 +17,7 @@ let
   '';
 
   kernelFile = {
-    display_name = "Javascript - " + name;
+    display_name = "Javascript" + (if name=="" then "" else " - ${name}");
     language = "javascript";
     argv = [
       "${iJavascriptSh}/bin/ijavascript"

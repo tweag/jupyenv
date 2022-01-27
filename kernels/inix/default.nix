@@ -14,7 +14,7 @@ let
   ));
 
   kernelFile = {
-    display_name = "Nix - ${name}";
+    display_name = "Nix" + (if name=="" then "" else " - ${name}");
     language = "Nix";
     argv = [
       "${nix-bin}/bin/nix-kernel"
