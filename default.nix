@@ -36,7 +36,8 @@ let
         python3.jupyter_nbextensions_configurator
         python3.tornado
       ];
-      extraPath = pkgs.lib.makeBinPath (extraPackages pkgs);
+      # NodeJS is required for extensions
+      extraPath = pkgs.lib.makeBinPath ([ pkgs.nodejs ] ++ extraPackages pkgs);
 
       # JupyterLab executable wrapped with suitable environment variables.
       jupyterlab = python3.toPythonModule (
