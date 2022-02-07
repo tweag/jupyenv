@@ -3,18 +3,18 @@ let
   packageOverrides = selfPythonPackages: pythonPackages: {
 
     notebook = pythonPackages.notebook.overridePythonAttrs (oldAttrs: {
-        makeWrapperArgs = oldAttrs.makeWrapperArgs or [] ++ [
-         "--add-flags '--KernelSpecManager.ensure_native_kernel=False'"
-        ];
+        postFixup = ''
+          wrapProgram $out/bin/jupyter-notebook --add-flags '--KernelSpecManager.ensure_native_kernel=False'
+        '';
       } // (prev.lib.optionalAttrs prev.stdenv.isDarwin {
         doCheck = false;
       })
     );
 
     nbclassic = pythonPackages.nbclassic.overridePythonAttrs (oldAttrs: {
-      makeWrapperArgs = oldAttrs.makeWrapperArgs or [] ++ [
-       "--add-flags '--KernelSpecManager.ensure_native_kernel=False'"
-      ];
+      postFixup = ''
+        wrapProgram $out/bin/jupyter-nbclassic --add-flags '--KernelSpecManager.ensure_native_kernel=False'
+      '';
     });
 
     jupyter_server = pythonPackages.jupyter_server.overridePythonAttrs (oldAttrs:
@@ -41,9 +41,9 @@ let
     );
 
     jupyterlab = pythonPackages.jupyterlab.overridePythonAttrs (oldAttrs: {
-      makeWrapperArgs = oldAttrs.makeWrapperArgs or [] ++ [
-       "--add-flags '--KernelSpecManager.ensure_native_kernel=False'"
-      ];
+      postFixup = ''
+        wrapProgram $out/bin/jupyter-lab --add-flags '--KernelSpecManager.ensure_native_kernel=False'
+      '';
       doCheck = false;
     });
 
