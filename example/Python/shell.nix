@@ -1,12 +1,10 @@
 let
-  # Poetry setup for dependencies
-  poetry2nix =  import (builtins.fetchGit {
-    url = https://github.com/nix-community/poetry2nix;
-    rev = "70c6964368406a3494d8b08c3cc37b7bc822b268";
-  }) {};
-  python = poetry2nix.mkPoetryEnv {
+  pkgs = import ../../nix {};
+
+  python = pkgs.poetry2nix.mkPoetryEnv {
     poetrylock = ./my-python-package/poetry.lock;
   };
+
   pyproject =
     builtins.fromTOML (builtins.readFile ./my-python-package/pyproject.toml);
   depNames = builtins.attrNames pyproject.tool.poetry.dependencies;
