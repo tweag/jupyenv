@@ -32,6 +32,8 @@ Example notebooks are [here](example).
 
 ## Getting started
 
+### Using Nix-Shell
+
 [Nix](https://nixos.org/nix/) must be installed in order to use JupyterWith.
 A simple JupyterLab environment with kernels can be defined in a `shell.nix` file such as:
 
@@ -76,6 +78,58 @@ This process can be largely accelerated by using [cachix](https://cachix.org):
 
 ```
 cachix use jupyterwith
+```
+
+### Using Flakes
+
+With Nix flakes (experimental Nix feature) you can automatically pin and update jupyterWith to the latest version.
+An example `flake.nix` file for jupyterWith on x86-64 Linux, executable with `nix run` from the same folder, looks like this:
+
+```
+{
+  description = "JupyterLab Flake";
+
+  inputs = {
+      jupyterWith.url = "github:tweag/jupyterWith";
+  };
+
+  outputs = { self, nixpkgs, jupyterWith }:
+    let
+      notebooks = ./.;
+
+      pkgs = import nixpkgs {
+        system = "x86_64-linux";
+        overlays = nixpkgs.lib.attrValues jupyterWith.overlays;
+        config = {
+          allowUnfree = true;
+        };
+      };
+      
+      iHaskell = jupyter.kernels.iHaskellWith {
+        name = "haskell";
+        packages = p: with p; [ hvega ];
+      }; 
+
+      iPython = pkgs.kernels.iPythonWith {
+        name = "Python-env";
+        packages = p: with p; [ sympy numpy ];
+        ignoreCollisions = true;
+      };
+
+      jupyterEnvironment = pkgs.jupyterlabWith {
+          kernels = [ iPython iHaskell ];
+      };
+    in
+    {
+#      packages.x86_64-linux.jupyterLab = jupyterEnvironment;
+#      defaultPackage.x86_64-linux = jupyterEnvironment;
+      apps.x86_64-linux.jupterlab = {
+          type = "app";
+          program = "${jupyterEnvironment}/bin/jupyter-lab";
+          };
+      defaultApp.x86_64-linux = self.apps.x86_64-linux.jupterlab;
+    };
+}
 ```
 
 ### Using JupyterLab extensions
