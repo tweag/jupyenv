@@ -91,44 +91,33 @@ An example `flake.nix` file for jupyterWith on x86-64 Linux, executable with `ni
 
   inputs = {
       jupyterWith.url = "github:tweag/jupyterWith";
+      flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, jupyterWith }:
-    let
-      notebooks = ./.;
-
-      pkgs = import nixpkgs {
-        system = "x86_64-linux";
-        overlays = nixpkgs.lib.attrValues jupyterWith.overlays;
-        config = {
-          allowUnfree = true;
+  outputs = { self, nixpkgs, jupyterWith, flake-utils }:
+    flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ] (system:
+      let
+        pkgs = import nixpkgs {
+          system = system;
+          overlays = nixpkgs.lib.attrValues jupyterWith.overlays;
         };
-      };
-      
-      iHaskell = jupyter.kernels.iHaskellWith {
-        name = "haskell";
-        packages = p: with p; [ hvega ];
-      }; 
-
-      iPython = pkgs.kernels.iPythonWith {
-        name = "Python-env";
-        packages = p: with p; [ sympy numpy ];
-        ignoreCollisions = true;
-      };
-
-      jupyterEnvironment = pkgs.jupyterlabWith {
-          kernels = [ iPython iHaskell ];
-      };
-    in
-    {
-#      packages.x86_64-linux.jupyterLab = jupyterEnvironment;
-#      defaultPackage.x86_64-linux = jupyterEnvironment;
-      apps.x86_64-linux.jupterlab = {
+        iPython = pkgs.kernels.iPythonWith {
+          name = "Python-env";
+          packages = p: with p; [ sympy numpy ];
+          ignoreCollisions = true;
+        };
+        jupyterEnvironment = pkgs.jupyterlabWith {
+          kernels = [ iPython ];
+        };
+      in rec {
+        apps.jupterlab = {
           type = "app";
           program = "${jupyterEnvironment}/bin/jupyter-lab";
-          };
-      defaultApp.x86_64-linux = self.apps.x86_64-linux.jupterlab;
-    };
+        };
+        defaultApp = apps.jupterlab;
+        devShell = jupyterEnvironment.env;
+      }
+    );
 }
 ```
 
