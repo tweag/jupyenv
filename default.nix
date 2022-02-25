@@ -51,7 +51,13 @@ let
         })
       );
 
-      # Shell with the appropriate JupyterLab, launching it at startup.
+      # Shared shell exports
+      shellExports = ''
+          export JUPYTER_PATH=${kernelsString kernels}
+          export JUPYTERLAB=${jupyterlab}
+      '';
+
+      # Shell with the appropriate JupyterLab
       env = pkgs.mkShell {
         name = "jupyterlab-shell";
         inputsFrom = extraInputsFrom pkgs;
@@ -59,14 +65,17 @@ let
           [ jupyterlab generateDirectory generateLockFile pkgs.nodejs ] ++
           (map (k: k.runtimePackages) kernels) ++
           (extraPackages pkgs);
-        shellHook = ''
-          export JUPYTER_PATH=${kernelsString kernels}
-          export JUPYTERLAB=${jupyterlab}
-        '';
+        shellHook = shellExports;
       };
+
+      # Run lab directly
+      run = pkgs.writeShellScriptBin "jupyterlab" ''
+        ${shellExports}
+        ${jupyterlab}/bin/jupyter-lab --ip=0.0.0.0 --no-browser "$@"
+      '';
     in
       jupyterlab.override (oldAttrs: {
-        passthru = oldAttrs.passthru or {} // { inherit env; };
+        passthru = oldAttrs.passthru or {} // { inherit env run; };
       });
 in
   { inherit
