@@ -1,5 +1,5 @@
 let
-  jupyter = import ../.. {};
+  jupyter = import ../../nix {};
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
     name = "Local";
