@@ -1,4 +1,7 @@
-.ipynb_checkpoints/
+/result*
+
+/.ipynb_checkpoints/
 
 # generated folder of jupyter distribution
-jupyterlab/
+/jupyterlab/
+

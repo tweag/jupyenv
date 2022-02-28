@@ -1,5 +1,3 @@
-_: pkgs:
-
-pkgs // {
-  jupyterWith = import ../. { inherit pkgs; };
+final: prev: rec {
+  jupyterWith = prev.callPackage ./default.nix { pkgs = final; };
 }
