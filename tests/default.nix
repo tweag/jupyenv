@@ -1,6 +1,6 @@
 { pkgs }:
 let
-  custom-ihaskell = import ./custom-ihaskell.nix;
+  custom-ihaskell = import ./custom-ihaskell.nix { inherit pkgs; };
   test-kernel-path = pkgs.callPackage ./test-kernel-path.nix { };
 
   includedKernels = with pkgs.jupyterWith.kernels; [
