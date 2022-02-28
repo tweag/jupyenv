@@ -3,87 +3,54 @@
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-    flake-compat = {
-      url = "github:/teto/flake-compat/support-packages";
-      flake = false;
-    };
     nixpkgs.url = "github:nixos/nixpkgs/release-21.11";
     ihaskell.url = "github:gibiansky/IHaskell";
   };
 
   outputs =
-    inputs@{ self
+    { self
+    , flake-utils
     , nixpkgs
     , ihaskell
-    , flake-utils
-    , ...
     }:
-    (flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ]
-      (system:
+    let
+       SYSTEMS =
+         [ "x86_64-linux"
+           "x86_64-darwin"
+         ];
+       overlays =
+         { jupyterWith = import ./nix/overlay.nix;
+           haskell = (import ./nix/haskell-overlay.nix) ihaskell;
+           python = import ./nix/python-overlay.nix;
+         };
+    in
+    (flake-utils.lib.eachSystem SYSTEMS (system:
       let
-        pkgs = import nixpkgs
-          {
-            inherit system;
-            allowUnsupportedSystem = true;
-            overlays = nixpkgs.lib.attrValues self.overlays;
-            # [ self.overlays.jupyterWith ];
-          };
-        ihaskellOverlay = ihaskell.packages.${system}.ihaskell-env.ihaskellOverlay;
-
-      in
-      {
-
-        packages =
-          let
-            iPython = pkgs.jupyterWith.kernels.iPythonWith {
-              name = "Python-data-env";
-              ignoreCollisions = true;
-            };
-
-            iHaskell = pkgs.jupyterWith.kernels.iHaskellWith {
-              name = "ihaskell-flake";
-              packages = p: with p; [ vector aeson ];
-              extraIHaskellFlags = "--codemirror Haskell"; # for jupyterlab syntax highlighting
-              haskellPackages = pkgs.haskellPackages;
-            };
-
-          in
-          {
-            jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
-              kernels = [ iPython iHaskell ];
-            };
-          };
-
-        defaultPackage = self.packages."${system}".jupyterEnvironment;
-      })
-    ) //
-    {
-      overlays = {
-        jupyterWith = final: prev: rec {
-          jupyterWith = prev.callPackage ./. { pkgs = final; };
-
-          inherit (jupyterWith)
-            jupyterlabWith
-            kernels
-            mkBuildExtension
-            mkDirectoryWith
-            mkDirectoryFromLockFile
-            mkDockerImage
-            ;
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [
+            overlays.jupyterWith
+            overlays.haskell
+            overlays.python
+          ];
         };
-
-        # haskell = import ./nix/haskell-overlay.nix;
-        haskell = final: prev: {
-          haskellPackages = prev.haskellPackages.override (old: {
-            overrides =
-              prev.lib.composeExtensions
-                (old.overrides or (_: _: { }))
-                ihaskell.packages."${prev.system}".ihaskell-env.ihaskellOverlay;
-          });
+        pythonKernel = pkgs.jupyterWith.kernels.iPythonWith {
+          name = "ipython-kernel";
+          ignoreCollisions = true;
         };
-
-        python = import ./nix/python-overlay.nix;
-
-      };
-    };
+        haskellKernel = pkgs.jupyterWith.kernels.iHaskellWith {
+          name = "ihaskell-kernel";
+          packages = p: with p; [ vector aeson ];
+          extraIHaskellFlags = "--codemirror Haskell"; # for jupyterlab syntax highlighting
+          haskellPackages = pkgs.haskellPackages;
+        };
+      in rec {
+        packages = {
+          jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
+            kernels = [ pythonKernel haskellKernel ];
+          };
+        };
+        defaultPackage = packages.jupyterEnvironment;
+      }
+    )) // { inherit overlays; };
 }
