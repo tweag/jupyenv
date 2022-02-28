@@ -1,10 +1,9 @@
-with (import ../. { });
+{ pkgs }:
 let
-  pkgs = import ../nix { };
   custom-ihaskell = import ./custom-ihaskell.nix;
   test-kernel-path = pkgs.callPackage ./test-kernel-path.nix { };
 
-  includedKernels = with kernels; [
+  includedKernels = with pkgs.jupyterWith.kernels; [
     (ansibleKernel {
       name = "test";
     })
@@ -62,7 +61,7 @@ let
     })
   ];
 
-  customIHaskellKernels = with kernels; [
+  customIHaskellKernels = with pkgs.jupyterWith.kernels; [
     # One kernel which uses a custom ihaskell + the nixpkgs haskell package set
     (iHaskellWith {
       name = "test";
@@ -77,12 +76,12 @@ let
   ];
 
   jupyterlab =
-    jupyterlabWith {
+    pkgs.jupyterWith.jupyterlabWith {
       kernels = includedKernels;
     };
 
   jupyterlabCustomIHaskell =
-    jupyterlabWith {
+    pkgs.jupyterWith.jupyterlabWith {
       kernels = customIHaskellKernels;
     };
 
@@ -93,7 +92,7 @@ let
 
   shell = jupyterlab.env;
 
-  docker = mkDockerImage { inherit jupyterlab; };
+  docker = pkgs.jupyterWith.mkDockerImage { inherit jupyterlab; };
 
   kernel-tests = {
     # Note: joining these to avoid creating so many "result" directories in the working directory

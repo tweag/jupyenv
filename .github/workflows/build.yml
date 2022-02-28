@@ -4,8 +4,14 @@ on: [push, pull_request]
 
 jobs:
   build:
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+          - macOS-latest
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform }}
+
     steps:
 
     - uses: actions/checkout@v2.4.0
@@ -17,4 +23,4 @@ jobs:
       with:
         CACHIX_SIGNING_KEY: ${{ secrets.CACHIX_SIGNING_KEY }}
 
-    - run: nix-build tests -A build -A kernel-tests.core
+    - run: nix build .#tests.build .#tests.kernel-tests.core
