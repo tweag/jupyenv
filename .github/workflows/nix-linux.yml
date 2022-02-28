@@ -8,11 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: cachix/install-nix-action@v15
       with:
-        skip_adding_nixpkgs_channel: true
-    - uses: cachix/cachix-action@v10
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
       with:
-        name: jupyterwith
-        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+        CACHIX_SIGNING_KEY: ${{ secrets.CACHIX_SIGNING_KEY }}
+
     - run: nix-build tests -A build -A kernel-tests.core

@@ -21,7 +21,12 @@
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = nixpkgs.lib.attrValues jupyterWith.overlays ++ [ self.overlay ];
+          overlays = [
+            jupyterWith.overlays.jupyterWith
+            jupyterWith.overlays.python
+            jupyterWith.overlays.haskell
+            self.overlay
+          ];
           config = {
             allowBroken = true;
             allowUnfree = true;
