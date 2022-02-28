@@ -34,12 +34,12 @@
           };
         };
 
-        iPython = pkgs.kernels.iPythonWith {
+        iPython = pkgs.jupyterWith.kernels.iPythonWith {
           name = "Python-data-env";
           ignoreCollisions = true;
         };
 
-        iHaskell = pkgs.kernels.iHaskellWith {
+        iHaskell = pkgs.jupyterWith.kernels.iHaskellWith {
           extraIHaskellFlags = "--codemirror Haskell"; # for jupyterlab syntax highlighting
           name = "ihaskell-flake";
         };
@@ -47,7 +47,7 @@
         packages = {
           inherit iPython iHaskell;
 
-          jupyterEnvironment = pkgs.jupyterlabWith {
+          jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
               kernels = [ iPython iHaskell ];
               directory = "./.jupyterlab";
             };

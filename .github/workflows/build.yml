@@ -1,9 +1,9 @@
-name: nix-linux
+name: Main
 
 on: [push, pull_request]
 
 jobs:
-  build:
+  tests:
     strategy:
       matrix:
         platform:
