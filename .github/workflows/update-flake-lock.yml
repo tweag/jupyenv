@@ -17,6 +17,7 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_SIGNING_KEY: ${{ secrets.CACHIX_SIGNING_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Update flake.lock
       uses: DeterminateSystems/update-flake-lock@v8
