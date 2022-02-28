@@ -49,6 +49,7 @@
           jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
             kernels = [ pythonKernel haskellKernel ];
           };
+          tests = import ./tests { inherit pkgs; };
         };
         defaultPackage = packages.jupyterEnvironment;
       }
