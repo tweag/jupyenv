@@ -23,4 +23,4 @@ jobs:
       with:
         CACHIX_SIGNING_KEY: ${{ secrets.CACHIX_SIGNING_KEY }}
 
-    - run: nix build .#tests.build .#tests.kernel-tests.core
+    - run: nix build .#tests.build .#tests.kernel-tests.core --show-trace
