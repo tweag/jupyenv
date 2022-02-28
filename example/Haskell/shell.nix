@@ -11,7 +11,7 @@ let
 
   jupyterlabWithKernels =
     jupyter.jupyterlabWith {
-      kernels = [ ihaskellWithPackages ];
+      kernels = [ihaskellWithPackages];
     };
 in
   jupyterlabWithKernels.env

@@ -1,4 +1,6 @@
 /result*
+/.direnv/
+/.pre-commit-config.yaml
 
 /.ipynb_checkpoints/
 

@@ -1,17 +1,20 @@
-{ stdenv
-, name ? "nixpkgs"
-, packages ? []
-, callPackage
-, evcxr
-, writeScriptBin
-, cargo
-, gcc
-, binutils-unwrapped
-}:
-
-let
+{
+  stdenv,
+  name ? "nixpkgs",
+  packages ? [],
+  callPackage,
+  evcxr,
+  writeScriptBin,
+  cargo,
+  gcc,
+  binutils-unwrapped,
+}: let
   kernelFile = {
-    display_name = "Rust" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "Rust"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "Rust";
     argv = [
       "${evcxr}/bin/evcxr_jupyter"
@@ -34,8 +37,7 @@ let
       echo '${builtins.toJSON kernelFile}' > $kerneldir/kernel.json
     '';
   };
-in
-  {
-    spec = RustKernel;
-    runtimePackages = [ cargo gcc binutils-unwrapped ] ++ packages;
-  }
+in {
+  spec = RustKernel;
+  runtimePackages = [cargo gcc binutils-unwrapped] ++ packages;
+}

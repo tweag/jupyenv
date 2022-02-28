@@ -1,20 +1,26 @@
-{ python3
-, stdenv
-, name ? "nixpkgs"
-, packages ? (_:[])
-, writeScriptBin
-, ignoreCollisions ? false
-}:
-
-let
-  kernelEnv = (python3.withPackages (p:
-    packages p ++ (with p; [
-      ipykernel
-    ])
-  )).override (args: { inherit ignoreCollisions; });
+{
+  python3,
+  stdenv,
+  name ? "nixpkgs",
+  packages ? (_: []),
+  writeScriptBin,
+  ignoreCollisions ? false,
+}: let
+  kernelEnv = (python3.withPackages (
+    p:
+      packages p
+      ++ (with p; [
+        ipykernel
+      ])
+  ))
+  .override (args: {inherit ignoreCollisions;});
 
   kernelFile = {
-    display_name = "Python3" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "Python3"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "python";
     argv = [
       "${kernelEnv.interpreter}"
@@ -40,11 +46,10 @@ let
       echo '${builtins.toJSON kernelFile}' > $out/kernels/ipython_${name}/kernel.json
     '';
   };
-in
-  {
-    spec = ipythonKernel;
-    runtimePackages = [
-      # Lets the user to use libraries from the Python command.
-      pythonBin
-    ];
-  }
+in {
+  spec = ipythonKernel;
+  runtimePackages = [
+    # Lets the user to use libraries from the Python command.
+    pythonBin
+  ];
+}

@@ -1,12 +1,11 @@
-{ stdenv
-, rWrapper
-, rPackages
-, name ? "nixpkgs"
-, packages ? (_:[])
-}:
-
-let
-  kernelEnv = rWrapper.override{ packages =  (packages rPackages)  ++ [ rPackages.IRkernel ]; };
+{
+  stdenv,
+  rWrapper,
+  rPackages,
+  name ? "nixpkgs",
+  packages ? (_: []),
+}: let
+  kernelEnv = rWrapper.override {packages = (packages rPackages) ++ [rPackages.IRkernel];};
 
   kernelFile = {
     argv = [
@@ -17,7 +16,11 @@ let
       "--args"
       "{connection_file}"
     ];
-    display_name = "R" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "R"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "R";
     logo64 = "logo-64x64.png";
   };
@@ -33,8 +36,7 @@ let
       echo '${builtins.toJSON kernelFile}' > $out/kernels/ir_${name}/kernel.json
     '';
   };
-in
-  {
-    spec = IRkernel;
-    runtimePackages = [];
-  }
+in {
+  spec = IRkernel;
+  runtimePackages = [];
+}

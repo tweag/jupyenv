@@ -1,6 +1,5 @@
 # A custom IHaskell and haskellPackages built using a package set from haskell.nix instead of nixpkgs
-{ pkgs }:
-let
+{pkgs}: let
   haskellNixSrc = (import (builtins.fetchGit {
     url = https://github.com/input-output-hk/haskell.nix;
     rev = "240403fbae3d28ba26e965bf22feabf89156916c";
@@ -10,12 +9,12 @@ let
   # ihaskell coming from haskell.nix needs to include both the exe and library components
   # in order to work properly with jupyterWith.
   customIHaskell = pkgs.symlinkJoin {
-      name="ihaskell-hnix"; 
-      paths=[
-          snapshot.ihaskell.components.exes.ihaskell
-          snapshot.ihaskell.components.library
-        ];
-    };
+    name = "ihaskell-hnix";
+    paths = [
+      snapshot.ihaskell.components.exes.ihaskell
+      snapshot.ihaskell.components.library
+    ];
+  };
 in {
   inherit customIHaskell;
   haskellPackages = snapshot;

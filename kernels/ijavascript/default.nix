@@ -1,22 +1,25 @@
-{ stdenv
-, lib
-, callPackage
-, nodePackages
-, writeScriptBin
-, name ? "default"
-}:
-
-let
+{
+  stdenv,
+  lib,
+  callPackage,
+  nodePackages,
+  writeScriptBin,
+  name ? "default",
+}: let
   iJavascriptEnv = nodePackages.ijavascript;
 
   iJavascriptSh = writeScriptBin "ijavascript" ''
     #! ${stdenv.shell}
-    export PATH="${lib.makeBinPath ([ iJavascriptEnv ])}:$PATH"
+    export PATH="${lib.makeBinPath ([iJavascriptEnv])}:$PATH"
     ${iJavascriptEnv}/bin/ijskernel "$@"
   '';
 
   kernelFile = {
-    display_name = "Javascript" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "Javascript"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "javascript";
     argv = [
       "${iJavascriptSh}/bin/ijavascript"
@@ -35,8 +38,7 @@ let
       echo '${builtins.toJSON kernelFile}' > $out/kernels/ijavascript_${name}/kernel.json
     '';
   };
-in
-  {
-    spec = iJavascriptKernel;
-    runtimePackages = [];
-  }
+in {
+  spec = iJavascriptKernel;
+  runtimePackages = [];
+}

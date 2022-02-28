@@ -1,20 +1,24 @@
-{ bundlerApp
-, python3
-, stdenv
-, name ? "nixpkgs"
-, packages ? (_:[])
-}:
-let
+{
+  bundlerApp,
+  python3,
+  stdenv,
+  name ? "nixpkgs",
+  packages ? (_: []),
+}: let
   iRubyEnv = bundlerApp {
-      pname = "iruby";
-      gemdir = ./gemdir;
-      exes = [ "iruby" ];
-    };
+    pname = "iruby";
+    gemdir = ./gemdir;
+    exes = ["iruby"];
+  };
 
-  pythonEnv = python3.withPackages (p: with p; [ jupyter ipykernel ] );
+  pythonEnv = python3.withPackages (p: with p; [jupyter ipykernel]);
 
   kernelFile = {
-    display_name = "Ruby" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "Ruby"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "ruby";
     argv = [
       "${iRubyEnv}/bin/iruby"
@@ -34,8 +38,7 @@ let
       echo '${builtins.toJSON kernelFile}' > $out/kernels/iruby_${name}/kernel.json
     '';
   };
-in
-  {
-    spec = irubyKernel;
-    runtimePackages = [];
-  }
+in {
+  spec = irubyKernel;
+  runtimePackages = [];
+}

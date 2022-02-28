@@ -1,14 +1,15 @@
-final: prev:
-let
+final: prev: let
   packageOverrides = selfPythonPackages: pythonPackages: {
-
-    notebook = pythonPackages.notebook.overridePythonAttrs (oldAttrs: {
-        postFixup = ''
-          wrapProgram $out/bin/jupyter-notebook --add-flags '--KernelSpecManager.ensure_native_kernel=False'
-        '';
-      } // (prev.lib.optionalAttrs prev.stdenv.isDarwin {
-        doCheck = false;
-      })
+    notebook = pythonPackages.notebook.overridePythonAttrs (
+      oldAttrs:
+        {
+          postFixup = ''
+            wrapProgram $out/bin/jupyter-notebook --add-flags '--KernelSpecManager.ensure_native_kernel=False'
+          '';
+        }
+        // (prev.lib.optionalAttrs prev.stdenv.isDarwin {
+          doCheck = false;
+        })
     );
 
     nbclassic = pythonPackages.nbclassic.overridePythonAttrs (oldAttrs: {
@@ -17,23 +18,24 @@ let
       '';
     });
 
-    jupyter_server = pythonPackages.jupyter_server.overridePythonAttrs (oldAttrs:
-      prev.lib.optionalAttrs prev.stdenv.isDarwin {
-        doCheck = false;
-      }
+    jupyter_server = pythonPackages.jupyter_server.overridePythonAttrs (
+      oldAttrs:
+        prev.lib.optionalAttrs prev.stdenv.isDarwin {
+          doCheck = false;
+        }
     );
 
-    send2trash = pythonPackages.send2trash.overridePythonAttrs (_:
-      (prev.lib.optionalAttrs prev.stdenv.isDarwin {
+    send2trash = pythonPackages.send2trash.overridePythonAttrs (
+      _: (prev.lib.optionalAttrs prev.stdenv.isDarwin {
         version = "1.8";
         doCheck = false;
         src = prev.fetchFromGitHub
-          {
-            owner = "arsenetar";
-            repo = "send2trash";
-            rev = "484913ba0f024caf0fdac462f9b608d2b06d7c38";
-            sha256 = "sha256-HZeN/kpisPRrVwg1xGGUjxspztZKRbacGY5gpa537cw=";
-          };
+        {
+          owner = "arsenetar";
+          repo = "send2trash";
+          rev = "484913ba0f024caf0fdac462f9b608d2b06d7c38";
+          sha256 = "sha256-HZeN/kpisPRrVwg1xGGUjxspztZKRbacGY5gpa537cw=";
+        };
         preConfigure = ''
           sed -i  's|find_library("Foundation")|"/System/Library/Frameworks/Foundation.framework/Versions/C/Resources/BridgeSupport/Foundation.dylib"|g' send2trash/plat_osx_ctypes.py
         '';
@@ -58,7 +60,7 @@ let
         pythonPackages.traitlets
         selfPythonPackages.notebook
         pythonPackages.tornado
-        ];
+      ];
     };
 
     jupyter_nbextensions_configurator = pythonPackages.buildPythonPackage rec {
@@ -71,7 +73,7 @@ let
       propagatedBuildInputs = [
         selfPythonPackages.jupyter_contrib_core
         pythonPackages.pyyaml
-        ];
+      ];
     };
 
     jupyter_c_kernel = pythonPackages.buildPythonPackage rec {
@@ -90,14 +92,11 @@ let
       };
     };
   };
-
-in
-
-{
+in {
   python3 = prev.python3.override (old: {
     packageOverrides =
       prev.lib.composeExtensions
-        (old.packageOverrides or (_: _: {}))
-        packageOverrides;
+      (old.packageOverrides or (_: _: {}))
+      packageOverrides;
   });
 }

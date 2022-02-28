@@ -1,13 +1,14 @@
-{ stdenv
-, python3
-, name ? "nixpkgs"
-}:
-
-let
+{
+  stdenv,
+  python3,
+  name ? "nixpkgs",
+}: let
   kernelEnv =
-    ( python3.withPackages
-        (p: [ p.ansible-kernel p.ansible ])
-    ).override (args: { ignoreCollisions = true; });
+    (
+      python3.withPackages
+      (p: [p.ansible-kernel p.ansible])
+    )
+    .override (args: {ignoreCollisions = true;});
 
   kernelFile = {
     argv = [
@@ -18,7 +19,11 @@ let
       "{connection_file}"
     ];
     codemirror_mode = "yaml";
-    display_name = "Ansible" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "Ansible"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "ansible";
     logo64 = "logo-64x64.svg";
   };
@@ -34,8 +39,7 @@ let
       echo '${builtins.toJSON kernelFile}' > $out/kernels/ansible_${name}/kernel.json
     '';
   };
-in
-  {
-    spec = ansibleKernel;
-    runtimePackages = [ python3.pkgs.ansible ];
-  }
+in {
+  spec = ansibleKernel;
+  runtimePackages = [python3.pkgs.ansible];
+}

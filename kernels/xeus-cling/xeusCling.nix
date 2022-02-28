@@ -1,20 +1,20 @@
-{ stdenv
-, fetchFromGitHub
-, cmake
-, zeromq
-, pkgconfig
-, libuuid
-, cling
-, pugixml
-, llvm
-, cppzmq
-, openssl
-, glibc
-, cryptopp
-, makeWrapper
-, llvmPackages
-}:
-let
+{
+  stdenv,
+  fetchFromGitHub,
+  cmake,
+  zeromq,
+  pkgconfig,
+  libuuid,
+  cling,
+  pugixml,
+  llvm,
+  cppzmq,
+  openssl,
+  glibc,
+  cryptopp,
+  makeWrapper,
+  llvmPackages,
+}: let
   xtl = stdenv.mkDerivation {
     name = "xtl";
     src = fetchFromGitHub {
@@ -24,7 +24,7 @@ let
       sha256 = "sha256-U4LJPGni2+Rr1V/+PiwQtkLt4w1R7LL0d5SADHtMDnc=";
     };
     enableParallelBuilding = true;
-    buildInputs = [ cmake ];
+    buildInputs = [cmake];
     buildPhase = ''
       cmake
     '';
@@ -38,7 +38,7 @@ let
       rev = "eaac91803441a43562562c7dc9ef328beaeb505a";
       sha256 = "sha256-WlMqUtajHuwsnelesMu/7ij9KKb5bjuL6JKNx3g24M0=";
     };
-    buildInputs = [ cmake ];
+    buildInputs = [cmake];
     enableParallelBuilding = true;
   };
 
@@ -50,7 +50,7 @@ let
       rev = "66b52e6cc9f3f2429dcb01ddb90b6c2f156ac67f";
       sha256 = "sha256-E31P7hhzk+reUD2+fo5oiPXLHIfW5vbOOxP94Fd3aMk=";
     };
-    buildInputs = [ cmake ];
+    buildInputs = [cmake];
     enableParallelBuilding = true;
   };
 
@@ -128,4 +128,4 @@ let
     '';
   };
 in
-xeusCling
+  xeusCling

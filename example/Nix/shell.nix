@@ -8,7 +8,7 @@ let
 
   jupyterEnvironment =
     jupyter.jupyterlabWith {
-      kernels = [ iNix ];
+      kernels = [iNix];
     };
 in
-jupyterEnvironment.env
+  jupyterEnvironment.env

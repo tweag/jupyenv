@@ -10,53 +10,55 @@
     jupyterWith.url = github:tweag/jupyterWith;
   };
 
-  outputs =
-    inputs@{ self
-    , nixpkgs
-    , flake-utils
-    , jupyterWith
-    }:
-    (flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ]
-      (system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            jupyterWith.overlays.jupyterWith
-            jupyterWith.overlays.python
-            jupyterWith.overlays.haskell
-            self.overlay
-          ];
-          config = {
-            allowBroken = true;
-            allowUnfree = true;
-            allowUnsupportedSystem = true;
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    flake-utils,
+    jupyterWith,
+  }:
+    (
+      flake-utils.lib.eachSystem ["x86_64-linux" "x86_64-darwin"]
+      (
+        system: let
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [
+              jupyterWith.overlays.jupyterWith
+              jupyterWith.overlays.python
+              jupyterWith.overlays.haskell
+              self.overlay
+            ];
+            config = {
+              allowBroken = true;
+              allowUnfree = true;
+              allowUnsupportedSystem = true;
+            };
           };
-        };
 
-        iPython = pkgs.jupyterWith.kernels.iPythonWith {
-          name = "Python-data-env";
-          ignoreCollisions = true;
-        };
+          iPython = pkgs.jupyterWith.kernels.iPythonWith {
+            name = "Python-data-env";
+            ignoreCollisions = true;
+          };
 
-        iHaskell = pkgs.jupyterWith.kernels.iHaskellWith {
-          extraIHaskellFlags = "--codemirror Haskell"; # for jupyterlab syntax highlighting
-          name = "ihaskell-flake";
-        };
-      in {
-        packages = {
-          inherit iPython iHaskell;
+          iHaskell = pkgs.jupyterWith.kernels.iHaskellWith {
+            extraIHaskellFlags = "--codemirror Haskell"; # for jupyterlab syntax highlighting
+            name = "ihaskell-flake";
+          };
+        in {
+          packages = {
+            inherit iPython iHaskell;
 
-          jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
-              kernels = [ iPython iHaskell ];
+            jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
+              kernels = [iPython iHaskell];
               directory = "./.jupyterlab";
             };
-        };
+          };
 
-        defaultPackage = self.packages.${system}.jupyterEnvironment;
-      }
+          defaultPackage = self.packages.${system}.jupyterEnvironment;
+        }
       )
-    ) // {
-      overlay = final: prev: { };
+    )
+    // {
+      overlay = final: prev: {};
     };
 }

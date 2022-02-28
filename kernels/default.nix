@@ -1,6 +1,4 @@
-{ callPackage }:
-
-{
+{callPackage}: {
   iHaskellWith = callPackage ./ihaskell;
   iRWith = callPackage ./irkernel;
   iPythonWith = callPackage ./ipython;

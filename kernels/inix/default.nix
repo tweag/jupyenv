@@ -1,20 +1,24 @@
-{ python3
-, stdenv
-, name ? "nixpkgs"
-, callPackage
-, nix
-, writeScriptBin
-}:
-
-let
+{
+  python3,
+  stdenv,
+  name ? "nixpkgs",
+  callPackage,
+  nix,
+  writeScriptBin,
+}: let
   nix-kernel = callPackage ./nix-kernel {};
-  kernelEnv = (python3.withPackages (p: (with p; [
-    nix-kernel
-  ])
+  kernelEnv = (python3.withPackages (
+    p: (with p; [
+      nix-kernel
+    ])
   ));
 
   kernelFile = {
-    display_name = "Nix" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "Nix"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "Nix";
     argv = [
       "${nix-bin}/bin/nix-kernel"
@@ -24,11 +28,11 @@ let
     logo64 = "logo-64x64.png";
   };
 
-  nix-bin =  writeScriptBin "nix-kernel" ''
-      #! ${stdenv.shell}
-      PATH=${nix}/bin/:${kernelEnv}/bin:$PATH
-      exec python -m nix-kernel $@
-        '';
+  nix-bin = writeScriptBin "nix-kernel" ''
+    #! ${stdenv.shell}
+    PATH=${nix}/bin/:${kernelEnv}/bin:$PATH
+    exec python -m nix-kernel $@
+  '';
 
   iNixKernel = stdenv.mkDerivation {
     name = "inix-${name}";
@@ -40,9 +44,8 @@ let
       echo '${builtins.toJSON kernelFile}' > $out/kernels/inix_${name}/kernel.json
     '';
   };
-in
-  {
-    spec = iNixKernel;
-    runtimePackages = [
-    ];
-  }
+in {
+  spec = iNixKernel;
+  runtimePackages = [
+  ];
+}

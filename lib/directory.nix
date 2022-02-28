@@ -1,10 +1,6 @@
-{ pkgs }:
-
-let
+{pkgs}: let
   jupyter = pkgs.python3Packages.jupyterlab;
-in
-
-{
+in {
   generateDirectory = pkgs.writeScriptBin "generate-directory" ''
     if [ $# -eq 0 ]
       then
@@ -55,37 +51,45 @@ in
   # step. Produces an output which can be passed to
   # `jupyter labextension install`, which means the output can be passed
   # as one of the `extensions` arguments to `mkDirectoryWith`.
-  mkBuildExtension = srcPath: pkgs.stdenv.mkDerivation {
-    name = "labextension-source";
-    src = srcPath;
-    buildInputs = [ pkgs.nodejs ];
-    buildPhase = ''
-      export HOME=$TMP
+  mkBuildExtension = srcPath:
+    pkgs.stdenv.mkDerivation {
+      name = "labextension-source";
+      src = srcPath;
+      buildInputs = [pkgs.nodejs];
+      buildPhase = ''
+        export HOME=$TMP
 
-      npm install
-      npm run build
-    '';
-    installPhase = ''
-      mkdir -p $out/
-      cp -r * $out/
-    '';
-  };
-
-  mkDirectoryFromLockFile = { yarnlock, packagefile, extensions ? [ ], sha256 }:
-    let
-      # Should this exist?
-      copyExtension = { name, version }: ''
-        cp -r $PREFIX/${name}/* package
-        tar -cvzf $out/extensions/${name}-${version}.tgz package
-        rm -rf package/*
-
+        npm install
+        npm run build
       '';
-      copyExtensions = pkgs.lib.concatMapStrings copyExtension extensions;
-    in
+      installPhase = ''
+        mkdir -p $out/
+        cp -r * $out/
+      '';
+    };
+
+  mkDirectoryFromLockFile = {
+    yarnlock,
+    packagefile,
+    extensions ? [],
+    sha256,
+  }: let
+    # Should this exist?
+    copyExtension = {
+      name,
+      version,
+    }: ''
+      cp -r $PREFIX/${name}/* package
+      tar -cvzf $out/extensions/${name}-${version}.tgz package
+      rm -rf package/*
+
+    '';
+    copyExtensions = pkgs.lib.concatMapStrings copyExtension extensions;
+  in
     pkgs.stdenv.mkDerivation {
       name = "jupyterlab-from-yarnlock";
-      phases = [ "installPhase" ];
-      nativeBuildInputs = [ pkgs.breakpointHook ];
+      phases = ["installPhase"];
+      nativeBuildInputs = [pkgs.breakpointHook];
       buildInputs = with pkgs; [
         jupyter
         nodejs
@@ -136,20 +140,22 @@ in
       outputHash = sha256;
     };
 
-  mkDirectoryWith = { extensions }:
-    # Creates a JUPYTERLAB_DIR with the given extensions.
-    # This operation is impure, so it requires `--option sandbox false`.
-    #
-    # The `extensions` list elements can be “the name of a valid JupyterLab
-    # extension npm package on npm,” or “can be a local directory containing
-    # the extension, a gzipped tarball, or a URL to a gzipped tarball.”
-    # See
-    # https://jupyterlab.readthedocs.io/en/stable/user/extensions.html#installing-extensions
-    let extStr = pkgs.lib.concatStringsSep " " extensions; in
+  mkDirectoryWith = {extensions}:
+  # Creates a JUPYTERLAB_DIR with the given extensions.
+  # This operation is impure, so it requires `--option sandbox false`.
+  #
+  # The `extensions` list elements can be “the name of a valid JupyterLab
+  # extension npm package on npm,” or “can be a local directory containing
+  # the extension, a gzipped tarball, or a URL to a gzipped tarball.”
+  # See
+  # https://jupyterlab.readthedocs.io/en/stable/user/extensions.html#installing-extensions
+  let
+    extStr = pkgs.lib.concatStringsSep " " extensions;
+  in
     pkgs.stdenv.mkDerivation {
       name = "jupyterlab-extended";
       phases = "installPhase";
-      buildInputs = [ jupyter pkgs.nodejs ];
+      buildInputs = [jupyter pkgs.nodejs];
       installPhase = ''
         export HOME=$TMP
 

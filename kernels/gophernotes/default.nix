@@ -1,12 +1,11 @@
-{ writeScriptBin
-, stdenv
-, lib
-, buildGoModule
-, fetchFromGitHub
-, name ? "nixpkgs"
-}:
-
-let
+{
+  writeScriptBin,
+  stdenv,
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
+  name ? "nixpkgs",
+}: let
   # gophernotes is available in a newer version of the nixpkgs. Thus, this
   # package might be used after bumping those.
   gophernotes = buildGoModule rec {
@@ -25,11 +24,15 @@ let
 
   gophernotesSh = writeScriptBin "gophernotes" ''
     #! ${stdenv.shell}
-    export PATH="${lib.makeBinPath ([ gophernotes ])}:$PATH"
+    export PATH="${lib.makeBinPath ([gophernotes])}:$PATH"
     ${gophernotes}/bin/gophernotes "$@"'';
 
   kernelFile = {
-    display_name = "Go" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "Go"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "go";
     argv = [
       "${gophernotesSh}/bin/gophernotes"
@@ -42,15 +45,14 @@ let
     name = "gophernotes";
     phases = "installPhase";
     src = ./gophernotes.png;
-    buildInputs = [ gophernotes ];
+    buildInputs = [gophernotes];
     installPhase = ''
       mkdir -p $out/kernels/gophernotes_${name}
       cp $src $out/kernels/gophernotes_${name}/logo-64x64.svg
       echo '${builtins.toJSON kernelFile}' > $out/kernels/gophernotes_${name}/kernel.json
     '';
   };
-in
-  {
-    spec = gophernotesKernel;
-    runtimePackages = [];
-  }
+in {
+  spec = gophernotesKernel;
+  runtimePackages = [];
+}

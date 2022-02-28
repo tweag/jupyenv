@@ -1,5 +1,7 @@
-{jupyter,pkgs}:
-let
+{
+  jupyter,
+  pkgs,
+}: let
   ihaskellSrc = pkgs.fetchFromGitHub {
     owner = "gibiansky";
     repo = "IHaskell";

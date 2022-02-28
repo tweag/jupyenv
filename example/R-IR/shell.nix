@@ -6,7 +6,7 @@ let
     kernels = [
       (jupyter.kernels.iRWith {
         name = "ggplot";
-        packages = p: with p; [ ggplot2 ];
+        packages = p: with p; [ggplot2];
       })
     ];
   };

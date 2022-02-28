@@ -1,5 +1,20 @@
-{ stdenv, fetchurl, python, wget, fetchFromGitHub, libffi, cacert, git, cmake, llvm, ncurses, zlib, fetchgit, glibc, makeWrapper }:
-
+{
+  stdenv,
+  fetchurl,
+  python,
+  wget,
+  fetchFromGitHub,
+  libffi,
+  cacert,
+  git,
+  cmake,
+  llvm,
+  ncurses,
+  zlib,
+  fetchgit,
+  glibc,
+  makeWrapper,
+}:
 stdenv.mkDerivation rec {
   name = "cling";
 
@@ -22,7 +37,7 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-fVUmN+CiyQI/E+dNhue7ixEbdU9a+wwfJ2Ex53cZmno=";
   };
 
-  srcs = [ clingSrc llvmSrc clangSrc ];
+  srcs = [clingSrc llvmSrc clangSrc];
 
   unpackCmd = ''
     mkdir -p ./all
@@ -35,8 +50,8 @@ stdenv.mkDerivation rec {
     fi
   '';
 
-  buildInputs = [ python wget cacert git cmake llvm libffi makeWrapper ];
-  propagatedBuildInputs = [ ncurses zlib ];
+  buildInputs = [python wget cacert git cmake llvm libffi makeWrapper];
+  propagatedBuildInputs = [ncurses zlib];
   configurePhase = "true";
 
   buildPhase = ''

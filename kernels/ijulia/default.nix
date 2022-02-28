@@ -1,16 +1,16 @@
-{ pkgs
-, stdenv
-, name ? "nixpkgs"
-, extraEnv ? { }
-, packages ? (_: [ ])
-, extraPackages ? (_: [ ])
-, writeScriptBin
-, JULIA_DEPOT_PATH ? "~/.julia"
-, activateDir ? ""
-, rev ? "e8kqU"
-, package ? pkgs.julia_16-bin
-}:
-let
+{
+  pkgs,
+  stdenv,
+  name ? "nixpkgs",
+  extraEnv ? {},
+  packages ? (_: []),
+  extraPackages ? (_: []),
+  writeScriptBin,
+  JULIA_DEPOT_PATH ? "~/.julia",
+  activateDir ? "",
+  rev ? "e8kqU",
+  package ? pkgs.julia_16-bin,
+}: let
   startupFile = pkgs.writeText "startup.jl" ''
     import Pkg
     Pkg.activate("${activateDir}")
@@ -25,7 +25,11 @@ let
     julia -L ${startupFile}
   '';
   kernelFile = {
-    display_name = "Julia" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "Julia"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "julia";
     argv = [
       "${package}/bin/julia"
@@ -40,9 +44,11 @@ let
 
     logo64 = "logo-64x64.png";
 
-    env = {
-      JULIA_PKGDIR = JULIA_DEPOT_PATH;
-    } // extraEnv;
+    env =
+      {
+        JULIA_PKGDIR = JULIA_DEPOT_PATH;
+      }
+      // extraEnv;
   };
 
   JuliaKernel = stdenv.mkDerivation {
@@ -55,9 +61,7 @@ let
       echo '${builtins.toJSON kernelFile}' > $out/kernels/julia_${name}/kernel.json
     '';
   };
-
-in
-{
+in {
   spec = JuliaKernel;
   runtimePackages = [
     package

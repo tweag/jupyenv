@@ -1,14 +1,15 @@
-{ stdenv
-, python3
-, bash
-, name ? "nixpkgs"
-}:
-
-let
+{
+  stdenv,
+  python3,
+  bash,
+  name ? "nixpkgs",
+}: let
   kernelEnv =
-    ( python3.withPackages
-        (p: [ p.bash_kernel p.ipykernel p.pexpect ])
-    ).override (args: { ignoreCollisions = true; });
+    (
+      python3.withPackages
+      (p: [p.bash_kernel p.ipykernel p.pexpect])
+    )
+    .override (args: {ignoreCollisions = true;});
 
   kernelFile = {
     argv = [
@@ -19,7 +20,11 @@ let
       "{connection_file}"
     ];
     codemirror_mode = "shell";
-    display_name = "Bash" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "Bash"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "bash";
     logo64 = "logo-64x64.svg";
   };
@@ -35,8 +40,7 @@ let
       echo '${builtins.toJSON kernelFile}' > $out/kernels/bash_${name}/kernel.json
     '';
   };
-in
-  {
-    spec = bashKernel;
-    runtimePackages = [ bash ];
-  }
+in {
+  spec = bashKernel;
+  runtimePackages = [bash];
+}

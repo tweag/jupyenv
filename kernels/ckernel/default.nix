@@ -1,12 +1,11 @@
-{ stdenv
-, python3
-, name ? "nixpkgs"
-, packages ? p: []
-, pkgs
-}:
-
-let
-  kernelEnv = python3.withPackages (p: [ p.jupyter_c_kernel ]);
+{
+  stdenv,
+  python3,
+  name ? "nixpkgs",
+  packages ? p: [],
+  pkgs,
+}: let
+  kernelEnv = python3.withPackages (p: [p.jupyter_c_kernel]);
 
   kernelFile = {
     argv = [
@@ -16,7 +15,11 @@ let
       "-f"
       "{connection_file}"
     ];
-    display_name = "C" + (if name=="" then "" else " - ${name}");
+    display_name =
+      "C"
+      + (if name == ""
+      then ""
+      else " - ${name}");
     language = "c";
     logo64 = "logo-64x64.svg";
   };
@@ -32,8 +35,7 @@ let
       echo '${builtins.toJSON kernelFile}' > $out/kernels/c_${name}/kernel.json
     '';
   };
-in
-  {
-    spec = cKernel;
-    runtimePackages = packages pkgs;
-  }
+in {
+  spec = cKernel;
+  runtimePackages = packages pkgs;
+}

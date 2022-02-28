@@ -3,7 +3,7 @@ let
   jupyter = import jupyterLibPath {};
 
   jupyterlabWithKernels = jupyter.jupyterlabWith {
-      kernels = [ (jupyter.kernels.iJavascript {name="basic";}) ];
+    kernels = [(jupyter.kernels.iJavascript {name = "basic";})];
   };
 in
   jupyterlabWithKernels.env
