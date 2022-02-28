@@ -5,12 +5,15 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
+
     - uses: actions/checkout@v2.4.0
-    - uses: cachix/install-nix-action@v16
-    - uses: cachix/cachix-action@v10
       with:
-        name: jupyterwith
-        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
+      with:
+        CACHIX_SIGNING_KEY: ${{ secrets.CACHIX_SIGNING_KEY }}
 
     - run: |
         cd example/flake
