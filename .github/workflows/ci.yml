@@ -22,4 +22,7 @@ jobs:
       with:
         CACHIX_SIGNING_KEY: ${{ secrets.CACHIX_SIGNING_KEY }}
 
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+
     - run: nix build .#tests.build .#tests.kernel-tests.core --show-trace --accept-flake-config
