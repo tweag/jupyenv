@@ -4,11 +4,9 @@
   nixConfig.extra-substituters = "https://jupyterwith.cachix.org";
   nixConfig.extra-trusted-public-keys = "jupyterwith.cachix.org-1:/kDy2B6YEhXGJuNguG1qyqIodMyO4w8KwWH4/vAc7CI=";
 
-  inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:nixos/nixpkgs/release-21.11";
-    ihaskell.url = "github:gibiansky/IHaskell";
-  };
+  inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/release-21.11";
+  inputs.ihaskell.url = "github:gibiansky/IHaskell";
 
   outputs =
     { self
