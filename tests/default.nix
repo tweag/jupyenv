@@ -49,9 +49,10 @@
       (rustWith {
         name = "test";
       })
-      (ocamlWith {
-        name = "test";
-      })
+      # Fails due to https://erratique.ch/software/uutf/releases/uutf1.0.3.tbz not existing
+      #(ocamlWith {
+      #  name = "test";
+      #})
     ]
     ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
       (xeusCling {
