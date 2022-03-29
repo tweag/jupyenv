@@ -4,9 +4,10 @@
 
   includedKernels = with pkgs.jupyterWith.kernels;
     [
-      (ansibleKernel {
-        name = "test";
-      })
+      # Fails on MacOS.
+      #(ansibleKernel {
+      #  name = "test";
+      #})
 
       (bashKernel {
         name = "test";
