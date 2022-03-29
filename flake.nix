@@ -4,31 +4,37 @@
   nixConfig.extra-substituters = "https://jupyterwith.cachix.org";
   nixConfig.extra-trusted-public-keys = "jupyterwith.cachix.org-1:/kDy2B6YEhXGJuNguG1qyqIodMyO4w8KwWH4/vAc7CI=";
 
-  inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:nixos/nixpkgs/release-21.11";
-    ihaskell.url = "github:gibiansky/IHaskell";
-  };
+  inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
+  inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
+  inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  inputs.ihaskell.url = "github:gibiansky/IHaskell";
+  inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
+  #inputs.ihaskell.inputs.hls.inputs.flake-utils.follows = "flake-utils";
+  #inputs.ihaskell.inputs.hls.inputs.nixpkgs.follows = "nixpkgs";
+  #inputs.ihaskell.inputs.hls.inputs.pre-commit-hooks.follows = "pre-commit-hooks";
 
-  outputs =
-    { self
-    , flake-utils
-    , nixpkgs
-    , ihaskell
-    }:
-    let
-       SYSTEMS =
-         [ "x86_64-linux"
-           "x86_64-darwin"
-         ];
-       overlays =
-         { jupyterWith = import ./nix/overlay.nix;
-           haskell = (import ./nix/haskell-overlay.nix) ihaskell;
-           python = import ./nix/python-overlay.nix;
-         };
-    in
-    (flake-utils.lib.eachSystem SYSTEMS (system:
-      let
+  outputs = {
+    self,
+    flake-utils,
+    pre-commit-hooks,
+    nixpkgs,
+    ihaskell,
+  }: let
+    SYSTEMS = [
+      "x86_64-linux"
+      "x86_64-darwin"
+    ];
+    overlays = {
+      jupyterWith = import ./nix/overlay.nix;
+      haskell = (import ./nix/haskell-overlay.nix) ihaskell;
+      python = import ./nix/python-overlay.nix;
+    };
+  in
+    (flake-utils.lib.eachSystem SYSTEMS (
+      system: let
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
@@ -43,18 +49,41 @@
         };
         haskellKernel = pkgs.jupyterWith.kernels.iHaskellWith {
           name = "ihaskell-kernel";
-          packages = p: with p; [ vector aeson ];
+          packages = p: with p; [vector aeson];
           extraIHaskellFlags = "--codemirror Haskell"; # for jupyterlab syntax highlighting
           haskellPackages = pkgs.haskellPackages;
         };
+        tests = import ./tests {inherit pkgs;};
+        pre-commit-check = pre-commit-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            alejandra.enable = true;
+          };
+        };
       in rec {
         packages = {
+          inherit pre-commit-check;
+          jupyterWith = pkgs.jupyterWith;
           jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
-            kernels = [ pythonKernel haskellKernel ];
+            kernels = [pythonKernel haskellKernel];
           };
-          tests = import ./tests { inherit pkgs; };
+        };
+        devShell = pkgs.mkShell {
+          packages = [
+            #packages.jupyterEnvironment
+            pkgs.alejandra
+          ];
+          shellHook = ''
+            ${pre-commit-check.shellHook}
+          '';
         };
         defaultPackage = packages.jupyterEnvironment;
+        checks = {
+          inherit pre-commit-check;
+          inherit (tests) build;
+          inherit (tests.kernel-tests) core;
+        };
       }
-    )) // { inherit overlays; };
+    ))
+    // {inherit overlays;};
 }
