@@ -1,20 +1,11 @@
-name: CI
+name: nix-macos
 
 on: [push, pull_request]
 
 jobs:
-
   build:
-    strategy:
-      matrix:
-        platform:
-          - ubuntu-latest
-          - macOS-latest
-
-    runs-on: ${{ matrix.platform }}
-
+    runs-on: macOS-latest
     steps:
-
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
@@ -24,5 +15,4 @@ jobs:
       with:
         CACHIX_SIGNING_KEY: ${{ secrets.CACHIX_SIGNING_KEY }}
 
-    - name: Flake check
-      run: nix flake check --accept-flake-config --show-trace
+    - run: nix-build tests -A build -A kernel-tests.core

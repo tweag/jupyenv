@@ -1,9 +1,11 @@
-{pkgs ?
+{
+  pkgs ?
     import <nixpkgs> {
       overlays = [
         (import ./../../nix/python-overlay.nix)
       ];
-    }}: let
+    },
+}: let
   python = pkgs.poetry2nix.mkPoetryEnv {
     poetrylock = ./my-python-package/poetry.lock;
   };

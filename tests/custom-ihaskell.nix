@@ -1,9 +1,9 @@
 # A custom IHaskell and haskellPackages built using a package set from haskell.nix instead of nixpkgs
 {pkgs}: let
-  haskellNixSrc = (import (builtins.fetchGit {
+  haskellNixSrc = import (builtins.fetchGit {
     url = https://github.com/input-output-hk/haskell.nix;
     rev = "240403fbae3d28ba26e965bf22feabf89156916c";
-  }) {});
+  }) {};
   snapshot = pkgs.lib.getAttr "lts-16.9" pkgs.haskell-nix.snapshots;
 
   # ihaskell coming from haskell.nix needs to include both the exe and library components

@@ -1,7 +1,9 @@
 let
-  jupyter = import ../../nix {};
+  system = builtins.currentSystem;
+  flake = import ../../default.nix {};
+  jupyterWith = flake.packages.${system}.jupyterWith;
 
-  ihaskellWithPackages = jupyter.kernels.iHaskellWith {
+  ihaskellWithPackages = jupyterWith.kernels.iHaskellWith {
     name = "Local";
     packages = p: [
       (p.callPackage ./my-haskell-package {})
@@ -9,9 +11,8 @@ let
     ];
   };
 
-  jupyterlabWithKernels =
-    jupyter.jupyterlabWith {
-      kernels = [ihaskellWithPackages];
-    };
+  jupyterlabWithKernels = jupyterWith.jupyterlabWith {
+    kernels = [ihaskellWithPackages];
+  };
 in
   jupyterlabWithKernels.env

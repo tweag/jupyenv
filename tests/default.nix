@@ -76,15 +76,13 @@
     })
   ];
 
-  jupyterlab =
-    pkgs.jupyterWith.jupyterlabWith {
-      kernels = includedKernels;
-    };
+  jupyterlab = pkgs.jupyterWith.jupyterlabWith {
+    kernels = includedKernels;
+  };
 
-  jupyterlabCustomIHaskell =
-    pkgs.jupyterWith.jupyterlabWith {
-      kernels = customIHaskellKernels;
-    };
+  jupyterlabCustomIHaskell = pkgs.jupyterWith.jupyterlabWith {
+    kernels = customIHaskellKernels;
+  };
 
   # Made for uploading to cachix:
   # nix-build -A build | cachix push jupyterwith
@@ -99,11 +97,11 @@
     # Note: joining these to avoid creating so many "result" directories in the working directory
     core = pkgs.symlinkJoin {
       name = "test-kernel-paths-core";
-      paths = (builtins.map test-kernel-path includedKernels);
+      paths = builtins.map test-kernel-path includedKernels;
     };
     customIHaskell = pkgs.symlinkJoin {
       name = "test-kernel-paths-ihaskell";
-      paths = (builtins.map test-kernel-path customIHaskellKernels);
+      paths = builtins.map test-kernel-path customIHaskellKernels;
     };
   };
 in {inherit build build-custom-ihaskell docker shell kernel-tests;}
