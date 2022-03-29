@@ -54,19 +54,21 @@
           haskellPackages = pkgs.haskellPackages;
         };
         tests = import ./tests {inherit pkgs;};
-        pre-commit-check = pre-commit-hooks.lib.${system}.run {
+        pre-commit = pre-commit-hooks.lib.${system}.run {
           src = ./.;
           hooks = {
             alejandra.enable = true;
           };
         };
       in rec {
+        lib.jupyterWith = pkgs.jupyterWith;
         packages = {
-          inherit pre-commit-check;
           jupyterWith = pkgs.jupyterWith;
           jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
             kernels = [pythonKernel haskellKernel];
           };
+          inherit (tests) build;
+          inherit (tests.kernel-tests) core;
         };
         devShell = pkgs.mkShell {
           packages = [
@@ -74,12 +76,12 @@
             pkgs.alejandra
           ];
           shellHook = ''
-            ${pre-commit-check.shellHook}
+            ${pre-commit.shellHook}
           '';
         };
         defaultPackage = packages.jupyterEnvironment;
         checks = {
-          inherit pre-commit-check;
+          inherit pre-commit;
           inherit (tests) build;
           inherit (tests.kernel-tests) core;
         };
