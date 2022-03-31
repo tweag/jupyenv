@@ -15,7 +15,11 @@
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
   inputs.ihaskell.url = "github:gibiansky/IHaskell";
   inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
   inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
+
+  # TODO: For some reason I can not override anything in hls
+  #inputs.ihaskell.inputs.hls.inputs.flake-compat.follows = "flake-compat";
   #inputs.ihaskell.inputs.hls.inputs.flake-utils.follows = "flake-utils";
   #inputs.ihaskell.inputs.hls.inputs.nixpkgs.follows = "nixpkgs";
   #inputs.ihaskell.inputs.hls.inputs.pre-commit-hooks.follows = "pre-commit-hooks";
