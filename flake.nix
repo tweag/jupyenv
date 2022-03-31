@@ -4,6 +4,8 @@
   nixConfig.extra-substituters = "https://jupyterwith.cachix.org";
   nixConfig.extra-trusted-public-keys = "jupyterwith.cachix.org-1:/kDy2B6YEhXGJuNguG1qyqIodMyO4w8KwWH4/vAc7CI=";
 
+  inputs.flake-compat.url = "github:edolstra/flake-compat";
+  inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
@@ -18,6 +20,7 @@
 
   outputs = {
     self,
+    flake-compat,
     flake-utils,
     pre-commit-hooks,
     nixpkgs,
