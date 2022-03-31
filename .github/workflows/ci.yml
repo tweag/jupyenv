@@ -1,6 +1,10 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
 
@@ -24,7 +28,7 @@ jobs:
       with:
         CACHIX_SIGNING_KEY: ${{ secrets.CACHIX_SIGNING_KEY }}
 
-    - name: Flake check
+    - name: Build
       run: |
         nix build \
            .#jupyterEnvironment \
