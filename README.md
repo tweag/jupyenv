@@ -8,7 +8,47 @@ and configurable Jupyter kernels.
 
 ## Getting started
 
-TODO
+
+```
+{
+  inputs.flake-utils.url = "...";
+  inputs.nixpkgs.url = "...";
+  inputs.jupyter.url = "...";
+
+  outputs = { self, nixpkgs, jupyter }:
+    flake-utils.lib.eachDefaultSystem (system: let
+       pkgs = import nixpkgs { inherit system; };
+
+       # customize mkJupyterLab function via .override
+       mkJupyterLab = jupyter.lib.mkJupyterLab.override {
+          poertryLock = ./custom/poetry.lock;
+          kernels = k: [];
+          extensions = e: e ++ []
+       };
+
+       # create jupyter instance (
+       jupyterInstance = mkJupyterLab {        
+         inherit pkgs;
+
+         # list confiured kernels
+         kernels = [
+           (jupyter.lib.mkPythonKernel {
+             inherit pkgs;
+             displayName = "My python kernel";
+             directory = ./python-env/;
+           });
+         };
+
+         # list extensions to enable for jupyter
+         extensions = e: [
+           e.jupy-ext
+          ];
+       };
+    in
+    { packages.default = jupyterInstance; })
+}
+```
+
 
 ## Contributing
 
