@@ -31,5 +31,3 @@ jobs:
     - name: Build
       run: |
         nix build .#jupyterEnvironment --accept-flake-config --show-trace
-        nix build .#build --accept-flake-config --show-trace
-        nix build .#core --accept-flake-config --show-trace

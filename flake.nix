@@ -63,7 +63,6 @@
           extraIHaskellFlags = "--codemirror Haskell"; # for jupyterlab syntax highlighting
           haskellPackages = pkgs.haskellPackages;
         };
-        tests = import ./tests {inherit pkgs;};
         pre-commit = pre-commit-hooks.lib.${system}.run {
           src = gitignore.lib.gitignoreSource self;
           hooks = {
@@ -77,8 +76,6 @@
           jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
             kernels = [pythonKernel haskellKernel];
           };
-          inherit (tests) build;
-          inherit (tests.kernel-tests) core;
         };
         devShell = pkgs.mkShell {
           packages = [
@@ -92,8 +89,6 @@
         defaultPackage = packages.jupyterEnvironment;
         checks = {
           inherit pre-commit;
-          inherit (tests) build;
-          inherit (tests.kernel-tests) core;
         };
       }
     ))
