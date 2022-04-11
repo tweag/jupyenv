@@ -42,7 +42,7 @@
       flake-utils.lib.system.x86_64-darwin
     ];
   in
-    flake-utils.lib.eachSystem SYSTEMS (
+    (flake-utils.lib.eachSystem SYSTEMS (
       system: let
         pkgs = import nixpkgs {
           inherit system;
@@ -72,5 +72,11 @@
           inherit pre-commit;
         };
       }
-    );
+    ))
+    // {
+      defaultTemplate = {
+        path = ./template;
+        description = "Boilerplate for your jupyter-nix project";
+      };
+    };
 }
