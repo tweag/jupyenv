@@ -28,6 +28,6 @@ jobs:
       with:
         CACHIX_SIGNING_KEY: ${{ secrets.CACHIX_SIGNING_KEY }}
 
-    - name: Build
+    - name: Check
       run: |
-        nix build .#jupyterEnvironment --accept-flake-config --show-trace
+        nix flake check --show-trace -L

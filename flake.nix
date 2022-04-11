@@ -13,10 +13,13 @@
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.ihaskell.url = "github:gibiansky/IHaskell";
-  inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
-  inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
+  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
+  #inputs.poetry2nix.inputs.flake-utils.follows = "flake-utils";
+  #inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
+  #inputs.ihaskell.url = "github:gibiansky/IHaskell";
+  #inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
+  #inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
+  #inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
 
   # TODO: For some reason I can not override anything in hls
   #inputs.ihaskell.inputs.hls.inputs.flake-compat.follows = "flake-compat";
@@ -31,38 +34,23 @@
     flake-utils,
     gitignore,
     pre-commit-hooks,
-    ihaskell,
+    poetry2nix,
+    #ihaskell,
   }: let
     SYSTEMS = [
-      "x86_64-linux"
-      "x86_64-darwin"
+      flake-utils.lib.system.x86_64-linux
+      flake-utils.lib.system.x86_64-darwin
     ];
-    overlays = {
-      jupyterWith = import ./nix/overlay.nix;
-      haskell = (import ./nix/haskell-overlay.nix) ihaskell;
-      python = import ./nix/python-overlay.nix;
-    };
   in
-    (flake-utils.lib.eachSystem SYSTEMS (
+    flake-utils.lib.eachSystem SYSTEMS (
       system: let
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
-            overlays.jupyterWith
-            overlays.haskell
-            overlays.python
+            poetry2nix.overlay
           ];
         };
-        pythonKernel = pkgs.jupyterWith.kernels.iPythonWith {
-          name = "ipython-kernel";
-          ignoreCollisions = true;
-        };
-        haskellKernel = pkgs.jupyterWith.kernels.iHaskellWith {
-          name = "ihaskell-kernel";
-          packages = p: with p; [vector aeson];
-          extraIHaskellFlags = "--codemirror Haskell"; # for jupyterlab syntax highlighting
-          haskellPackages = pkgs.haskellPackages;
-        };
+
         pre-commit = pre-commit-hooks.lib.${system}.run {
           src = gitignore.lib.gitignoreSource self;
           hooks = {
@@ -70,27 +58,19 @@
           };
         };
       in rec {
-        lib.jupyterWith = pkgs.jupyterWith;
-        packages = {
-          jupyterWith = pkgs.jupyterWith;
-          jupyterEnvironment = pkgs.jupyterWith.jupyterlabWith {
-            kernels = [pythonKernel haskellKernel];
-          };
-        };
         devShell = pkgs.mkShell {
           packages = [
-            #packages.jupyterEnvironment
             pkgs.alejandra
+            poetry2nix.defaultPackage.${system}
+            pkgs.python3Packages.poetry
           ];
           shellHook = ''
             ${pre-commit.shellHook}
           '';
         };
-        defaultPackage = packages.jupyterEnvironment;
         checks = {
           inherit pre-commit;
         };
       }
-    ))
-    // {inherit overlays;};
+    );
 }

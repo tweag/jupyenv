@@ -6,21 +6,24 @@
   writeScriptBin,
   ignoreCollisions ? false,
 }: let
-  kernelEnv = (python3.withPackages (
-    p:
-      packages p
-      ++ (with p; [
-        ipykernel
-      ])
-  ))
-  .override (args: {inherit ignoreCollisions;});
+  kernelEnv =
+    (python3.withPackages (
+      p:
+        packages p
+        ++ (with p; [
+          ipykernel
+        ])
+    ))
+    .override (args: {inherit ignoreCollisions;});
 
   kernelFile = {
     display_name =
       "Python3"
-      + (if name == ""
-      then ""
-      else " - ${name}");
+      + (
+        if name == ""
+        then ""
+        else " - ${name}"
+      );
     language = "python";
     argv = [
       "${kernelEnv.interpreter}"

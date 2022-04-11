@@ -12,9 +12,11 @@
   kernelFile = {
     display_name =
       "Rust"
-      + (if name == ""
-      then ""
-      else " - ${name}");
+      + (
+        if name == ""
+        then ""
+        else " - ${name}"
+      );
     language = "Rust";
     argv = [
       "${evcxr}/bin/evcxr_jupyter"

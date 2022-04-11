@@ -34,15 +34,17 @@
 
   xeusClingSh = writeScriptBin "xeusCling" ''
     #! ${stdenv.shell}
-    export PATH="${lib.makeBinPath ([xeusCling])}:$PATH"
+    export PATH="${lib.makeBinPath [xeusCling]}:$PATH"
     ${xeusCling}/bin/xeus-cling "$@"'';
 
   kernelFile = {
     display_name =
       "C++"
-      + (if name == ""
-      then ""
-      else " - ${name}");
+      + (
+        if name == ""
+        then ""
+        else " - ${name}"
+      );
     language = "C++11";
     argv = [
       "${xeusClingSh}/bin/xeusCling"

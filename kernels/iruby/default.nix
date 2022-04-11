@@ -16,9 +16,11 @@
   kernelFile = {
     display_name =
       "Ruby"
-      + (if name == ""
-      then ""
-      else " - ${name}");
+      + (
+        if name == ""
+        then ""
+        else " - ${name}"
+      );
     language = "ruby";
     argv = [
       "${iRubyEnv}/bin/iruby"

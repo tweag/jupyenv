@@ -24,15 +24,17 @@
 
   gophernotesSh = writeScriptBin "gophernotes" ''
     #! ${stdenv.shell}
-    export PATH="${lib.makeBinPath ([gophernotes])}:$PATH"
+    export PATH="${lib.makeBinPath [gophernotes]}:$PATH"
     ${gophernotes}/bin/gophernotes "$@"'';
 
   kernelFile = {
     display_name =
       "Go"
-      + (if name == ""
-      then ""
-      else " - ${name}");
+      + (
+        if name == ""
+        then ""
+        else " - ${name}"
+      );
     language = "go";
     argv = [
       "${gophernotesSh}/bin/gophernotes"

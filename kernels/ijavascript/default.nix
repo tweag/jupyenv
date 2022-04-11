@@ -10,16 +10,18 @@
 
   iJavascriptSh = writeScriptBin "ijavascript" ''
     #! ${stdenv.shell}
-    export PATH="${lib.makeBinPath ([iJavascriptEnv])}:$PATH"
+    export PATH="${lib.makeBinPath [iJavascriptEnv]}:$PATH"
     ${iJavascriptEnv}/bin/ijskernel "$@"
   '';
 
   kernelFile = {
     display_name =
       "Javascript"
-      + (if name == ""
-      then ""
-      else " - ${name}");
+      + (
+        if name == ""
+        then ""
+        else " - ${name}"
+      );
     language = "javascript";
     argv = [
       "${iJavascriptSh}/bin/ijavascript"

@@ -20,9 +20,11 @@
     ];
     display_name =
       "OCaml"
-      + (if name == ""
-      then ""
-      else " - ${name}");
+      + (
+        if name == ""
+        then ""
+        else " - ${name}"
+      );
     language = "OCaml";
   });
   OcamlKernel = ocamlPackages.buildDunePackage rec {

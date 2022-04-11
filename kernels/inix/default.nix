@@ -7,18 +7,20 @@
   writeScriptBin,
 }: let
   nix-kernel = callPackage ./nix-kernel {};
-  kernelEnv = (python3.withPackages (
+  kernelEnv = python3.withPackages (
     p: (with p; [
       nix-kernel
     ])
-  ));
+  );
 
   kernelFile = {
     display_name =
       "Nix"
-      + (if name == ""
-      then ""
-      else " - ${name}");
+      + (
+        if name == ""
+        then ""
+        else " - ${name}"
+      );
     language = "Nix";
     argv = [
       "${nix-bin}/bin/nix-kernel"

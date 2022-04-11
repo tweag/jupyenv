@@ -27,9 +27,11 @@
   kernelFile = {
     display_name =
       "Julia"
-      + (if name == ""
-      then ""
-      else " - ${name}");
+      + (
+        if name == ""
+        then ""
+        else " - ${name}"
+      );
     language = "julia";
     argv = [
       "${package}/bin/julia"

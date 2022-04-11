@@ -31,15 +31,17 @@
   ihaskellSh = writeScriptBin "ihaskell" ''
     #! ${stdenv.shell}
     export GHC_PACKAGE_PATH="$(echo ${ghcEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
-    export PATH="${lib.makeBinPath ([ghcEnv])}:$PATH"
+    export PATH="${lib.makeBinPath [ghcEnv]}:$PATH"
     ${ihaskell}/bin/ihaskell ${extraIHaskellFlags} -l $(${ghcEnv}/bin/ghc --print-libdir) "$@"'';
 
   kernelFile = {
     display_name =
       "Haskell"
-      + (if name == ""
-      then ""
-      else " - ${name}");
+      + (
+        if name == ""
+        then ""
+        else " - ${name}"
+      );
     language = "haskell";
     argv = [
       "${ihaskellSh}/bin/ihaskell"
