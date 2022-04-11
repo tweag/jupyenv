@@ -12,7 +12,7 @@ let
   kernelsString = pkgs.lib.concatMapStringsSep ":" (k: "${k.spec}");
 
   # Python version setup.
-  python3 = pkgs.python3Packages;
+  python3 = pkgs.python3.pkgs;
 
   # Default configuration.
   defaultDirectory = "$out/share/jupyter/lab";
