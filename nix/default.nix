@@ -36,9 +36,15 @@ with (import ./../lib/docker.nix {inherit pkgs;}); let
     # NodeJS is required for extensions
     extraPath = pkgs.lib.makeBinPath ([pkgs.nodejs] ++ extraPackages pkgs);
 
+    jupyterlabLocal = import ./jupyter {
+      poetry2nix = pkgs.poetry2nix;
+      python = pkgs.python3;
+      lib = pkgs.lib;
+    };
+
     # JupyterLab executable wrapped with suitable environment variables.
     jupyterlab = python3.toPythonModule (
-      python3.jupyterlab.overridePythonAttrs (oldAttrs: {
+      jupyterlabLocal.overridePythonAttrs (oldAttrs: {
         makeWrapperArgs =
           oldAttrs.makeWrapperArgs
           or []

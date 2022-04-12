@@ -57,7 +57,13 @@
             alejandra.enable = true;
           };
         };
+
+        jupyterlab = import ./nix/jupyter {
+          inherit (pkgs) lib poetry2nix;
+          python = pkgs.python3;
+        };
       in rec {
+        packages.default = jupyterlab;
         devShell = pkgs.mkShell {
           packages = [
             pkgs.alejandra
@@ -69,7 +75,7 @@
           '';
         };
         checks = {
-          inherit pre-commit;
+          inherit pre-commit jupyterlab;
         };
       }
     ))
