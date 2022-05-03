@@ -6,7 +6,7 @@
 with (import ./../lib/directory.nix {inherit pkgs;});
 with (import ./../lib/docker.nix {inherit pkgs;}); let
   # Kernel generators.
-  kernels = pkgs.callPackage ./../kernels {};
+  kernels = pkgs.callPackage ./../old_kernels {};
   kernelsString = pkgs.lib.concatMapStringsSep ":" (k: "${k.spec}");
 
   # Python version setup.
