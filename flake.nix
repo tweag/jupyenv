@@ -1,8 +1,8 @@
 {
   description = "declarative and reproducible Jupyter environments - powered by Nix";
 
-  nixConfig.extra-substituters = "https://jupyterwith.cachix.org";
-  nixConfig.extra-trusted-public-keys = "jupyterwith.cachix.org-1:/kDy2B6YEhXGJuNguG1qyqIodMyO4w8KwWH4/vAc7CI=";
+  nixConfig.extra-substituters = "https://tweag-jupyter-nix.cachix.org";
+  nixConfig.extra-trusted-public-keys = "tweag-jupyter-nix.cachix.org-1:rlkzt5dp3c4yiceqd6btz3mtzkoqiw6nmeab/o6tfxg=";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-21.11";
