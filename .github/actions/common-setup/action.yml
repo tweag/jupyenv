@@ -14,5 +14,5 @@ runs:
 
     - uses: cachix/cachix-action@v10
       with:
-        name: tweag-jupyter-nix
+        name: tweag-jupyter
         authToken: '${{ inputs.CACHIX_AUTH_TOKEN }}'

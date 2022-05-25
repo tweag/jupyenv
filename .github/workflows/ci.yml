@@ -26,7 +26,7 @@ jobs:
     - name: Setup
       uses: ./.github/actions/common-setup
       with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: Check
       run: |
