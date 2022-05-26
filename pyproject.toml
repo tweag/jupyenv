@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "jupyter"
+name = "jupyter-nix"
 version = "0.1.0"
-description = ""
+description = "Declarative and reproducible Jupyter environments - powered by Nix"
 authors = []
 
 [tool.poetry.dependencies]

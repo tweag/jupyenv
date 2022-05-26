@@ -1,5 +1,5 @@
 {
-  description = "declarative and reproducible Jupyter environments - powered by Nix";
+  description = "Declarative and reproducible Jupyter environments - powered by Nix";
 
   nixConfig.extra-substituters = "https://tweag-jupyter.cachix.org";
   nixConfig.extra-trusted-public-keys = "tweag-jupyter.cachix.org-1:UtNH4Zs6hVUFpFBTLaA4ejYavPo5EFFqgd7G7FxGW9g=";
@@ -69,10 +69,35 @@
           };
         };
 
-        jupyterlab = import (self + "/nix/jupyter") {
-          inherit (pkgs) lib poetry2nix;
-          python = pkgs.python3;
-        };
+        jupyterlab = let
+          addNativeBuildInputs = drv: inputs:
+            drv.overridePythonAttrs (old: {
+              nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
+            });
+
+          poetryPackages = pkgs.poetry2nix.mkPoetryPackages {
+            python = pkgs.python3;
+            projectDir = ./.;
+            overrides = pkgs.poetry2nix.overrides.withDefaults (self: super: {
+              argon2-cffi = addNativeBuildInputs super.argon2-cffi [self.flit-core];
+              entrypoints = addNativeBuildInputs super.entrypoints [self.flit-core];
+              jupyterlab-pygments = addNativeBuildInputs super.jupyterlab-pygments [self.jupyter-packaging];
+              notebook-shim = addNativeBuildInputs super.notebook-shim [self.jupyter-packaging];
+              pyparsing = addNativeBuildInputs super.pyparsing [self.flit-core];
+              soupsieve = addNativeBuildInputs super.soupsieve [self.hatchling];
+              testpath = addNativeBuildInputs super.testpath [self.flit-core];
+            });
+          };
+
+          # Transform python3.9-xxxx-1.8.0 to xxxx
+          toName = s:
+            lib.strings.concatStringsSep "-"
+            (lib.lists.drop 1 (lib.lists.init (lib.strings.splitString "-" s)));
+
+          # Makes the flat list an attrset
+          packages = builtins.foldl' (obj: drv: {"${toName drv.name}" = drv;} // obj) {} poetryPackages.poetryPackages;
+        in
+          packages.jupyterlab;
 
         mkKernel = kernel: args: name: let
           # TODO: we should probably assert that the kernel is correctly shaped.
@@ -203,7 +228,9 @@
             for i in ${jupyterlab}/bin/*; do
               filename=$(basename $i)
               ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
-              wrapProgram $out/bin/$filename --set JUPYTER_PATH ${kernelsString requestedKernels}
+              wrapProgram $out/bin/$filename \
+                --set JUPYTERLAB_DIR ${jupyterlab}/share/jupyter/lab \
+                --set JUPYTER_PATH ${kernelsString requestedKernels}
             done
           '';
 
