@@ -5,7 +5,7 @@
   nixConfig.extra-trusted-public-keys = "tweag-jupyter.cachix.org-1:UtNH4Zs6hVUFpFBTLaA4ejYavPo5EFFqgd7G7FxGW9g=";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-21.11";
+  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05";
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -71,7 +71,7 @@
 
         jupyterlab = pkgs.poetry2nix.mkPoetryEnv {
           python = pkgs.python3;
-          projectDir = ./.;
+          projectDir = self; # TODO: only include relevant files/folders
           overrides = pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix);
         };
 
@@ -160,10 +160,7 @@
                   value =
                     lib.makeOverridable
                     (import (kernelsPath + "/${kernelName}/default.nix"))
-                    {
-                      inherit self pkgs;
-                      inherit (pkgs) poetry2nix;
-                    };
+                    {inherit self pkgs;};
                 }
               )
               (
@@ -233,9 +230,6 @@
             pkgs.alejandra
             poetry2nix.defaultPackage.${system}
             pkgs.python3Packages.poetry
-
-            # ansible kernel
-            pkgs.stdenv.cc.cc.lib
           ];
           shellHook = ''
             ${pre-commit.shellHook}
