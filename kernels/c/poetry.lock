@@ -1,0 +1,17 @@
+[[package]]
+name = "jupyter-c-kernel"
+version = "1.2.2"
+description = "Minimalistic C kernel for Jupyter"
+category = "main"
+optional = false
+python-versions = "*"
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.9"
+content-hash = "084a97fd122597526e571d9bf741d7a1d8ef77a63de463350fda2bb7e2d2e697"
+
+[metadata.files]
+jupyter-c-kernel = [
+    {file = "jupyter_c_kernel-1.2.2.tar.gz", hash = "sha256:e4b34235b42761cfc3ff08386675b2362e5a97fb926c135eee782661db08a140"},
+]
