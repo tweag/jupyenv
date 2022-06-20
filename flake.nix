@@ -219,6 +219,9 @@
             example_ansible = mkKernel k.ansible {
               displayName = "Example Ansible Kernel";
             };
+            example_ipython = mkKernel k.ipython {
+              displayName = "Example IPython Kernel";
+            };
           };
         };
       in rec {
