@@ -219,6 +219,9 @@
             example_ansible = mkKernel k.ansible {
               displayName = "Example Ansible Kernel";
             };
+            example_nix = mkKernel k.nix {
+              displayName = "Example Nix Kernel";
+            };
             example_bash = mkKernel k.bash {
               displayName = "Example Bash Kernel";
             };
