@@ -49,7 +49,6 @@ in
       "-f"
       "{connection_file}"
     ],
-    codemirror_mode ? "",
     logo64 ? ./logo64.png,
   }: {
     inherit
@@ -57,7 +56,6 @@ in
       displayName
       language
       argv
-      codemirror_mode
       logo64
       ;
   }

@@ -35,7 +35,7 @@ in
       "-f"
       "{connection_file}"
     ],
-    codemirror_mode ? "python",
+    codemirrorMode ? "python",
     logo64 ? ./logo64.png,
   }: {
     inherit
@@ -43,7 +43,7 @@ in
       displayName
       language
       argv
-      codemirror_mode
+      codemirrorMode
       logo64
       ;
   }

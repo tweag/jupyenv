@@ -85,30 +85,30 @@
           #, logo32,                  # optional; type: absolute store path
           #, logo64,                  # optional; type: absolute store path
           #}:
-          args' =
-            lib.mapAttrs'
-            (
-              name: value:
-                if name == "displayName"
-                then {
-                  name = "display_name";
-                  inherit value;
-                }
-                else {inherit name value;}
-            )
-            args;
-
           kernelInstance = kernel ({inherit name;} // args);
 
           kernelLogos = ["logo32" "logo64"];
 
           kernelJSON =
-            builtins.mapAttrs
+            lib.mapAttrs'
             (
-              n: v:
-                if builtins.elem n kernelLogos
-                then baseNameOf v
-                else v
+              name: value:
+                if builtins.elem name kernelLogos
+                then {
+                  inherit name;
+                  value = baseNameOf value;
+                }
+                else if name == "displayName"
+                then {
+                  name = "display_name";
+                  inherit value;
+                }
+                else if name == "codemirrorMode"
+                then {
+                  name = "codemirror_mode";
+                  inherit value;
+                }
+                else {inherit name value;}
             )
             kernelInstance;
 
