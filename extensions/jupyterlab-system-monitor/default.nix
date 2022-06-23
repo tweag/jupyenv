@@ -5,7 +5,7 @@
   extension = pkgs.fetchFromGitHub {
     owner = "jtpio";
     repo = "${name}";
-    rev = "refs/tags/{$version}";
+    rev = "refs/tags/${version}";
     sha256 = "0jv393bbjx8jda1nwsym3n37f5h47p63zdvw07vnxranwrpq41xl";
     #fetchSubmodules = true;
     postFetch = ''
