@@ -203,7 +203,10 @@
               ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
               wrapProgram $out/bin/$filename \
                 --set JUPYTERLAB_DIR ${jupyterlab}/share/jupyter/lab \
-                --set JUPYTER_PATH ${kernelsString requestedKernels}
+                --set JUPYTER_PATH ${kernelsString requestedKernels} \
+                --set JUPYTER_CONFIG_DIR "/doesNotExist1" \
+                --set JUPYTER_DATA_DIR "/doesNotExist2" \
+                --set JUPYTER_RUNTIME_DIR '$HOME/.local/share/jupyter/runtime'
             done
           '';
 
