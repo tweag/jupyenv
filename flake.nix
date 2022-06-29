@@ -193,6 +193,11 @@
             kernelInstances;
 
           kernelsString = lib.concatStringsSep ":";
+
+          # create directories for storing jupyter configs and runtime
+          jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
+            mkdir -p $out/config $out/data $out/runtime
+          '';
         in
           pkgs.runCommand "wrapper-${jupyterlab.name}"
           {nativeBuildInputs = [pkgs.makeWrapper];}
@@ -204,9 +209,10 @@
               wrapProgram $out/bin/$filename \
                 --set JUPYTERLAB_DIR ${jupyterlab}/share/jupyter/lab \
                 --set JUPYTER_PATH ${kernelsString requestedKernels} \
-                --set JUPYTER_CONFIG_DIR "/doesNotExist1" \
-                --set JUPYTER_DATA_DIR "/doesNotExist2" \
-                --set JUPYTER_RUNTIME_DIR '$HOME/.local/share/jupyter/runtime'
+                --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
+                --set JUPYTER_DATA_DIR "${jupyterDir}/data" \
+                --set IPYTHONDIR "/does-not-exists" \
+                --set JUPYTER_RUNTIME_DIR "${jupyterDir}/runtime"
             done
           '';
 

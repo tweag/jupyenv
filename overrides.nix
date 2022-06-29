@@ -9,11 +9,19 @@ in
   // addNativeBuildInputs "jsonschema" [final.hatchling final.hatch-vcs]
   // addNativeBuildInputs "traitlets" [final.hatchling]
   // addNativeBuildInputs "terminado" [final.hatchling]
-  // addNativeBuildInputs "jupyter-client" [final.hatchling]
   // addNativeBuildInputs "jupyter-server" [final.hatchling]
   // addNativeBuildInputs "jupyterlab-server" [final.hatchling]
   // addNativeBuildInputs "ipykernel" [final.hatchling]
   // {
+    jupyter-client = prev.jupyter-client.overridePythonAttrs (old: {
+      nativeBuildInputs = (old.nativeBuildInputs or []) ++ [final.hatchling];
+      postPatch = ''
+        # default the native kernel to False so it does not appear in the env
+        sed -i \
+          -e "/ensure_native_kernel = Bool(/!b;n;c\        False," \
+          jupyter_client/kernelspec.py
+      '';
+    });
     jupyter-core = prev.jupyter-core.overridePythonAttrs (old: {
       postPatch = ''
         # remove system paths from jupyter paths
