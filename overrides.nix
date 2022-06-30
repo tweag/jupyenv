@@ -29,8 +29,13 @@ in
           -e '/paths.extend(SYSTEM_JUPYTER_PATH)/d' \
           -e '/paths.extend(SYSTEM_CONFIG_PATH)/d' \
             ./jupyter_core/paths.py
+        # empty the ENV_JUPYTER_PATH and ENV_CONFIG_PATH lists
         sed -i -E 's/(ENV_JUPYTER_PATH = )(\[.*\])/\1[]/g' ./jupyter_core/paths.py
         sed -i -E 's/(ENV_CONFIG_PATH = )(\[.*\])/\1[]/g' ./jupyter_core/paths.py
+        # override the funtion that returns the jupyter runtime dir
+        sed -i \
+          -e "/def jupyter_runtime_dir():/!b;n;i\    return pjoin(get_home_dir(), '.local', 'share', 'jupyter', 'runtime')" \
+          ./jupyter_core/paths.py
       '';
     });
   }

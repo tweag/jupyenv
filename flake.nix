@@ -194,9 +194,9 @@
 
           kernelsString = lib.concatStringsSep ":";
 
-          # create directories for storing jupyter configs and runtime
+          # create directories for storing jupyter configs
           jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
-            mkdir -p $out/config $out/data $out/runtime
+            mkdir -p $out/config $out/data
           '';
         in
           pkgs.runCommand "wrapper-${jupyterlab.name}"
@@ -211,8 +211,8 @@
                 --set JUPYTER_PATH ${kernelsString requestedKernels} \
                 --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
                 --set JUPYTER_DATA_DIR "${jupyterDir}/data" \
-                --set IPYTHONDIR "/does-not-exists" \
-                --set JUPYTER_RUNTIME_DIR "${jupyterDir}/runtime"
+                --set IPYTHONDIR "/path-not-set" \
+                --set JUPYTER_RUNTIME_DIR "/path-not-set"
             done
           '';
 
