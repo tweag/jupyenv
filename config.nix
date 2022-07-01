@@ -110,7 +110,7 @@ in {
       };
 
       allow_origin = mkOption {
-        types = types.str;
+        type = types.str;
         default = "";
         description = ''
           Set the Access-Control-Allow-Origin header.
@@ -244,7 +244,7 @@ in {
       cookie_options = mkOption {
         type = types.attrs;
         default = {};
-        descripion = ''
+        description = ''
           Extra keyword arguments to pass to set_secure_cookie. See tornado’s
           set_secure_cookie docs for details.
         '';
