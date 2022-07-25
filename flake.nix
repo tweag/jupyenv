@@ -212,9 +212,11 @@
               ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
               wrapProgram $out/bin/$filename \
                 --set JUPYTERLAB_DIR ${jupyterlab}/share/jupyter/lab \
+                --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
+                --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
                 --set JUPYTER_PATH ${kernelsString requestedKernels} \
                 --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
-                --set JUPYTER_DATA_DIR "${jupyterDir}/data" \
+                --set JUPYTER_DATA_DIR ".jupyter/data" \
                 --set IPYTHONDIR "/path-not-set" \
                 --set JUPYTER_RUNTIME_DIR "/path-not-set"
             done
