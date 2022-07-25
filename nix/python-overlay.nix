@@ -100,4 +100,7 @@ in
         (old.packageOverrides or (_: _: {}))
         packageOverrides;
   });
+  poetry2nix = prev.poetry2nix.overrideScope' (p2nixfinal: p2nixprev: {
+    defaultPoetryOverrides = p2nixprev.defaultPoetryOverrides.extend packageOverrides;
+  });
 }

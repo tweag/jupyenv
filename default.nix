@@ -1,6 +1,7 @@
 { overlays ? []
 , config ? {}
 , pkgs ? import ./nix { inherit config overlays; }
+, python3 ? pkgs.python3
 }:
 
 with (import ./lib/directory.nix { inherit pkgs; });
@@ -10,9 +11,6 @@ let
   # Kernel generators.
   kernels = pkgs.callPackage ./kernels {};
   kernelsString = pkgs.lib.concatMapStringsSep ":" (k: "${k.spec}");
-
-  # Python version setup.
-  python3 = pkgs.python3.pkgs;
 
   # Default configuration.
   defaultDirectory = "$out/share/jupyter/lab";
@@ -30,18 +28,18 @@ let
     }:
     let
       # PYTHONPATH setup for JupyterLab
-      pythonPath = python3.makePythonPath [
-        python3.ipykernel
-        python3.jupyter_contrib_core
-        python3.jupyter_nbextensions_configurator
-        python3.tornado
+      pythonPath = python3.pkgs.makePythonPath [
+        python3.pkgs.ipykernel
+        python3.pkgs.jupyter_contrib_core
+        python3.pkgs.jupyter_nbextensions_configurator
+        python3.pkgs.tornado
       ];
       # NodeJS is required for extensions
       extraPath = pkgs.lib.makeBinPath ([ pkgs.nodejs ] ++ extraPackages pkgs);
 
       # JupyterLab executable wrapped with suitable environment variables.
-      jupyterlab = python3.toPythonModule (
-        python3.jupyterlab.overridePythonAttrs (oldAttrs: {
+      jupyterlab = python3.pkgs.toPythonModule (
+        python3.pkgs.jupyterlab.overridePythonAttrs (oldAttrs: {
           makeWrapperArgs = oldAttrs.makeWrapperArgs or [] ++ [
             "--set JUPYTERLAB_DIR ${directory}"
             "--set JUPYTER_PATH ${extraJupyterPath pkgs}:${kernelsString kernels}"
