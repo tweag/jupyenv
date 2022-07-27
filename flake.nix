@@ -249,6 +249,9 @@
             example_ipython = mkKernel k.ipython {
               displayName = "Example IPython Kernel";
             };
+            example_javascript = mkKernel k.javascript {
+              displayName = "Example Javascript Kernel";
+            };
           };
         };
       in rec {
