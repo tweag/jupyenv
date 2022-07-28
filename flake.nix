@@ -249,6 +249,9 @@
             example_ipython = mkKernel k.ipython {
               displayName = "Example IPython Kernel";
             };
+            example_ruby = mkKernel k.ruby {
+              displayName = "Example Ruby Kernel";
+            };
           };
         };
       in rec {
