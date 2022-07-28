@@ -1,0 +1,5 @@
+/.github/*    garbas
+/flake.nix    garbas
+/flake.lock   garbas
+/default.nix  garbas
+/shell.nix    garbas
