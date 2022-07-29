@@ -252,6 +252,12 @@
             example_r = mkKernel k.r {
               displayName = "Example R Kernel";
             };
+            example_javascript = mkKernel k.javascript {
+              displayName = "Example Javascript Kernel";
+            };
+            example_ihaskell = mkKernel k.ihaskell {
+              displayName = "Example iHaskell Kernel";
+            };
           };
         };
       in rec {
