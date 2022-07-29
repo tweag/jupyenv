@@ -24,38 +24,48 @@
       preferWheels
       ;
   };
-
-  nix-bin =
-    pkgs.runCommand "wrapper-${env.name}"
-    {nativeBuildInputs = [pkgs.makeWrapper];}
-    ''
-      mkdir -p $out/bin
-      for i in ${env}/bin/*; do
-        filename=$(basename $i)
-        ln -s ${env}/bin/$filename $out/bin/$filename
-        wrapProgram $out/bin/$filename \
-          --set PATH ${nix}/bin
-      done
-    '';
 in
   {
     name ? "nix",
     displayName ? "Nix", # TODO: add Nix version
     language ? "Nix",
-    argv ? [
-      "${nix-bin}/bin/python"
-      "-m"
-      "nix-kernel"
-      "-f"
-      "{connection_file}"
-    ],
+    argv ? null,
     logo64 ? ./logo64.png,
-  }: {
+    extraRuntimePackages ? [],
+    nixpkgsPath ? pkgs.path,
+  }: let
+    runtimePackages = [nix] ++ extraRuntimePackages;
+
+    wrappedEnv =
+      pkgs.runCommand "wrapper-${env.name}"
+      {nativeBuildInputs = [pkgs.makeWrapper];}
+      ''
+        mkdir -p $out/bin
+        for i in ${env}/bin/*; do
+          filename=$(basename $i)
+          ln -s ${env}/bin/$filename $out/bin/$filename
+          wrapProgram $out/bin/$filename \
+            --set NIX_PATH "nixpkgs=${nixpkgsPath}" \
+            --set PATH "${pkgs.lib.makeSearchPath "bin" runtimePackages}"
+        done
+      '';
+
+    argv_ =
+      if argv == null
+      then [
+        "${wrappedEnv}/bin/python"
+        "-m"
+        "nix-kernel"
+        "-f"
+        "{connection_file}"
+      ]
+      else argv;
+  in {
+    argv = argv_;
     inherit
       name
       displayName
       language
-      argv
       logo64
       ;
   }

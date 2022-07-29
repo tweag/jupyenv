@@ -28,21 +28,42 @@ in
     name ? "bash",
     displayName ? "Bash", # TODO: add Bash version
     language ? "bash",
-    argv ? [
-      "${env}/bin/python"
-      "-m"
-      "bash_kernel"
-      "-f"
-      "{connection_file}"
-    ],
+    argv ? null,
     codemirrorMode ? "shell",
     logo64 ? ./logo64.png,
-  }: {
+    extraRuntimePackages ? [pkgs.coreutils],
+  }: let
+    runtimePackages = [pkgs.bash] ++ extraRuntimePackages;
+
+    wrappedEnv =
+      pkgs.runCommand "wrapper-${env.name}"
+      {nativeBuildInputs = [pkgs.makeWrapper];}
+      ''
+        mkdir -p $out/bin
+        for i in ${env}/bin/*; do
+          filename=$(basename $i)
+          ln -s ${env}/bin/$filename $out/bin/$filename
+          wrapProgram $out/bin/$filename \
+            --set PATH "${pkgs.lib.makeSearchPath "bin" runtimePackages}"
+        done
+      '';
+
+    argv_ =
+      if argv == null
+      then [
+        "${wrappedEnv}/bin/python"
+        "-m"
+        "bash_kernel"
+        "-f"
+        "{connection_file}"
+      ]
+      else argv;
+  in {
+    argv = argv_;
     inherit
       name
       displayName
       language
-      argv
       codemirrorMode
       logo64
       ;
