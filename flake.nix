@@ -249,6 +249,9 @@
             example_ipython = mkKernel k.ipython {
               displayName = "Example IPython Kernel";
             };
+            example_javascript = mkKernel k.javascript {
+              displayName = "Example Javascript Kernel";
+            };
             example_ihaskell = mkKernel k.ihaskell {
               displayName = "Example iHaskell Kernel";
             };
