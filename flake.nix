@@ -9,8 +9,6 @@
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.gitignore.url = "github:hercules-ci/gitignore.nix";
-  inputs.gitignore.inputs.nixpkgs.follows = "nixpkgs";
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
@@ -34,7 +32,6 @@
     nixpkgs-stable,
     flake-compat,
     flake-utils,
-    gitignore,
     pre-commit-hooks,
     poetry2nix,
     #ihaskell,
@@ -63,7 +60,7 @@
         };
 
         pre-commit = pre-commit-hooks.lib.${system}.run {
-          src = gitignore.lib.gitignoreSource self;
+          src = self;
           hooks = {
             alejandra.enable = true;
           };
