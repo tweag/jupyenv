@@ -4,4 +4,8 @@ final: prev: let
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
     });
   };
-in {}
+in
+  {}
+  // addNativeBuildInputs "jupyter-core" [final.hatchling]
+  // addNativeBuildInputs "jupyter-client" [final.hatchling]
+  // addNativeBuildInputs "ipykernel" [final.hatchling]
