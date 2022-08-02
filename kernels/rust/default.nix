@@ -14,9 +14,14 @@
   runtimePackages ? with pkgs; [cargo gcc binutils-unwrapped],
   extraRuntimePackages ? [],
 }: let
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
-
+  rust-overlay = import (builtins.fetchTarball "https://github.com/oxalica/rust-overlay/archive/master.tar.gz");
+  pkgs-rust = import <nixpkgs> {overlays = [rust-overlay];};
+  rust = pkgs-rust.rust-bin.stable.latest.rust.override {
+    extensions = ["rust-src"];
+  };
+  allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ [rust];
   env = evcxr;
+in let
   wrappedEnv =
     pkgs.runCommand "wrapper-${env.name}"
     {nativeBuildInputs = [pkgs.makeWrapper];}
