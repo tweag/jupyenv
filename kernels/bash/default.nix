@@ -31,9 +31,10 @@ in
     argv ? null,
     codemirrorMode ? "shell",
     logo64 ? ./logo64.png,
-    extraRuntimePackages ? [pkgs.coreutils],
+    runtimePackages ? with pkgs; [bash coreutils],
+    extraRuntimePackages ? [],
   }: let
-    runtimePackages = [pkgs.bash] ++ extraRuntimePackages;
+    allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
     wrappedEnv =
       pkgs.runCommand "wrapper-${env.name}"
@@ -44,7 +45,7 @@ in
           filename=$(basename $i)
           ln -s ${env}/bin/$filename $out/bin/$filename
           wrapProgram $out/bin/$filename \
-            --set PATH "${pkgs.lib.makeSearchPath "bin" runtimePackages}"
+            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
         done
       '';
 

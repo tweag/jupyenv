@@ -31,10 +31,11 @@ in
     language ? "Nix",
     argv ? null,
     logo64 ? ./logo64.png,
+    runtimePackages ? [nix],
     extraRuntimePackages ? [],
     nixpkgsPath ? pkgs.path,
   }: let
-    runtimePackages = [nix] ++ extraRuntimePackages;
+    allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
     wrappedEnv =
       pkgs.runCommand "wrapper-${env.name}"
@@ -45,8 +46,8 @@ in
           filename=$(basename $i)
           ln -s ${env}/bin/$filename $out/bin/$filename
           wrapProgram $out/bin/$filename \
-            --set NIX_PATH "nixpkgs=${nixpkgsPath}" \
-            --set PATH "${pkgs.lib.makeSearchPath "bin" runtimePackages}"
+            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"\
+            --set NIX_PATH "nixpkgs=${nixpkgsPath}"
         done
       '';
 
