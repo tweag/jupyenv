@@ -14,8 +14,11 @@
   runtimePackages ? with pkgs; [cargo gcc binutils-unwrapped],
   extraRuntimePackages ? [],
 }: let
-  rust-overlay = import (builtins.fetchTarball "https://github.com/oxalica/rust-overlay/archive/master.tar.gz");
-  pkgs-rust = import <nixpkgs> {overlays = [rust-overlay];};
+  rust-overlay = import (builtins.fetchTarball {
+    url = "https://github.com/oxalica/rust-overlay/archive/master.tar.gz";
+    sha256 = "10ja06zgc7y53715vwhxz29knbijyikjzldjng0k9zm2hcksaxfr";
+  });
+  pkgs-rust = pkgs.extend rust-overlay;
   rust = pkgs-rust.rust-bin.stable.latest.rust.override {
     extensions = ["rust-src"];
   };
