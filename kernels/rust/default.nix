@@ -19,7 +19,14 @@
     sha256 = "10ja06zgc7y53715vwhxz29knbijyikjzldjng0k9zm2hcksaxfr";
   });
   pkgs-rust = pkgs.extend rust-overlay;
-  rust = pkgs-rust.rust-bin.stable.latest.rust.override {
+
+  /*
+   rust-overlay recommends using `default` over `rust`.
+   Pre-aggregated package `rust` is not encouraged for stable channel since it
+   contains almost all and uncertain components.
+   https://github.com/oxalica/rust-overlay/blob/1558464ab660ddcb45a4a4a691f0004fdb06a5ee/rust-overlay.nix#L331
+   */
+  rust = pkgs-rust.rust-bin.stable.latest.default.override {
     extensions = ["rust-src"];
   };
   allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ [rust];
