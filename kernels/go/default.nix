@@ -17,7 +17,7 @@ in
     argv ? null,
     codemirrorMode ? "go",
     logo64 ? ./logo64.png,
-    runtimePackages ? [],
+    runtimePackages ? with pkgs; [go],
     extraRuntimePackages ? [],
   }: let
     allRuntimePackages = runtimePackages ++ extraRuntimePackages;
@@ -39,7 +39,7 @@ in
     argv_ =
       if argv == null
       then [
-        "${gophernotesSh}/bin/gophernotes"
+        "${wrappedEnv}/bin/gophernotes"
         "{connection_file}"
       ]
       else argv;
