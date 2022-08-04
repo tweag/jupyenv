@@ -258,6 +258,9 @@
             example_go = mkKernel k.go {
               displayName = "Example Go Kernel";
             };
+            example_cpp = mkKernel k.cpp {
+              displayName = "Example C++ Kernel";
+            };
           };
         };
       in rec {
