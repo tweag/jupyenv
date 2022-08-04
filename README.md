@@ -85,7 +85,7 @@ cachix use jupyterwith
 With Nix flakes (experimental Nix feature) you can automatically pin and update jupyterWith to the latest version.
 An example `flake.nix` file for jupyterWith on x86-64 Linux, executable with `nix run` from the same folder, looks like this:
 
-```
+```nix
 {
   description = "JupyterLab Flake";
 
