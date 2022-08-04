@@ -1,33 +1,32 @@
 {
-  # self,
+  self,
   pkgs ? import <nixpkgs> {},
-  ocamlPackages ? pkgs.ocamlPackages,
-  # TODO: remove args below here eventually
-  name ? "nixpkgs",
+  ocamlPackages ? pkgs.ocaml-ng.ocamlPackages_4_10,
+  #  ocamlPackages ? pkgs.ocamlPackages,
+  ocamlBuildInputs ?
+    with ocamlPackages; [
+      ocaml-syntax-shims
+      yojson
+      lwt_ppx
+      ppx_deriving
+      ppx_deriving_yojson
+      base64
+      uuidm
+      logs
+      cryptokit
+      zmq
+      zmq-lwt
+      cppo
+      ounit
+      merlin
+    ],
+  ocamlPropagatedBuildInputs ?
+    with ocamlPackages; [
+      bigstringaf
+      result
+    ],
 }: let
   inherit (pkgs) fetchFromGitHub;
-
-  kernelSpecFile = pkgs.writeText "kernel.json" (builtins.toJSON {
-    argv = [
-      "{out-path}/bin/ocaml-jupyter-kernel"
-      "-init"
-      "/home/$USER/.ocamlinit"
-      "--merlin"
-      "{merlin-path}/bin/ocamlmerlin"
-      "--verbosity"
-      "app"
-      "--connection-file"
-      "{connection_file}"
-    ];
-    display_name =
-      "OCaml"
-      + (
-        if name == ""
-        then ""
-        else " - ${name}"
-      );
-    language = "OCaml";
-  });
 
   OcamlKernel = ocamlPackages.buildDunePackage rec {
     pname = "jupyter";
@@ -43,34 +42,10 @@
       sha256 = "0dayyhvw3ynvncy9b7daiz3bcybfh38mbivgr693i16ld3gp6c6v";
     };
 
-    #checkInputs = [ alcotest ppx_let ];
-    buildInputs = with ocamlPackages; [
-      ocaml-syntax-shims
-      yojson
-      lwt_ppx
-      ppx_deriving
-      ppx_deriving_yojson
-      base64
-      uuidm
-      logs
-      cryptokit
-      zmq
-      zmq-lwt
-      cppo
-      ounit
-      merlin
-    ];
-    propagatedBuildInputs = with ocamlPackages; [bigstringaf result];
+    buildInputs = ocamlBuildInputs;
+    propagatedBuildInputs = ocamlPropagatedBuildInputs;
 
     doCheck = false;
-
-    postInstall = ''
-      export kerneldir=$out/kernels/ocaml_${pkgs.ocaml.version}
-      mkdir -p $kerneldir
-      substitute ${kernelSpecFile} $kerneldir/kernel.json \
-      --replace "{merlin-path}" ${pkgs.ocamlPackages.merlin} \
-      --replace "{out-path}" $out
-    '';
 
     meta = with pkgs.lib; {
       homepage = "https://github.com/akabe/ocaml-jupyter";
@@ -80,22 +55,53 @@
     };
   };
 in
-  OcamlKernel
-#  {
-#    name ? "ocaml",
-#    displayName ? "OCaml", # TODO: add version
-#    language ? "ocaml",
-#    argv ? [
-#    ],
-#    codemirrorMode ? "ocaml",
-#    logo64 ? ./logo64.png,
-#  }: {
-#    inherit
-#      name
-#      displayName
-#      language
-#      argv
-#      codemirrorMode
-#      logo64
-#      ;
-#  }
+  {
+    name ? "ocaml",
+    displayName ? "OCaml", # TODO: add version
+    language ? "ocaml",
+    argv ? null,
+    codemirrorMode ? "ocaml",
+    logo64 ? ./logo64.png,
+    runtimePackages ? [],
+    extraRuntimePackages ? [],
+  }: let
+    allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ ocamlBuildInputs;
+
+    env = OcamlKernel;
+    wrappedEnv =
+      pkgs.runCommand "wrapper-${env.name}"
+      {nativeBuildInputs = [pkgs.makeWrapper];}
+      ''
+        mkdir -p $out/bin
+        for i in ${env}/bin/*; do
+          filename=$(basename $i)
+          ln -s ${env}/bin/$filename $out/bin/$filename
+          wrapProgram $out/bin/$filename \
+            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+        done
+      '';
+
+    argv_ =
+      if argv == null
+      then [
+        "${wrappedEnv}/bin/ocaml-jupyter-kernel"
+        "-init"
+        "/home/$USER/.ocamlinit"
+        "--merlin"
+        "${pkgs.ocamlPackages.merlin}/bin/ocamlmerlin"
+        "--verbosity"
+        "app"
+        "--connection-file"
+        "{connection_file}"
+      ]
+      else argv;
+  in {
+    argv = argv_;
+    inherit
+      name
+      displayName
+      language
+      codemirrorMode
+      logo64
+      ;
+  }
