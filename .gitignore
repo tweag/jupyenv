@@ -4,8 +4,8 @@
 /.pre-commit-config.yaml
 
 /.ipynb_checkpoints/
-/*.ipydb
+/*.ipynb
 
 # generated folder of jupyter distribution
 /jupyterlab/
-
+/.jupyter/
