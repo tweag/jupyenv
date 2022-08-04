@@ -1,10 +1,17 @@
 {
   self,
   pkgs,
-  cling ? pkgs.cling,
+  # cling ? pkgs.cling,
 }: let
   inherit (pkgs) lib stdenv writeScriptBin;
 
+  /*
+  Importing cling from the nix file below follows the original implementation
+  of the C++ kernel. cling is packaged under nixpkgs. You can test out that
+  version by commenting the line below and uncommenting the cling argument
+  above. It has build errors by itself.
+  */
+  cling = import ./cling.nix {inherit pkgs;};
   xeusCling = import ./xeusCling.nix {inherit pkgs cling;};
 
   xeusClingSh = writeScriptBin "xeusCling" ''
