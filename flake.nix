@@ -255,6 +255,9 @@
             example_ihaskell = mkKernel k.ihaskell {
               displayName = "Example iHaskell Kernel";
             };
+            example_go = mkKernel k.go {
+              displayName = "Example Go Kernel";
+            };
           };
         };
       in rec {
