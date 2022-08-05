@@ -2,16 +2,24 @@
   self,
   pkgs,
   julia-bin ? pkgs.julia_17-bin,
+  JULIA_DEPOT_PATH ? "~/.julia",
+  activateDir ? "",
+  ijuliaRev ? "AQu2H",
 }: let
-  inherit (pkgs) fetchFromGitHub;
-
-  ijuliaVer = "1.23.3";
-  ijuliaSrc = fetchFromGitHub {
-    owner = "JuliaLang";
-    repo = "IJulia.jl";
-    rev = "v${ijuliaVer}";
-    sha256 = "sha256-GdiYmq0IJoRqiMBRL/z3UW4Nlu41ylvaASvoE7/jQyk=";
-  };
+  inherit (pkgs) writeScriptBin writeText;
+  startupFile = writeText "startup.jl" ''
+    import Pkg
+    Pkg.activate("${activateDir}")
+    Pkg.update()
+    Pkg.instantiate()
+  '';
+  activateJuliaPkg = writeScriptBin "activateJuliaPkg" ''
+    export JULIA_DEPOT_PATH=${JULIA_DEPOT_PATH}
+    julia -L ${startupFile} -e 'println("Initializating DONE")'
+  '';
+  juliaStartup = writeScriptBin "juliaStartup" ''
+    julia -L ${startupFile}
+  '';
 in
   {
     name ? "julia",
@@ -42,11 +50,13 @@ in
     argv_ =
       if argv == null
       then [
-        "${julia-bin}/bin/julia"
+        "${wrappedEnv}/bin/julia"
+        "-L"
+        "${startupFile}"
         "-i"
-        "--startup-file=no"
+        "--startup-file=yes"
         "--color=yes"
-        "${ijuliaSrc}/src/kernel.jl"
+        "${JULIA_DEPOT_PATH}/packages/IJulia/${ijuliaRev}/src/kernel.jl"
         "{connection_file}"
       ]
       else argv;
