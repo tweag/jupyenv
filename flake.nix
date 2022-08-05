@@ -258,6 +258,9 @@
             example_go = mkKernel k.go {
               displayName = "Example Go Kernel";
             };
+            example_julia = mkKernel k.julia {
+              displayName = "Example Julia Kernel";
+            };
           };
         };
       in rec {
