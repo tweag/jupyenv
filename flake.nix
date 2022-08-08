@@ -246,6 +246,9 @@
             example_ipython = mkKernel k.ipython {
               displayName = "Example IPython Kernel";
             };
+            example_ruby = mkKernel k.ruby {
+              displayName = "Example Ruby Kernel";
+            };
             example_r = mkKernel k.r {
               displayName = "Example R Kernel";
             };
@@ -260,6 +263,12 @@
             };
             example_julia = mkKernel k.julia {
               displayName = "Example Julia Kernel";
+            };
+            example_cpp = mkKernel k.cpp {
+              displayName = "Example C++ Kernel";
+            };
+            example_ocaml = mkKernel k.ocaml {
+              displayName = "Example OCaml Kernel";
             };
           };
         };
