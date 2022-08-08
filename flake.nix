@@ -261,6 +261,9 @@
             example_go = mkKernel k.go {
               displayName = "Example Go Kernel";
             };
+            example_ocaml = mkKernel k.ocaml {
+              displayName = "Example OCaml Kernel";
+            };
           };
         };
       in rec {
