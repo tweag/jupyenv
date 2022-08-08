@@ -261,6 +261,9 @@
             example_go = mkKernel k.go {
               displayName = "Example Go Kernel";
             };
+            example_julia = mkKernel k.julia {
+              displayName = "Example Julia Kernel";
+            };
             example_cpp = mkKernel k.cpp {
               displayName = "Example C++ Kernel";
             };
