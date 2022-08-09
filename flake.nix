@@ -270,16 +270,17 @@
             example_julia = mkKernel k.julia {
               displayName = "Example Julia Kernel";
             };
-            example_cpp = mkKernel k.cpp {
-              displayName = "Example C++ Kernel";
-            };
             example_ocaml = mkKernel k.ocaml {
               displayName = "Example OCaml Kernel";
             };
             example_elm = mkKernel k.elm {
               displayName = "Example Elm Kernel";
             };
-          };
+          } // (lib.optionalAttrs (system == "x86_64-linux") {
+            example_cpp = mkKernel k.cpp {
+              displayName = "Example C++ Kernel";
+            };
+          });
         };
       in rec {
         lib = {inherit mkKernel mkJupyterlabInstance;};
