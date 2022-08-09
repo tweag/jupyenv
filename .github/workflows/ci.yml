@@ -29,12 +29,13 @@ jobs:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: Check example_jupyterlab
+      if: ${{ matrix.os == 'ubuntu-latest'}}
       run: |
         nix build -Lv .#example_jupyterlab
 
     - name: Check Template
       run: |
-        nix build -Lv template#jupyterEnvironment --override-input jupyterWith ./.
+        nix build -Lv ./template#jupyterEnvironment --override-input jupyterWith ./.
 
     # - name: Check
     #   run: |
