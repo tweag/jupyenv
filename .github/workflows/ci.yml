@@ -28,6 +28,14 @@ jobs:
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
-    - name: Check
+    - name: Check example_jupyterlab
       run: |
-        nix flake check --show-trace -L
+        nix build -Lv .#packages.x86_64-linux.example_jupyterlab
+
+    - name: Check Template
+      run: |
+        nix build -Lv template#packages.x86_64-linux.jupyterEnvironment --override-input jupyterWith ./.
+
+    # - name: Check
+    #   run: |
+    #     nix flake check --show-trace -L

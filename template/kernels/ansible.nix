@@ -8,6 +8,6 @@
     pkgs = args.pkgs_stable;
   };
 in
-  mkKernel kernels.ipython {
+  mkKernel ansible_stable {
     displayName = name;
   }
