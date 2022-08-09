@@ -16,7 +16,7 @@
     jupyterWith,
     ...
   } @ inputs:
-    flake-utils.lib.eachSystem ["x86_64-linux"] (system: let
+    flake-utils.lib.eachSystem ["x86_64-linux" "x86_64-darwin"] (system: let
       inherit (jupyterWith.lib.${system}) mkKernel mkJupyterlabInstance;
       pkgs_stable = inputs.nixpkgs-stable.legacyPackages.${system};
       pkgs = import nixpkgs {
@@ -44,6 +44,9 @@
       packages = {
         inherit jupyterEnvironment;
         default = jupyterEnvironment;
+      };
+      devShells.default = pkgs.mkShell {
+        buildInputs = [jupyterEnvironment];
       };
     })
     // {
