@@ -26,6 +26,10 @@
   #inputs.ihaskell.inputs.hls.inputs.nixpkgs.follows = "nixpkgs";
   #inputs.ihaskell.inputs.hls.inputs.pre-commit-hooks.follows = "pre-commit-hooks";
 
+  # julia Inptus
+  inputs.julia2nix.url = "github:JuliaCN/Julia2Nix.jl";
+  inputs.julia2nix.inputs.nixpkgs.follows = "nixpkgs";
+
   outputs = {
     self,
     nixpkgs,
@@ -35,6 +39,7 @@
     pre-commit-hooks,
     poetry2nix,
     #ihaskell,
+    ...
   } @ inputs: let
     SYSTEMS = [
       flake-utils.lib.system.x86_64-linux
@@ -49,6 +54,7 @@
           inherit system;
           overlays = [
             poetry2nix.overlay
+            self.overlays.julia
           ];
         };
 
@@ -292,6 +298,9 @@
       }
     ))
     // {
+      overlays = {
+        julia = inputs.julia2nix.overlays.default;
+      };
       defaultTemplate = {
         path = ./template;
         description = "Boilerplate for your jupyter-nix project";
