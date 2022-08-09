@@ -30,11 +30,11 @@ jobs:
 
     - name: Check example_jupyterlab
       run: |
-        nix build -Lv .#packages.x86_64-linux.example_jupyterlab
+        nix build -Lv .#example_jupyterlab
 
     - name: Check Template
       run: |
-        nix build -Lv template#packages.x86_64-linux.jupyterEnvironment --override-input jupyterWith ./.
+        nix build -Lv template#jupyterEnvironment --override-input jupyterWith ./.
 
     # - name: Check
     #   run: |
