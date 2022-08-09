@@ -276,6 +276,9 @@
             example_ocaml = mkKernel k.ocaml {
               displayName = "Example OCaml Kernel";
             };
+            example_elm = mkKernel k.elm {
+              displayName = "Example Elm Kernel";
+            };
           };
         };
       in rec {
