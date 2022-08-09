@@ -29,7 +29,7 @@ jobs:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: Check example_jupyterlab
-      if: ${{ matrix.os == 'ubuntu-latest'}}
+      if: ${{ matrix.os == 'ubuntu-latest' }}
       run: |
         nix build -Lv .#example_jupyterlab
 

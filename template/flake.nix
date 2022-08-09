@@ -21,7 +21,10 @@
       pkgs_stable = inputs.nixpkgs-stable.legacyPackages.${system};
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [self.overlays.default];
+        overlays = [
+          self.overlays.default
+          jupyterWith.overlays.julia
+        ];
       };
 
       jupyterEnvironment = let
