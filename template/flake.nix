@@ -1,39 +1,52 @@
 {
   description = "Your jupyterWith project";
 
+  inputs.flake-compat.url = "github:edolstra/flake-compat";
+  inputs.flake-compat.flake = false;
+
   inputs.nixpkgs.follows = "jupyterWith/nixpkgs";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.jupyterWith.url = "github:tweag/jupyterWith";
-
-  # inputs.jupyterWith.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05";
 
   outputs = {
     self,
     nixpkgs,
     flake-utils,
     jupyterWith,
-  }:
+    ...
+  } @ inputs:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system: let
+      inherit (jupyterWith.lib.${system}) mkKernel mkJupyterlabInstance;
+      pkgs_stable = inputs.nixpkgs-stable.legacyPackages.${system};
       pkgs = import nixpkgs {
         inherit system;
-        overlays = builtins.attrValues jupyterWith.overlays;
+        overlays = [self.overlays.default];
       };
 
-      kernels = let
+      jupyterEnvironment = let
         inherit (builtins) map readDir attrNames;
         inherit (pkgs.lib.attrsets) filterAttrs;
         inherit (pkgs.lib.strings) hasPrefix hasSuffix;
+        __inputs__ = inputs // {inherit mkKernel pkgs pkgs_stable;};
       in
-        map (name: import ./kernels/${name} {inherit pkgs;})
-        (attrNames
-          (filterAttrs
-            (n: v: v == "regular" && hasSuffix ".nix" n && !hasPrefix "_" n)
-            (readDir ./kernels)));
-
-      jupyterEnvironment =
-        pkgs.jupyterWith.jupyterlabWith {inherit kernels;};
+        mkJupyterlabInstance {
+          kernels = kernels:
+            builtins.listToAttrs (map (name: {
+                name = pkgs.lib.removeSuffix ".nix" name;
+                value = import ./kernels/${name} (__inputs__ // {inherit name kernels;});
+              }) (attrNames
+                (filterAttrs
+                  (n: v: v == "regular" && hasSuffix ".nix" n && !hasPrefix "_" n)
+                  (readDir ./kernels))));
+        };
     in rec {
-      defaultPackage = packages.jupyterEnvironment;
-      packages = {inherit jupyterEnvironment;};
-    });
+      packages = {
+        inherit jupyterEnvironment;
+        default = jupyterEnvironment;
+      };
+    })
+    // {
+      overlays.default = final: prev: {};
+    };
 }
