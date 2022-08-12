@@ -4,10 +4,10 @@
   nodeenv ? pkgs.python3Packages.nodeenv,
   globalBuildInputs ? [],
 }: let
-  inherit (pkgs) lib stdenv writeScriptBin;
+  inherit (pkgs) fetchurl lib stdenv writeScriptBin;
   inherit (lib) makeBinPath attrValues;
 
-  source = {
+  sources = {
     "@rollup/plugin-commonjs-13.0.2" = {
       name = "_at_rollup_slash_plugin-commonjs";
       packageName = "@rollup/plugin-commonjs";
@@ -91,7 +91,7 @@
     };
   };
 
-  tslab = nodeEnv.buildNodePackage {
+  tslab = nodeenv.buildNodePackage {
     name = "tslab";
     packageName = "tslab";
     version = "1.0.15";
@@ -129,7 +129,7 @@ in
   }: let
     allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
-    env = gophernotesSh;
+    env = tslabSh;
     wrappedEnv =
       pkgs.runCommand "wrapper-${env.name}"
       {nativeBuildInputs = [pkgs.makeWrapper];}
