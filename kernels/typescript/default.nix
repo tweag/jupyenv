@@ -1,7 +1,7 @@
 {
   self,
   pkgs,
-  nodejs ? pkgs.nodejs-16_x,
+  nodejs ? pkgs.nodejs-14_x,
 }: let
   inherit (pkgs) fetchurl lib stdenv writeScriptBin;
   inherit (lib) makeBinPath;

@@ -11,5 +11,5 @@ nix run nixpkgs#node2nix -- \
     -i node-packages.json \
     -o node-packages.nix \
     -c composition.nix \
-    --pkg-name nodejs-16_x
+    --pkg-name nodejs-14_x
 
