@@ -1,13 +1,25 @@
 {
   self,
   pkgs,
-  nodeenv ? pkgs.python3Packages.nodeenv,
-  globalBuildInputs ? [],
+  nodejs ? pkgs.nodejs-16_x,
 }: let
   inherit (pkgs) fetchurl lib stdenv writeScriptBin;
   inherit (lib) makeBinPath;
 
-  tslab = import ./composition.nix {inherit pkgs;};
+  tslab = let
+    inherit (lib) composeManyExtensions extends makeExtensible mapAttrs;
+
+    nodePackages = final:
+      import ./composition.nix {
+        inherit pkgs nodejs;
+        inherit (stdenv.hostPlatform) system;
+      };
+
+    extensions = composeManyExtensions [
+      (import ./overrides.nix {inherit pkgs nodejs;})
+    ];
+  in
+    (makeExtensible (extends extensions nodePackages)).tslab;
 
   tslabSh = writeScriptBin "tslab" ''
     #! ${stdenv.shell}
