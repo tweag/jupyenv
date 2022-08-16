@@ -148,14 +148,14 @@
           kernels ? k: {}, # k: { python: k.python {}; },
           extensions ? e: [], # e: [ e.jupy-ext ],
         }: let
-          kernelsPath = self + "/kernels";
+          defaultKernelsPath = self + "/kernels";
 
           /*
           Takes a path to the kernels directory, `kernelsPath`,
           and a kernel name, `kernelName`,
           and returns a path to the kernel's default.nix file.
           */
-          getKernelDefaultPath = kernelsPath: kernelName:
+          getKernelDefaultFile = kernelsPath: kernelName:
             kernelsPath + "/${kernelName}/default.nix";
 
           /*
@@ -166,41 +166,55 @@
           */
           makeKernelOverridable = pkgs: kernelsPath: kernelName:
             lib.makeOverridable
-            (import (getKernelDefaultPath kernelsPath kernelName))
+            (import (getKernelDefaultFile kernelsPath kernelName))
             {inherit self pkgs;};
 
           /*
-          A function to be used with `mapAttrs`; takes a set that has kernel
+          Takes a path to the kernels directory, `kernelsPath`, and returns a
+          function to be used with `mapAttrs`; takes a set that has kernel
           names as the attribute names and creates a new set with the same
           names but the values are overridable version of the kernel's
           default.nix file.
           */
-          remapKernelSet = kernelName: _: {
+          remapKernelSet = kernelsPath: kernelName: _: {
             name = kernelName;
             value = makeKernelOverridable pkgs kernelsPath kernelName;
           };
 
           /*
-          Takes a kernel name, `kernelName`,
+          Takes a path to the kernels directory, `kernelsPath`,
+          a kernel name, `kernelName`,
           and a file type, `fileType`,
           and verifies that a valid kernel directory exists with that name.
           */
-          filterValidKernelPaths = kernelName: fileType:
+          filterValidKernelPaths = kernelsPath: kernelName: fileType:
             (fileType == "directory")
-            && lib.pathExists (kernelsPath + "/${kernelName}/default.nix");
+            && lib.pathExists (getKernelDefaultFile kernelsPath kernelName);
 
           /*
           Takes a path to the kernels directory, `kernelsPath`,
           reads all files from the kernels directory and returns a set of
           valid kernels.
           */
-          getValidKernels = kernelsPath:
-            lib.filterAttrs filterValidKernelPaths (builtins.readDir kernelsPath);
+          getValidKernels = kernelsPath: (
+            lib.filterAttrs
+            (filterValidKernelPaths kernelsPath)
+            (builtins.readDir kernelsPath)
+          );
 
+          /*
+          An attribute set of all the available and valid kernels where the
+          attribute name is the kernel name and the attribute value is the
+          overridable version of the kernel's default.nix file.
+          */
           availableKernels =
             lib.optionalAttrs
-            (lib.pathExists kernelsPath)
-            (lib.mapAttrs' remapKernelSet (getValidKernels kernelsPath));
+            (lib.pathExists defaultKernelsPath)
+            (
+              lib.mapAttrs'
+              (remapKernelSet defaultKernelsPath)
+              (getValidKernels defaultKernelsPath)
+            );
 
           kernelInstances =
             lib.mapAttrsToList
