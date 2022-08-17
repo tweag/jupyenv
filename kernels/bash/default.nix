@@ -31,7 +31,7 @@ in
     argv ? null,
     codemirrorMode ? "shell",
     logo64 ? ./logo64.png,
-    runtimePackages ? with pkgs; [bash coreutils],
+    runtimePackages ? with pkgs; [bashInteractive coreutils],
     extraRuntimePackages ? [],
   }: let
     allRuntimePackages = runtimePackages ++ extraRuntimePackages;
