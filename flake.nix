@@ -15,6 +15,9 @@
   inputs.poetry2nix.url = "github:nix-community/poetry2nix";
   inputs.poetry2nix.inputs.flake-utils.follows = "flake-utils";
   inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.rust-overlay.url = "github:oxalica/rust-overlay";
+  inputs.rust-overlay.inputs.flake-utils.follows = "flake-utils";
+  inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
   #inputs.ihaskell.url = "github:gibiansky/IHaskell";
   #inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
   #inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
@@ -34,6 +37,7 @@
     flake-utils,
     pre-commit-hooks,
     poetry2nix,
+    rust-overlay,
     #ihaskell,
   } @ inputs: let
     SYSTEMS = [
@@ -46,18 +50,17 @@
       system: let
         inherit (nixpkgs) lib;
 
+        overlays = [
+          poetry2nix.overlay
+          rust-overlay.overlays.default
+        ];
+
         pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            poetry2nix.overlay
-          ];
+          inherit overlays system;
         };
 
         pkgs_stable = import nixpkgs-stable {
-          inherit system;
-          overlays = [
-            poetry2nix.overlay
-          ];
+          inherit overlays system;
         };
 
         pre-commit = pre-commit-hooks.lib.${system}.run {
