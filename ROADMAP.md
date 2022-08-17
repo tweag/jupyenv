@@ -10,6 +10,13 @@
   * How to configure existing kernels.
   * How to package new kernels.
 
+* MacOS
+  * Better support.
+  * Document what does not work, #144.
+
+* Docker
+  * Build docker image with all extensions and kernels in CI.
+
 * Add/Improve kernels
   * See [this list](https://github.com/tweag/jupyterWith/issues/79#issuecomment-670774373).
   * Add Scala kernel, #80. Possibly uses [IScala](https://github.com/mattpap/IScala).
