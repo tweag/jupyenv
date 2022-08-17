@@ -4,6 +4,12 @@
   * Update and Fix
   * Test Continuously
 
+* Documentation
+  * How to get up and running quickly with `nix run`, #117.
+  * How to use a template.
+  * How to configure existing kernels.
+  * How to package new kernels.
+
 * Add/Improve kernels
   * See [this list](https://github.com/tweag/jupyterWith/issues/79#issuecomment-670774373).
   * Add Scala kernel, #80. Possibly uses [IScala](https://github.com/mattpap/IScala).
