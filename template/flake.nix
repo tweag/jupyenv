@@ -10,6 +10,7 @@
   outputs = {
     self,
     nixpkgs,
+    flake-compat,
     flake-utils,
     jupyterWith,
   }:
