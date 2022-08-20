@@ -72,6 +72,8 @@
     in rec {
       packages = {inherit jupyterEnvironment;};
       packages.default = jupyterEnvironment;
+      apps.default.program = "${jupyterEnvironment}/bin/jupyter-lab";
+      apps.default.type = "app";
     })
     // {
       overlays.default = final: prev: {};
