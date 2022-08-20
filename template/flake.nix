@@ -22,12 +22,12 @@
         inherit system;
         overlays = [
           self.overlays.default
-          jupyterWith.overlays
         ];
       };
 
       jupyterEnvironment = let
         inherit (builtins) listToAttrs map readDir attrNames;
+        inherit (pkgs.lib) removeSuffix;
         inherit (pkgs.lib.attrsets) filterAttrs;
         inherit (pkgs.lib.strings) hasPrefix hasSuffix;
 
