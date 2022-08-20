@@ -52,16 +52,20 @@
           (readDir ./kernels);
 
         /*
-        Takes a kernel name, `name`, and imports it from the kernels directory.
+        Takes set of kernels, `kernels`, and a kernel name, `name`,
+        and imports it from the kernels directory.
+        Returns the imported kernels as the value of an attribute set.
         */
-        importKernel = name:
-          import ./kernels/${name} {inherit pkgs;};
+        importKernel = kernels: name: {
+          name = removeSuffix ".nix" name;
+          value = import ./kernels/${name} {inherit pkgs name mkKernel kernels;};
+        };
       in
         mkJupyterlabInstance {
           kernels = kernels:
             listToAttrs (
               map
-              importKernel
+              (importKernel kernels)
               (attrNames getAvailableKernels)
             );
         };
