@@ -110,11 +110,11 @@ An example `flake.nix` file for jupyterWith on x86-64 Linux, executable with `ni
           kernels = [ iPython ];
         };
       in rec {
-        apps.jupterlab = {
+        apps.jupyterlab = {
           type = "app";
           program = "${jupyterEnvironment}/bin/jupyter-lab";
         };
-        defaultApp = apps.jupterlab;
+        defaultApp = apps.jupyterlab;
         devShell = jupyterEnvironment.env;
       }
     );
