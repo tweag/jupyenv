@@ -25,8 +25,8 @@
         ];
       };
 
-      kernels = let
-        inherit (builtins) map readDir attrNames;
+      jupyterEnvironment = let
+        inherit (builtins) listToAttrs map readDir attrNames;
         inherit (pkgs.lib.attrsets) filterAttrs;
         inherit (pkgs.lib.strings) hasPrefix hasSuffix;
 
@@ -56,13 +56,17 @@
         importKernel = name:
           import ./kernels/${name} {inherit pkgs;};
       in
-        map importKernel (attrNames getAvailableKernels);
-
-      jupyterEnvironment =
-        pkgs.jupyterWith.jupyterlabWith {inherit kernels;};
+        mkJupyterlabInstance {
+          kernels = kernels:
+            listToAttrs (
+              map
+              importKernel
+              (attrNames getAvailableKernels)
+            );
+        };
     in rec {
-      defaultPackage = packages.jupyterEnvironment;
       packages = {inherit jupyterEnvironment;};
+      packages.default = jupyterEnvironment;
     })
     // {
       overlays.default = final: prev: {};
