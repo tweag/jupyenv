@@ -15,67 +15,18 @@
     jupyterWith,
   }:
   # TODO - Update Linux first and then MacOS when it is working.
-    flake-utils.lib.eachSystem ["x86_64-linux"] (system: let
-      inherit (jupyterWith.lib.${system}) mkKernel mkJupyterlabInstance;
+    flake-utils.lib.eachSystem ["x86_64-linux"]
+    (
+      system: let
+        inherit (jupyterWith.lib.${system}) readKernelsFromPath;
 
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [
-          self.overlays.default
-        ];
-      };
-
-      jupyterEnvironment = let
-        inherit (builtins) listToAttrs map readDir attrNames;
-        inherit (pkgs.lib) removeSuffix;
-        inherit (pkgs.lib.attrsets) filterAttrs;
-        inherit (pkgs.lib.strings) hasPrefix hasSuffix;
-
-        /*
-        Takes a file name, `name` and a file type, `value`, and returns a
-        boolean if the file is meant to be an available kernel. Kernels whose
-        file names are prefixed with an underscore are meant to be hidden.
-        Useful for filtering the output of `readDir`.
-        */
-        filterAvailableKernels = name: value:
-          (value == "regular")
-          && hasSuffix ".nix" name
-          && !hasPrefix "_" name;
-
-        /*
-        Gets the available kernels as a set from the kernels directory. Name is
-        the kernel name and value is the file type.
-        */
-        getAvailableKernels =
-          filterAttrs
-          filterAvailableKernels
-          (readDir ./kernels);
-
-        /*
-        Takes set of kernels, `kernels`, and a kernel name, `name`,
-        and imports it from the kernels directory.
-        Returns the imported kernels as the value of an attribute set.
-        */
-        importKernel = kernels: name: {
-          name = removeSuffix ".nix" name;
-          value = import ./kernels/${name} {inherit pkgs name mkKernel kernels;};
-        };
-      in
-        mkJupyterlabInstance {
-          kernels = kernels:
-            listToAttrs (
-              map
-              (importKernel kernels)
-              (attrNames getAvailableKernels)
-            );
-        };
-    in rec {
-      packages = {inherit jupyterEnvironment;};
-      packages.default = jupyterEnvironment;
-      apps.default.program = "${jupyterEnvironment}/bin/jupyter-lab";
-      apps.default.type = "app";
-    })
-    // {
-      overlays.default = final: prev: {};
-    };
+        pkgs = import nixpkgs {inherit system;};
+        jupyterEnvironment = readKernelsFromPath pkgs ./kernels;
+      in rec {
+        packages = {inherit jupyterEnvironment;};
+        packages.default = jupyterEnvironment;
+        apps.default.program = "${jupyterEnvironment}/bin/jupyter-lab";
+        apps.default.type = "app";
+      }
+    );
 }

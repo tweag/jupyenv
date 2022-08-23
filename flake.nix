@@ -279,6 +279,63 @@
             };
           };
         };
+
+        /*
+        Takes a file name, `name` and a file type, `value`, and returns a
+        boolean if the file is meant to be an available kernel. Kernels whose
+        file names are prefixed with an underscore are meant to be hidden.
+        Useful for filtering the output of `readDir`.
+        */
+        filterAvailableKernels = name: value: let
+          inherit (pkgs.lib.strings) hasPrefix hasSuffix;
+        in
+          (value == "regular")
+          && hasSuffix ".nix" name
+          && !hasPrefix "_" name;
+
+        /*
+        Takes a path to a kernels directory, `path`, and returns the available
+        kernels. Name is the kernel name and value is the file type.
+        */
+        getAvailableKernels = path: let
+          inherit (builtins) readDir;
+          inherit (pkgs.lib.attrsets) filterAttrs;
+        in
+          filterAttrs
+          filterAvailableKernels
+          (readDir path);
+
+        /*
+        Takes a set from nixpkgs, `pkgs`,
+        a path to a kernels directory, `path`,
+        a set of kernels, `kernels`,
+        and a kernel name, `name`,
+        and imports it from the kernels directory.
+        Returns the imported kernels as the value of an attribute set.
+        */
+        importKernel = pkgs: path: kernels: name: let
+          inherit (pkgs.lib) removeSuffix;
+        in {
+          name = removeSuffix ".nix" name;
+          value = import "${path}/${name}" {inherit pkgs name mkKernel kernels;};
+        };
+
+        /*
+        Takes a set from nixpkgs, `pkgs`,
+        and a path to a kernels directory, `path`,
+        and returns a derivation for a JupyterLab environment.
+        */
+        readKernelsFromPath = pkgs: path: let
+          inherit (builtins) listToAttrs map attrNames;
+        in
+          mkJupyterlabInstance {
+            kernels = kernels:
+              listToAttrs (
+                map
+                (importKernel pkgs path kernels)
+                (attrNames getAvailableKernels path)
+              );
+          };
       in rec {
         lib = {inherit mkKernel mkJupyterlabInstance;};
         packages = {inherit jupyterlab example_jupyterlab;};
