@@ -333,7 +333,7 @@
               listToAttrs (
                 map
                 (importKernel pkgs path kernels)
-                (attrNames getAvailableKernels path)
+                (attrNames (getAvailableKernels path))
               );
           };
       in rec {
