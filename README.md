@@ -1,21 +1,21 @@
 # Jupyter :heart: Nix
 
 <p float="left">
-  <img src="kernels/ansible/logo64.png" width="100" />
-  <img src="kernels/bash/logo64.png" width="100" />
-  <img src="kernels/c/logo64.png" width="100" />
-  <!-- <img src="kernels/cpp/logo64.png" width="100" /> -->
-  <img src="kernels/elm/logo64.png" width="100" />
-  <img src="kernels/go/logo64.png" width="100" />
-  <img src="kernels/ihaskell/logo64.png" width="100" />
-  <img src="kernels/ipython/logo64.png" width="100" />
-  <img src="kernels/javascript/logo64.png" width="100" />
-  <img src="kernels/julia/logo64.png" width="100" />
-  <img src="kernels/nix/logo64.png" width="100" />
-  <img src="kernels/ocaml/logo64.png" width="100" />
-  <img src="kernels/r/logo64.png" width="100" />
-  <img src="kernels/ruby/logo64.png" width="100" />
-  <img src="kernels/rust/logo64.png" width="100" />
+  <img src="kernels/ansible/logo64.png" width="50" />
+  <img src="kernels/bash/logo64.png" width="50" />
+  <img src="kernels/c/logo64.png" width="50" />
+  <!-- <img src="kernels/cpp/logo64.png" width="50" /> -->
+  <img src="kernels/elm/logo64.png" width="50" />
+  <img src="kernels/go/logo64.png" width="50" />
+  <img src="kernels/ihaskell/logo64.png" width="50" />
+  <img src="kernels/ipython/logo64.png" width="50" />
+  <img src="kernels/javascript/logo64.png" width="50" />
+  <img src="kernels/julia/logo64.png" width="50" />
+  <img src="kernels/nix/logo64.png" width="50" />
+  <img src="kernels/ocaml/logo64.png" width="50" />
+  <img src="kernels/r/logo64.png" width="50" />
+  <img src="kernels/ruby/logo64.png" width="50" />
+  <img src="kernels/rust/logo64.png" width="50" />
 </p>
 
 
