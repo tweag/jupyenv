@@ -11,87 +11,46 @@ and configurable Jupyter kernels.
 
 ### Bootstrap your projects
 
+Create a new project folder and `cd` into it.
+
 ```shell
-$ nix flake new --template github:tweag/jupyter-nix myjupyter
-$ cd myjupyter
+$ mkdir my-project
+$ cd my-project
 ```
 
-<details>
-  <summary>What is going on here?</summary>
+JupyterWith uses templates! Initialize your project with the jupyterWith template. There will be a `README.md` in there to help you get started.
 
-  Jupyter-Nix uses templates! The previous command creates a new flake in the `myjupyter` directory using the template from the specified github repository. There will be a `README.md` in there to help you get started.
-
-</details>
+```shell
+$ nix flake init --template github:tweag/jupyterWith
+```
 
 ### Enable kernels
 
-A list of available kernels in located in `./kernels/available`.
+Your new project should ahve a `kernels` directory which contains all the kernels. Any kernels prefixed with an underscore is disabled. To enable any kernel, rename it so it no longer has an underscore prefix.
 
-To enable any kernel, copy it from the `available` directory, up one level, to the `kernels` directory.
+```shell
+$ cp kernels/_ipython.nix kernels/my-ipython.nix
+```
 
-<details>
-  <summary>Click here for an example.</summary>
-
-  To enable an `ipython` kernel do:
-
-  ```shell
-  $ cp kernels/available/ipython.nix kernels/my-python.nix
-  ```
-
-  Notice that we gave the kernel file a new name, `my-python.nix`. You can have multiple kernels in the same project! It is recommended you give each one a descriptive file name to help you remember in the future.
-
-</details>
+Notice that we gave the kernel file a new name, `my-ipython.nix`. You can have multiple kernels in the same project! We recommend you give each one a descriptive file name to help you remember in the future.
 
 ### Extensions
 
-[comment]: # (
-
-Extensions can be added by enabling them in the `./extensions/extensions.toml` file. Each extension has an `enable` value with a default value of `false`. Change the value to `true` and that extension will be enabled.
-
-<details>
-  <summary>Click here for an example.</summary>
-
-  If we open the `extensions.toml` previously mentioned, we would see something like the following:
-
-  ```toml
-  [some-extension]
-  name = "Some Extension"
-  description = "An extension that does something."
-  documentation = "docs.some-extension.org"
-  enable = false
-  ```
-
-  We can change the `enable` value to `true` and that extension will work.
-
-  ```toml
-  [some-extension]
-  name = "Some Extension"
-  description = "An extension that does something."
-  documentation = "docs.some-extension.org"
-  enable = true
-  ```
-
-  There will multiple extensions in the file with their own `enable` flag, so make sure to change it for each extension you want enabled.
-
-</details>
-
-)
+Extensions are currently being worked on to be reproducible.
 
 ### Start JupyterLab
 
-Make sure you are in the top directory of your project (e.g. `myjupyter`), and run the following command.
+Make sure you are in the top directory of your project (e.g. `my-project`), and run the following command.
 
 ```shell
 nix run
 ```
 
-Open a browser and ???
+The environment should start up with instructions on what to do next.
 
 ## Contributing
 
-PRs are welcome! This project provides a development shell which you can enter
-with `nix develop`. Please run `pre-commit run -all` before submitting your
-pull request for review. This will run a nix formatter for consistency.
+PRs are welcome! This project provides a development shell which you can enter with `nix develop`. Please run `pre-commit run -all` before submitting your pull request for review. This will run a nix formatter for consistency.
 
 If you are new to contributing to open source, [this guide](https://opensource.guide/how-to-contribute/) helps explain why, what, and how to successfully get involved.
 
