@@ -337,7 +337,7 @@
               );
           };
       in rec {
-        lib = {inherit mkKernel mkJupyterlabInstance;};
+        lib = {inherit readKernelsFromPath;};
         packages = {inherit jupyterlab example_jupyterlab;};
         packages.default = packages.jupyterlab;
         devShell = pkgs.mkShell {
