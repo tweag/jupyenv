@@ -306,14 +306,19 @@
           (readDir path);
 
         /*
-        Takes a set from nixpkgs, `pkgs`,
-        a path to a kernels directory, `path`,
-        a set of kernels, `kernels`,
-        and a kernel name, `name`,
+        Takes an attribute set with
+          a set from nixpkgs, `pkgs`,
+          and a path to a kernels directory, `path`,
+        and returns a function that takes
+          a set of kernels, `kernels`,
+          and a kernel name, `name`,
         and imports it from the kernels directory.
         Returns the imported kernels as the value of an attribute set.
         */
-        importKernel = pkgs: path: kernels: name: let
+        importKernel = {
+          pkgs,
+          path,
+        }: kernels: name: let
           inherit (pkgs.lib) removeSuffix;
         in {
           name = removeSuffix ".nix" name;
@@ -327,13 +332,13 @@
         */
         mkJupyterEnvFromKernelPath = pkgs: path: let
           inherit (builtins) listToAttrs map attrNames;
+          importKernelByName = importKernel {inherit pkgs path;};
+          kernelNames = attrNames (getAvailableKernels path);
         in
           mkJupyterlabInstance {
             kernels = kernels:
               listToAttrs (
-                map
-                (importKernel pkgs path kernels)
-                (attrNames (getAvailableKernels path))
+                map (importKernelByName kernels) kernelNames
               );
           };
       in rec {
