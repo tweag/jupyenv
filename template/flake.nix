@@ -18,10 +18,10 @@
     flake-utils.lib.eachSystem ["x86_64-linux"]
     (
       system: let
-        inherit (jupyterWith.lib.${system}) readKernelsFromPath;
+        inherit (jupyterWith.lib.${system}) mkJupyterEnvFromKernelPath;
 
         pkgs = import nixpkgs {inherit system;};
-        jupyterEnvironment = readKernelsFromPath pkgs ./kernels;
+        jupyterEnvironment = mkJupyterEnvFromKernelPath pkgs ./kernels;
       in rec {
         packages = {inherit jupyterEnvironment;};
         packages.default = jupyterEnvironment;

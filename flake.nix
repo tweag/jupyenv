@@ -325,7 +325,7 @@
         and a path to a kernels directory, `path`,
         and returns a derivation for a JupyterLab environment.
         */
-        readKernelsFromPath = pkgs: path: let
+        mkJupyterEnvFromKernelPath = pkgs: path: let
           inherit (builtins) listToAttrs map attrNames;
         in
           mkJupyterlabInstance {
@@ -337,7 +337,7 @@
               );
           };
       in rec {
-        lib = {inherit readKernelsFromPath;};
+        lib = {inherit mkJupyterEnvFromKernelPath;};
         packages = {inherit jupyterlab example_jupyterlab;};
         packages.default = packages.jupyterlab;
         devShell = pkgs.mkShell {
