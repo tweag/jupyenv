@@ -44,6 +44,8 @@ To enable any kernel, copy it from the `available` directory, up one level, to t
 
 ### Extensions
 
+[comment]: # (
+
 Extensions can be added by enabling them in the `./extensions/extensions.toml` file. Each extension has an `enable` value with a default value of `false`. Change the value to `true` and that extension will be enabled.
 
 <details>
@@ -73,6 +75,8 @@ Extensions can be added by enabling them in the `./extensions/extensions.toml` f
 
 </details>
 
+)
+
 ### Start JupyterLab
 
 Make sure you are in the top directory of your project (e.g. `myjupyter`), and run the following command.
@@ -85,7 +89,9 @@ Open a browser and ???
 
 ## Contributing
 
-TODO
+PRs are welcome! This project provides a development shell which you can enter
+with `nix develop`. Please run `pre-commit run -all` before submitting your
+pull request for review. This will run a nix formatter for consistency.
 
 If you are new to contributing to open source, [this guide](https://opensource.guide/how-to-contribute/) helps explain why, what, and how to successfully get involved.
 
