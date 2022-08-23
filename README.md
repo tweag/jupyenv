@@ -4,7 +4,7 @@
   <img src="kernels/ansible/logo64.png" width="100" />
   <img src="kernels/bash/logo64.png" width="100" />
   <img src="kernels/c/logo64.png" width="100" />
-  <img src="kernels/cpp/logo64.png" width="100" />
+  <!-- <img src="kernels/cpp/logo64.png" width="100" /> -->
   <img src="kernels/elm/logo64.png" width="100" />
   <img src="kernels/go/logo64.png" width="100" />
   <img src="kernels/ihaskell/logo64.png" width="100" />
