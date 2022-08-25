@@ -361,7 +361,7 @@
       }
     ))
     // {
-      defaultTemplate = {
+      templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyter-nix project";
         welcomeText = builtins.readFile ./template/README.md;
