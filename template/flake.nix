@@ -2,38 +2,31 @@
   description = "Your jupyterWith project";
 
   inputs.nixpkgs.follows = "jupyterWith/nixpkgs";
+  inputs.flake-compat.url = "github:edolstra/flake-compat";
+  inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.jupyterWith.url = "github:tweag/jupyterWith";
-
-  # inputs.jupyterWith.inputs.nixpkgs.follows = "nixpkgs";
 
   outputs = {
     self,
     nixpkgs,
+    flake-compat,
     flake-utils,
     jupyterWith,
   }:
-    flake-utils.lib.eachSystem ["x86_64-linux"] (system: let
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = builtins.attrValues jupyterWith.overlays;
-      };
+  # TODO - Update Linux first and then MacOS when it is working.
+    flake-utils.lib.eachSystem ["x86_64-linux"]
+    (
+      system: let
+        inherit (jupyterWith.lib.${system}) mkJupyterEnvFromKernelPath;
 
-      kernels = let
-        inherit (builtins) map readDir attrNames;
-        inherit (pkgs.lib.attrsets) filterAttrs;
-        inherit (pkgs.lib.strings) hasPrefix hasSuffix;
-      in
-        map (name: import ./kernels/${name} {inherit pkgs;})
-        (attrNames
-          (filterAttrs
-            (n: v: v == "regular" && hasSuffix ".nix" n && !hasPrefix "_" n)
-            (readDir ./kernels)));
-
-      jupyterEnvironment =
-        pkgs.jupyterWith.jupyterlabWith {inherit kernels;};
-    in rec {
-      defaultPackage = packages.jupyterEnvironment;
-      packages = {inherit jupyterEnvironment;};
-    });
+        pkgs = import nixpkgs {inherit system;};
+        jupyterEnvironment = mkJupyterEnvFromKernelPath pkgs ./kernels;
+      in rec {
+        packages = {inherit jupyterEnvironment;};
+        packages.default = jupyterEnvironment;
+        apps.default.program = "${jupyterEnvironment}/bin/jupyter-lab";
+        apps.default.type = "app";
+      }
+    );
 }
