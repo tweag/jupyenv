@@ -345,7 +345,7 @@
         lib = {inherit mkJupyterEnvFromKernelPath;};
         packages = {inherit jupyterlab example_jupyterlab;};
         packages.default = packages.jupyterlab;
-        devShell = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
             poetry2nix.defaultPackage.${system}
