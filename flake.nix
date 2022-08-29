@@ -317,6 +317,9 @@
             example_elm = mkKernel k.elm {
               displayName = "Example Elm Kernel";
             };
+            example_postgres = mkKernel k.postgres {
+              displayName = "Example PostgreSQL Kernel";
+            };
           };
         };
 
