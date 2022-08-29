@@ -15,6 +15,9 @@
   inputs.poetry2nix.url = "github:nix-community/poetry2nix";
   inputs.poetry2nix.inputs.flake-utils.follows = "flake-utils";
   inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.rust-overlay.url = "github:oxalica/rust-overlay";
+  inputs.rust-overlay.inputs.flake-utils.follows = "flake-utils";
+  inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
   #inputs.ihaskell.url = "github:gibiansky/IHaskell";
   #inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
   #inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
@@ -34,29 +37,30 @@
     flake-utils,
     pre-commit-hooks,
     poetry2nix,
+    rust-overlay,
     #ihaskell,
   } @ inputs: let
     SYSTEMS = [
       flake-utils.lib.system.x86_64-linux
-      flake-utils.lib.system.x86_64-darwin
+      # TODO - Fix linux first and then get macos working.
+      # flake-utils.lib.system.x86_64-darwin
     ];
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
         inherit (nixpkgs) lib;
 
+        overlays = [
+          poetry2nix.overlay
+          rust-overlay.overlays.default
+        ];
+
         pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            poetry2nix.overlay
-          ];
+          inherit overlays system;
         };
 
         pkgs_stable = import nixpkgs-stable {
-          inherit system;
-          overlays = [
-            poetry2nix.overlay
-          ];
+          inherit overlays system;
         };
 
         pre-commit = pre-commit-hooks.lib.${system}.run {
@@ -144,32 +148,72 @@
           kernels ? k: {}, # k: { python: k.python {}; },
           extensions ? e: [], # e: [ e.jupy-ext ],
         }: let
-          kernelsPath = self + "/kernels";
+          defaultKernelsPath = self + "/kernels";
 
+          /*
+          Takes a path to the kernels directory, `kernelsPath`,
+          and a kernel name, `kernelName`,
+          and returns a path to the kernel's default.nix file.
+          */
+          getKernelDefaultFile = kernelsPath: kernelName:
+            kernelsPath + "/${kernelName}/default.nix";
+
+          /*
+          Takes a package set from nixpkgs, `pkgs`,
+          a path to the kernels directory, `kernelsPath`,
+          and a kernel name, `kernelName`,
+          and returns an overridable version of a kernel's default.nix file.
+          */
+          makeKernelOverridable = pkgs: kernelsPath: kernelName:
+            lib.makeOverridable
+            (import (getKernelDefaultFile kernelsPath kernelName))
+            {inherit self pkgs;};
+
+          /*
+          Takes a path to the kernels directory, `kernelsPath`, and returns a
+          function to be used with `mapAttrs`; takes a set that has kernel
+          names as the attribute names and creates a new set with the same
+          names but the values are overridable version of the kernel's
+          default.nix file.
+          */
+          remapKernelSet = kernelsPath: kernelName: _: {
+            name = kernelName;
+            value = makeKernelOverridable pkgs kernelsPath kernelName;
+          };
+
+          /*
+          Takes a path to the kernels directory, `kernelsPath`,
+          a kernel name, `kernelName`,
+          and a file type, `fileType`,
+          and verifies that a valid kernel directory exists with that name.
+          */
+          filterValidKernelPaths = kernelsPath: kernelName: fileType:
+            (fileType == "directory")
+            && lib.pathExists (getKernelDefaultFile kernelsPath kernelName);
+
+          /*
+          Takes a path to the kernels directory, `kernelsPath`,
+          reads all files from the kernels directory and returns a set of
+          valid kernels.
+          */
+          getValidKernels = kernelsPath: (
+            lib.filterAttrs
+            (filterValidKernelPaths kernelsPath)
+            (builtins.readDir kernelsPath)
+          );
+
+          /*
+          An attribute set of all the available and valid kernels where the
+          attribute name is the kernel name and the attribute value is the
+          overridable version of the kernel's default.nix file.
+          */
           availableKernels =
             lib.optionalAttrs
-            (lib.pathExists kernelsPath)
+            (lib.pathExists defaultKernelsPath)
             (
               lib.mapAttrs'
-              (
-                kernelName: _: {
-                  name = kernelName;
-                  value =
-                    lib.makeOverridable
-                    (import (kernelsPath + "/${kernelName}/default.nix"))
-                    {inherit self pkgs;};
-                }
-              )
-              (
-                lib.filterAttrs
-                (
-                  kernelName: pathType:
-                    pathType
-                    == "directory"
-                    && lib.pathExists (kernelsPath + "/${kernelName}/default.nix")
-                )
-                (builtins.readDir kernelsPath)
-              )
+              (remapKernelSet defaultKernelsPath)
+              (getValidKernels defaultKernelsPath)
             );
 
           kernelInstances =
@@ -278,11 +322,73 @@
             };
           };
         };
+
+        /*
+        Takes a file name, `name` and a file type, `value`, and returns a
+        boolean if the file is meant to be an available kernel. Kernels whose
+        file names are prefixed with an underscore are meant to be hidden.
+        Useful for filtering the output of `readDir`.
+        */
+        filterAvailableKernels = name: value: let
+          inherit (pkgs.lib.strings) hasPrefix hasSuffix;
+        in
+          (value == "regular")
+          && hasSuffix ".nix" name
+          && !hasPrefix "_" name;
+
+        /*
+        Takes a path to a kernels directory, `path`, and returns the available
+        kernels. Name is the kernel name and value is the file type.
+        */
+        getAvailableKernels = path: let
+          inherit (builtins) readDir;
+          inherit (pkgs.lib.attrsets) filterAttrs;
+        in
+          filterAttrs
+          filterAvailableKernels
+          (readDir path);
+
+        /*
+        Takes an attribute set with
+          a set from nixpkgs, `pkgs`,
+          and a path to a kernels directory, `path`,
+        and returns a function that takes
+          a set of kernels, `kernels`,
+          and a kernel name, `name`,
+        and imports it from the kernels directory.
+        Returns the imported kernels as the value of an attribute set.
+        */
+        importKernel = {
+          pkgs,
+          path,
+        }: kernels: name: let
+          inherit (pkgs.lib) removeSuffix;
+        in {
+          name = removeSuffix ".nix" name;
+          value = import "${path}/${name}" {inherit pkgs name mkKernel kernels;};
+        };
+
+        /*
+        Takes a set from nixpkgs, `pkgs`,
+        and a path to a kernels directory, `path`,
+        and returns a derivation for a JupyterLab environment.
+        */
+        mkJupyterEnvFromKernelPath = pkgs: path: let
+          inherit (builtins) listToAttrs map attrNames;
+          importKernelByName = importKernel {inherit pkgs path;};
+          kernelNames = attrNames (getAvailableKernels path);
+        in
+          mkJupyterlabInstance {
+            kernels = kernels:
+              listToAttrs (
+                map (importKernelByName kernels) kernelNames
+              );
+          };
       in rec {
-        lib = {inherit mkKernel mkJupyterlabInstance;};
+        lib = {inherit mkJupyterEnvFromKernelPath;};
         packages = {inherit jupyterlab example_jupyterlab;};
         packages.default = packages.jupyterlab;
-        devShell = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
             poetry2nix.defaultPackage.${system}
@@ -298,9 +404,10 @@
       }
     ))
     // {
-      defaultTemplate = {
+      templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyter-nix project";
+        welcomeText = builtins.readFile ./template/README.md;
       };
     };
 }

@@ -1,8 +1,9 @@
-{pkgs}:
-pkgs.jupyterWith.kernels.iPythonWith {
-  name = "Python-data-env";
-  ignoreCollisions = true;
-  packages = p: [
-    p.numpy
-  ];
+{
+  mkKernel,
+  kernels,
+  name,
+  ...
+}:
+mkKernel kernels.ipython {
+  displayName = name;
 }

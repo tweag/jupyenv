@@ -116,7 +116,31 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
         "poetry2nix": "poetry2nix",
-        "pre-commit-hooks": "pre-commit-hooks"
+        "pre-commit-hooks": "pre-commit-hooks",
+        "rust-overlay": "rust-overlay"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1660704984,
+        "narHash": "sha256-9sMoNrKh0b5NOEwe1j6H4dTRAsBsq1fmyDCXHzjB3Nc=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "2801b291b546dcdcebfa47043fe09f7a0da72880",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
       }
     }
   },
