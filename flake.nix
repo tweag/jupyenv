@@ -147,8 +147,16 @@
         mkJupyterlabInstance = {
           kernels ? k: {}, # k: { python: k.python {}; },
           extensions ? e: [], # e: [ e.jupy-ext ],
+          runtimePackages ? [],
         }: let
           defaultKernelsPath = self + "/kernels";
+
+          allRuntimePackages =
+            runtimePackages
+            ++ (with pkgs; [
+              nodejs
+              nodePackages.npm
+            ]);
 
           /*
           Takes a path to the kernels directory, `kernelsPath`,
@@ -252,7 +260,8 @@
               filename=$(basename $i)
               ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
               wrapProgram $out/bin/$filename \
-                --set JUPYTERLAB_DIR ${jupyterlab}/share/jupyter/lab \
+                --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
+                --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
                 --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
                 --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
                 --set JUPYTER_PATH ${kernelsString requestedKernels} \
