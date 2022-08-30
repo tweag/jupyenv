@@ -335,7 +335,7 @@
               builtins.map
               (
                 kernelName: {
-                  name = "jupyterlab_kernel_${kernelName}";
+                  name = "jupyterlab-kernel-${kernelName}";
                   value = mkJupyterlabInstance {
                     kernels = k: [
                       (k.${kernelName} (kernels.${kernelName} // {name = "example_${kernelName}";}))
@@ -347,7 +347,7 @@
             )
           )
           // {
-            jupyterlab_kernel_stable_ansible = mkJupyterlabInstance {
+            jupyterlab-kernel-stable-ansible = mkJupyterlabInstance {
               kernels = k: let
                 stable_ansible = k.ansible.override {pkgs = pkgs_stable;};
               in [
