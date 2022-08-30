@@ -71,34 +71,29 @@
       (fileType == "directory")
       && lib.pathExists (getKernelDefaultFile kernelsPath kernelName);
 
+    getValidKernelsFromPath = kernelsPath: (
+      lib.filterAttrs
+      (filterValidKernelPaths kernelsPath)
+      (builtins.readDir kernelsPath)
+    );
+
+    mkKernelFlakeOutput = kernelsPath: kernelName: {
+      description = "${kernelName} kernel";
+      path = getKernelPath kernelsPath kernelName;
+    };
+
     /*
     Takes a path to the kernels directory, `kernelsPath`,
     reads all files from the kernels directory and returns a set of
     valid kernels.
     */
-    getKernelsFromPath = kernelsPath: let
-      paths =
-        lib.filterAttrs
-        (filterValidKernelPaths kernelsPath)
-        (builtins.readDir kernelsPath);
-    in
+    getKernelsFromPath = kernelsPath:
       lib.optionalAttrs
       (lib.pathExists kernelsPath)
       (
-        builtins.listToAttrs
-        (
-          builtins.map
-          (
-            kernelName: {
-              name = kernelName;
-              value = {
-                description = "${kernelName} kernel";
-                path = getKernelPath kernelsPath kernelName;
-              };
-            }
-          )
-          (builtins.attrNames paths)
-        )
+        lib.mapAttrs
+        (kernelName: _: mkKernelFlakeOutput kernelsPath kernelName)
+        (getValidKernelsFromPath kernelsPath)
       );
   in
     (flake-utils.lib.eachSystem SYSTEMS (
@@ -239,10 +234,10 @@
                       (
                         lib.mapAttrsToList
                         (
-                          kernelName: kernel: {
-                            name = kernelName;
-                            value = makeKernelOverridable kernel.path;
-                          }
+                          kernelName: kernel:
+                            lib.nameValuePair
+                            kernelName
+                            (makeKernelOverridable kernel.path)
                         )
                         flake.jupyterKernels
                       )
