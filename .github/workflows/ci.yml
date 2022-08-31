@@ -34,7 +34,7 @@ jobs:
     - name: List all available kernels
       id: kernels
       run: |
-        kernels ='{"kernel":$(nix eval .#jupyterKernels --apply builtins.attrNames --json)}'
+        kernels='{"kernel":$(nix eval .#jupyterKernels --apply builtins.attrNames --json)}'
         echo $kernels
         echo "::set-output name=kernels::$kernels"
 
