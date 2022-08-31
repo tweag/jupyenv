@@ -320,6 +320,9 @@
             example_postgres = mkKernel k.postgres {
               displayName = "Example PostgreSQL Kernel";
             };
+            example_typescript = mkKernel k.typescript {
+              displayName = "Example Typescript Kernel";
+            };
           };
         };
 
