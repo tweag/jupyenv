@@ -51,7 +51,11 @@
     /*
     Takes a path to the kernels directory, `kernelsPath`,
     and a kernel name, `kernelName`,
-    and returns a path to the kernel's default.nix file.
+    and creates a path in the Nix store for that kernel and returns the path.
+
+    Example:
+      getKernelPath (self + /kernels) "ipython" ->
+        /nix/store/<HASH>-jupyterlab-ipython-kernel-source
     */
     getKernelPath = kernelsPath: kernelName:
       builtins.path {
@@ -71,12 +75,30 @@
       (fileType == "directory")
       && lib.pathExists (getKernelDefaultFile kernelsPath kernelName);
 
+    /*
+    Takes a path to a kernels directory, `kernelsPath`,
+    and returns a set of the form:
+      { <kernelName> = "directory"; }
+    Example:
+      {
+        ansible = "directory";
+        bash = "directory";
+        ...
+      }
+    */
     getValidKernelsFromPath = kernelsPath: (
       lib.filterAttrs
       (filterValidKernelPaths kernelsPath)
       (builtins.readDir kernelsPath)
     );
 
+    /*
+    Takes a path to a kernels directory, `kernelsPath`
+    and a kernel name, `kernelName`,
+    and returns a set of the form:
+      { description = "<kernelName> kernel"; path = <PATH> }
+    where `PATH` is in the Nix store.
+    */
     mkKernelFlakeOutput = kernelsPath: kernelName: {
       description = "${kernelName} kernel";
       path = getKernelPath kernelsPath kernelName;
@@ -197,9 +219,7 @@
           );
 
         /*
-        Takes a package set from nixpkgs, `pkgs`,
-        a path to the kernels directory, `kernelsPath`,
-        and a kernel name, `kernelName`,
+        Takes a path to a kernel's directory, `kernelPath`,
         and returns an overridable version of a kernel's default.nix file.
         */
         makeKernelOverridable = kernelPath:
