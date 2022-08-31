@@ -17,6 +17,7 @@
   <img src="kernels/r/logo64.png" width="50" />
   <img src="kernels/ruby/logo64.png" width="50" />
   <img src="kernels/rust/logo64.png" width="50" />
+  <img src="kernels/typescript/logo64.png" width="50" />
 </p>
 
 
