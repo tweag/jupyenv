@@ -6,6 +6,7 @@
   inherit (pkgs) fetchurl lib stdenv writeScriptBin;
   inherit (lib) makeBinPath;
 
+  # This is honestly black magic and I forget where/how I discovered it.
   tslab = let
     inherit (lib) composeManyExtensions extends makeExtensible mapAttrs;
 

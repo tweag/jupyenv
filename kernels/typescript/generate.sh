@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# stolen in part from
+# https://github.com/NixOS/nixpkgs/blob/a28adc36c20fd2fbaeb06ec9bbd79b6bf7443979/pkgs/development/node-packages/generate.sh
+
 set -eu -o pipefail
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"
