@@ -6,21 +6,10 @@
   inherit (pkgs) fetchurl lib stdenv writeScriptBin;
   inherit (lib) makeBinPath;
 
-  # This is honestly black magic and I forget where/how I discovered it.
-  tslab = let
-    inherit (lib) composeManyExtensions extends makeExtensible mapAttrs;
-
-    nodePackages = final:
-      import ./composition.nix {
-        inherit pkgs nodejs;
-        inherit (stdenv.hostPlatform) system;
-      };
-
-    extensions = composeManyExtensions [
-      (import ./overrides.nix {inherit pkgs nodejs;})
-    ];
-  in
-    (makeExtensible (extends extensions nodePackages)).tslab;
+  tslab = pkgs.npmlock2nix.build {
+    src = ./.;
+    installPhase = "cp -r dist $out";
+  };
 
   tslabSh = writeScriptBin "tslab" ''
     #! ${stdenv.shell}
