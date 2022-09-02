@@ -60,6 +60,7 @@ jobs:
         path=$(nix eval --raw .#jupyterlab-kernel-${{ matrix.kernel }})
         hash=${path:11:32}
         url="https://tweag-jupyter.cachix.org/$hash.narinfo";
+        echo "CACHIX_NAR_URL=$url" >> $GITHUB_ENV
         if curl --output /dev/null --silent --head --fail "$url"; then
           echo "Nothing to build!!!"
           echo ""
@@ -68,5 +69,11 @@ jobs:
           echo ""
         else
           nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
+        fi
+    - name: Test notebook for ${{ matrix.kernel }} kernel
+      run: |
+        if curl --output /dev/null --silent --head --fail "{{ env.CACHIX_NAR_URL }}"; then
+          echo "Nothing to test!!!"
+        else
           result/bin/python kernels/${{ matrix.kernel }}/test.py
         fi
