@@ -1,9 +1,7 @@
 {
   self,
   pkgs,
-  nodejs ? pkgs.nodejs-14_x,
   npmlock2nix ? pkgs.npmlock2nix,
-  yarn ? pkgs.yarn,
 }: let
   inherit (pkgs) lib stdenv writeScriptBin;
   inherit (lib) makeBinPath;
@@ -15,34 +13,43 @@
 
   tslab = pkgs.npmlock2nix.build {
     src = tslabSrc;
-    #patches = [ ./kernels/typescript/tslab-version.patch ];
-    #postPatch = ''
-    #  substitute ${./kernels/typescript/tslab-version.patch} tslab-version.patch \
-    #    --subst-var-by version "1.0.15"
-    #  patch -p1 tslab-version.patch
-    #'';
     node_modules_attrs.packageLockJson = ./package-lock.json;
     buildInputs = [pkgs.makeWrapper];
+    postPatch = ''
+      # Change the source so it looks for the package.json file in the same
+      # directory level and not the parent. The package.json file will be
+      # stored in the same directory rather than the top level of the package.
+      substituteInPlace src/util.ts \
+        --replace "../package.json" "./package.json"
+
+      # There is another file src/converter.ts that looks for the existence of
+      # the package.json file but appears that it will fail regardless and has
+      # a fallback so I do not think we need to patch this file.
+    '';
     installPhase = ''
       mkdir -p $out/bin
-      cp -r dist $out/libexec
+
+      # Patch tslab binary so it looks for main in the correct location.
       substitute bin/tslab $out/bin/tslab \
         --replace "../dist/main.js" "../libexec/main.js"
       chmod +x $out/bin/tslab
+
+      # Store distribution files in libexec as is standard for dependencies.
+      cp -r dist $out/libexec
+
+      # Wrap tslab so it knows where to find node modules.
       wrapProgram $out/bin/tslab \
         --set NODE_PATH $out/libexec/node_modules \
         --chdir $out/libexec
-      ln -s ${tslab.node_modules}/node_modules $out/libexec/node_modules
-      cp package.json $out # FIXME
-    '';
-    # buildCommands = [ "yarn build" ];
-  };
 
-  tslabSh = writeScriptBin "tslab" ''
-    #! ${stdenv.shell}
-    export PATH="${makeBinPath [tslab]}:$PATH"
-    ${tslab}/bin/tslab "$@"
-  '';
+      # tslab needs the node modules available during runtime.
+      ln -s ${tslab.node_modules}/node_modules $out/libexec/node_modules
+
+      # Copy the package.json to the same directory as the distribution files
+      # so it can be discovered.
+      cp package.json $out/libexec
+    '';
+  };
 in
   {
     name ? "typescript",
