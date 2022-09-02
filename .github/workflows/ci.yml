@@ -68,4 +68,5 @@ jobs:
           echo ""
         else
           nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
+          result/bin/python kernels/${{ matrix.kernel }}/test.py
         fi
