@@ -37,13 +37,15 @@
       # Store distribution files in libexec as is standard for dependencies.
       cp -r dist $out/libexec
 
-      # Wrap tslab so it knows where to find node modules.
+      # tslab needs the node modules at runtime but it is not available so we
+      # link it so the distribution files can find it.
+      ln -s ${tslab.node_modules}/node_modules $out/libexec/node_modules
+
+      # Wrap tslab so it knows where to find node modules and change the
+      # directory so it sees the directory.
       wrapProgram $out/bin/tslab \
         --set NODE_PATH $out/libexec/node_modules \
         --chdir $out/libexec
-
-      # tslab needs the node modules available during runtime.
-      ln -s ${tslab.node_modules}/node_modules $out/libexec/node_modules
 
       # Copy the package.json to the same directory as the distribution files
       # so it can be discovered.
