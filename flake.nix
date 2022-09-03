@@ -1,8 +1,12 @@
 {
   description = "Declarative and reproducible Jupyter environments - powered by Nix";
 
-  nixConfig.extra-substituters = "https://tweag-jupyter.cachix.org";
-  nixConfig.extra-trusted-public-keys = "tweag-jupyter.cachix.org-1:UtNH4Zs6hVUFpFBTLaA4ejYavPo5EFFqgd7G7FxGW9g=";
+  nixConfig.extra-substituters = [
+    "https://tweag-jupyter.cachix.org"
+  ];
+  nixConfig.extra-trusted-public-keys = [
+    "tweag-jupyter.cachix.org-1:UtNH4Zs6hVUFpFBTLaA4ejYavPo5EFFqgd7G7FxGW9g="
+  ];
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05";
@@ -20,16 +24,6 @@
   inputs.rust-overlay.url = "github:oxalica/rust-overlay";
   inputs.rust-overlay.inputs.flake-utils.follows = "flake-utils";
   inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
-  #inputs.ihaskell.url = "github:gibiansky/IHaskell";
-  #inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
-  #inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
-  #inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
-
-  # TODO: For some reason I can not override anything in hls
-  #inputs.ihaskell.inputs.hls.inputs.flake-compat.follows = "flake-compat";
-  #inputs.ihaskell.inputs.hls.inputs.flake-utils.follows = "flake-utils";
-  #inputs.ihaskell.inputs.hls.inputs.nixpkgs.follows = "nixpkgs";
-  #inputs.ihaskell.inputs.hls.inputs.pre-commit-hooks.follows = "pre-commit-hooks";
 
   outputs = {
     self,
@@ -41,18 +35,106 @@
     pre-commit-hooks,
     poetry2nix,
     rust-overlay,
-    #ihaskell,
-  } @ inputs: let
+  }: let
+    inherit (nixpkgs) lib;
+
     SYSTEMS = [
       flake-utils.lib.system.x86_64-linux
       # TODO - Fix linux first and then get macos working.
       # flake-utils.lib.system.x86_64-darwin
     ];
+
+    /*
+    Takes a path to the kernels directory, `kernelsPath`,
+    a kernel name, `kernelName`,
+    and a file type, `fileType`,
+    and verifies that a valid kernel directory exists with that name.
+    */
+    filterValidKernelPaths = kernelsPath: fileName: fileType: let
+      defaultFilePath = "${kernelsPath}/${fileName}/default.nix";
+    in
+      # Example: kernels/mykernel/default.nix
+      if fileType == "directory" && lib.pathExists defaultFilePath
+      then {
+        name = fileName;
+        path = defaultFilePath;
+      }
+      # Example: kernels/mykernel.nix
+      else if fileType == "regular" && lib.hasSuffix ".nix" fileName
+      then {
+        name = lib.removeSuffix ".nix" fileName;
+        path = "${kernelsPath}/${fileName}";
+      }
+      # return null when path kernel path not valid
+      else null;
+
+    /*
+    Takes a path to a kernels directory, `kernelsPath`,
+    and returns path to nix file of the kernel config
+
+    Example:
+      getKernelConfigurationsFromPath ./kernels ->
+      [
+        "kernels/ansible/default.nix"
+        "kernels/mypython.nix"
+        null
+        ...
+      ]
+    */
+    getKernelConfigurationsFromPath = kernelsPath:
+      lib.remove null
+      (
+        lib.mapAttrsToList
+        (filterValidKernelPaths kernelsPath)
+        (builtins.readDir kernelsPath)
+      );
+
+    /*
+    Takes a path to a kernels directory, `kernelsPath`
+    and a kernel name, `kernelName`,
+    and returns a set of the form:
+      { description = "<kernelName> kernel"; path = <PATH> }
+    where `PATH` is in the Nix store.
+    */
+    mkKernelFlakeOutput = {
+      name,
+      path,
+    }: {
+      inherit name;
+      value = {
+        description = "${name} kernel";
+        inherit path;
+      };
+    };
+
+    /*
+    Takes a path to the kernels directory, `kernelsPath`,
+    reads all files from the kernels directory and returns a set of
+    valid kernels that is in a shape of jupyterKernels flake output.
+
+    Example:
+      getKernelsFromPath ./kernels ->
+        {
+          example_kernel = {
+            description = "Example kernel";
+            path = ./kernels/example;
+          };
+        }
+    */
+    getKernelsFromPath = kernelsPath:
+      lib.optionalAttrs
+      (lib.pathExists kernelsPath)
+      (
+        builtins.listToAttrs
+        (
+          builtins.map
+          mkKernelFlakeOutput
+          (getKernelConfigurationsFromPath kernelsPath)
+        )
+      );
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
-        inherit (nixpkgs) lib;
-
         overlays = [
           poetry2nix.overlay
           rust-overlay.overlays.default
@@ -82,17 +164,21 @@
           overrides = pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix);
         };
 
-        mkKernel = kernel: args: name: let
-          # TODO: we should probably assert that the kernel is correctly shaped.
+        # Creates a derivation with kernel.json and logos
+        mkKernel = kernelInstance_: let
+          # TODO: we should probably assert that the kernelInstance is correctly shaped.
           #{ name,                    # required; type: string
           #, language,                # required; type: enum or string
           #, argv,                    # required; type: list of strings
-          #, display_name ? name      # optional; type: string
-          #, codemirror_mode ? "yaml" # optional; type: enum or string
+          #, displayName ? name       # optional; type: string
+          #, codemirrorMode ? "yaml"  # optional; type: enum or string
           #, logo32,                  # optional; type: absolute store path
           #, logo64,                  # optional; type: absolute store path
           #}:
-          kernelInstance = kernel ({inherit name;} // args);
+          kernelInstance =
+            if builtins.isFunction kernelInstance_
+            then kernelInstance_ {}
+            else kernelInstance_;
 
           kernelLogos = ["logo32" "logo64"];
 
@@ -137,7 +223,7 @@
           pkgs.runCommand "${kernelInstance.name}-jupyter-kernel"
           {
             passthru = {
-              inherit kernel kernelInstance kernelJSON;
+              inherit kernelInstance;
               IS_JUPYTER_KERNEL = true;
             };
           }
@@ -145,101 +231,62 @@
             ''
               mkdir -p $out/kernels/${kernelInstance.name}
               echo '${builtins.toJSON kernelJSON}' \
-                > $out/kernels/${name}/kernel.json
+                > $out/kernels/${kernelInstance.name}/kernel.json
             ''
             + copyKernelLogos
           );
 
+        /*
+        Takes a path to a kernel's directory, `kernelPath`,
+        and returns an overridable version of a kernel's default.nix file.
+        */
+        makeKernelOverridable = kernelPath:
+          lib.makeOverridable
+          (import kernelPath)
+          {inherit self pkgs;};
+
         mkJupyterlabInstance = {
-          kernels ? k: {}, # k: { python: k.python {}; },
-          extensions ? e: [], # e: [ e.jupy-ext ],
+          kernels ? k: [], # k: [ (k.python {}) k.bash ],
+          # extensions ? e: [], # e: [ e.jupy-ext ]
+          flakes ? [], # flakes where to detect custom kernels/extensions
         }: let
-          defaultKernelsPath = self + "/kernels";
-
-          /*
-          Takes a path to the kernels directory, `kernelsPath`,
-          and a kernel name, `kernelName`,
-          and returns a path to the kernel's default.nix file.
-          */
-          getKernelDefaultFile = kernelsPath: kernelName:
-            kernelsPath + "/${kernelName}/default.nix";
-
-          /*
-          Takes a package set from nixpkgs, `pkgs`,
-          a path to the kernels directory, `kernelsPath`,
-          and a kernel name, `kernelName`,
-          and returns an overridable version of a kernel's default.nix file.
-          */
-          makeKernelOverridable = pkgs: kernelsPath: kernelName:
-            lib.makeOverridable
-            (import (getKernelDefaultFile kernelsPath kernelName))
-            {inherit self pkgs;};
-
-          /*
-          Takes a path to the kernels directory, `kernelsPath`, and returns a
-          function to be used with `mapAttrs`; takes a set that has kernel
-          names as the attribute names and creates a new set with the same
-          names but the values are overridable version of the kernel's
-          default.nix file.
-          */
-          remapKernelSet = kernelsPath: kernelName: _: {
-            name = kernelName;
-            value = makeKernelOverridable pkgs kernelsPath kernelName;
-          };
-
-          /*
-          Takes a path to the kernels directory, `kernelsPath`,
-          a kernel name, `kernelName`,
-          and a file type, `fileType`,
-          and verifies that a valid kernel directory exists with that name.
-          */
-          filterValidKernelPaths = kernelsPath: kernelName: fileType:
-            (fileType == "directory")
-            && lib.pathExists (getKernelDefaultFile kernelsPath kernelName);
-
-          /*
-          Takes a path to the kernels directory, `kernelsPath`,
-          reads all files from the kernels directory and returns a set of
-          valid kernels.
-          */
-          getValidKernels = kernelsPath: (
-            lib.filterAttrs
-            (filterValidKernelPaths kernelsPath)
-            (builtins.readDir kernelsPath)
-          );
-
           /*
           An attribute set of all the available and valid kernels where the
           attribute name is the kernel name and the attribute value is the
           overridable version of the kernel's default.nix file.
+          returns:
+          {
+            <kernelName> = <kernelFactory>;
+          }
           */
           availableKernels =
-            lib.optionalAttrs
-            (lib.pathExists defaultKernelsPath)
+            builtins.listToAttrs
             (
-              lib.mapAttrs'
-              (remapKernelSet defaultKernelsPath)
-              (getValidKernels defaultKernelsPath)
+              lib.flatten
+              (
+                builtins.map
+                (
+                  flake:
+                    if builtins.hasAttr "jupyterKernels" flake
+                    then
+                      (
+                        lib.mapAttrsToList
+                        (
+                          kernelName: kernel:
+                            lib.nameValuePair
+                            kernelName
+                            (makeKernelOverridable kernel.path)
+                        )
+                        flake.jupyterKernels
+                      )
+                    else []
+                )
+                ([self] ++ flakes)
+              )
             );
 
-          kernelInstances =
-            lib.mapAttrsToList
-            # TODO: provide a nice error message when something is not a function with one argument
-            (kernelName: kernel: kernel kernelName)
-            (kernels availableKernels);
-
-          requestedKernels =
-            builtins.filter
-            (
-              kernel:
-              # TODO: provide a nice error message when something is not a kernel
-                lib.isDerivation kernel
-                && builtins.hasAttr "IS_JUPYTER_KERNEL" kernel
-                && kernel.IS_JUPYTER_KERNEL == true
-            )
-            kernelInstances;
-
-          kernelsString = lib.concatStringsSep ":";
+          kernelDerivations =
+            builtins.map mkKernel (kernels availableKernels);
 
           # create directories for storing jupyter configs
           jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
@@ -261,7 +308,7 @@
                 --set JUPYTERLAB_DIR ${jupyterlab}/share/jupyter/lab \
                 --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
                 --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
-                --set JUPYTER_PATH ${kernelsString requestedKernels} \
+                --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
                 --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
                 --set JUPYTER_DATA_DIR ".jupyter/data" \
                 --set IPYTHONDIR "/path-not-set" \
@@ -269,67 +316,99 @@
             done
           '';
 
-        example_jupyterlab = mkJupyterlabInstance {
-          kernels = k: let
-            ansible_stable = k.ansible.override {
-              pkgs = pkgs_stable;
-            };
-          in {
-            example_ansible_stable = mkKernel ansible_stable {
-              displayName = "Example (stable) Ansible Kernel";
-            };
-            example_ansible = mkKernel k.ansible {
-              displayName = "Example Ansible Kernel";
-            };
-            example_rust = mkKernel k.rust {
-              displayName = "Example Rust Kernel";
-            };
-            example_nix = mkKernel k.nix {
-              displayName = "Example Nix Kernel";
-            };
-            example_bash = mkKernel k.bash {
-              displayName = "Example Bash Kernel";
-            };
-            example_c = mkKernel k.c {
-              displayName = "Example C Kernel";
-            };
-            example_ipython = mkKernel k.ipython {
-              displayName = "Example IPython Kernel";
-            };
-            example_ruby = mkKernel k.ruby {
-              displayName = "Example Ruby Kernel";
-            };
-            example_r = mkKernel k.r {
-              displayName = "Example R Kernel";
-            };
-            example_javascript = mkKernel k.javascript {
-              displayName = "Example Javascript Kernel";
-            };
-            example_ihaskell = mkKernel k.ihaskell {
-              displayName = "Example iHaskell Kernel";
-            };
-            example_go = mkKernel k.go {
-              displayName = "Example Go Kernel";
-            };
-            example_julia = mkKernel k.julia {
-              displayName = "Example Julia Kernel";
-            };
-            example_cpp = mkKernel k.cpp {
-              displayName = "Example C++ Kernel";
-            };
-            example_ocaml = mkKernel k.ocaml {
-              displayName = "Example OCaml Kernel";
-            };
-            example_elm = mkKernel k.elm {
-              displayName = "Example Elm Kernel";
-            };
-            example_postgres = mkKernel k.postgres {
-              displayName = "Example PostgreSQL Kernel";
+        kernels = {
+          ansible = {
+            displayName = "Example Ansible Kernel";
+          };
+          rust = {
+            displayName = "Example Rust Kernel";
+          };
+          nix = {
+            displayName = "Example Nix Kernel";
+          };
+          bash = {
+            displayName = "Example Bash Kernel";
+          };
+          c = {
+            displayName = "Example C Kernel";
+          };
+          ipython = {
+            displayName = "Example IPython Kernel";
+          };
+          ruby = {
+            displayName = "Example Ruby Kernel";
+          };
+          r = {
+            displayName = "Example R Kernel";
+          };
+          javascript = {
+            displayName = "Example Javascript Kernel";
+          };
+          ihaskell = {
+            displayName = "Example iHaskell Kernel";
+          };
+          go = {
+            displayName = "Example Go Kernel";
+          };
+          julia = {
+            displayName = "Example Julia Kernel";
+          };
+          cpp = {
+            displayName = "Example C++ Kernel";
+          };
+          ocaml = {
+            displayName = "Example OCaml Kernel";
+          };
+          elm = {
+            displayName = "Example Elm Kernel";
+          };
+          postgres = {
+            displayName = "Example PostgreSQL Kernel";
+          };
+        };
+
+        jupyterlab_kernels =
+          (
+            builtins.listToAttrs
+            (
+              builtins.map
+              (
+                kernelName: {
+                  name = "jupyterlab-kernel-${kernelName}";
+                  value = mkJupyterlabInstance {
+                    kernels = k: [
+                      (k.${kernelName} (kernels.${kernelName} // {name = "example_${kernelName}";}))
+                    ];
+                  };
+                }
+              )
+              (builtins.attrNames kernels)
+            )
+          )
+          // {
+            jupyterlab-kernel-stable-ansible = mkJupyterlabInstance {
+              kernels = k: let
+                stable_ansible = k.ansible.override {pkgs = pkgs_stable;};
+              in [
+                (stable_ansible {
+                  name = "example_stable_ansible";
+                  displayName = "Example (nixpkgs stable) Ansible Kernel";
+                })
+              ];
             };
             example_typescript = mkKernel k.typescript {
               displayName = "Example Typescript Kernel";
             };
           };
+
+        jupyterlab-all-kernels = mkJupyterlabInstance {
+          kernels = k:
+            builtins.map
+            (
+              kernelName:
+                k.${kernelName} (kernels.${kernelName} // {name = "example_${kernelName}";})
+            )
+            (builtins.attrNames kernels);
         };
 
         /*
@@ -374,29 +453,65 @@
           inherit (pkgs.lib) removeSuffix;
         in {
           name = removeSuffix ".nix" name;
-          value = import "${path}/${name}" {inherit pkgs name mkKernel kernels;};
+          value = import "${path}/${name}" {inherit pkgs kernels;};
         };
 
         /*
-        Takes a set from nixpkgs, `pkgs`,
-        and a path to a kernels directory, `path`,
-        and returns a derivation for a JupyterLab environment.
+        Copies kernel instance folder to nix store and returns the path.
+
+        Example:
+          getKernelInstanceSource "mypython" (self + /kernels) ->
+            [
+              /nix/store/<hash>-jupyterlab-mypython-kernel-instance-source
+              ...
+            ]
         */
-        mkJupyterEnvFromKernelPath = pkgs: path: let
-          inherit (builtins) listToAttrs map attrNames;
-          importKernelByName = importKernel {inherit pkgs path;};
-          kernelNames = attrNames (getAvailableKernels path);
-        in
+        getKernelInstanceSource = kernelName: kernelConfigurationsPath:
+          builtins.path {
+            name = "jupyterlab-${kernelName}-kernel-instance-source";
+            path = kernelConfigurationsPath + "/${kernelName}";
+          };
+
+        /*
+        Returns kernel instance from a folder.
+
+        Example:
+          getKernelInstance "ipython" (self + /kernels) ->
+            <kernelInstance>
+        */
+        getKernelInstance = availableKernels: {
+          name,
+          path,
+        }:
+          import path {inherit availableKernels name pkgs;};
+
+        /*
+        Return jupyterEvironment with ker
+        Example:
+          mkJupyterlabEnvironmentFromPath ./kernels ->
+            <jupyterEvironment>
+        */
+        mkJupyterlabEnvironmentFromPath = kernelConfigurationsPath:
           mkJupyterlabInstance {
-            kernels = kernels:
-              listToAttrs (
-                map (importKernelByName kernels) kernelNames
-              );
+            kernels = availableKernels:
+              builtins.map
+              (getKernelInstance availableKernels)
+              (getKernelConfigurationsFromPath kernelConfigurationsPath);
           };
       in rec {
-        lib = {inherit mkJupyterEnvFromKernelPath;};
-        packages = {inherit jupyterlab example_jupyterlab;};
-        packages.default = packages.jupyterlab;
+        lib = {
+          inherit
+            mkJupyterlabInstance
+            mkJupyterlabEnvironmentFromPath
+            getKernelsFromPath
+            ;
+        };
+        packages =
+          {
+            default = jupyterlab;
+            inherit jupyterlab jupyterlab-all-kernels;
+          }
+          // jupyterlab_kernels;
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
@@ -408,11 +523,13 @@
           '';
         };
         checks = {
-          inherit pre-commit jupyterlab example_jupyterlab;
+          inherit pre-commit jupyterlab;
         };
       }
     ))
     // {
+      jupyterKernels = getKernelsFromPath (self + /kernels);
+
       templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyter-nix project";
