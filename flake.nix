@@ -1,8 +1,12 @@
 {
   description = "Declarative and reproducible Jupyter environments - powered by Nix";
 
-  nixConfig.extra-substituters = "https://tweag-jupyter.cachix.org";
-  nixConfig.extra-trusted-public-keys = "tweag-jupyter.cachix.org-1:UtNH4Zs6hVUFpFBTLaA4ejYavPo5EFFqgd7G7FxGW9g=";
+  nixConfig.extra-substituters = [
+    "https://tweag-jupyter.cachix.org"
+  ];
+  nixConfig.extra-trusted-public-keys = [
+    "tweag-jupyter.cachix.org-1:UtNH4Zs6hVUFpFBTLaA4ejYavPo5EFFqgd7G7FxGW9g="
+  ];
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05";
@@ -18,16 +22,6 @@
   inputs.rust-overlay.url = "github:oxalica/rust-overlay";
   inputs.rust-overlay.inputs.flake-utils.follows = "flake-utils";
   inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
-  #inputs.ihaskell.url = "github:gibiansky/IHaskell";
-  #inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
-  #inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
-  #inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
-
-  # TODO: For some reason I can not override anything in hls
-  #inputs.ihaskell.inputs.hls.inputs.flake-compat.follows = "flake-compat";
-  #inputs.ihaskell.inputs.hls.inputs.flake-utils.follows = "flake-utils";
-  #inputs.ihaskell.inputs.hls.inputs.nixpkgs.follows = "nixpkgs";
-  #inputs.ihaskell.inputs.hls.inputs.pre-commit-hooks.follows = "pre-commit-hooks";
 
   outputs = {
     self,
@@ -38,7 +32,6 @@
     pre-commit-hooks,
     poetry2nix,
     rust-overlay,
-    #ihaskell,
   }: let
     inherit (nixpkgs) lib;
 
@@ -50,47 +43,48 @@
 
     /*
     Takes a path to the kernels directory, `kernelsPath`,
-    and a kernel name, `kernelName`,
-    and creates a path in the Nix store for that kernel and returns the path.
-
-    Example:
-      getKernelPath (self + /kernels) "ipython" ->
-        /nix/store/<HASH>-jupyterlab-ipython-kernel-source
-    */
-    getKernelPath = kernelsPath: kernelName:
-      builtins.path {
-        name = "jupyterlab-${kernelName}-kernel-source";
-        path = kernelsPath + "/${kernelName}";
-      };
-
-    getKernelDefaultFile = kernelsPath: kernelName: "${getKernelPath kernelsPath kernelName}/default.nix";
-
-    /*
-    Takes a path to the kernels directory, `kernelsPath`,
     a kernel name, `kernelName`,
     and a file type, `fileType`,
     and verifies that a valid kernel directory exists with that name.
     */
-    filterValidKernelPaths = kernelsPath: kernelName: fileType:
-      (fileType == "directory")
-      && lib.pathExists (getKernelDefaultFile kernelsPath kernelName);
+    filterValidKernelPaths = kernelsPath: fileName: fileType: let
+      defaultFilePath = "${kernelsPath}/${fileName}/default.nix";
+    in
+      # Example: kernels/mykernel/default.nix
+      if fileType == "directory" && lib.pathExists defaultFilePath
+      then {
+        name = fileName;
+        path = defaultFilePath;
+      }
+      # Example: kernels/mykernel.nix
+      else if fileType == "regular" && lib.hasSuffix ".nix" fileName
+      then {
+        name = lib.removeSuffix ".nix" fileName;
+        path = "${kernelsPath}/${fileName}";
+      }
+      # return null when path kernel path not valid
+      else null;
 
     /*
     Takes a path to a kernels directory, `kernelsPath`,
-    and returns a set of the form:
-      { <kernelName> = "directory"; }
+    and returns path to nix file of the kernel config
+
     Example:
-      {
-        ansible = "directory";
-        bash = "directory";
+      getKernelConfigurationsFromPath ./kernels ->
+      [
+        "kernels/ansible/default.nix"
+        "kernels/mypython.nix"
+        null
         ...
-      }
+      ]
     */
-    getValidKernelsFromPath = kernelsPath: (
-      lib.filterAttrs
-      (filterValidKernelPaths kernelsPath)
-      (builtins.readDir kernelsPath)
-    );
+    getKernelConfigurationsFromPath = kernelsPath:
+      lib.remove null
+      (
+        lib.mapAttrsToList
+        (filterValidKernelPaths kernelsPath)
+        (builtins.readDir kernelsPath)
+      );
 
     /*
     Takes a path to a kernels directory, `kernelsPath`
@@ -99,23 +93,41 @@
       { description = "<kernelName> kernel"; path = <PATH> }
     where `PATH` is in the Nix store.
     */
-    mkKernelFlakeOutput = kernelsPath: kernelName: {
-      description = "${kernelName} kernel";
-      path = getKernelPath kernelsPath kernelName;
+    mkKernelFlakeOutput = {
+      name,
+      path,
+    }: {
+      inherit name;
+      value = {
+        description = "${name} kernel";
+        inherit path;
+      };
     };
 
     /*
     Takes a path to the kernels directory, `kernelsPath`,
     reads all files from the kernels directory and returns a set of
-    valid kernels.
+    valid kernels that is in a shape of jupyterKernels flake output.
+
+    Example:
+      getKernelsFromPath ./kernels ->
+        {
+          example_kernel = {
+            description = "Example kernel";
+            path = ./kernels/example;
+          };
+        }
     */
     getKernelsFromPath = kernelsPath:
       lib.optionalAttrs
       (lib.pathExists kernelsPath)
       (
-        lib.mapAttrs
-        (kernelName: _: mkKernelFlakeOutput kernelsPath kernelName)
-        (getValidKernelsFromPath kernelsPath)
+        builtins.listToAttrs
+        (
+          builtins.map
+          mkKernelFlakeOutput
+          (getKernelConfigurationsFromPath kernelsPath)
+        )
       );
   in
     (flake-utils.lib.eachSystem SYSTEMS (
@@ -224,7 +236,7 @@
         */
         makeKernelOverridable = kernelPath:
           lib.makeOverridable
-          (import "${kernelPath}/default.nix")
+          (import kernelPath)
           {inherit self pkgs;};
 
         mkJupyterlabInstance = {
@@ -267,7 +279,8 @@
               )
             );
 
-          kernelDerivations = builtins.map mkKernel (kernels availableKernels);
+          kernelDerivations =
+            builtins.map mkKernel (kernels availableKernels);
 
           # create directories for storing jupyter configs
           jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
@@ -431,27 +444,59 @@
           inherit (pkgs.lib) removeSuffix;
         in {
           name = removeSuffix ".nix" name;
-          value = import "${path}/${name}" {inherit pkgs name mkKernel kernels;};
+          value = import "${path}/${name}" {inherit pkgs kernels;};
         };
 
         /*
-        Takes a set from nixpkgs, `pkgs`,
-        and a path to a kernels directory, `path`,
-        and returns a derivation for a JupyterLab environment.
+        Copies kernel instance folder to nix store and returns the path.
+
+        Example:
+          getKernelInstanceSource "mypython" (self + /kernels) ->
+            [
+              /nix/store/<hash>-jupyterlab-mypython-kernel-instance-source
+              ...
+            ]
         */
-        mkJupyterEnvFromKernelPath = pkgs: path: let
-          inherit (builtins) listToAttrs map attrNames;
-          importKernelByName = importKernel {inherit pkgs path;};
-          kernelNames = attrNames (getAvailableKernels path);
-        in
+        getKernelInstanceSource = kernelName: kernelConfigurationsPath:
+          builtins.path {
+            name = "jupyterlab-${kernelName}-kernel-instance-source";
+            path = kernelConfigurationsPath + "/${kernelName}";
+          };
+
+        /*
+        Returns kernel instance from a folder.
+
+        Example:
+          getKernelInstance "ipython" (self + /kernels) ->
+            <kernelInstance>
+        */
+        getKernelInstance = availableKernels: {
+          name,
+          path,
+        }:
+          import path {inherit availableKernels name pkgs;};
+
+        /*
+        Return jupyterEvironment with ker
+        Example:
+          mkJupyterlabEnvironmentFromPath ./kernels ->
+            <jupyterEvironment>
+        */
+        mkJupyterlabEnvironmentFromPath = kernelConfigurationsPath:
           mkJupyterlabInstance {
-            kernels = kernels:
-              listToAttrs (
-                map (importKernelByName kernels) kernelNames
-              );
+            kernels = availableKernels:
+              builtins.map
+              (getKernelInstance availableKernels)
+              (getKernelConfigurationsFromPath kernelConfigurationsPath);
           };
       in rec {
-        lib = {inherit mkJupyterlabInstance mkJupyterEnvFromKernelPath getKernelsFromPath;};
+        lib = {
+          inherit
+            mkJupyterlabInstance
+            mkJupyterlabEnvironmentFromPath
+            getKernelsFromPath
+            ;
+        };
         packages =
           {
             default = jupyterlab;
@@ -474,13 +519,6 @@
       }
     ))
     // {
-      # Example of jupyterKernels flake output
-      #jupyterKernels = {
-      #  example_kernel = {
-      #    description = "Example kernel";
-      #    path = ./kernels/example;
-      #  };
-      #};
       jupyterKernels = getKernelsFromPath (self + /kernels);
 
       templates.default = {

@@ -1,7 +1,13 @@
 {
   description = "Your jupyterWith project";
 
-  inputs.nixpkgs.follows = "jupyterWith/nixpkgs";
+  nixConfig.extra-substituters = [
+    "https://tweag-jupyter.cachix.org"
+  ];
+  nixConfig.extra-trusted-public-keys = [
+    "tweag-jupyter.cachix.org-1:UtNH4Zs6hVUFpFBTLaA4ejYavPo5EFFqgd7G7FxGW9g="
+  ];
+
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -9,19 +15,18 @@
 
   outputs = {
     self,
-    nixpkgs,
     flake-compat,
     flake-utils,
     jupyterWith,
   }:
-  # TODO - Update Linux first and then MacOS when it is working.
-    flake-utils.lib.eachSystem ["x86_64-linux"]
+    flake-utils.lib.eachSystem
+    [
+      flake-utils.lib.system.x86_64-linux
+    ]
     (
       system: let
-        inherit (jupyterWith.lib.${system}) mkJupyterEnvFromKernelPath;
-
-        pkgs = import nixpkgs {inherit system;};
-        jupyterEnvironment = mkJupyterEnvFromKernelPath pkgs ./kernels;
+        inherit (jupyterWith.lib.${system}) mkJupyterlabEnvironmentFromPath;
+        jupyterEnvironment = mkJupyterlabEnvironmentFromPath ./kernels;
       in rec {
         packages = {inherit jupyterEnvironment;};
         packages.default = jupyterEnvironment;
