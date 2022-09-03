@@ -9,6 +9,8 @@
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.npmlock2nix.url = "github:nix-community/npmlock2nix";
+  inputs.npmlock2nix.flake = false;
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
@@ -35,6 +37,7 @@
     nixpkgs-stable,
     flake-compat,
     flake-utils,
+    npmlock2nix,
     pre-commit-hooks,
     poetry2nix,
     rust-overlay,
@@ -53,6 +56,9 @@
         overlays = [
           poetry2nix.overlay
           rust-overlay.overlays.default
+          (self: super: {
+            npmlock2nix = pkgs.callPackage npmlock2nix {};
+          })
         ];
 
         pkgs = import nixpkgs {
