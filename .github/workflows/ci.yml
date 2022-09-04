@@ -70,6 +70,7 @@ jobs:
         else
           nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
         fi
+
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
         if curl --output /dev/null --silent --head --fail "{{ env.CACHIX_NAR_URL }}"; then

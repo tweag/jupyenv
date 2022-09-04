@@ -1,9 +1,8 @@
 {
-  mkKernel,
-  kernels,
+  pkgs,
+  availableKernels,
   name,
-  ...
 }:
-mkKernel kernels.ipython {
+availableKernels.ipython {
   displayName = name;
 }
