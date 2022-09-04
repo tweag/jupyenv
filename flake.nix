@@ -13,6 +13,8 @@
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.npmlock2nix.url = "github:nix-community/npmlock2nix";
+  inputs.npmlock2nix.flake = false;
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
@@ -29,6 +31,7 @@
     nixpkgs-stable,
     flake-compat,
     flake-utils,
+    npmlock2nix,
     pre-commit-hooks,
     poetry2nix,
     rust-overlay,
@@ -135,6 +138,9 @@
         overlays = [
           poetry2nix.overlay
           rust-overlay.overlays.default
+          (self: super: {
+            npmlock2nix = pkgs.callPackage npmlock2nix {};
+          })
         ];
 
         pkgs = import nixpkgs {
@@ -311,54 +317,23 @@
           '';
 
         kernels = {
-          ansible = {
-            displayName = "Example Ansible Kernel";
-          };
-          rust = {
-            displayName = "Example Rust Kernel";
-          };
-          nix = {
-            displayName = "Example Nix Kernel";
-          };
-          bash = {
-            displayName = "Example Bash Kernel";
-          };
-          c = {
-            displayName = "Example C Kernel";
-          };
-          ipython = {
-            displayName = "Example IPython Kernel";
-          };
-          ruby = {
-            displayName = "Example Ruby Kernel";
-          };
-          r = {
-            displayName = "Example R Kernel";
-          };
-          javascript = {
-            displayName = "Example Javascript Kernel";
-          };
-          ihaskell = {
-            displayName = "Example iHaskell Kernel";
-          };
-          go = {
-            displayName = "Example Go Kernel";
-          };
-          julia = {
-            displayName = "Example Julia Kernel";
-          };
-          cpp = {
-            displayName = "Example C++ Kernel";
-          };
-          ocaml = {
-            displayName = "Example OCaml Kernel";
-          };
-          elm = {
-            displayName = "Example Elm Kernel";
-          };
-          postgres = {
-            displayName = "Example PostgreSQL Kernel";
-          };
+          ansible = {displayName = "Example Ansible Kernel";};
+          bash = {displayName = "Example Bash Kernel";};
+          c = {displayName = "Example C Kernel";};
+          cpp = {displayName = "Example C++ Kernel";};
+          elm = {displayName = "Example Elm Kernel";};
+          go = {displayName = "Example Go Kernel";};
+          ihaskell = {displayName = "Example iHaskell Kernel";};
+          ipython = {displayName = "Example IPython Kernel";};
+          javascript = {displayName = "Example Javascript Kernel";};
+          julia = {displayName = "Example Julia Kernel";};
+          nix = {displayName = "Example Nix Kernel";};
+          ocaml = {displayName = "Example OCaml Kernel";};
+          postgres = {displayName = "Example PostgreSQL Kernel";};
+          r = {displayName = "Example R Kernel";};
+          ruby = {displayName = "Example Ruby Kernel";};
+          rust = {displayName = "Example Rust Kernel";};
+          typescript = {displayName = "Example Typescript Kernel";};
         };
 
         jupyterlab_kernels =
