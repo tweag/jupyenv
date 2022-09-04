@@ -248,8 +248,17 @@
         mkJupyterlabInstance = {
           kernels ? k: [], # k: [ (k.python {}) k.bash ],
           # extensions ? e: [], # e: [ e.jupy-ext ]
+          runtimePackages ? [], # runtime package available to all binaries
           flakes ? [], # flakes where to detect custom kernels/extensions
         }: let
+          allRuntimePackages =
+            runtimePackages
+            # nodejs and npm are needed to be able to install extensions
+            ++ (with pkgs; [
+              nodejs
+              nodePackages.npm
+            ]);
+
           /*
           An attribute set of all the available and valid kernels where the
           attribute name is the kernel name and the attribute value is the
@@ -305,7 +314,8 @@
               filename=$(basename $i)
               ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
               wrapProgram $out/bin/$filename \
-                --set JUPYTERLAB_DIR ${jupyterlab}/share/jupyter/lab \
+                --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
+                --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
                 --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
                 --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
                 --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
