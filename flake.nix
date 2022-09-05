@@ -75,9 +75,8 @@
     Example:
       getKernelConfigurationsFromPath ./kernels ->
       [
-        "kernels/ansible/default.nix"
-        "kernels/mypython.nix"
-        null
+        { name = "ansible"; path = "kernels/ansible/default.nix"; }
+        { name = "mypython"; path = "kernels/mypython.nix"; }
         ...
       ]
     */
@@ -333,8 +332,8 @@
           cpp = {displayName = "Example C++ Kernel";};
           elm = {displayName = "Example Elm Kernel";};
           go = {displayName = "Example Go Kernel";};
-          ihaskell = {displayName = "Example iHaskell Kernel";};
-          ipython = {displayName = "Example IPython Kernel";};
+          haskell = {displayName = "Example Haskell Kernel";};
+          python = {displayName = "Example Python Kernel";};
           javascript = {displayName = "Example Javascript Kernel";};
           julia = {displayName = "Example Julia Kernel";};
           nix = {displayName = "Example Nix Kernel";};
