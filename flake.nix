@@ -451,7 +451,7 @@
         Returns kernel instance from a folder.
 
         Example:
-          getKernelInstance "ipython" (self + /kernels) ->
+          getKernelInstance "python" (self + /kernels) ->
             <kernelInstance>
         */
         getKernelInstance = availableKernels: {
