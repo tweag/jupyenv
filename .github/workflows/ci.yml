@@ -61,21 +61,9 @@ jobs:
         hash=${path:11:32}
         url="https://tweag-jupyter.cachix.org/$hash.narinfo";
         echo "CACHIX_NAR_URL=$url" >> $GITHUB_ENV
-        if curl --output /dev/null --silent --head --fail "$url"; then
-          echo "Nothing to build!!!"
-          echo ""
-          echo "See build log with:"
-          echo "  nix log $path"
-          echo ""
-        else
-          nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
-        fi
+        nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       if: contains(fromJSON('["cpp", "ocaml", "ruby"]'), matrix.kernel) == false
       run: |
-        if curl --output /dev/null --silent --head --fail "${{ env.CACHIX_NAR_URL }}"; then
-          echo "Nothing to test!!!"
-        else
-          result/bin/python kernels/${{ matrix.kernel }}/test.py
-        fi
+        result/bin/python kernels/${{ matrix.kernel }}/test.py
