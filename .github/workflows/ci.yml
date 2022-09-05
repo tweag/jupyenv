@@ -40,8 +40,6 @@ jobs:
     name: Build ${{ matrix.kernel }} kernel
     needs: build
     runs-on: ubuntu-latest
-    # if: ${{ contains(fromJSON('["cpp", "ocaml", "ruby"]'), matrix.kernel) }}
-
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.build.outputs.kernels) }}
