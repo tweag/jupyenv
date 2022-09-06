@@ -3,6 +3,6 @@
   availableKernels,
   name,
 }:
-availableKernels.ipython {
+availableKernels.python {
   displayName = name;
 }
