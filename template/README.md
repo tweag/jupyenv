@@ -85,7 +85,7 @@ build-backend = "poetry.core.masonry.api"
 
 4. I am going to copy the `python.nix` file that comes with the template and modify it as shown below. Note that because our kernel has its own directory, we need to change the kernel file name from `python.nix` to `default.nix`. Notice in the overrides that we are now passing in `projectDir` and setting it to the current directory. This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files. At the end, we are setting the `displayName` and `name` attbitues. `displayName` is not required but recommended as it the name that will be displayed in the kernels list in the JupyterLab Web UI. Not setting this will give the kernel a generic name (e.g. Python3) and if you have multiple kernels of the same language, they will all have the same name appear in JupyterLab. The `name` attribute is required and needs to be unique. The is the name that JupyterLab associates with this kernel and if two kernels have the same name, there will be unforseen issues.
 
-'''nix
+```nix
 {
   pkgs,
   availableKernels,
@@ -100,7 +100,7 @@ in
     displayName = "my-python";
     name = "my-python";
   }
-'''
+```
 
 5. From the project top level directory, run `nix run`. This make take some time as new packages and dependices have to be fetched. Eventually, you will see the recognizable messages from JupyterLab in your terminal. Open up the Web UI in your browser and use your custom kernel.
 
