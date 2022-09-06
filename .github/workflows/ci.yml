@@ -48,6 +48,10 @@ jobs:
         kernel: ${{ fromJSON(needs.build.outputs.kernels).kernel }}
         experimental: [false]
         include:
+          - kernel: cpp
+            experimental: true
+          - kernel: ocaml
+            experimental: true
           - kernel: ruby
             experimental: true
 
@@ -71,4 +75,7 @@ jobs:
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
-        result/bin/python kernels/${{ matrix.kernel }}/test.py
+        if test -d "kernels/${{ matrix.kernel }}"; then
+          result/bin/python kernels/${{ matrix.kernel }}/test.py
+        else
+          result/bin/python kernels/i${{ matrix.kernel }}/test.py
