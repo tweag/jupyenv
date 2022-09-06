@@ -7,8 +7,8 @@
   <!-- <img src="kernels/cpp/logo64.png" width="45" /> -->
   <img src="kernels/elm/logo64.png" width="45" />
   <img src="kernels/go/logo64.png" width="45" />
-  <img src="kernels/ihaskell/logo64.png" width="45" />
-  <img src="kernels/ipython/logo64.png" width="45" />
+  <img src="kernels/haskell/logo64.png" width="45" />
+  <img src="kernels/python/logo64.png" width="45" />
   <img src="kernels/javascript/logo64.png" width="45" />
   <img src="kernels/julia/logo64.png" width="45" />
   <img src="kernels/nix/logo64.png" width="45" />
