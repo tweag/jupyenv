@@ -79,10 +79,21 @@ in
         done
       '';
 
+    # Same as with the javascript kernel
+    # testbook adds a --Kernel argument breaking the javascript kernel
+    # https://github.com/nteract/testbook/blob/f6692b41e761addd65497df229b1e75532bdc9c6/testbook/client.py#L29-L30
+    tslabSh = writeScriptBin "tslab" ''
+      #! ${stdenv.shell}
+      if [[ ''${@: -1} == --Kernel* ]] ; then
+        ${wrappedEnv}/bin/tslab "''${@:1:$#-1}"
+      else
+        ${wrappedEnv}/bin/tslab "$@"
+      fi
+    '';
     argv_ =
       if argv == null
       then [
-        "${wrappedEnv}/bin/tslab"
+        "${tslabSh}/bin/tslab"
         "kernel"
         "--config-path"
         "{connection_file}"

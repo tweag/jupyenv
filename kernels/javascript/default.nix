@@ -6,10 +6,16 @@
   inherit (pkgs) lib stdenv writeScriptBin;
   inherit (lib) makeBinPath;
 
+  # testbook adds a --Kernel argument breaking the javascript kernel
+  # https://github.com/nteract/testbook/blob/f6692b41e761addd65497df229b1e75532bdc9c6/testbook/client.py#L29-L30
   ijavascriptSh = writeScriptBin "ijavascript" ''
     #! ${stdenv.shell}
     export PATH="${makeBinPath [ijavascript]}:$PATH"
-    ${ijavascript}/bin/ijskernel "$@"
+    if [[ ''${@: -1} == --Kernel* ]] ; then
+      ${ijavascript}/bin/ijskernel "''${@:1:$#-1}"
+    else
+      ${ijavascript}/bin/ijskernel "$@"
+    fi
   '';
 in
   {
