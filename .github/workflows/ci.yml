@@ -27,7 +27,7 @@ jobs:
     - name: List all available kernels
       id: kernels
       run: |
-        kernels="{\"kernel\":$(nix eval .#jupyterKernels --apply builtins.attrNames --json)}"
+        kernels="$(nix eval .#jupyterKernelsMatrix --json)}"
         echo $kernels
         echo "::set-output name=kernels::$kernels"
 
@@ -40,10 +40,16 @@ jobs:
     name: Build ${{ matrix.kernel }} kernel
     needs: build
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.build.outputs.kernels) }}
+      matrix: 
+        kernel: ${{ fromJSON(needs.build.outputs.kernels).kernel }}
+        experimental: [false]
+        include:
+          - kernel: ruby
+            experimental: true
 
     steps:
     - uses: actions/checkout@v3
@@ -64,6 +70,5 @@ jobs:
         nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
-      if: contains(fromJSON('["cpp", "ocaml", "ruby"]'), matrix.kernel) == false
       run: |
         result/bin/python kernels/${{ matrix.kernel }}/test.py
