@@ -75,8 +75,4 @@ jobs:
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
-        if test -d "kernels/${{ matrix.kernel }}"; then
-          result/bin/python kernels/${{ matrix.kernel }}/test.py
-        else
-          result/bin/python kernels/i${{ matrix.kernel }}/test.py
-        fi
+        result/bin/python kernels/${{ matrix.kernel }}/test.py
