@@ -37,23 +37,14 @@ jobs:
 
 
   build-kernel:
-    name: Build ${{ matrix.kernel }} kernel
+    name: Build ${{ matrix.kernel }} kernel ${{ matrix.experimental && '(experimental)' || ' ' }}
     needs: build
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
 
     strategy:
-      fail-fast: true
-      matrix: 
-        kernel: ${{ fromJSON(needs.build.outputs.kernels).kernel }}
-        experimental: [false]
-        include:
-          - kernel: cpp
-            experimental: true
-          - kernel: ocaml
-            experimental: true
-          - kernel: ruby
-            experimental: true
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.build.outputs.kernels) }}
 
     steps:
     - uses: actions/checkout@v3

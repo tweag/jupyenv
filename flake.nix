@@ -510,6 +510,12 @@
       in {
         kernel = builtins.filter (name: ! builtins.elem name experimental) kernelNames;
         experimental = [false];
+        include =
+          builtins.map (kernel: {
+            inherit kernel;
+            experimental = true;
+          })
+          experimental;
       };
 
       templates.default = {
