@@ -43,7 +43,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
 
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix: 
         kernel: ${{ fromJSON(needs.build.outputs.kernels).kernel }}
         experimental: [false]
