@@ -79,3 +79,4 @@ jobs:
           result/bin/python kernels/${{ matrix.kernel }}/test.py
         else
           result/bin/python kernels/i${{ matrix.kernel }}/test.py
+        fi
