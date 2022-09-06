@@ -2,27 +2,54 @@
 
 ## Getting started
 
-1. Create a new project folder and `cd` into it.
+This readme assumes you have already initialized a project using the project's templates. If not, follow the instructions in the [top level README](../README.md).
+
+### Quick Start
+
+Run the following
 
 ```shell
-$ mkdir my-project
-$ cd my-project
+nix run
 ```
 
-2. Initialize the project with the jupyterWith flake template.
+JupyterLab will start up and you can start using it inside your browser. The default kernels generally only have built in packages available. If you want to extend the kernels to have additional packages, see the following sections.
 
-```shell
-$ nix flake init --template github:tweag/jupyterWith
+### Extending Kernels
+
+All the kernels are in the `kernels` directory. Open up the `kernels/python.nix` kernel and you should see something like the following:
+
+```nix
+{
+  pkgs,
+  availableKernels,
+  name,
+}:
+availableKernels.python {
+  displayName = name;
+}
 ```
 
-3. Kernels are located in the `kernels` directory. Kernels files that start
-an underscore are disabled and will not appear in JupyterLab. Remove the
-underscore from the file name to enable a kernel.
+As a simple starter, let us add `numpy` to the python kernel and change the name to be more descriptive.
 
-4. Start the JupyterLab environment.
-
-```shell
-$ nix run
+```
+{
+  pkgs,
+  availableKernels,
+  name,
+}:
+let
+  python = availableKernels.python.override {
+    extraPackages = ps: [ ps.numpy ];
+  };
+in
+  python {
+    displayName = "python with numpy";
+  }
 ```
 
-5. The environment should start up with instructions on what to do next.
+We override the `extraPackages` argument that is used with [poetry2nix][mkpoetryenv] and provide it a function that returns a list. We are using `mkPoetryEnv` from poetry2nix which uses `python.withPackages` -- see the related [documentation][withpackages] for details. Modifying the `displayName` attribute will change the kernel name that appears in the JupyterLab Web UI.
+
+[mkpoetryenv]: https://github.com/nix-community/poetry2nix/#mkpoetryenv
+[withpackages]: https://nixos.org/manual/nixpkgs/stable/#python.withpackages-function
+
+
