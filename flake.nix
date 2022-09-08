@@ -343,6 +343,17 @@
                 --set IPYTHONDIR "/path-not-set" \
                 --set JUPYTER_RUNTIME_DIR "/path-not-set"
             done
+
+            # add Julia for IJulia
+            allKernelPaths=${lib.concatStringsSep ":" kernelDerivations}
+            if [[ $allKernelPaths = *julia* ]]
+            then
+              echo 'Adding Julia as an available package.'
+              for i in ${pkgs.julia_17-bin}/bin/*; do
+                filename=$(basename $i)
+                ln -s ${pkgs.julia_17-bin}/bin/$filename $out/bin/$filename
+              done
+            fi
           '';
 
         jupyterlab_kernels =
