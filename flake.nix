@@ -44,26 +44,6 @@
       # flake-utils.lib.system.x86_64-darwin
     ];
 
-    exampleKernelConfigurations = {
-      ansible = {displayName = "Example Ansible Kernel";};
-      bash = {displayName = "Example Bash Kernel";};
-      c = {displayName = "Example C Kernel";};
-      cpp = {displayName = "Example C++ Kernel";};
-      elm = {displayName = "Example Elm Kernel";};
-      go = {displayName = "Example Go Kernel";};
-      haskell = {displayName = "Example Haskell Kernel";};
-      python = {displayName = "Example Python Kernel";};
-      javascript = {displayName = "Example Javascript Kernel";};
-      julia = {displayName = "Example Julia Kernel";};
-      nix = {displayName = "Example Nix Kernel";};
-      ocaml = {displayName = "Example OCaml Kernel";};
-      postgres = {displayName = "Example PostgreSQL Kernel";};
-      r = {displayName = "Example R Kernel";};
-      ruby = {displayName = "Example Ruby Kernel";};
-      rust = {displayName = "Example Rust Kernel";};
-      typescript = {displayName = "Example Typescript Kernel";};
-    };
-
     /*
     Takes a path to the kernels directory, `kernelsPath`,
     a kernel name, `kernelName`,
@@ -151,6 +131,11 @@
           (getKernelConfigurationsFromPath kernelsPath)
         )
       );
+
+    /*
+    List available kernels
+    */
+    jupyterKernels = getKernelsFromPath (self + /kernels);
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
@@ -356,6 +341,26 @@
             fi
           '';
 
+        exampleKernelConfigurations = {
+          ansible = {displayName = "Example Ansible Kernel";};
+          bash = {displayName = "Example Bash Kernel";};
+          c = {displayName = "Example C Kernel";};
+          cpp = {displayName = "Example C++ Kernel";};
+          elm = {displayName = "Example Elm Kernel";};
+          go = {displayName = "Example Go Kernel";};
+          haskell = {displayName = "Example Haskell Kernel";};
+          python = {displayName = "Example Python Kernel";};
+          javascript = {displayName = "Example Javascript Kernel";};
+          julia = {displayName = "Example Julia Kernel";};
+          nix = {displayName = "Example Nix Kernel";};
+          ocaml = {displayName = "Example OCaml Kernel";};
+          postgres = {displayName = "Example PostgreSQL Kernel";};
+          r = {displayName = "Example R Kernel";};
+          ruby = {displayName = "Example Ruby Kernel";};
+          rust = {displayName = "Example Rust Kernel";};
+          typescript = {displayName = "Example Typescript Kernel";};
+        };
+
         exampleJupyterlabKernels =
           (
             builtins.listToAttrs
@@ -491,6 +496,19 @@
             mkJupyterlabEnvironmentFromPath
             getKernelsFromPath
             ;
+          jupyterKernelsMatrix = let
+            experimental = ["cpp" "ocaml" "ruby"];
+            kernelNames = builtins.attrNames jupyterKernels;
+          in {
+            kernel = builtins.filter (name: ! builtins.elem name experimental) kernelNames;
+            experimental = [false];
+            include =
+              builtins.map (kernel: {
+                inherit kernel;
+                experimental = true;
+              })
+              experimental;
+          };
         };
         packages =
           {
@@ -515,21 +533,7 @@
       }
     ))
     // rec {
-      jupyterKernels = getKernelsFromPath (self + /kernels);
-      jupyterKernelsMatrix = let
-        experimental = ["cpp" "ocaml" "ruby"];
-        kernelNames = builtins.attrNames jupyterKernels;
-      in {
-        kernel = builtins.filter (name: ! builtins.elem name experimental) kernelNames;
-        experimental = [false];
-        include =
-          builtins.map (kernel: {
-            inherit kernel;
-            experimental = true;
-          })
-          experimental;
-      };
-
+      inherit jupyterKernels;
       templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyter-nix project";
