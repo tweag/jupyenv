@@ -497,7 +497,12 @@
             getKernelsFromPath
             ;
           jupyterKernelsMatrix = let
-            experimental = ["cpp" "ocaml" "ruby"];
+            experimental = [
+              "ansible"
+              "cpp"
+              "ocaml"
+              "ruby"
+            ];
             kernelNames = builtins.attrNames jupyterKernels;
           in {
             kernel = builtins.filter (name: ! builtins.elem name experimental) kernelNames;
