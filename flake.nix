@@ -44,7 +44,7 @@
       # flake-utils.lib.system.x86_64-darwin
     ];
 
-    kernels = {
+    exampleKernelConfigurations = {
       ansible = {displayName = "Example Ansible Kernel";};
       bash = {displayName = "Example Bash Kernel";};
       c = {displayName = "Example C Kernel";};
@@ -356,7 +356,7 @@
             fi
           '';
 
-        jupyterlab_kernels =
+        exampleJupyterlabKernels =
           (
             builtins.listToAttrs
             (
@@ -366,12 +366,12 @@
                   name = "jupyterlab-kernel-${kernelName}";
                   value = mkJupyterlabInstance {
                     kernels = k: [
-                      (k.${kernelName} (kernels.${kernelName} // {name = "example_${kernelName}";}))
+                      (k.${kernelName} (exampleKernelConfigurations.${kernelName} // {name = "example_${kernelName}";}))
                     ];
                   };
                 }
               )
-              (builtins.attrNames kernels)
+              (builtins.attrNames exampleKernelConfigurations)
             )
           )
           // {
@@ -387,14 +387,14 @@
             };
           };
 
-        jupyterlab-all-kernels = mkJupyterlabInstance {
+        exampleJupyterlabAllKernels = mkJupyterlabInstance {
           kernels = k:
             builtins.map
             (
               kernelName:
-                k.${kernelName} (kernels.${kernelName} // {name = "example_${kernelName}";})
+                k.${kernelName} (exampleKernelConfigurations.${kernelName} // {name = "example_${kernelName}";})
             )
-            (builtins.attrNames kernels);
+            (builtins.attrNames exampleKernelConfigurations);
         };
 
         /*
@@ -494,10 +494,11 @@
         };
         packages =
           {
+            inherit jupyterlab;
+            jupyterlab-all-kernels = exampleJupyterlabAllKernels;
             default = jupyterlab;
-            inherit jupyterlab jupyterlab-all-kernels;
           }
-          // jupyterlab_kernels;
+          // exampleJupyterlabKernels;
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
@@ -513,11 +514,11 @@
         };
       }
     ))
-    // {
+    // rec {
       jupyterKernels = getKernelsFromPath (self + /kernels);
       jupyterKernelsMatrix = let
         experimental = ["cpp" "ocaml" "ruby"];
-        kernelNames = builtins.attrNames kernels;
+        kernelNames = builtins.attrNames jupyterKernels;
       in {
         kernel = builtins.filter (name: ! builtins.elem name experimental) kernelNames;
         experimental = [false];
