@@ -188,7 +188,9 @@ TODO
 
 ### Stateful Extensions
 
-TODO
+JupyterLab extensions can be statefully installed using the CLI or Web UI as shown in the [JupyterLab Extensions documentation][jlab-extensions]. To use the CLI, the `jupyter` binary is located in the `result` directory and can be run as follows: `jupyter labextension install <extension>`.
+
+[jlab-extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
 
 ### Pure Extensions
 
