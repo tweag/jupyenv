@@ -8,7 +8,7 @@ def test_nb(tb):
     result = tb.cell_output_text(0)
     print("Output:")
     print(result)
-    assert result == "hello postgres"
+    assert result == "Failed to connect to a database at postgres://brian:password@localhost:5432/dbname"
 
 if __name__ == '__main__':
     test_nb()
