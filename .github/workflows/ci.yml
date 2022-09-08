@@ -27,7 +27,7 @@ jobs:
     - name: List all available kernels
       id: kernels
       run: |
-        kernels="$(nix eval .#jupyterKernelsMatrix --json)}"
+        kernels="$(nix eval .#lib.x86_64-linux.jupyterKernelsMatrix --json)}"
         echo $kernels
         echo "::set-output name=kernels::$kernels"
 
