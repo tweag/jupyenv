@@ -64,6 +64,13 @@ jobs:
         echo "CACHIX_NAR_URL=$url" >> $GITHUB_ENV
         nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
 
+    # TODO remove once we have a better solution. For more info see
+    # https://github.com/tweag/jupyterWith/pull/280
+    - name: Install IJulia
+      if: matrix.kernel == 'julia'
+      run: |
+        result/bin/julia kernels/julia/installDeps.jl
+
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
         result/bin/python kernels/${{ matrix.kernel }}/test.py
