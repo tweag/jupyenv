@@ -119,7 +119,7 @@ The `extraPackages` argument is used with [poetry2nix][mkpoetryenv] and it takes
 [mkpoetryenv]: https://github.com/nix-community/poetry2nix/#mkpoetryenv
 [withpackages]: https://nixos.org/manual/nixpkgs/stable/#python.withpackages-function
 
-### Custom Kernels
+### Extending Kernels (Advanced)
 
 While you can override the `extraPackages` as seen previously, you are relying on the version of the package in `nixpkgs`. If you want to specify particular versions, it is easier to create a custom kernel. 
 
@@ -171,3 +171,16 @@ in
 
 5. From the project top level directory, run `nix run`. This make take some time as new packages and dependices have to be fetched. Eventually, you will see the recognizable messages from JupyterLab in your terminal. Open up the Web UI in your browser and use your custom kernel.
 
+### Custom Kernels
+
+TODO
+
+## Extensions
+
+### Stateful Extensions
+
+TODO
+
+### Pure Extensions
+
+TODO
