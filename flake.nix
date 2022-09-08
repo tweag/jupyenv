@@ -541,8 +541,12 @@
       inherit jupyterKernels;
       templates.default = {
         path = ./template;
-        description = "Boilerplate for your jupyter-nix project";
-        welcomeText = builtins.readFile ./template/README.md;
+        description = "Boilerplate for your jupyterWith project";
+        welcomeText = ''
+          You have created a jupyterWith template that will help you manage
+          your JupyterLab project. Run `nix run` to immediately try out the
+          environment. See the README for instructions on extending kernels.
+        '';
       };
     };
 }
