@@ -7,6 +7,7 @@ authors = []
 [tool.poetry.dependencies]
 python = "^3.9"
 jupyterlab = "^3.3.3"
+testbook = "^0.4.2"
 
 [tool.poetry.dev-dependencies]
 # build systems for dependencies

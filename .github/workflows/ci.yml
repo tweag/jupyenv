@@ -27,7 +27,7 @@ jobs:
     - name: List all available kernels
       id: kernels
       run: |
-        kernels="{\"kernel\":$(nix eval .#jupyterKernels --apply builtins.attrNames --json)}"
+        kernels="$(nix eval .#lib.x86_64-linux.jupyterKernelsMatrix --json)}"
         echo $kernels
         echo "::set-output name=kernels::$kernels"
 
@@ -37,9 +37,10 @@ jobs:
 
 
   build-kernel:
-    name: Build ${{ matrix.kernel }} kernel
+    name: Build ${{ matrix.kernel }} kernel ${{ matrix.experimental && '(experimental)' || ' ' }}
     needs: build
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       fail-fast: false
@@ -60,12 +61,16 @@ jobs:
         path=$(nix eval --raw .#jupyterlab-kernel-${{ matrix.kernel }})
         hash=${path:11:32}
         url="https://tweag-jupyter.cachix.org/$hash.narinfo";
-        if curl --output /dev/null --silent --head --fail "$url"; then
-          echo "Nothing to build!!!"
-          echo ""
-          echo "See build log with:"
-          echo "  nix log $path"
-          echo ""
-        else
-          nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
-        fi
+        echo "CACHIX_NAR_URL=$url" >> $GITHUB_ENV
+        nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
+
+    # TODO remove once we have a better solution. For more info see
+    # https://github.com/tweag/jupyterWith/pull/280
+    - name: Install IJulia
+      if: matrix.kernel == 'julia'
+      run: |
+        result/bin/julia kernels/julia/installDeps.jl
+
+    - name: Test notebook for ${{ matrix.kernel }} kernel
+      run: |
+        result/bin/python kernels/${{ matrix.kernel }}/test.py

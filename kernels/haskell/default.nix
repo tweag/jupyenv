@@ -22,7 +22,12 @@
     #! ${stdenv.shell}
     export GHC_PACKAGE_PATH="$(echo ${ghcEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
     export PATH="${lib.makeBinPath [ghcEnv]}:$PATH"
-    ${ihaskell}/bin/ihaskell ${extraHaskellFlags} -l $(${ghcEnv}/bin/ghc --print-libdir) "$@"'';
+    if [[ ''${@: -1} == --Kernel* ]] ; then
+      ${ihaskell}/bin/ihaskell ${extraHaskellFlags} -l $(${ghcEnv}/bin/ghc --print-libdir) "''${@:1:$#-1}"
+    else
+      ${ihaskell}/bin/ihaskell ${extraHaskellFlags} -l $(${ghcEnv}/bin/ghc --print-libdir) "$@"
+    fi
+  '';
 in
   {
     name ? "haskell",

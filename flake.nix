@@ -131,6 +131,11 @@
           (getKernelConfigurationsFromPath kernelsPath)
         )
       );
+
+    /*
+    List available kernels
+    */
+    jupyterKernels = getKernelsFromPath (self + /kernels);
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
@@ -336,7 +341,7 @@
             fi
           '';
 
-        kernels = {
+        exampleKernelConfigurations = {
           ansible = {displayName = "Example Ansible Kernel";};
           bash = {displayName = "Example Bash Kernel";};
           c = {displayName = "Example C Kernel";};
@@ -356,7 +361,7 @@
           typescript = {displayName = "Example Typescript Kernel";};
         };
 
-        jupyterlab_kernels =
+        exampleJupyterlabKernels =
           (
             builtins.listToAttrs
             (
@@ -366,12 +371,12 @@
                   name = "jupyterlab-kernel-${kernelName}";
                   value = mkJupyterlabInstance {
                     kernels = k: [
-                      (k.${kernelName} (kernels.${kernelName} // {name = "example_${kernelName}";}))
+                      (k.${kernelName} (exampleKernelConfigurations.${kernelName} // {name = "example_${kernelName}";}))
                     ];
                   };
                 }
               )
-              (builtins.attrNames kernels)
+              (builtins.attrNames exampleKernelConfigurations)
             )
           )
           // {
@@ -387,14 +392,14 @@
             };
           };
 
-        jupyterlab-all-kernels = mkJupyterlabInstance {
+        exampleJupyterlabAllKernels = mkJupyterlabInstance {
           kernels = k:
             builtins.map
             (
               kernelName:
-                k.${kernelName} (kernels.${kernelName} // {name = "example_${kernelName}";})
+                k.${kernelName} (exampleKernelConfigurations.${kernelName} // {name = "example_${kernelName}";})
             )
-            (builtins.attrNames kernels);
+            (builtins.attrNames exampleKernelConfigurations);
         };
 
         /*
@@ -491,13 +496,32 @@
             mkJupyterlabEnvironmentFromPath
             getKernelsFromPath
             ;
+          jupyterKernelsMatrix = let
+            experimental = [
+              "ansible"
+              "cpp"
+              "ocaml"
+              "ruby"
+            ];
+            kernelNames = builtins.attrNames jupyterKernels;
+          in {
+            kernel = builtins.filter (name: ! builtins.elem name experimental) kernelNames;
+            experimental = [false];
+            include =
+              builtins.map (kernel: {
+                inherit kernel;
+                experimental = true;
+              })
+              experimental;
+          };
         };
         packages =
           {
+            inherit jupyterlab;
+            jupyterlab-all-kernels = exampleJupyterlabAllKernels;
             default = jupyterlab;
-            inherit jupyterlab jupyterlab-all-kernels;
           }
-          // jupyterlab_kernels;
+          // exampleJupyterlabKernels;
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
@@ -513,9 +537,8 @@
         };
       }
     ))
-    // {
-      jupyterKernels = getKernelsFromPath (self + /kernels);
-
+    // rec {
+      inherit jupyterKernels;
       templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyterWith project";
