@@ -81,7 +81,7 @@ JupyterLab will start up and you can start using it inside your browser. The def
 
 ### Extending Kernels
 
-All the kernels are in the `kernels` directory. Open up the `kernels/python.nix` kernel and you should see something like the following:
+By extending a kernel, we mean modifying the arguments given to the kernel factory and/or kernel instance. Open up the `kernels/python.nix` kernel and you should see something like the following:
 
 ```nix
 {
@@ -103,16 +103,18 @@ As a simple starter, let us add `numpy` to the python kernel and change the name
   name,
 }:
 let
-  python = availableKernels.python.override {
+  myPython = availableKernels.python.override {
     extraPackages = ps: [ ps.numpy ];
   };
 in
-  python {
+  myPython {
     displayName = "python with numpy";
   }
 ```
 
-We override the `extraPackages` argument that is used with [poetry2nix][mkpoetryenv] and provide it a function that returns a list. We are using `mkPoetryEnv` from poetry2nix which uses `python.withPackages` -- see the related [documentation][withpackages] for details. Modifying the `displayName` attribute will change the kernel name that appears in the JupyterLab Web UI; it is purely descriptive.
+We move `availableKernels.python` to the `let` block and use the `override` function to modify the kernel factory argument and store the resulting kernel instance in `myPython`. Before we return the instance, we provide an additional attribute set with our desired `displayName`, which returns a kernel specification.
+
+The `extraPackages` argument is used with [poetry2nix][mkpoetryenv] and it takes a function that returns a list. We are using `mkPoetryEnv` from poetry2nix which uses `python.withPackages` -- see the related [documentation][withpackages] for details. Modifying the `displayName` attribute will change the kernel name that appears in the JupyterLab Web UI; it is purely descriptive but helpful in distiguishing kernels from each other.
 
 [mkpoetryenv]: https://github.com/nix-community/poetry2nix/#mkpoetryenv
 [withpackages]: https://nixos.org/manual/nixpkgs/stable/#python.withpackages-function
