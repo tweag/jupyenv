@@ -519,6 +519,22 @@
           {
             inherit jupyterlab;
             jupyterlab-all-kernels = exampleJupyterlabAllKernels;
+            update-poetry-lock =
+              pkgs.writeShellApplication
+              {
+                name = "update-poetry-lock";
+                runtimeInputs = [pkgs.python3Packages.poetry];
+                text = ''
+                  shopt -s globstar
+                  for lock in **/poetry.lock; do
+                  (
+                    echo Updating "$lock"
+                    cd "$(dirname "$lock")"
+                    poetry update
+                  )
+                  done
+                '';
+              };
             default = jupyterlab;
           }
           // exampleJupyterlabKernels;
@@ -527,6 +543,7 @@
             pkgs.alejandra
             poetry2nix.defaultPackage.${system}
             pkgs.python3Packages.poetry
+            self.packages."${system}".update-poetry-lock
           ];
           shellHook = ''
             ${pre-commit.shellHook}
@@ -534,6 +551,11 @@
         };
         checks = {
           inherit pre-commit jupyterlab;
+        };
+        apps = {
+          update-poetry-lock =
+            flake-utils.lib.mkApp
+            {drv = self.packages."${system}".update-poetry-lock;};
         };
       }
     ))
