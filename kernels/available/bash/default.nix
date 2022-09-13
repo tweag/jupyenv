@@ -1,9 +1,8 @@
 {
   self,
   pkgs,
-  nix ? pkgs.nixVersions.stable,
   # https://github.com/nix-community/poetry2nix#mkPoetryPackages
-  projectDir ? self + "/kernels/nix",
+  projectDir ? self + "/kernels/available/bash",
   pyproject ? projectDir + "/pyproject.toml",
   poetrylock ? projectDir + "/poetry.lock",
   overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
@@ -26,14 +25,14 @@
   };
 in
   {
-    name ? "nix",
-    displayName ? "Nix", # TODO: add Nix version
-    language ? "Nix",
+    name ? "bash",
+    displayName ? "Bash", # TODO: add Bash version
+    language ? "bash",
     argv ? null,
+    codemirrorMode ? "shell",
     logo64 ? ./logo64.png,
-    runtimePackages ? [nix],
+    runtimePackages ? with pkgs; [bashInteractive coreutils],
     extraRuntimePackages ? [],
-    nixpkgsPath ? pkgs.path,
   }: let
     allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
@@ -46,8 +45,7 @@ in
           filename=$(basename $i)
           ln -s ${env}/bin/$filename $out/bin/$filename
           wrapProgram $out/bin/$filename \
-            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"\
-            --set NIX_PATH "nixpkgs=${nixpkgsPath}"
+            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
         done
       '';
 
@@ -56,7 +54,7 @@ in
       then [
         "${wrappedEnv}/bin/python"
         "-m"
-        "nix-kernel"
+        "bash_kernel"
         "-f"
         "{connection_file}"
       ]
@@ -67,6 +65,7 @@ in
       name
       displayName
       language
+      codemirrorMode
       logo64
       ;
   }

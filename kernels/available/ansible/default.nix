@@ -1,8 +1,8 @@
 {
   self,
   pkgs,
-  # https://github.com/nix-community/poetry2nix#mkPoetryPackages
-  projectDir ? self + "/kernels/bash",
+  # https://github.com/nix-community/poetry2nix#mkPoetryEnv
+  projectDir ? self + "/kernels/available/ansible",
   pyproject ? projectDir + "/pyproject.toml",
   poetrylock ? projectDir + "/poetry.lock",
   overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
@@ -25,13 +25,13 @@
   };
 in
   {
-    name ? "bash",
-    displayName ? "Bash", # TODO: add Bash version
-    language ? "bash",
+    name ? "ansible",
+    displayName ? "Ansible", # TODO: add Ansible version
+    language ? "ansible",
     argv ? null,
-    codemirrorMode ? "shell",
+    codemirrorMode ? "yaml",
     logo64 ? ./logo64.png,
-    runtimePackages ? with pkgs; [bashInteractive coreutils],
+    runtimePackages ? [pkgs.ansible],
     extraRuntimePackages ? [],
   }: let
     allRuntimePackages = runtimePackages ++ extraRuntimePackages;
@@ -54,7 +54,7 @@ in
       then [
         "${wrappedEnv}/bin/python"
         "-m"
-        "bash_kernel"
+        "ansible_kernel"
         "-f"
         "{connection_file}"
       ]

@@ -2,7 +2,7 @@
   self,
   pkgs,
   # https://github.com/nix-community/poetry2nix#mkPoetryEnv
-  projectDir ? self + "/kernels/ansible",
+  projectDir ? self + "/kernels/available/postgres",
   pyproject ? projectDir + "/pyproject.toml",
   poetrylock ? projectDir + "/poetry.lock",
   overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
@@ -25,13 +25,13 @@
   };
 in
   {
-    name ? "ansible",
-    displayName ? "Ansible", # TODO: add Ansible version
-    language ? "ansible",
+    name ? "postgres",
+    displayName ? "PostgreSQL", # TODO: add Ansible version
+    language ? "postgres",
     argv ? null,
-    codemirrorMode ? "yaml",
+    codemirrorMode ? "pgsql",
     logo64 ? ./logo64.png,
-    runtimePackages ? [pkgs.ansible],
+    runtimePackages ? with pkgs; [postgresql],
     extraRuntimePackages ? [],
   }: let
     allRuntimePackages = runtimePackages ++ extraRuntimePackages;
@@ -54,7 +54,7 @@ in
       then [
         "${wrappedEnv}/bin/python"
         "-m"
-        "ansible_kernel"
+        "postgres_kernel"
         "-f"
         "{connection_file}"
       ]

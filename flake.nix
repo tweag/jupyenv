@@ -135,7 +135,7 @@
     /*
     List available kernels
     */
-    jupyterKernels = getKernelsFromPath (self + /kernels);
+    jupyterKernels = getKernelsFromPath (self + /kernels/available);
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let

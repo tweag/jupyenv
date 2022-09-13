@@ -1,8 +1,9 @@
 {
   self,
   pkgs,
-  # https://github.com/nix-community/poetry2nix#mkPoetryEnv
-  projectDir ? self + "/kernels/elm",
+  nix ? pkgs.nixVersions.stable,
+  # https://github.com/nix-community/poetry2nix#mkPoetryPackages
+  projectDir ? self + "/kernels/available/nix",
   pyproject ? projectDir + "/pyproject.toml",
   poetrylock ? projectDir + "/poetry.lock",
   overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
@@ -25,14 +26,14 @@
   };
 in
   {
-    name ? "elm",
-    displayName ? "Elm", # TODO: add Ansible version
-    language ? "elm",
+    name ? "nix",
+    displayName ? "Nix", # TODO: add Nix version
+    language ? "Nix",
     argv ? null,
-    codemirrorMode ? "yaml",
     logo64 ? ./logo64.png,
-    runtimePackages ? with pkgs.elmPackages; [elm],
+    runtimePackages ? [nix],
     extraRuntimePackages ? [],
+    nixpkgsPath ? pkgs.path,
   }: let
     allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
@@ -45,7 +46,8 @@ in
           filename=$(basename $i)
           ln -s ${env}/bin/$filename $out/bin/$filename
           wrapProgram $out/bin/$filename \
-            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"\
+            --set NIX_PATH "nixpkgs=${nixpkgsPath}"
         done
       '';
 
@@ -54,7 +56,7 @@ in
       then [
         "${wrappedEnv}/bin/python"
         "-m"
-        "elm_kernel"
+        "nix-kernel"
         "-f"
         "{connection_file}"
       ]
@@ -65,7 +67,6 @@ in
       name
       displayName
       language
-      codemirrorMode
       logo64
       ;
   }
