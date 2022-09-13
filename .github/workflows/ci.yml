@@ -69,8 +69,8 @@ jobs:
     - name: Install IJulia
       if: matrix.kernel == 'julia'
       run: |
-        result/bin/julia kernels/julia/installDeps.jl
+        result/bin/julia kernels/available/julia/installDeps.jl
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
-        result/bin/python kernels/${{ matrix.kernel }}/test.py
+        result/bin/python kernels/available/${{ matrix.kernel }}/test.py
