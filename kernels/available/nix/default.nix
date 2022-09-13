@@ -3,7 +3,7 @@
   pkgs,
   nix ? pkgs.nixVersions.stable,
   # https://github.com/nix-community/poetry2nix#mkPoetryPackages
-  projectDir ? self + "/kernels/nix",
+  projectDir ? self + "/kernels/available/nix",
   pyproject ? projectDir + "/pyproject.toml",
   poetrylock ? projectDir + "/poetry.lock",
   overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
