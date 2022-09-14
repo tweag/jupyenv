@@ -1,6 +1,8 @@
 {
   self,
   pkgs,
+  name ? "haskell",
+  displayName ? "Haskell",
   ihaskell ? pkgs.haskellPackages.ihaskell,
   extraHaskellFlags ? "",
   extraHaskellPackages ? (_: []),
@@ -28,29 +30,18 @@
       ${ihaskell}/bin/ihaskell ${extraHaskellFlags} -l $(${ghcEnv}/bin/ghc --print-libdir) "$@"
     fi
   '';
-in
-  {
-    name ? "haskell",
-    displayName ? "Haskell", # TODO: add Haskell version
-    language ? "haskell",
-    argv ? [
-      "${ihaskellSh}/bin/ihaskell"
-      "kernel"
-      "{connection_file}"
-      "+RTS"
-      "-M3g"
-      "-N2"
-      "-RTS"
-    ],
-    codemirrorMode ? "haskell",
-    logo64 ? ./logo64.png,
-  }: {
-    inherit
-      name
-      displayName
-      language
-      argv
-      codemirrorMode
-      logo64
-      ;
-  }
+in {
+  inherit name displayName;
+  language = "haskell";
+  argv = [
+    "${ihaskellSh}/bin/ihaskell"
+    "kernel"
+    "{connection_file}"
+    "+RTS"
+    "-M3g"
+    "-N2"
+    "-RTS"
+  ];
+  codemirrorMode = "haskell";
+  logo64 = ./logo64.png;
+}

@@ -1,6 +1,8 @@
 {
   self,
   pkgs,
+  name ? "javascript",
+  displayName ? "Javascript",
   ijavascript ? pkgs.nodePackages.ijavascript,
 }: let
   inherit (pkgs) lib stdenv writeScriptBin;
@@ -17,24 +19,13 @@
       ${ijavascript}/bin/ijskernel "$@"
     fi
   '';
-in
-  {
-    name ? "javascript",
-    displayName ? "Javascript", # TODO: add version
-    language ? "javascript",
-    argv ? [
-      "${ijavascriptSh}/bin/ijavascript"
-      "{connection_file}"
-    ],
-    codemirrorMode ? "javascript",
-    logo64 ? ./logo64.png,
-  }: {
-    inherit
-      name
-      displayName
-      language
-      argv
-      codemirrorMode
-      logo64
-      ;
-  }
+in {
+  inherit name displayName;
+  language = "javascript";
+  argv = [
+    "${ijavascriptSh}/bin/ijavascript"
+    "{connection_file}"
+  ];
+  codemirrorMode = "javascript";
+  logo64 = ./logo64.png;
+}

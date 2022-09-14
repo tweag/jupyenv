@@ -1,6 +1,10 @@
 {
   self,
   pkgs,
+  name ? "ansible",
+  displayName ? "Ansible",
+  runtimePackages ? [pkgs.ansible],
+  extraRuntimePackages ? [],
   # https://github.com/nix-community/poetry2nix#mkPoetryEnv
   projectDir ? self + "/kernels/available/ansible",
   pyproject ? projectDir + "/pyproject.toml",
@@ -23,49 +27,31 @@
       preferWheels
       ;
   };
-in
-  {
-    name ? "ansible",
-    displayName ? "Ansible", # TODO: add Ansible version
-    language ? "ansible",
-    argv ? null,
-    codemirrorMode ? "yaml",
-    logo64 ? ./logo64.png,
-    runtimePackages ? [pkgs.ansible],
-    extraRuntimePackages ? [],
-  }: let
-    allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
-    wrappedEnv =
-      pkgs.runCommand "wrapper-${env.name}"
-      {nativeBuildInputs = [pkgs.makeWrapper];}
-      ''
-        mkdir -p $out/bin
-        for i in ${env}/bin/*; do
-          filename=$(basename $i)
-          ln -s ${env}/bin/$filename $out/bin/$filename
-          wrapProgram $out/bin/$filename \
-            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
-        done
-      '';
+  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
-    argv_ =
-      if argv == null
-      then [
-        "${wrappedEnv}/bin/python"
-        "-m"
-        "ansible_kernel"
-        "-f"
-        "{connection_file}"
-      ]
-      else argv;
-  in {
-    argv = argv_;
-    inherit
-      name
-      displayName
-      language
-      codemirrorMode
-      logo64
-      ;
-  }
+  wrappedEnv =
+    pkgs.runCommand "wrapper-${env.name}"
+    {nativeBuildInputs = [pkgs.makeWrapper];}
+    ''
+      mkdir -p $out/bin
+      for i in ${env}/bin/*; do
+        filename=$(basename $i)
+        ln -s ${env}/bin/$filename $out/bin/$filename
+        wrapProgram $out/bin/$filename \
+          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+      done
+    '';
+in {
+  inherit name displayName;
+  language = "ansible";
+  argv = [
+    "${wrappedEnv}/bin/python"
+    "-m"
+    "ansible_kernel"
+    "-f"
+    "{connection_file}"
+  ];
+  codemirrorMode = "yaml";
+  logo64 = ./logo64.png;
+}

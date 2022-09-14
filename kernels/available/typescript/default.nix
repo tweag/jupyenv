@@ -1,6 +1,10 @@
 {
   self,
   pkgs,
+  name ? "typescript",
+  displayName ? "Typescript",
+  runtimePackages ? [],
+  extraRuntimePackages ? [],
   npmlock2nix ? pkgs.npmlock2nix,
 }: let
   inherit (pkgs) lib stdenv writeScriptBin;
@@ -52,60 +56,43 @@
       cp package.json $out/libexec
     '';
   };
-in
-  {
-    name ? "typescript",
-    displayName ? "Typescript", # TODO: add version
-    language ? "typescript",
-    argv ? null,
-    codemirrorMode ? "typescript",
-    logo64 ? ./logo64.png,
-    runtimePackages ? [],
-    extraRuntimePackages ? [],
-  }: let
-    allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
-    env = tslab;
-    wrappedEnv =
-      pkgs.runCommand "wrapper-${env.name}"
-      {nativeBuildInputs = [pkgs.makeWrapper];}
-      ''
-        mkdir -p $out/bin
-        for i in ${env}/bin/*; do
-          filename=$(basename $i)
-          ln -s ${env}/bin/$filename $out/bin/$filename
-          wrapProgram $out/bin/$filename \
-            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
-        done
-      '';
+  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
-    # Same as with the javascript kernel
-    # testbook adds a --Kernel argument breaking the javascript kernel
-    # https://github.com/nteract/testbook/blob/f6692b41e761addd65497df229b1e75532bdc9c6/testbook/client.py#L29-L30
-    tslabSh = writeScriptBin "tslab" ''
-      #! ${stdenv.shell}
-      if [[ ''${@: -1} == --Kernel* ]] ; then
-        ${wrappedEnv}/bin/tslab "''${@:1:$#-1}"
-      else
-        ${wrappedEnv}/bin/tslab "$@"
-      fi
+  env = tslab;
+  wrappedEnv =
+    pkgs.runCommand "wrapper-${env.name}"
+    {nativeBuildInputs = [pkgs.makeWrapper];}
+    ''
+      mkdir -p $out/bin
+      for i in ${env}/bin/*; do
+        filename=$(basename $i)
+        ln -s ${env}/bin/$filename $out/bin/$filename
+        wrapProgram $out/bin/$filename \
+          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+      done
     '';
-    argv_ =
-      if argv == null
-      then [
-        "${tslabSh}/bin/tslab"
-        "kernel"
-        "--config-path"
-        "{connection_file}"
-      ]
-      else argv;
-  in {
-    argv = argv_;
-    inherit
-      name
-      displayName
-      language
-      codemirrorMode
-      logo64
-      ;
-  }
+
+  # Same as with the javascript kernel
+  # testbook adds a --Kernel argument breaking the javascript kernel
+  # https://github.com/nteract/testbook/blob/f6692b41e761addd65497df229b1e75532bdc9c6/testbook/client.py#L29-L30
+  tslabSh = writeScriptBin "tslab" ''
+    #! ${stdenv.shell}
+    if [[ ''${@: -1} == --Kernel* ]] ; then
+      ${wrappedEnv}/bin/tslab "''${@:1:$#-1}"
+    else
+      ${wrappedEnv}/bin/tslab "$@"
+    fi
+  '';
+in {
+  inherit name displayName;
+  language = "typescript";
+  argv = [
+    "${tslabSh}/bin/tslab"
+    "kernel"
+    "--config-path"
+    "{connection_file}"
+  ];
+  codemirrorMode = "typescript";
+  logo64 = ./logo64.png;
+}

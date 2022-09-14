@@ -1,6 +1,10 @@
 {
   self,
   pkgs ? import <nixpkgs> {},
+  name ? "ocaml",
+  displayName ? "OCaml",
+  runtimePackages ? [],
+  extraRuntimePackages ? [],
   ocamlPackages ? pkgs.ocaml-ng.ocamlPackages_4_10,
   #  ocamlPackages ? pkgs.ocamlPackages,
   ocamlBuildInputs ?
@@ -54,54 +58,36 @@
       maintainers = with lib.maintainers; [akabe];
     };
   };
-in
-  {
-    name ? "ocaml",
-    displayName ? "OCaml", # TODO: add version
-    language ? "ocaml",
-    argv ? null,
-    codemirrorMode ? "ocaml",
-    logo64 ? ./logo64.png,
-    runtimePackages ? [],
-    extraRuntimePackages ? [],
-  }: let
-    allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ ocamlBuildInputs;
 
-    env = OcamlKernel;
-    wrappedEnv =
-      pkgs.runCommand "wrapper-${env.name}"
-      {nativeBuildInputs = [pkgs.makeWrapper];}
-      ''
-        mkdir -p $out/bin
-        for i in ${env}/bin/*; do
-          filename=$(basename $i)
-          ln -s ${env}/bin/$filename $out/bin/$filename
-          wrapProgram $out/bin/$filename \
-            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
-        done
-      '';
+  allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ ocamlBuildInputs;
 
-    argv_ =
-      if argv == null
-      then [
-        "${wrappedEnv}/bin/ocaml-jupyter-kernel"
-        "-init"
-        "/home/$USER/.ocamlinit"
-        "--merlin"
-        "${pkgs.ocamlPackages.merlin}/bin/ocamlmerlin"
-        "--verbosity"
-        "app"
-        "--connection-file"
-        "{connection_file}"
-      ]
-      else argv;
-  in {
-    argv = argv_;
-    inherit
-      name
-      displayName
-      language
-      codemirrorMode
-      logo64
-      ;
-  }
+  env = OcamlKernel;
+  wrappedEnv =
+    pkgs.runCommand "wrapper-${env.name}"
+    {nativeBuildInputs = [pkgs.makeWrapper];}
+    ''
+      mkdir -p $out/bin
+      for i in ${env}/bin/*; do
+        filename=$(basename $i)
+        ln -s ${env}/bin/$filename $out/bin/$filename
+        wrapProgram $out/bin/$filename \
+          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+      done
+    '';
+in {
+  inherit name displayName;
+  language = "ocaml";
+  argv = [
+    "${wrappedEnv}/bin/ocaml-jupyter-kernel"
+    "-init"
+    "/home/$USER/.ocamlinit"
+    "--merlin"
+    "${pkgs.ocamlPackages.merlin}/bin/ocamlmerlin"
+    "--verbosity"
+    "app"
+    "--connection-file"
+    "{connection_file}"
+  ];
+  codemirrorMode = "ocaml";
+  logo64 = ./logo64.png;
+}
