@@ -180,9 +180,9 @@
           #, logo64,                  # optional; type: absolute store path
           #}:
           kernelInstance =
-            if builtins.isFunction kernelInstance_
-            then builtins.removeAttrs (kernelInstance_ {}) ["override" "overrideDerivation"]
-            else builtins.removeAttrs kernelInstance_ ["override" "overrideDerivation"];
+            builtins.removeAttrs
+            kernelInstance_
+            ["override" "overrideDerivation"];
 
           kernelLogos = ["logo32" "logo64"];
 
