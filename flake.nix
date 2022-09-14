@@ -309,37 +309,95 @@
             # make jupyter lab user settings and workspaces directories
             mkdir -p $out/config/lab/{user-settings,workspaces}
           '';
-        in
-          pkgs.runCommand "wrapper-${jupyterlab.name}"
-          {nativeBuildInputs = [pkgs.makeWrapper];}
-          ''
-            mkdir -p $out/bin
-            for i in ${jupyterlab}/bin/*; do
-              filename=$(basename $i)
-              ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
-              wrapProgram $out/bin/$filename \
-                --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
-                --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
-                --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
-                --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
-                --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
-                --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
-                --set JUPYTER_DATA_DIR ".jupyter/data" \
-                --set IPYTHONDIR "/path-not-set" \
-                --set JUPYTER_RUNTIME_DIR "/path-not-set"
-            done
 
-            # add Julia for IJulia
-            allKernelPaths=${lib.concatStringsSep ":" kernelDerivations}
-            if [[ $allKernelPaths = *julia* ]]
-            then
-              echo 'Adding Julia as an available package.'
-              for i in ${pkgs.julia_17-bin}/bin/*; do
+          /*
+          Uses the `jupyterKernels` set and returns a list of sets where the
+          name is the kernelspec attribute name which needs to be unique and
+          the value is the path to the kernel file.
+          */
+          kernelSpecNameAndPath =
+            lib.flatten
+            (
+              builtins.map
+              (
+                flake:
+                  if builtins.hasAttr "jupyterKernels" flake
+                  then
+                    lib.mapAttrsToList
+                    (
+                      kernelName: kernel:
+                        lib.nameValuePair
+                        (makeKernelOverridable kernel.path {}).name
+                        kernel.path
+                    )
+                    flake.jupyterKernels
+                  else []
+              )
+              ([self] ++ flakes)
+            );
+
+          /*
+          Finds kernels from kernelSpecNameAndPath that have the same kernel
+          spec name and adds them to a list.
+          */
+          duplicateKernelNames =
+            lib.foldl'
+            (
+              acc: e:
+                if
+                  let
+                    allNames = map (k: k.name) kernelSpecNameAndPath;
+                  in
+                    (lib.count (x: x == e.name) allNames) > 1
+                then acc ++ [e]
+                else acc
+            )
+            []
+            kernelSpecNameAndPath;
+        in
+          # If any duplicates are found, throw an error and list them.
+          if duplicateKernelNames != []
+          then let
+            listOfDuplicates =
+              map
+              (k: "Kernel name ${k.name} in ${k.value}")
+              duplicateKernelNames;
+          in
+            builtins.throw ''
+              Kernel names must be unique. Duplicate kernel names found:
+              ${lib.concatStringsSep "\n" listOfDuplicates}
+            ''
+          else
+            pkgs.runCommand "wrapper-${jupyterlab.name}"
+            {nativeBuildInputs = [pkgs.makeWrapper];}
+            ''
+              mkdir -p $out/bin
+              for i in ${jupyterlab}/bin/*; do
                 filename=$(basename $i)
-                ln -s ${pkgs.julia_17-bin}/bin/$filename $out/bin/$filename
+                ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
+                wrapProgram $out/bin/$filename \
+                  --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
+                  --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
+                  --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
+                  --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
+                  --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
+                  --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
+                  --set JUPYTER_DATA_DIR ".jupyter/data" \
+                  --set IPYTHONDIR "/path-not-set" \
+                  --set JUPYTER_RUNTIME_DIR "/path-not-set"
               done
-            fi
-          '';
+
+              # add Julia for IJulia
+              allKernelPaths=${lib.concatStringsSep ":" kernelDerivations}
+              if [[ $allKernelPaths = *julia* ]]
+              then
+                echo 'Adding Julia as an available package.'
+                for i in ${pkgs.julia_17-bin}/bin/*; do
+                  filename=$(basename $i)
+                  ln -s ${pkgs.julia_17-bin}/bin/$filename $out/bin/$filename
+                done
+              fi
+            '';
 
         exampleKernelConfigurations = {
           ansible = {displayName = "Example Ansible Kernel";};
