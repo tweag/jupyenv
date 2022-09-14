@@ -54,13 +54,18 @@
       defaultFilePath = "${kernelsPath}/${fileName}/default.nix";
     in
       # Example: kernels/mykernel/default.nix
-      if fileType == "directory" && lib.pathExists defaultFilePath
+      if
+        (fileType == "directory")
+        && lib.pathExists defaultFilePath
       then {
         name = fileName;
         path = defaultFilePath;
       }
       # Example: kernels/mykernel.nix
-      else if fileType == "regular" && lib.hasSuffix ".nix" fileName
+      else if
+        (fileType == "regular")
+        && lib.hasSuffix ".nix" fileName
+        && !lib.hasPrefix "_" fileName
       then {
         name = lib.removeSuffix ".nix" fileName;
         path = "${kernelsPath}/${fileName}";
