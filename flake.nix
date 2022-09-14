@@ -181,8 +181,8 @@
           #}:
           kernelInstance =
             if builtins.isFunction kernelInstance_
-            then kernelInstance_ {}
-            else kernelInstance_;
+            then builtins.removeAttrs (kernelInstance_ {}) ["override" "overrideDerivation"]
+            else builtins.removeAttrs kernelInstance_ ["override" "overrideDerivation"];
 
           kernelLogos = ["logo32" "logo64"];
 
@@ -371,7 +371,10 @@
                   name = "jupyterlab-kernel-${kernelName}";
                   value = mkJupyterlabInstance {
                     kernels = k: [
-                      (k.${kernelName} (exampleKernelConfigurations.${kernelName} // {name = "example_${kernelName}";}))
+                      (k.${kernelName}.override (
+                        exampleKernelConfigurations.${kernelName}
+                        // {name = "example_${kernelName}";}
+                      ))
                     ];
                   };
                 }
@@ -384,7 +387,7 @@
               kernels = k: let
                 stable_ansible = k.ansible.override {pkgs = pkgs_stable;};
               in [
-                (stable_ansible {
+                (stable_ansible.override {
                   name = "example_stable_ansible";
                   displayName = "Example (nixpkgs stable) Ansible Kernel";
                 })
@@ -397,7 +400,10 @@
             builtins.map
             (
               kernelName:
-                k.${kernelName} (exampleKernelConfigurations.${kernelName} // {name = "example_${kernelName}";})
+                k.${kernelName}.override (
+                  exampleKernelConfigurations.${kernelName}
+                  // {name = "example_${kernelName}";}
+                )
             )
             (builtins.attrNames exampleKernelConfigurations);
         };
