@@ -56,6 +56,7 @@
       # Example: kernels/mykernel/default.nix
       if
         (fileType == "directory")
+        && !lib.hasPrefix "_" fileName
         && lib.pathExists defaultFilePath
       then {
         name = fileName;
