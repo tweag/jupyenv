@@ -496,24 +496,6 @@
             mkJupyterlabEnvironmentFromPath
             getKernelsFromPath
             ;
-          jupyterKernelsMatrix = let
-            experimental = [
-              "ansible"
-              "cpp"
-              "ocaml"
-              "ruby"
-            ];
-            kernelNames = builtins.attrNames jupyterKernels;
-          in {
-            kernel = builtins.filter (name: ! builtins.elem name experimental) kernelNames;
-            experimental = [false];
-            include =
-              builtins.map (kernel: {
-                inherit kernel;
-                experimental = true;
-              })
-              experimental;
-          };
         };
         packages =
           {
