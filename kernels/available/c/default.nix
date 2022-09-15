@@ -1,6 +1,8 @@
 {
   self,
   pkgs,
+  name ? "c",
+  displayName ? "C",
   # https://github.com/nix-community/poetry2nix#mkPoetryEnv
   projectDir ? self + "/kernels/available/c",
   pyproject ? projectDir + "/pyproject.toml",
@@ -23,27 +25,16 @@
       preferWheels
       ;
   };
-in
-  {
-    name ? "c",
-    displayName ? "C", # TODO: add C version
-    language ? "c",
-    argv ? [
-      "${env}/bin/python"
-      "-m"
-      "jupyter_c_kernel"
-      "-f"
-      "{connection_file}"
-    ],
-    codemirrorMode ? "clike",
-    logo64 ? ./logo64.png,
-  }: {
-    inherit
-      name
-      displayName
-      language
-      argv
-      codemirrorMode
-      logo64
-      ;
-  }
+in {
+  inherit name displayName;
+  language = "c";
+  argv = [
+    "${env}/bin/python"
+    "-m"
+    "jupyter_c_kernel"
+    "-f"
+    "{connection_file}"
+  ];
+  codemirrorMode = "clike";
+  logo64 = ./logo64.png;
+}
