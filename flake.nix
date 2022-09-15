@@ -75,7 +75,7 @@
     Example:
       getKernelConfigurationsFromPath ./kernels ->
       [
-        { name = "ansible"; path = "kernels/ansible/default.nix"; }
+        { name = "postgres"; path = "kernels/postgres/default.nix"; }
         { name = "mypython"; path = "kernels/mypython.nix"; }
         ...
       ]
@@ -342,10 +342,8 @@
           '';
 
         exampleKernelConfigurations = {
-          ansible = {displayName = "Example Ansible Kernel";};
           bash = {displayName = "Example Bash Kernel";};
           c = {displayName = "Example C Kernel";};
-          cpp = {displayName = "Example C++ Kernel";};
           elm = {displayName = "Example Elm Kernel";};
           go = {displayName = "Example Go Kernel";};
           haskell = {displayName = "Example Haskell Kernel";};
@@ -353,10 +351,8 @@
           javascript = {displayName = "Example Javascript Kernel";};
           julia = {displayName = "Example Julia Kernel";};
           nix = {displayName = "Example Nix Kernel";};
-          ocaml = {displayName = "Example OCaml Kernel";};
           postgres = {displayName = "Example PostgreSQL Kernel";};
           r = {displayName = "Example R Kernel";};
-          ruby = {displayName = "Example Ruby Kernel";};
           rust = {displayName = "Example Rust Kernel";};
           typescript = {displayName = "Example Typescript Kernel";};
         };
@@ -383,13 +379,13 @@
             )
           )
           // {
-            jupyterlab-kernel-stable-ansible = mkJupyterlabInstance {
+            jupyterlab-kernel-stable-python = mkJupyterlabInstance {
               kernels = k: let
-                stable_ansible = k.ansible.override {pkgs = pkgs_stable;};
+                stable_python = k.python.override {pkgs = pkgs_stable;};
               in [
-                (stable_ansible.override {
-                  name = "example_stable_ansible";
-                  displayName = "Example (nixpkgs stable) Ansible Kernel";
+                (stable_python.override {
+                  name = "example_stable_python";
+                  displayName = "Example (nixpkgs stable) Python Kernel";
                 })
               ];
             };
@@ -407,67 +403,6 @@
             )
             (builtins.attrNames exampleKernelConfigurations);
         };
-
-        /*
-        Takes a file name, `name` and a file type, `value`, and returns a
-        boolean if the file is meant to be an available kernel. Kernels whose
-        file names are prefixed with an underscore are meant to be hidden.
-        Useful for filtering the output of `readDir`.
-        */
-        filterAvailableKernels = name: value: let
-          inherit (pkgs.lib.strings) hasPrefix hasSuffix;
-        in
-          (value == "regular")
-          && hasSuffix ".nix" name
-          && !hasPrefix "_" name;
-
-        /*
-        Takes a path to a kernels directory, `path`, and returns the available
-        kernels. Name is the kernel name and value is the file type.
-        */
-        getAvailableKernels = path: let
-          inherit (builtins) readDir;
-          inherit (pkgs.lib.attrsets) filterAttrs;
-        in
-          filterAttrs
-          filterAvailableKernels
-          (readDir path);
-
-        /*
-        Takes an attribute set with
-          a set from nixpkgs, `pkgs`,
-          and a path to a kernels directory, `path`,
-        and returns a function that takes
-          a set of kernels, `kernels`,
-          and a kernel name, `name`,
-        and imports it from the kernels directory.
-        Returns the imported kernels as the value of an attribute set.
-        */
-        importKernel = {
-          pkgs,
-          path,
-        }: kernels: name: let
-          inherit (pkgs.lib) removeSuffix;
-        in {
-          name = removeSuffix ".nix" name;
-          value = import "${path}/${name}" {inherit pkgs kernels;};
-        };
-
-        /*
-        Copies kernel instance folder to nix store and returns the path.
-
-        Example:
-          getKernelInstanceSource "mypython" (self + /kernels) ->
-            [
-              /nix/store/<hash>-jupyterlab-mypython-kernel-instance-source
-              ...
-            ]
-        */
-        getKernelInstanceSource = kernelName: kernelConfigurationsPath:
-          builtins.path {
-            name = "jupyterlab-${kernelName}-kernel-instance-source";
-            path = kernelConfigurationsPath + "/${kernelName}";
-          };
 
         /*
         Returns kernel instance from a folder.
@@ -502,24 +437,6 @@
             mkJupyterlabEnvironmentFromPath
             getKernelsFromPath
             ;
-          jupyterKernelsMatrix = let
-            experimental = [
-              "ansible"
-              "cpp"
-              "ocaml"
-              "ruby"
-            ];
-            kernelNames = builtins.attrNames jupyterKernels;
-          in {
-            kernel = builtins.filter (name: ! builtins.elem name experimental) kernelNames;
-            experimental = [false];
-            include =
-              builtins.map (kernel: {
-                inherit kernel;
-                experimental = true;
-              })
-              experimental;
-          };
         };
         packages =
           {

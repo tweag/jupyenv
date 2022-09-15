@@ -1,10 +1,8 @@
 # Jupyter :heart: Nix
 
 <p float="left">
-  <img src="kernels/available/ansible/logo64.png" width="45" />
   <img src="kernels/available/bash/logo64.png" width="45" />
   <img src="kernels/available/c/logo64.png" width="45" />
-  <!-- <img src="kernels/available/cpp/logo64.png" width="45" /> -->
   <img src="kernels/available/elm/logo64.png" width="45" />
   <img src="kernels/available/go/logo64.png" width="45" />
   <img src="kernels/available/haskell/logo64.png" width="45" />
@@ -12,10 +10,8 @@
   <img src="kernels/available/javascript/logo64.png" width="45" />
   <img src="kernels/available/julia/logo64.png" width="45" />
   <img src="kernels/available/nix/logo64.png" width="45" />
-  <img src="kernels/available/ocaml/logo64.png" width="45" />
   <img src="kernels/available/postgres/logo64.png" width="45" />
   <img src="kernels/available/r/logo64.png" width="45" />
-  <img src="kernels/available/ruby/logo64.png" width="45" />
   <img src="kernels/available/rust/logo64.png" width="45" />
   <img src="kernels/available/typescript/logo64.png" width="45" />
 </p>

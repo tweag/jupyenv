@@ -27,7 +27,7 @@ jobs:
     - name: List all available kernels
       id: kernels
       run: |
-        kernels="$(nix eval .#lib.x86_64-linux.jupyterKernelsMatrix --json)}"
+        kernels="{\"kernel\":$(nix eval .#jupyterKernels --apply builtins.attrNames --json)}"
         echo $kernels
         echo "::set-output name=kernels::$kernels"
 
@@ -37,10 +37,9 @@ jobs:
 
 
   build-kernel:
-    name: Build ${{ matrix.kernel }} kernel ${{ matrix.experimental && '(experimental)' || ' ' }}
+    name: Build ${{ matrix.kernel }} kernel
     needs: build
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       fail-fast: false
@@ -58,10 +57,6 @@ jobs:
 
     - name: Build ${{ matrix.kernel }} kernel
       run: |
-        path=$(nix eval --raw .#jupyterlab-kernel-${{ matrix.kernel }})
-        hash=${path:11:32}
-        url="https://tweag-jupyter.cachix.org/$hash.narinfo";
-        echo "CACHIX_NAR_URL=$url" >> $GITHUB_ENV
         nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
 
     # TODO remove once we have a better solution. For more info see
