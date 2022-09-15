@@ -75,7 +75,7 @@
     Example:
       getKernelConfigurationsFromPath ./kernels ->
       [
-        { name = "ansible"; path = "kernels/ansible/default.nix"; }
+        { name = "postgres"; path = "kernels/postgres/default.nix"; }
         { name = "mypython"; path = "kernels/mypython.nix"; }
         ...
       ]
@@ -342,10 +342,8 @@
           '';
 
         exampleKernelConfigurations = {
-          ansible = {displayName = "Example Ansible Kernel";};
           bash = {displayName = "Example Bash Kernel";};
           c = {displayName = "Example C Kernel";};
-          cpp = {displayName = "Example C++ Kernel";};
           elm = {displayName = "Example Elm Kernel";};
           go = {displayName = "Example Go Kernel";};
           haskell = {displayName = "Example Haskell Kernel";};
@@ -353,10 +351,8 @@
           javascript = {displayName = "Example Javascript Kernel";};
           julia = {displayName = "Example Julia Kernel";};
           nix = {displayName = "Example Nix Kernel";};
-          ocaml = {displayName = "Example OCaml Kernel";};
           postgres = {displayName = "Example PostgreSQL Kernel";};
           r = {displayName = "Example R Kernel";};
-          ruby = {displayName = "Example Ruby Kernel";};
           rust = {displayName = "Example Rust Kernel";};
           typescript = {displayName = "Example Typescript Kernel";};
         };
@@ -380,13 +376,13 @@
             )
           )
           // {
-            jupyterlab-kernel-stable-ansible = mkJupyterlabInstance {
+            jupyterlab-kernel-stable-python = mkJupyterlabInstance {
               kernels = k: let
-                stable_ansible = k.ansible.override {pkgs = pkgs_stable;};
+                stable_python = k.python.override {pkgs = pkgs_stable;};
               in [
-                (stable_ansible {
-                  name = "example_stable_ansible";
-                  displayName = "Example (nixpkgs stable) Ansible Kernel";
+                (stable_python {
+                  name = "example_stable_python";
+                  displayName = "Example (nixpkgs stable) Python Kernel";
                 })
               ];
             };
