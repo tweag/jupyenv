@@ -186,9 +186,9 @@
           #, logo64,                  # optional; type: absolute store path
           #}:
           kernelInstance =
-            if builtins.isFunction kernelInstance_
-            then kernelInstance_ {}
-            else kernelInstance_;
+            builtins.removeAttrs
+            kernelInstance_
+            ["override" "overrideDerivation"];
 
           kernelLogos = ["logo32" "logo64"];
 
@@ -373,7 +373,10 @@
                   name = "jupyterlab-kernel-${kernelName}";
                   value = mkJupyterlabInstance {
                     kernels = k: [
-                      (k.${kernelName} (exampleKernelConfigurations.${kernelName} // {name = "example_${kernelName}";}))
+                      (k.${kernelName}.override (
+                        exampleKernelConfigurations.${kernelName}
+                        // {name = "example_${kernelName}";}
+                      ))
                     ];
                   };
                 }
@@ -386,7 +389,7 @@
               kernels = k: let
                 stable_python = k.python.override {pkgs = pkgs_stable;};
               in [
-                (stable_python {
+                (stable_python.override {
                   name = "example_stable_python";
                   displayName = "Example (nixpkgs stable) Python Kernel";
                 })
@@ -399,7 +402,10 @@
             builtins.map
             (
               kernelName:
-                k.${kernelName} (exampleKernelConfigurations.${kernelName} // {name = "example_${kernelName}";})
+                k.${kernelName}.override (
+                  exampleKernelConfigurations.${kernelName}
+                  // {name = "example_${kernelName}";}
+                )
             )
             (builtins.attrNames exampleKernelConfigurations);
         };
