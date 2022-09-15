@@ -7,16 +7,15 @@
   extraHaskellFlags ? "",
   extraHaskellPackages ? (_: []),
 }: let
-  name = "nixpkgs";
   inherit (pkgs) haskellPackages lib stdenv writeScriptBin;
 
   ghcEnv = haskellPackages.ghcWithPackages (self: [ihaskell] ++ extraHaskellPackages self);
 
-  ghciBin = writeScriptBin "ghci-${name}" ''
+  ghciBin = writeScriptBin "ghciBin" ''
     ${ghcEnv}/bin/ghci "$@"
   '';
 
-  ghcBin = writeScriptBin "ghc-${name}" ''
+  ghcBin = writeScriptBin "ghcBin" ''
     ${ghcEnv}/bin/ghc "$@"
   '';
 
