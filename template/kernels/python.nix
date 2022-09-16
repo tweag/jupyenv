@@ -1,8 +1,9 @@
 {
   pkgs,
   availableKernels,
-  name,
+  kernelName,
 }:
 availableKernels.python {
-  displayName = name;
+  name = "custom-${kernelName}"; # must be unique
+  displayName = "custom ${kernelName}";
 }

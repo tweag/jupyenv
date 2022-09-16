@@ -421,7 +421,10 @@
           name,
           path,
         }:
-          import path {inherit availableKernels name pkgs;};
+          import path {
+            inherit availableKernels pkgs;
+            kernelName = name;
+          };
 
         /*
         Return jupyterEvironment with ker
