@@ -165,6 +165,14 @@
           src = self;
           hooks = {
             alejandra.enable = true;
+            typos = {
+              enable = true;
+              name = "typos";
+              description = "Source code spell checker";
+              entry = "${pkgs.typos}/bin/typos --write-changes --config _typos.toml";
+              types = ["file"];
+              files = "\\.((txt)|(md)|(nix)|\\d)$";
+            };
           };
         };
 
@@ -427,10 +435,10 @@
           };
 
         /*
-        Return jupyterEvironment with ker
+        Return jupyterEnvironment with kernels
         Example:
           mkJupyterlabEnvironmentFromPath ./kernels ->
-            <jupyterEvironment>
+            <jupyterEnvironment>
         */
         mkJupyterlabEnvironmentFromPath = kernelsPath:
           mkJupyterlabInstance {
@@ -473,6 +481,7 @@
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
+            pkgs.typos
             poetry2nix.defaultPackage.${system}
             pkgs.python3Packages.poetry
             self.packages."${system}".update-poetry-lock

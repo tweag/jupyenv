@@ -23,7 +23,7 @@
   * Fix Ruby kernel.
   * Fix OCaml kernel.
 
-* Declarative JupyterLab extentions with Nix
+* Declarative JupyterLab extensions with Nix
   * See last comments in issue #31 for possible implementations.
   * Establish Jupyter extensions to be shipped by default, #72.
   * iHaskell built-in auto-completion functionality, #141.

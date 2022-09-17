@@ -109,7 +109,7 @@ availableKernels.python.override {
 }
 ```
 
-5. From the project top level directory, run `nix run`. This make take some time as new packages and dependices have to be fetched. Eventually, you will see the recognizable messages from JupyterLab in your terminal. Open up the Web UI in your browser and use your custom kernel.
+5. From the project top level directory, run `nix run`. This make take some time as new packages and dependencies have to be fetched. Eventually, you will see the recognizable messages from JupyterLab in your terminal. Open up the Web UI in your browser and use your custom kernel.
 
 ### Custom Kernels
 

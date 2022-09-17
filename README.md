@@ -43,7 +43,7 @@ $ nix flake init --template github:tweag/jupyterWith
 
 ### Enable kernels
 
-Your new project should ahve a `kernels` directory which contains all the kernels. Any kernels prefixed with an underscore is disabled. To enable any kernel, rename it so it no longer has an underscore prefix.
+Your new project should have a `kernels` directory which contains all the kernels. Any kernels prefixed with an underscore is disabled. To enable any kernel, rename it so it no longer has an underscore prefix.
 
 ```shell
 $ cp kernels/_ipython.nix kernels/my-ipython.nix
