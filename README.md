@@ -16,15 +16,12 @@
   <img src="kernels/available/typescript/logo64.png" width="45" />
 </p>
 
-
 This repository provides a Nix-based framework for the definition of
 declarative and reproducible Jupyter environments. These environments
 include JupyterLab - configurable with extensions - the classic notebook,
 and configurable Jupyter kernels.
 
-
 ## Getting started
-
 
 ### Bootstrap your projects
 

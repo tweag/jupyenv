@@ -51,9 +51,6 @@ We also modified the `name` and `displayName` attributes, which is not necessary
 
 Additional Info: The `extraPackages` argument is used with [poetry2nix][mkpoetryenv] and it takes a function that returns a list. We are using `mkPoetryEnv` from poetry2nix which uses `python.withPackages` -- see the related [documentation][withpackages] for details.
 
-[mkpoetryenv]: https://github.com/nix-community/poetry2nix/#mkpoetryenv
-[withpackages]: https://nixos.org/manual/nixpkgs/stable/#python.withpackages-function
-
 ### Extending Kernels (Advanced)
 
 While you can override the `extraPackages` as seen previously, you are relying on the version of the package in `nixpkgs`. If you want to specify particular versions, it is easier to extend the kernel in a different. Below is a tree structure showing where our new kernel will be created. Our new kernel will be located in `custom-python` under the `kernels` directory. We will create the `default.nix` and `pyproject.toml` files and the `poetry.lock` file will be generated for us using `poetry`.
@@ -69,7 +66,7 @@ my-project/
 
 1. The first step is to create a directory to put our new kernel which I named `custom-python`.
 
-2. The easiest way to create the `pyproject.toml` file is to copy it from the existing kernel in the repository. I have copied the Python kernels `pyproject.toml` file and added a `numpy` dependency under `tool.poetry.dependencies`.
+1. The easiest way to create the `pyproject.toml` file is to copy it from the existing kernel in the repository. I have copied the Python kernels `pyproject.toml` file and added a `numpy` dependency under `tool.poetry.dependencies`.
 
 ```toml
 [tool.poetry]
@@ -94,7 +91,7 @@ build-backend = "poetry.core.masonry.api"
 
 3. Generate a `poetry.lock` file by running `poetry lock` in the kernel directory, `custom-python`.
 
-4. Below is the `default.nix` file which looks similar to the file in the [previous example](#extending-kernels). However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory. This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified. Similar to before we override the `name` and `displayName` attribute so we can distinguish it from other kernels.
+1. Below is the `default.nix` file which looks similar to the file in the [previous example](#extending-kernels). However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory. This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified. Similar to before we override the `name` and `displayName` attribute so we can distinguish it from other kernels.
 
 ```nix
 {
@@ -120,8 +117,6 @@ TODO
 ### Stateful Extensions
 
 JupyterLab extensions can be statefully installed using the CLI or Web UI as shown in the [JupyterLab Extensions documentation][jlab-extensions]. To use the CLI, the `jupyter` binary is located in the `result` directory and can be run as follows: `./result/bin/jupyter labextension install <extension>`.
-
-[jlab-extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
 
 ### Pure Extensions
 
@@ -181,3 +176,6 @@ in
   }
 ```
 
+[jlab-extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
+[mkpoetryenv]: https://github.com/nix-community/poetry2nix/#mkpoetryenv
+[withpackages]: https://nixos.org/manual/nixpkgs/stable/#python.withpackages-function

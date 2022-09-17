@@ -173,6 +173,13 @@
               types = ["file"];
               files = "\\.((txt)|(md)|(nix)|\\d)$";
             };
+            mdformat = {
+              enable = true;
+              name = "mdformat";
+              description = "An opinionated Markdown formatter";
+              entry = "mdformat .";
+              types = ["file" "text" "markdown"];
+            };
           };
         };
 
@@ -482,6 +489,7 @@
           packages = [
             pkgs.alejandra
             pkgs.typos
+            jupyterlab
             poetry2nix.defaultPackage.${system}
             pkgs.python3Packages.poetry
             self.packages."${system}".update-poetry-lock
