@@ -181,6 +181,7 @@
               types = ["file" "text" "markdown"];
             };
           };
+          excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
         };
 
         jupyterlab = pkgs.poetry2nix.mkPoetryEnv {
