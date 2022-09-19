@@ -46,7 +46,7 @@
 
     /*
     Takes a path to the kernels directory, `kernelsPath`,
-    a kernel name, `kernelName`,
+    a kernel name, `fileName`,
     and a file type, `fileType`,
     and verifies that a valid kernel directory exists with that name.
     */
@@ -79,14 +79,14 @@
     and returns path to nix file of the kernel config
 
     Example:
-      getKernelConfigurationsFromPath ./kernels ->
+      getKernelAttrsetFromPath ./kernels ->
       [
         { name = "postgres"; path = "kernels/postgres/default.nix"; }
         { name = "mypython"; path = "kernels/mypython.nix"; }
         ...
       ]
     */
-    getKernelConfigurationsFromPath = kernelsPath:
+    getKernelAttrsetFromPath = kernelsPath:
       lib.remove null
       (
         lib.mapAttrsToList
@@ -118,7 +118,7 @@
     valid kernels that is in a shape of jupyterKernels flake output.
 
     Example:
-      getKernelsFromPath ./kernels ->
+      getAvailableKernelsFromPath ./kernels ->
         {
           example_kernel = {
             description = "Example kernel";
@@ -126,7 +126,7 @@
           };
         }
     */
-    getKernelsFromPath = kernelsPath:
+    getAvailableKernelsFromPath = kernelsPath:
       lib.optionalAttrs
       (lib.pathExists kernelsPath)
       (
@@ -134,14 +134,14 @@
         (
           builtins.map
           mkKernelFlakeOutput
-          (getKernelConfigurationsFromPath kernelsPath)
+          (getKernelAttrsetFromPath kernelsPath)
         )
       );
 
     /*
     List available kernels
     */
-    jupyterKernels = getKernelsFromPath (self + /kernels/available);
+    jupyterKernels = getAvailableKernelsFromPath (self + /kernels/available);
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
@@ -247,12 +247,12 @@
           );
 
         /*
-        Takes a path to a kernel's directory, `kernelPath`,
+        Takes a path to a kernel's directory, `kernelsPath`,
         and returns an overridable version of a kernel's default.nix file.
         */
-        makeKernelOverridable = kernelPath:
+        makeKernelOverridable = kernelsPath:
           lib.makeOverridable
-          (import kernelPath)
+          (import kernelsPath)
           {inherit self pkgs;};
 
         mkJupyterlabInstance = {
@@ -421,7 +421,10 @@
           name,
           path,
         }:
-          import path {inherit availableKernels name pkgs;};
+          import path {
+            inherit availableKernels pkgs;
+            kernelName = name;
+          };
 
         /*
         Return jupyterEvironment with ker
@@ -429,19 +432,19 @@
           mkJupyterlabEnvironmentFromPath ./kernels ->
             <jupyterEvironment>
         */
-        mkJupyterlabEnvironmentFromPath = kernelConfigurationsPath:
+        mkJupyterlabEnvironmentFromPath = kernelsPath:
           mkJupyterlabInstance {
             kernels = availableKernels:
               builtins.map
               (getKernelInstance availableKernels)
-              (getKernelConfigurationsFromPath kernelConfigurationsPath);
+              (getKernelAttrsetFromPath kernelsPath);
           };
       in rec {
         lib = {
           inherit
             mkJupyterlabInstance
             mkJupyterlabEnvironmentFromPath
-            getKernelsFromPath
+            getAvailableKernelsFromPath
             ;
         };
         packages =
