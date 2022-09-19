@@ -12,6 +12,10 @@ in
   // addNativeBuildInputs "jupyter-server" [final.hatchling]
   // addNativeBuildInputs "jupyterlab-server" [final.hatchling]
   // addNativeBuildInputs "ipykernel" [final.hatchling]
+  // addNativeBuildInputs "mdformat-tables" [final.flit-core]
+  // addNativeBuildInputs "mdformat-footnote" [final.flit-core]
+  // addNativeBuildInputs "mdformat-frontmatter" [final.flit-core]
+  // addNativeBuildInputs "mdformat-gfm" [final.poetry]
   // {
     jupyter-client = prev.jupyter-client.overridePythonAttrs (old: {
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ [final.hatchling];
@@ -32,7 +36,7 @@ in
         # empty the ENV_JUPYTER_PATH and ENV_CONFIG_PATH lists
         sed -i -E 's/(ENV_JUPYTER_PATH = )(\[.*\])/\1[]/g' ./jupyter_core/paths.py
         sed -i -E 's/(ENV_CONFIG_PATH = )(\[.*\])/\1[]/g' ./jupyter_core/paths.py
-        # override the funtion that returns the jupyter runtime dir
+        # override the function that returns the jupyter runtime dir
         sed -i \
           -e "/def jupyter_runtime_dir():/!b;n;i\    return pjoin(get_home_dir(), '.local', 'share', 'jupyter', 'runtime')" \
           ./jupyter_core/paths.py

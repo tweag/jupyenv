@@ -46,7 +46,7 @@
 
     /*
     Takes a path to the kernels directory, `kernelsPath`,
-    a kernel name, `kernelName`,
+    a kernel name, `fileName`,
     and a file type, `fileType`,
     and verifies that a valid kernel directory exists with that name.
     */
@@ -80,20 +80,38 @@
     and returns path to nix file of the kernel config
 
     Example:
-      getKernelConfigurationsFromPath ./kernels ->
+      getKernelAttrsetFromPath ./kernels ->
       [
         { name = "postgres"; path = "kernels/postgres/default.nix"; }
         { name = "mypython"; path = "kernels/mypython.nix"; }
         ...
       ]
     */
-    getKernelConfigurationsFromPath = kernelsPath:
+    getKernelAttrsetFromPath = kernelsPath:
       lib.remove null
       (
         lib.mapAttrsToList
         (filterValidKernelPaths kernelsPath)
         (builtins.readDir kernelsPath)
       );
+
+    /*
+    Takes a path to a kernels directory, `kernelsPath`
+    and a kernel name, `kernelName`,
+    and returns a set of the form:
+      { description = "<kernelName> kernel"; path = <PATH> }
+    where `PATH` is in the Nix store.
+    */
+    mkKernelFlakeOutput = {
+      name,
+      path,
+    }: {
+      inherit name;
+      value = {
+        description = "${name} kernel";
+        inherit path;
+      };
+    };
 
     /*
     Takes a path to the kernels directory, `kernelsPath`,
@@ -130,10 +148,20 @@
                 value = import path;
               }
             )
-            (getKernelConfigurationsFromPath kernelsPath)
+            (getKernelAttrsetFromPath kernelsPath)
           )
         );
-      available = {};
+      available =
+        lib.optionalAttrs
+        (lib.pathExists "${kernelsPath}/available")
+        (
+          builtins.listToAttrs
+          (
+            builtins.map
+            mkKernelFlakeOutput
+            (getKernelAttrsetFromPath "${kernelsPath}/available")
+          )
+        );
     };
 
     /*
@@ -163,7 +191,23 @@
           src = self;
           hooks = {
             alejandra.enable = true;
+            typos = {
+              enable = true;
+              name = "typos";
+              description = "Source code spell checker";
+              entry = "${pkgs.typos}/bin/typos --write-changes --config _typos.toml";
+              types = ["file"];
+              files = "\\.((txt)|(md)|(nix)|\\d)$";
+            };
+            mdformat = {
+              enable = true;
+              name = "mdformat";
+              description = "An opinionated Markdown formatter";
+              entry = "mdformat .";
+              types = ["file" "text" "markdown"];
+            };
           };
+          excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
         };
 
         jupyterlab = pkgs.poetry2nix.mkPoetryEnv {
@@ -245,7 +289,7 @@
           );
 
         /*
-        Takes a path to a kernel's directory, `kernelPath`,
+        Takes a path to a kernel's directory, `kernelsPath`,
         and returns an overridable version of a kernel's default.nix file.
         */
         makeKernelOverridable = kernelPath:
@@ -363,16 +407,15 @@
                   --set JUPYTER_DATA_DIR ".jupyter/data" \
                   --set IPYTHONDIR "/path-not-set" \
                   --set JUPYTER_RUNTIME_DIR "/path-not-set"
-              done
 
               # add Julia for IJulia
               allKernelPaths=${lib.concatStringsSep ":" kernelDerivations}
               if [[ $allKernelPaths = *julia* ]]
               then
                 echo 'Adding Julia as an available package.'
-                for i in ${pkgs.julia_17-bin}/bin/*; do
+                for i in ${pkgs.julia-bin}/bin/*; do
                   filename=$(basename $i)
-                  ln -s ${pkgs.julia_17-bin}/bin/$filename $out/bin/$filename
+                  ln -s ${pkgs.julia-bin}/bin/$filename $out/bin/$filename
                 done
               fi
             '';
@@ -437,27 +480,29 @@
           name,
           path,
         }:
-          import path {inherit availableKernels name pkgs;};
+          import path {
+            inherit availableKernels pkgs;
+            kernelName = name;
+          };
 
         /*
-        Return jupyterEvironment with ker
+        Return jupyterEnvironment with kernels
         Example:
           mkJupyterlabEnvironmentFromPath ./kernels ->
-            <jupyterEvironment>
+            <jupyterEnvironment>
         */
-        mkJupyterlabEnvironmentFromPath = kernelConfigurationsPath:
+        mkJupyterlabEnvironmentFromPath = kernelsPath:
           mkJupyterlabInstance {
             kernels = availableKernels:
               builtins.map
               (getKernelInstance availableKernels)
-              (getKernelConfigurationsFromPath kernelConfigurationsPath);
+              (getKernelAttrsetFromPath kernelsPath);
           };
       in rec {
         lib = {
           inherit
             mkJupyterlabInstance
             mkJupyterlabEnvironmentFromPath
-            getKernelsFromPath
             ;
         };
         packages =
@@ -486,6 +531,8 @@
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
+            pkgs.typos
+            jupyterlab
             poetry2nix.defaultPackage.${system}
             pkgs.python3Packages.poetry
             pkgs.rnix-lsp

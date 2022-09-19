@@ -1,6 +1,6 @@
 Logo designs in this repository are
 
-- **Copyright (c) 2012-2019:** Stefan Karpinski \<stefan@karpinski.org\>.
+- **Copyright (c) 2012-2019:** Stefan Karpinski \<stefan@karpinski.org>.
 
 These designs are licensed under the Creative Commons
 ["BY-NC-SA" 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) License.
@@ -24,22 +24,22 @@ If you wish to use the Julia logo as is or derive another logo from it for comme
 purposes, you must conact the licensor, [Stefan Karpinski](stefan@karpinski.org), for
 permission to do so as such usage is not covered under this license.
 
----
+______________________________________________________________________
 
 Source code in this repository is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2017: Contributors.
-> 
+>
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
 > in the Software without restriction, including without limitation the rights
 > to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 > copies of the Software, and to permit persons to whom the Software is
 > furnished to do so, subject to the following conditions:
-> 
+>
 > The above copyright notice and this permission notice shall be included in all
 > copies or substantial portions of the Software.
-> 
+>
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 > IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 > FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE

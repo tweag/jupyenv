@@ -8,6 +8,11 @@ authors = []
 python = "^3.9"
 jupyterlab = "^3.3.3"
 testbook = "^0.4.2"
+mdformat = "^0.7.16"
+mdformat-gfm = "^0.3.5"
+mdformat_frontmatter = "^0.4.1"
+mdformat_footnote = "^0.1.1"
+flit_core = "^3.7.1"
 
 [tool.poetry.dev-dependencies]
 # build systems for dependencies

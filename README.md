@@ -16,15 +16,12 @@
   <img src="kernels/available/typescript/logo64.png" width="45" />
 </p>
 
-
 This repository provides a Nix-based framework for the definition of
 declarative and reproducible Jupyter environments. These environments
 include JupyterLab - configurable with extensions - the classic notebook,
 and configurable Jupyter kernels.
 
-
 ## Getting started
-
 
 ### Bootstrap your projects
 
@@ -43,7 +40,7 @@ $ nix flake init --template github:tweag/jupyterWith
 
 ### Enable kernels
 
-Your new project should ahve a `kernels` directory which contains all the kernels. Any kernels prefixed with an underscore is disabled. To enable any kernel, rename it so it no longer has an underscore prefix.
+Your new project should have a `kernels` directory which contains all the kernels. Any kernels prefixed with an underscore is disabled. To enable any kernel, rename it so it no longer has an underscore prefix.
 
 ```shell
 $ cp kernels/_ipython.nix kernels/my-ipython.nix
