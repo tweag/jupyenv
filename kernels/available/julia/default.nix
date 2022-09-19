@@ -5,7 +5,7 @@
   displayName ? "Julia",
   runtimePackages ? [],
   extraRuntimePackages ? [],
-  julia-bin ? pkgs.julia_17-bin,
+  julia-bin ? pkgs.julia-bin,
   JULIA_DEPOT_PATH ? "~/.julia",
   activateDir ? "",
   ijuliaRev ? "AQu2H",

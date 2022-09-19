@@ -91,7 +91,8 @@ build-backend = "poetry.core.masonry.api"
 
 3. Generate a `poetry.lock` file by running `poetry lock` in the kernel directory, `custom-python`.
 
-1. Below is the `default.nix` file which looks similar to the file in the [previous example](#extending-kernels). However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory. This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified. Similar to before we override the `name` and `displayName` attribute so we can distinguish it from other kernels.
+
+4. Below is the `default.nix` file which looks similar to the file in the [previous example](#extending-kernels). However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory. This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified. Similar to before we override the `name` and `displayName` attribute so we can distinguish it from other kernels.
 
 ```nix
 {

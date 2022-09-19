@@ -2,7 +2,7 @@
 
 ## Run Julia
 
-Run `nix shell nixpkgs#julia_17-bin` or `nix shell shell.nix` to create a new shell with the Julia package available.
+Run `nix shell nixpkgs#julia-bin` or `nix shell -f shell.nix` to create a new shell with the Julia package available.
 
 ## Install iJulia
 
