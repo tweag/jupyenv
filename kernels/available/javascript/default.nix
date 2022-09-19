@@ -1,6 +1,7 @@
 {
   self,
   pkgs,
+  kernelPath,
   name ? "javascript",
   displayName ? "Javascript",
   ijavascript ? pkgs.nodePackages.ijavascript,
@@ -20,7 +21,7 @@
     fi
   '';
 in {
-  inherit name displayName;
+  inherit name displayName kernelPath;
   language = "javascript";
   argv = [
     "${ijavascriptSh}/bin/ijavascript"

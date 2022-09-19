@@ -1,6 +1,7 @@
 {
   self,
   pkgs,
+  kernelPath,
   name ? "python",
   displayName ? "Python3",
   # https://github.com/nix-community/poetry2nix#mkPoetryEnv
@@ -26,7 +27,7 @@
       ;
   };
 in {
-  inherit name displayName;
+  inherit name displayName kernelPath;
   language = "python";
   argv = [
     "${env}/bin/python"

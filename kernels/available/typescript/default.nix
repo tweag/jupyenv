@@ -1,6 +1,7 @@
 {
   self,
   pkgs,
+  kernelPath,
   name ? "typescript",
   displayName ? "Typescript",
   runtimePackages ? [],
@@ -85,7 +86,7 @@
     fi
   '';
 in {
-  inherit name displayName;
+  inherit name displayName kernelPath;
   language = "typescript";
   argv = [
     "${tslabSh}/bin/tslab"

@@ -1,6 +1,7 @@
 {
   self,
   pkgs,
+  kernelPath,
   name ? "postgres",
   displayName ? "PostgreSQL",
   runtimePackages ? with pkgs; [postgresql],
@@ -43,7 +44,7 @@
       done
     '';
 in {
-  inherit name displayName;
+  inherit name displayName kernelPath;
   language = "postgres";
   argv = [
     "${wrappedEnv}/bin/python"

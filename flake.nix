@@ -56,6 +56,7 @@
       # Example: kernels/mykernel/default.nix
       if
         (fileType == "directory")
+        && fileName != "available"
         && !lib.hasPrefix "_" fileName
         && lib.pathExists defaultFilePath
       then {
@@ -95,24 +96,6 @@
       );
 
     /*
-    Takes a path to a kernels directory, `kernelsPath`
-    and a kernel name, `kernelName`,
-    and returns a set of the form:
-      { description = "<kernelName> kernel"; path = <PATH> }
-    where `PATH` is in the Nix store.
-    */
-    mkKernelFlakeOutput = {
-      name,
-      path,
-    }: {
-      inherit name;
-      value = {
-        description = "${name} kernel";
-        inherit path;
-      };
-    };
-
-    /*
     Takes a path to the kernels directory, `kernelsPath`,
     reads all files from the kernels directory and returns a set of
     valid kernels that is in a shape of jupyterKernels flake output.
@@ -120,28 +103,43 @@
     Example:
       getKernelsFromPath ./kernels ->
         {
-          example_kernel = {
-            description = "Example kernel";
-            path = ./kernels/example;
+          kernels = {
+            example_kernel = {
+              description = "Example kernel";
+              path = ./kernels/example;
+            };
+            ...
           };
+          available =
         }
     */
-    getKernelsFromPath = kernelsPath:
-      lib.optionalAttrs
-      (lib.pathExists kernelsPath)
-      (
-        builtins.listToAttrs
+    getKernelsFromPath = kernelsPath: {
+      kernels =
+        lib.optionalAttrs
+        (lib.pathExists kernelsPath)
         (
-          builtins.map
-          mkKernelFlakeOutput
-          (getKernelConfigurationsFromPath kernelsPath)
-        )
-      );
+          builtins.listToAttrs
+          (
+            builtins.map
+            (
+              {
+                name,
+                path,
+              }: {
+                inherit name;
+                value = import path;
+              }
+            )
+            (getKernelConfigurationsFromPath kernelsPath)
+          )
+        );
+      available = {};
+    };
 
     /*
     List available kernels
     */
-    jupyterKernels = getKernelsFromPath (self + /kernels/available);
+    kernelsConfig = getKernelsFromPath (self + /kernels);
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
@@ -188,7 +186,7 @@
           kernelInstance =
             builtins.removeAttrs
             kernelInstance_
-            ["override" "overrideDerivation"];
+            ["override" "overrideDerivation" "kernelPath"];
 
           kernelLogos = ["logo32" "logo64"];
 
@@ -253,7 +251,7 @@
         makeKernelOverridable = kernelPath:
           lib.makeOverridable
           (import kernelPath)
-          {inherit self pkgs;};
+          {inherit self pkgs kernelPath;};
 
         mkJupyterlabInstance = {
           kernels ? k: [], # k: [ (k.python {}) k.bash ],
@@ -317,34 +315,8 @@
           '';
 
           /*
-          Uses the `jupyterKernels` set and returns a list of sets where the
-          name is the kernelspec attribute name which needs to be unique and
-          the value is the path to the kernel file.
-          */
-          kernelSpecNameAndPath =
-            lib.flatten
-            (
-              builtins.map
-              (
-                flake:
-                  if builtins.hasAttr "jupyterKernels" flake
-                  then
-                    lib.mapAttrsToList
-                    (
-                      kernelName: kernel:
-                        lib.nameValuePair
-                        (makeKernelOverridable kernel.path {}).name
-                        kernel.path
-                    )
-                    flake.jupyterKernels
-                  else []
-              )
-              ([self] ++ flakes)
-            );
-
-          /*
-          Finds kernels from kernelSpecNameAndPath that have the same kernel
-          spec name and adds them to a list.
+          Finds kernels from kernelDerivations that have the same kernel
+          instance name and adds them to a list.
           */
           duplicateKernelNames =
             lib.foldl'
@@ -352,14 +324,14 @@
               acc: e:
                 if
                   let
-                    allNames = map (k: k.name) kernelSpecNameAndPath;
+                    allNames = map (k: k.name) kernelDerivations;
                   in
                     (lib.count (x: x == e.name) allNames) > 1
                 then acc ++ [e]
                 else acc
             )
             []
-            kernelSpecNameAndPath;
+            kernelDerivations;
         in
           # If any duplicates are found, throw an error and list them.
           if duplicateKernelNames != []
@@ -406,19 +378,6 @@
             '';
 
         exampleKernelConfigurations = {
-          bash = {displayName = "Example Bash Kernel";};
-          c = {displayName = "Example C Kernel";};
-          elm = {displayName = "Example Elm Kernel";};
-          go = {displayName = "Example Go Kernel";};
-          haskell = {displayName = "Example Haskell Kernel";};
-          python = {displayName = "Example Python Kernel";};
-          javascript = {displayName = "Example Javascript Kernel";};
-          julia = {displayName = "Example Julia Kernel";};
-          nix = {displayName = "Example Nix Kernel";};
-          postgres = {displayName = "Example PostgreSQL Kernel";};
-          r = {displayName = "Example R Kernel";};
-          rust = {displayName = "Example Rust Kernel";};
-          typescript = {displayName = "Example Typescript Kernel";};
         };
 
         exampleJupyterlabKernels =
@@ -444,10 +403,9 @@
           )
           // {
             jupyterlab-kernel-stable-python = mkJupyterlabInstance {
-              kernels = k: let
-                stable_python = k.python.override {pkgs = pkgs_stable;};
-              in [
-                (stable_python.override {
+              kernels = k: [
+                (k.python.override {
+                  pkgs = pkgs_stable;
                   name = "example_stable_python";
                   displayName = "Example (nixpkgs stable) Python Kernel";
                 })
@@ -530,6 +488,7 @@
             pkgs.alejandra
             poetry2nix.defaultPackage.${system}
             pkgs.python3Packages.poetry
+            pkgs.rnix-lsp
             self.packages."${system}".update-poetry-lock
           ];
           shellHook = ''
@@ -547,7 +506,7 @@
       }
     ))
     // rec {
-      inherit jupyterKernels;
+      jupyterKernels = kernelsConfig.available;
       templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyterWith project";
