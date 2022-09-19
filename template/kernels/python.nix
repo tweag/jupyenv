@@ -1,8 +1,9 @@
 {
   pkgs,
   availableKernels,
-  name,
+  kernelName,
 }:
-availableKernels.python {
-  displayName = name;
+availableKernels.python.override {
+  name = "custom-${kernelName}"; # must be unique
+  displayName = "custom ${kernelName}";
 }
