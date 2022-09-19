@@ -1,0 +1,40 @@
+[files]
+extend-exclude = []
+ignore-hidden = true
+ignore-files = true
+ignore-dot = true
+ignore-vcs = true
+ignore-global = true
+ignore-parent = true
+
+[default]
+binary = false
+check-filename = true
+check-file = true
+unicode = true
+ignore-hex = true
+identifier-leading-digits = false
+locale = "en"
+
+[default.extend-identifiers]
+
+[default.extend-words]
+# nix words
+substituters = "substituters"
+
+[type.lock]
+extend-glob = []
+check-file = false
+
+[type.cert]
+extend-glob = []
+check-file = false
+
+[type.rust]
+extend-glob = []
+
+[type.rust.extend-identifiers]
+
+[type.rust.extend-words]
+flate = "flate"
+ser = "ser"

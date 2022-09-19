@@ -51,9 +51,6 @@ We also modified the `name` and `displayName` attributes, which is not necessary
 
 Additional Info: The `extraPackages` argument is used with [poetry2nix][mkpoetryenv] and it takes a function that returns a list. We are using `mkPoetryEnv` from poetry2nix which uses `python.withPackages` -- see the related [documentation][withpackages] for details.
 
-[mkpoetryenv]: https://github.com/nix-community/poetry2nix/#mkpoetryenv
-[withpackages]: https://nixos.org/manual/nixpkgs/stable/#python.withpackages-function
-
 ### Extending Kernels (Advanced)
 
 While you can override the `extraPackages` as seen previously, you are relying on the version of the package in `nixpkgs`. If you want to specify particular versions, it is easier to extend the kernel in a different. Below is a tree structure showing where our new kernel will be created. Our new kernel will be located in `custom-python` under the `kernels` directory. We will create the `default.nix` and `pyproject.toml` files and the `poetry.lock` file will be generated for us using `poetry`.
@@ -109,7 +106,7 @@ availableKernels.python.override {
 }
 ```
 
-5. From the project top level directory, run `nix run`. This make take some time as new packages and dependices have to be fetched. Eventually, you will see the recognizable messages from JupyterLab in your terminal. Open up the Web UI in your browser and use your custom kernel.
+5. From the project top level directory, run `nix run`. This make take some time as new packages and dependencies have to be fetched. Eventually, you will see the recognizable messages from JupyterLab in your terminal. Open up the Web UI in your browser and use your custom kernel.
 
 ### Custom Kernels
 
@@ -120,8 +117,6 @@ TODO
 ### Stateful Extensions
 
 JupyterLab extensions can be statefully installed using the CLI or Web UI as shown in the [JupyterLab Extensions documentation][jlab-extensions]. To use the CLI, the `jupyter` binary is located in the `result` directory and can be run as follows: `./result/bin/jupyter labextension install <extension>`.
-
-[jlab-extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
 
 ### Pure Extensions
 
@@ -181,3 +176,6 @@ in
   }
 ```
 
+[jlab-extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
+[mkpoetryenv]: https://github.com/nix-community/poetry2nix/#mkpoetryenv
+[withpackages]: https://nixos.org/manual/nixpkgs/stable/#python.withpackages-function
