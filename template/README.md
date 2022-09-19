@@ -66,7 +66,7 @@ my-project/
 
 1. The first step is to create a directory to put our new kernel which I named `custom-python`.
 
-1. The easiest way to create the `pyproject.toml` file is to copy it from the existing kernel in the repository. I have copied the Python kernels `pyproject.toml` file and added a `numpy` dependency under `tool.poetry.dependencies`.
+2. The easiest way to create the `pyproject.toml` file is to copy it from the existing kernel in the repository. I have copied the Python kernels `pyproject.toml` file and added a `numpy` dependency under `tool.poetry.dependencies`.
 
 ```toml
 [tool.poetry]
