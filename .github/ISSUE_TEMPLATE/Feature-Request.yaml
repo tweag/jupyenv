@@ -1,0 +1,43 @@
+name: Feature Request
+description: Suggest an idea for this project
+title: "[Feature]: "
+labels: ["enhancement"]
+assignees:
+  - djacu
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: textarea
+    id: whats-missing
+    attributes:
+      label: What's missing?
+      description: A clear and concise description of what the problem is.
+      placeholder: |
+        Ex. I'm always frustrated when [...]
+        Ex. It would be really cool if we could do [...]
+        Ex. It would be helpful if we added [...]
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Possible solution
+      description: A concise description of how you think this can be implemented.
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: A concise description of any alternative solutions or features you've considered.
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here.
+    validations:
+      required: false
