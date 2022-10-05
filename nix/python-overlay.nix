@@ -23,6 +23,24 @@ let
       }
     );
 
+    # TODO - remove this once nixpkgs updates to 0.14.5
+    openapi-core = let
+      useOverride = (builtins.compareVersions pythonPackages.openapi-core.version "0.14.5") < 0;
+    in
+      if useOverride
+      then
+        pythonPackages.openapi-core.overridePythonAttrs (oldAttrs: rec {
+          version = "0.14.5";
+
+          src = prev.fetchFromGitHub {
+            owner = "p1c2u";
+            repo = "openapi-core";
+            rev = version;
+            hash = "sha256-k5QeAsR1TaWu9VZhJI88drJEdZhIYIL1u/5TvOqdmZg=";
+          };
+        })
+      else pythonPackages.openapi-core;
+
     send2trash = pythonPackages.send2trash.overridePythonAttrs (_:
       (prev.lib.optionalAttrs prev.stdenv.isDarwin {
         version = "1.8";
