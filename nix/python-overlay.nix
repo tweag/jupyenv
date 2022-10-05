@@ -23,7 +23,7 @@ let
       }
     );
 
-    # TODO - remove this once nixpkgs updates to 0.14.5
+    # TODO - remove all openapi overrides once nixpkgs updates to 0.14.5
     openapi-core = let
       useOverride = (builtins.compareVersions pythonPackages.openapi-core.version "0.14.5") < 0;
     in
@@ -40,6 +40,39 @@ let
           };
         })
       else pythonPackages.openapi-core;
+
+    openapi-schema-validator = let
+      useOverride = (builtins.compareVersions pythonPackages.openapi-core.version "0.14.5") < 0;
+    in
+      if useOverride
+      then
+        pythonPackages.openapi-schema-validator.overridePythonAttrs (oldAttrs: rec {
+          pname = "openapi-schema-validator";
+          version = "0.3.4";
+
+          src = pythonPackages.fetchPypi {
+            inherit pname version;
+            sha256 = "sha256-fPJ1hd15cLclfO/kjho6ENTjRCGDG9tHLZaWdDO8J70=";
+          };
+
+        })
+      else pythonPackages.openapi-schema-validator;
+
+    openapi-spec-validator = let
+      useOverride = (builtins.compareVersions pythonPackages.openapi-core.version "0.14.5") < 0;
+    in
+      if useOverride
+      then
+        pythonPackages.openapi-spec-validator.overridePythonAttrs (oldAttrs: rec {
+          pname = "openapi-spec-validator";
+          version = "0.5.1";
+
+          src = pythonPackages.fetchPypi {
+            inherit pname version;
+            sha256 = "sha256-gkhjS60fI8rF1aNOGTqzbiORQFfKaekaHt5a91VSxGU=";
+          };
+        })
+      else pythonPackages.openapi-spec-validator;
 
     send2trash = pythonPackages.send2trash.overridePythonAttrs (_:
       (prev.lib.optionalAttrs prev.stdenv.isDarwin {
