@@ -377,6 +377,7 @@
           r = {displayName = "Example R Kernel";};
           rust = {displayName = "Example Rust Kernel";};
           typescript = {displayName = "Example Typescript Kernel";};
+          zsh = {displayName = "Example Zsh Kernel";};
         };
 
         exampleJupyterlabKernels =
