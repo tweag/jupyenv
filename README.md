@@ -55,7 +55,7 @@ After some time, you should see the following in your terminal. Your default web
 
 ## How To
 
-For further instructions about the environment, kernels, and extensions, see the [HOWTO](HOWTO.md).
+For further instructions about the environment, kernels, and extensions, see the [HOWTO](docs/HOWTO.md).
 
 ## Contributing
 
