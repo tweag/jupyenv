@@ -24,8 +24,6 @@ and configurable Jupyter kernels.
 
 ## Getting started
 
-### Bootstrap your projects
-
 The following snippet will create a new project directory, initialize the project with a flake template, enable a Python kernel, and start the JupyterLab environment.
 
 ```shell
