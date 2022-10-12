@@ -53,29 +53,9 @@ After some time, you should see the following in your terminal. Your default web
      or http://127.0.0.1:8888/lab?token=8f2261a45601848bd79eda97d8d39c3d0f4978bc61fbe346
 ```
 
-### Enable kernels
+## How To
 
-Your new project should have a `kernels` directory which contains all the kernels. Any kernels prefixed with an underscore is disabled. To enable any kernel, rename it so it no longer has an underscore prefix.
-
-```shell
-cp kernels/_python.nix kernels/my-python.nix
-```
-
-Notice that we gave the kernel file a new name, `my-python.nix`. You can have multiple kernels in the same project! We recommend you give each one a descriptive file name to help you remember in the future.
-
-### Extensions
-
-Extensions are currently being worked on to be reproducible.
-
-### Start JupyterLab
-
-Make sure you are in the top directory of your project (e.g. `my-project`), and run the following command.
-
-```shell
-nix run
-```
-
-The environment should start up with instructions on what to do next.
+For further instructions about the environment, kernels, and extensions, see the [HOWTO](HOWTO.md).
 
 ## Contributing
 
