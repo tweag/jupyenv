@@ -203,7 +203,7 @@
               enable = true;
               name = "mdformat";
               description = "An opinionated Markdown formatter";
-              entry = "mdformat .";
+              entry = "${jupyterlab}/bin/mdformat .";
               types = ["file" "text" "markdown"];
             };
           };
@@ -421,6 +421,20 @@
             '';
 
         exampleKernelConfigurations = {
+          bash = {displayName = "Example Bash Kernel";};
+          c = {displayName = "Example C Kernel";};
+          elm = {displayName = "Example Elm Kernel";};
+          go = {displayName = "Example Go Kernel";};
+          haskell = {displayName = "Example Haskell Kernel";};
+          python = {displayName = "Example Python Kernel";};
+          javascript = {displayName = "Example Javascript Kernel";};
+          julia = {displayName = "Example Julia Kernel";};
+          nix = {displayName = "Example Nix Kernel";};
+          postgres = {displayName = "Example PostgreSQL Kernel";};
+          r = {displayName = "Example R Kernel";};
+          rust = {displayName = "Example Rust Kernel";};
+          typescript = {displayName = "Example Typescript Kernel";};
+          zsh = {displayName = "Example Zsh Kernel";};
         };
 
         exampleJupyterlabKernels =
@@ -532,7 +546,6 @@
           packages = [
             pkgs.alejandra
             pkgs.typos
-            jupyterlab
             poetry2nix.defaultPackage.${system}
             pkgs.python3Packages.poetry
             pkgs.rnix-lsp

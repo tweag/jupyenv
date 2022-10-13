@@ -14,6 +14,7 @@
   <img src="kernels/available/r/logo64.png" width="45" />
   <img src="kernels/available/rust/logo64.png" width="45" />
   <img src="kernels/available/typescript/logo64.png" width="45" />
+  <img src="kernels/available/zsh/logo64.png" width="45" />
 </p>
 
 This repository provides a Nix-based framework for the definition of
