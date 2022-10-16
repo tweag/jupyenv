@@ -140,11 +140,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1664064759,
-        "narHash": "sha256-Z0wG1jxxPXtpmWW1EErS6NGaxySeat2IluYeWfP5wtw=",
+        "lastModified": 1665351472,
+        "narHash": "sha256-+gb735LCgBaiEG9WhjDbzsgwAI2oCRJZvbdVVCYYDzQ=",
         "owner": "gibiansky",
         "repo": "IHaskell",
-        "rev": "14059d94439970e0a877acfea634a132297df59e",
+        "rev": "725d900414462da0f1859334a482e80c7a9e33d9",
         "type": "github"
       },
       "original": {
