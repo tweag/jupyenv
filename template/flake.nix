@@ -29,11 +29,11 @@
       system: let
         inherit (jupyterWith.lib.${system}) mkJupyterlabFromPath;
         pkgs = import nixpkgs {inherit system;};
-        jupyterEnvironment = mkJupyterlabFromPath ./kernels {inherit pkgs;};
+        jupyterlab = mkJupyterlabFromPath ./kernels {inherit pkgs;};
       in rec {
-        packages = {inherit jupyterEnvironment;};
-        packages.default = jupyterEnvironment;
-        apps.default.program = "${jupyterEnvironment}/bin/jupyter-lab";
+        packages = {inherit jupyterlab;};
+        packages.default = jupyterlab;
+        apps.default.program = "${jupyterlab}/bin/jupyter-lab";
         apps.default.type = "app";
       }
     );
