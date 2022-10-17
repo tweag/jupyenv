@@ -1,9 +1,10 @@
 {
-  pkgs,
+  name,
   availableKernels,
-  kernelName,
+  extraArgs,
 }:
-availableKernels.python.override {
-  name = "custom-${kernelName}"; # must be unique
-  displayName = "custom ${kernelName}";
+availableKernels.python {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Custom ${name}";
 }

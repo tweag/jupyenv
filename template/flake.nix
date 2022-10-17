@@ -27,9 +27,9 @@
     ]
     (
       system: let
-        inherit (jupyterWith.lib.${system}) mkJupyterlabEnvironmentFromPath;
+        inherit (jupyterWith.lib.${system}) mkJupyterlabFromPath;
         pkgs = import nixpkgs {inherit system;};
-        jupyterEnvironment = mkJupyterlabEnvironmentFromPath ./kernels {inherit pkgs;};
+        jupyterEnvironment = mkJupyterlabFromPath ./kernels {inherit pkgs;};
       in rec {
         packages = {inherit jupyterEnvironment;};
         packages.default = jupyterEnvironment;
