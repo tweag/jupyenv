@@ -1,12 +1,10 @@
 {
-  description = "Example C Kernel";
-  kernel = {
-    pkgs,
-    availableKernels,
-    name,
-  }:
-    availableKernels.c {
-      inherit name;
-      displayName = "Example C Kernel";
-    };
+  availableKernels,
+  name,
+  extraArgs,
+}:
+availableKernels.c {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Example C Kernel";
 }

@@ -1,12 +1,10 @@
 {
-  description = "Example Rust Kernel";
-  kernel = {
-    pkgs,
-    availableKernels,
-    name,
-  }:
-    availableKernels.rust {
-      inherit name;
-      displayName = "Example Rust Kernel";
-    };
+  availableKernels,
+  name,
+  extraArgs,
+}:
+availableKernels.rust {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Example Rust Kernel";
 }

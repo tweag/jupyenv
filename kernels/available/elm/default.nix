@@ -1,7 +1,6 @@
 {
   self,
   pkgs,
-  kernelPath,
   name ? "elm",
   displayName ? "Elm",
   runtimePackages ? with pkgs.elmPackages; [elm],
@@ -44,7 +43,7 @@
       done
     '';
 in {
-  inherit name displayName kernelPath;
+  inherit name displayName;
   language = "elm";
   argv = [
     "${wrappedEnv}/bin/python"

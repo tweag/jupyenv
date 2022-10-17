@@ -1,12 +1,10 @@
 {
-  description = "Example Bash Kernel";
-  kernel = {
-    pkgs,
-    availableKernels,
-    name,
-  }:
-    availableKernels.bash {
-      inherit name;
-      displayName = "Example Bash Kernel";
-    };
+  availableKernels,
+  name,
+  extraArgs,
+}:
+availableKernels.bash {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Example Bash Kernel";
 }

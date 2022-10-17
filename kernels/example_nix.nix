@@ -1,12 +1,10 @@
 {
-  description = "Example Nix Kernel";
-  kernel = {
-    pkgs,
-    availableKernels,
-    name,
-  }:
-    availableKernels.nix {
-      inherit name;
-      displayName = "Example Nix Kernel";
-    };
+  availableKernels,
+  name,
+  extraArgs,
+}:
+availableKernels.nix {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Example Nix Kernel";
 }

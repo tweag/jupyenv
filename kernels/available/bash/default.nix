@@ -1,7 +1,6 @@
 {
   self,
   pkgs,
-  kernelPath,
   name ? "bash",
   displayName ? "Bash",
   runtimePackages ? with pkgs; [bashInteractive coreutils],
@@ -44,7 +43,7 @@
       done
     '';
 in {
-  inherit name displayName kernelPath;
+  inherit name displayName;
   language = "bash";
   argv = [
     "${wrappedEnv}/bin/python"

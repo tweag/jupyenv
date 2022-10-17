@@ -11,12 +11,14 @@
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.jupyterWith.url = "github:tweag/jupyterWith";
 
   outputs = {
     self,
     flake-compat,
     flake-utils,
+    nixpkgs,
     jupyterWith,
   }:
     flake-utils.lib.eachSystem
@@ -26,7 +28,8 @@
     (
       system: let
         inherit (jupyterWith.lib.${system}) mkJupyterlabEnvironmentFromPath;
-        jupyterEnvironment = mkJupyterlabEnvironmentFromPath ./kernels;
+        pkgs = import nixpkgs {inherit system;};
+        jupyterEnvironment = mkJupyterlabEnvironmentFromPath ./kernels {inherit pkgs;};
       in rec {
         packages = {inherit jupyterEnvironment;};
         packages.default = jupyterEnvironment;

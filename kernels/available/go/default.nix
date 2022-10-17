@@ -1,7 +1,6 @@
 {
   self,
   pkgs,
-  kernelPath,
   name ? "go",
   displayName ? "Go",
   runtimePackages ? with pkgs; [go],
@@ -31,7 +30,7 @@
       done
     '';
 in {
-  inherit name displayName kernelPath;
+  inherit name displayName;
   language = "go";
   argv = [
     "${wrappedEnv}/bin/gophernotes"

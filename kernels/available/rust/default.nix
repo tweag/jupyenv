@@ -1,7 +1,6 @@
 {
   self,
   pkgs,
-  kernelPath,
   name ? "rust",
   displayName ? "Rust",
   runtimePackages ? with pkgs; [cargo gcc binutils-unwrapped],
@@ -35,7 +34,7 @@
       done
     '';
 in {
-  inherit name displayName kernelPath;
+  inherit name displayName;
   language = "rust";
   argv = [
     "${wrappedEnv}/bin/evcxr_jupyter"

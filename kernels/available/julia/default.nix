@@ -1,7 +1,6 @@
 {
   self,
   pkgs,
-  kernelPath,
   name ? "julia",
   displayName ? "Julia",
   runtimePackages ? [],
@@ -43,7 +42,7 @@
       done
     '';
 in {
-  inherit name displayName kernelPath;
+  inherit name displayName;
   language = "julia";
   argv = [
     "${wrappedEnv}/bin/julia"

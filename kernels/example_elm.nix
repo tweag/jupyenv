@@ -1,12 +1,10 @@
 {
-  description = "Example Elm Kernel";
-  kernel = {
-    pkgs,
-    availableKernels,
-    name,
-  }:
-    availableKernels.elm {
-      inherit name;
-      displayName = "Example Elm Kernel";
-    };
+  availableKernels,
+  name,
+  extraArgs,
+}:
+availableKernels.elm {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Example Elm Kernel";
 }

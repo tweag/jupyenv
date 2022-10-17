@@ -1,12 +1,10 @@
 {
-  description = "Example Postgres Kernel";
-  kernel = {
-    pkgs,
-    availableKernels,
-    name,
-  }:
-    availableKernels.postgres {
-      inherit name;
-      displayName = "Example Postgres Kernel";
-    };
+  availableKernels,
+  name,
+  extraArgs,
+}:
+availableKernels.postgres {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Example Postgres Kernel";
 }

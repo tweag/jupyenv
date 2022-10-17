@@ -1,12 +1,10 @@
 {
-  description = "Example Javascript Kernel";
-  kernel = {
-    pkgs,
-    availableKernels,
-    name,
-  }:
-    availableKernels.javascript {
-      inherit name;
-      displayName = "Example Javascript Kernel";
-    };
+  availableKernels,
+  name,
+  extraArgs,
+}:
+availableKernels.javascript {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Example Javascript Kernel";
 }

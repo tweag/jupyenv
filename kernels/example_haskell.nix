@@ -1,12 +1,10 @@
 {
-  description = "Example Haskell Kernel";
-  kernel = {
-    pkgs,
-    availableKernels,
-    name,
-  }:
-    availableKernels.haskell {
-      inherit name;
-      displayName = "Example Haskell Kernel";
-    };
+  availableKernels,
+  name,
+  extraArgs,
+}:
+availableKernels.haskell {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Example Haskell Kernel";
 }

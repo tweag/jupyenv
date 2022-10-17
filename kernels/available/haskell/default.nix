@@ -1,7 +1,6 @@
 {
   self,
   pkgs,
-  kernelPath,
   name ? "haskell",
   displayName ? "Haskell",
   ihaskell ? pkgs.haskellPackages.ihaskell,
@@ -31,7 +30,7 @@
     fi
   '';
 in {
-  inherit name displayName kernelPath;
+  inherit name displayName;
   language = "haskell";
   argv = [
     "${ihaskellSh}/bin/ihaskell"

@@ -1,7 +1,6 @@
 {
   self,
   pkgs,
-  kernelPath,
   name ? "nix",
   displayName ? "Nix",
   nix ? pkgs.nixVersions.stable,
@@ -47,7 +46,7 @@
       done
     '';
 in {
-  inherit name displayName kernelPath;
+  inherit name displayName;
   language = "Nix";
   argv = [
     "${wrappedEnv}/bin/python"

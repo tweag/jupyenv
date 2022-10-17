@@ -1,12 +1,10 @@
 {
-  description = "Example Go Kernel";
-  kernel = {
-    pkgs,
-    availableKernels,
-    name,
-  }:
-    availableKernels.go {
-      inherit name;
-      displayName = "Example Go Kernel";
-    };
+  availableKernels,
+  name,
+  extraArgs,
+}:
+availableKernels.go {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Example Go Kernel";
 }

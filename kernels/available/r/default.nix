@@ -1,7 +1,6 @@
 {
   self,
   pkgs,
-  kernelPath,
   name ? "r",
   displayName ? "R",
   rWrapper ? pkgs.rWrapper,
@@ -12,7 +11,7 @@
     packages = (extraRPackages rPackages) ++ [rPackages.IRkernel];
   };
 in {
-  inherit name displayName kernelPath;
+  inherit name displayName;
   language = "r";
   argv = [
     "${kernelEnv}/bin/R"

@@ -1,12 +1,10 @@
 {
-  description = "Example R Kernel";
-  kernel = {
-    pkgs,
-    availableKernels,
-    name,
-  }:
-    availableKernels.r {
-      inherit name;
-      displayName = "Example R Kernel";
-    };
+  availableKernels,
+  name,
+  extraArgs,
+}:
+availableKernels.r {
+  inherit name;
+  inherit (extraArgs) pkgs;
+  displayName = "Example R Kernel";
 }
