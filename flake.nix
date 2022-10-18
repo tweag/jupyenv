@@ -206,11 +206,70 @@
           excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
         };
 
-        jupyterlab = pkgs.poetry2nix.mkPoetryEnv {
+        jupyterlab' = pkgs.poetry2nix.mkPoetryEnv {
           python = pkgs.python3;
           projectDir = self; # TODO: only include relevant files/folders
           overrides = pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix);
         };
+
+        #jupyterlab = pkgs.writeScriptBin "chmod-${jupyterlab'.name}"
+        jupyterlab = let
+          jupyterlab-checker =
+            pkgs.writeText "jupyterlab-checker"
+            ''
+              from jupyterlab.commands import build_check, ensure_app;
+              import sys
+
+              ensure_app_return = ensure_app('.jupyter/lab/share/jupyter/lab')
+              build_check_return = build_check()
+              if ensure_app_return is None and not build_check_return:
+                sys.exit(0)
+              print(f'{ensure_app_return = }')
+              print(f'{build_check_return = }')
+              sys.exit(1)
+            '';
+          jupyterlab-cond-build =
+            pkgs.writeShellScript "jupyterlab-cond-build"
+            ''
+              if [ -d ".jupyter" ]
+              then
+                # after first build, need to chmod before attempting to build
+                chmod +w --recursive .jupyter
+              fi
+
+              ${jupyterlab'}/bin/python ${jupyterlab-checker}
+              checker=$?
+              if [ "$checker" -ne 0 ]
+              then
+                echo JupyterLab needs to be built.
+                # we need to build the jupyter lab environment before it can be used
+                ${jupyterlab'}/bin/jupyter lab build
+                # make the local .jupyter folder writable so we can build jupyter lab the next time
+                chmod +w --recursive .jupyter
+              else
+                echo No need to build JupyterLab. Starting...
+              fi
+            '';
+        in
+          pkgs.runCommand "chmod-${jupyterlab'.name}"
+          {nativeBuildInputs = [pkgs.makeWrapper];}
+          ''
+            mkdir -p $out/bin
+            for i in ${jupyterlab'}/bin/*; do
+              filename=$(basename $i)
+
+              if [[ "$filename" == jupyter* ]]; then
+                makeWrapper \
+                  ${jupyterlab'}/bin/$filename \
+                  $out/bin/$filename \
+                  --run ${jupyterlab-cond-build}
+              else
+                makeWrapper \
+                  ${jupyterlab'}/bin/$filename \
+                  $out/bin/$filename
+              fi
+            done
+          '';
 
         # Creates a derivation with kernel.json and logos
         mkKernel = kernelInstance_: let
