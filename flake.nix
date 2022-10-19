@@ -224,30 +224,22 @@
               build_check_return = build_check()
               if ensure_app_return is None and not build_check_return:
                 sys.exit(0)
-              print(f'{ensure_app_return = }')
-              print(f'{build_check_return = }')
+              # print(f'{ensure_app_return = }')
+              # print(f'{build_check_return = }')
               sys.exit(1)
             '';
           jupyterlab-cond-build =
             pkgs.writeShellScript "jupyterlab-cond-build"
             ''
-              if [ -d ".jupyter" ]
-              then
-                # after first build, need to chmod before attempting to build
-                chmod +w --recursive .jupyter
-              fi
-
               ${jupyterlab'}/bin/python ${jupyterlab-checker}
               checker=$?
               if [ "$checker" -ne 0 ]
               then
-                echo JupyterLab needs to be built.
+                echo jupyterWith needs to build JupyterLab.
                 # we need to build the jupyter lab environment before it can be used
                 ${jupyterlab'}/bin/jupyter lab build
-                # make the local .jupyter folder writable so we can build jupyter lab the next time
-                chmod +w --recursive .jupyter
               else
-                echo No need to build JupyterLab. Starting...
+                echo jupyterWith does not need build JupyterLab. Starting...
               fi
             '';
         in
@@ -259,15 +251,18 @@
               filename=$(basename $i)
 
               if [[ "$filename" == jupyter* ]]; then
-                makeWrapper \
-                  ${jupyterlab'}/bin/$filename \
-                  $out/bin/$filename \
-                  --run ${jupyterlab-cond-build}
+                cat <<EOF > $out/bin/$filename
+            #!${pkgs.runtimeShell} -e
+            trap "chmod +w --recursive \$PWD/.jupyter" EXIT
+            ${jupyterlab-cond-build}
+            ${jupyterlab'}/bin/$filename "\$@"
+            EOF
+                chmod +x $out/bin/$filename
               else
                 makeWrapper \
                   ${jupyterlab'}/bin/$filename \
                   $out/bin/$filename
-              fi
+            fi
             done
           '';
 
