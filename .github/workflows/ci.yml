@@ -27,9 +27,10 @@ jobs:
     - name: List all available kernels
       id: kernels
       run: |
-        kernels="{\"kernel\":$(nix eval .#jupyterKernels --apply builtins.attrNames --json)}"
+        kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
         echo $kernels
-        echo "::set-output name=kernels::$kernels"
+        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-example-")]')
+        echo "::set-output name=kernels::$filterKernels"
 
     - name: Check
       run: |
@@ -43,7 +44,8 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.build.outputs.kernels) }}
+      matrix:
+        kernel: ${{ fromJSON(needs.build.outputs.kernels) }}
 
     steps:
     - uses: actions/checkout@v3
@@ -57,7 +59,7 @@ jobs:
 
     - name: Build ${{ matrix.kernel }} kernel
       run: |
-        nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
+        nix build -L .#jupyterlab-kernel-example${{ matrix.kernel }}
 
     # TODO remove once we have a better solution. For more info see
     # https://github.com/tweag/jupyterWith/pull/280
@@ -69,3 +71,22 @@ jobs:
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
         result/bin/python kernels/available/${{ matrix.kernel }}/test.py
+
+  build-all-kernels:
+    name: Build all kernels
+    needs: build-kernel
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+    - name: Build all kernels
+      run: |
+        nix build -L .#jupyterlab-all-example-kernels

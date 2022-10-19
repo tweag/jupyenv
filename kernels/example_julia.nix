@@ -1,10 +1,10 @@
 {
-  name,
   availableKernels,
+  name,
   extraArgs,
 }:
-availableKernels.python {
+availableKernels.julia {
   inherit name;
   inherit (extraArgs) pkgs;
-  displayName = "Custom ${name}";
+  displayName = "Example Julia Kernel";
 }

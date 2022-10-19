@@ -1,10 +1,10 @@
 {
-  name,
   availableKernels,
+  name,
   extraArgs,
 }:
-availableKernels.python {
+availableKernels.c {
   inherit name;
   inherit (extraArgs) pkgs;
-  displayName = "Custom ${name}";
+  displayName = "Example C Kernel";
 }

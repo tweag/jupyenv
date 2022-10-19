@@ -56,6 +56,7 @@
       # Example: kernels/mykernel/default.nix
       if
         (fileType == "directory")
+        && fileName != "available"
         && !lib.hasPrefix "_" fileName
         && lib.pathExists defaultFilePath
       then {
@@ -101,16 +102,39 @@
       { description = "<kernelName> kernel"; path = <PATH> }
     where `PATH` is in the Nix store.
     */
-    mkKernelFlakeOutput = {
-      name,
-      path,
-    }: {
-      inherit name;
-      value = {
-        description = "${name} kernel";
-        inherit path;
-      };
+    mkKernelFlakeOutput = name: path: {
+      description = "${name} kernel";
+      inherit path;
     };
+
+    /*
+    List kernels in a path.
+
+    Example:
+      mapKernelsFromPath ./kernels ->
+        {
+          "example_kernel" = ./kernels/example_kernel;
+        }
+    */
+    mapKernelsFromPath = path:
+      lib.optionalAttrs
+      (lib.pathExists path)
+      (
+        builtins.listToAttrs
+        (
+          builtins.map
+          (
+            {
+              name,
+              path,
+            }: {
+              inherit name;
+              value = path;
+            }
+          )
+          (getKernelAttrsetFromPath path)
+        )
+      );
 
     /*
     Takes a path to the kernels directory, `kernelsPath`,
@@ -118,30 +142,24 @@
     valid kernels that is in a shape of jupyterKernels flake output.
 
     Example:
-      getAvailableKernelsFromPath ./kernels ->
+      getKernelsFromPath ./kernels ->
         {
-          example_kernel = {
-            description = "Example kernel";
-            path = ./kernels/example;
+          kernels = {
+            example_kernel = ./kernels/example;
+            ...
+          };
+          available = {
+            bash = ./kernels/example;
+            ...
           };
         }
     */
-    getAvailableKernelsFromPath = kernelsPath:
-      lib.optionalAttrs
-      (lib.pathExists kernelsPath)
-      (
-        builtins.listToAttrs
-        (
-          builtins.map
-          mkKernelFlakeOutput
-          (getKernelAttrsetFromPath kernelsPath)
-        )
-      );
+    getKernelsFromPath = kernelsPath: {
+      kernels = mapKernelsFromPath kernelsPath;
+      available = mapKernelsFromPath "${kernelsPath}/available";
+    };
 
-    /*
-    List available kernels
-    */
-    jupyterKernels = getAvailableKernelsFromPath (self + /kernels/available);
+    kernelsConfig = getKernelsFromPath (self + /kernels);
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
@@ -159,6 +177,10 @@
 
         pkgs_stable = import nixpkgs-stable {
           inherit overlays system;
+        };
+
+        baseArgs = {
+          inherit self pkgs;
         };
 
         pre-commit = pre-commit-hooks.lib.${system}.run {
@@ -184,11 +206,65 @@
           excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
         };
 
-        jupyterlab = pkgs.poetry2nix.mkPoetryEnv {
+        jupyterlab' = pkgs.poetry2nix.mkPoetryEnv {
           python = pkgs.python3;
           projectDir = self; # TODO: only include relevant files/folders
           overrides = pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix);
         };
+
+        #jupyterlab = pkgs.writeScriptBin "chmod-${jupyterlab'.name}"
+        jupyterlab = let
+          jupyterlab-checker =
+            pkgs.writeText "jupyterlab-checker"
+            ''
+              from jupyterlab.commands import build_check, ensure_app;
+              import sys
+
+              ensure_app_return = ensure_app('.jupyter/lab/share/jupyter/lab')
+              build_check_return = build_check()
+              if ensure_app_return is None and not build_check_return:
+                sys.exit(0)
+              # print(f'{ensure_app_return = }')
+              # print(f'{build_check_return = }')
+              sys.exit(1)
+            '';
+          jupyterlab-cond-build =
+            pkgs.writeShellScript "jupyterlab-cond-build"
+            ''
+              ${jupyterlab'}/bin/python ${jupyterlab-checker}
+              checker=$?
+              if [ "$checker" -ne 0 ]
+              then
+                echo jupyterWith needs to build JupyterLab.
+                # we need to build the jupyter lab environment before it can be used
+                ${jupyterlab'}/bin/jupyter lab build
+              else
+                echo jupyterWith does not need build JupyterLab. Starting...
+              fi
+            '';
+        in
+          pkgs.runCommand "chmod-${jupyterlab'.name}"
+          {nativeBuildInputs = [pkgs.makeWrapper];}
+          ''
+            mkdir -p $out/bin
+            for i in ${jupyterlab'}/bin/*; do
+              filename=$(basename $i)
+
+              if [[ "$filename" == jupyter* ]]; then
+                cat <<EOF > $out/bin/$filename
+            #!${pkgs.runtimeShell} -e
+            trap "chmod +w --recursive \$PWD/.jupyter" EXIT
+            ${jupyterlab-cond-build}
+            ${jupyterlab'}/bin/$filename "\$@"
+            EOF
+                chmod +x $out/bin/$filename
+              else
+                makeWrapper \
+                  ${jupyterlab'}/bin/$filename \
+                  $out/bin/$filename
+            fi
+            done
+          '';
 
         # Creates a derivation with kernel.json and logos
         mkKernel = kernelInstance_: let
@@ -202,9 +278,7 @@
           #, logo64,                  # optional; type: absolute store path
           #}:
           kernelInstance =
-            builtins.removeAttrs
-            kernelInstance_
-            ["override" "overrideDerivation"];
+            builtins.removeAttrs kernelInstance_ ["path"];
 
           kernelLogos = ["logo32" "logo64"];
 
@@ -263,15 +337,10 @@
           );
 
         /*
-        Takes a path to a kernel's directory, `kernelsPath`,
-        and returns an overridable version of a kernel's default.nix file.
+        TODO:
         */
-        makeKernelOverridable = kernelsPath:
-          lib.makeOverridable
-          (import kernelsPath)
-          {inherit self pkgs;};
 
-        mkJupyterlabInstance = {
+        mkJupyterlab = {
           kernels ? k: [], # k: [ (k.python {}) k.bash ],
           # extensions ? e: [], # e: [ e.jupy-ext ]
           runtimePackages ? [], # runtime package available to all binaries
@@ -307,10 +376,13 @@
                       (
                         lib.mapAttrsToList
                         (
-                          kernelName: kernel:
-                            lib.nameValuePair
-                            kernelName
-                            (makeKernelOverridable kernel.path)
+                          name: kernel: {
+                            inherit name;
+                            value = args: {
+                              inherit args;
+                              inherit (kernel) path;
+                            };
+                          }
                         )
                         flake.jupyterKernels
                       )
@@ -320,8 +392,25 @@
               )
             );
 
+          # user kernels (imported and initialized)
+          userKernels =
+            builtins.map
+            (
+              kernelConfig:
+                (
+                  if builtins.isFunction kernelsConfig
+                  then let
+                    kernelConfig_ = kernelsConfig {};
+                  in
+                    import kernelConfig_.path (baseArgs // kernelConfig_.args)
+                  else import kernelConfig.path (baseArgs // kernelConfig.args)
+                )
+                // {inherit (kernelConfig) path;}
+            )
+            (kernels availableKernels);
+
           kernelDerivations =
-            builtins.map mkKernel (kernels availableKernels);
+            builtins.map mkKernel userKernels;
 
           # create directories for storing jupyter configs
           jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
@@ -331,101 +420,92 @@
             # make jupyter lab user settings and workspaces directories
             mkdir -p $out/config/lab/{user-settings,workspaces}
           '';
-        in
-          pkgs.runCommand "wrapper-${jupyterlab.name}"
-          {nativeBuildInputs = [pkgs.makeWrapper];}
-          ''
-            mkdir -p $out/bin
-            for i in ${jupyterlab}/bin/*; do
-              filename=$(basename $i)
-              ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
-              wrapProgram $out/bin/$filename \
-                --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
-                --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
-                --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
-                --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
-                --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
-                --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
-                --set JUPYTER_DATA_DIR ".jupyter/data" \
-                --set IPYTHONDIR "/path-not-set" \
-                --set JUPYTER_RUNTIME_DIR "/path-not-set"
-            done
 
-            # add Julia for IJulia
-            allKernelPaths=${lib.concatStringsSep ":" kernelDerivations}
-            if [[ $allKernelPaths = *julia* ]]
-            then
-              echo 'Adding Julia as an available package.'
-              for i in ${pkgs.julia-bin}/bin/*; do
-                filename=$(basename $i)
-                ln -s ${pkgs.julia-bin}/bin/$filename $out/bin/$filename
-              done
-            fi
-          '';
-
-        exampleKernelConfigurations = {
-          bash = {displayName = "Example Bash Kernel";};
-          c = {displayName = "Example C Kernel";};
-          elm = {displayName = "Example Elm Kernel";};
-          go = {displayName = "Example Go Kernel";};
-          haskell = {displayName = "Example Haskell Kernel";};
-          python = {displayName = "Example Python Kernel";};
-          javascript = {displayName = "Example Javascript Kernel";};
-          julia = {displayName = "Example Julia Kernel";};
-          nix = {displayName = "Example Nix Kernel";};
-          postgres = {displayName = "Example PostgreSQL Kernel";};
-          r = {displayName = "Example R Kernel";};
-          rust = {displayName = "Example Rust Kernel";};
-          typescript = {displayName = "Example Typescript Kernel";};
-          zsh = {displayName = "Example Zsh Kernel";};
-        };
-
-        exampleJupyterlabKernels =
-          (
-            builtins.listToAttrs
+          /*
+          Finds kernels from kernelDerivations that have the same kernel
+          instance name and adds them to a list.
+          */
+          duplicateKernelNames =
+            lib.foldl'
             (
-              builtins.map
-              (
-                kernelName: {
-                  name = "jupyterlab-kernel-${kernelName}";
-                  value = mkJupyterlabInstance {
-                    kernels = k: [
-                      (k.${kernelName}.override (
-                        exampleKernelConfigurations.${kernelName}
-                        // {name = "example_${kernelName}";}
-                      ))
-                    ];
-                  };
-                }
-              )
-              (builtins.attrNames exampleKernelConfigurations)
+              acc: e:
+                if
+                  let
+                    allNames = map (k: k.name) userKernels;
+                  in
+                    (lib.count (x: x == e.name) allNames) > 1
+                then acc ++ [e]
+                else acc
             )
-          )
-          // {
-            jupyterlab-kernel-stable-python = mkJupyterlabInstance {
-              kernels = k: let
-                stable_python = k.python.override {pkgs = pkgs_stable;};
-              in [
-                (stable_python.override {
-                  name = "example_stable_python";
-                  displayName = "Example (nixpkgs stable) Python Kernel";
-                })
-              ];
-            };
-          };
+            []
+            userKernels;
+        in
+          # If any duplicates are found, throw an error and list them.
+          if duplicateKernelNames != []
+          then let
+            listOfDuplicates =
+              map
+              (k: "Kernel name ${k.name} in ${k.path}")
+              duplicateKernelNames;
+          in
+            builtins.throw ''
+              Kernel names must be unique. Duplicate kernel names found:
+              ${lib.concatStringsSep "\n" listOfDuplicates}
+            ''
+          else
+            pkgs.runCommand "wrapper-${jupyterlab.name}"
+            {nativeBuildInputs = [pkgs.makeWrapper];}
+            ''
+              mkdir -p $out/bin
+              for i in ${jupyterlab}/bin/*; do
+                filename=$(basename $i)
+                ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
+                wrapProgram $out/bin/$filename \
+                  --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
+                  --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
+                  --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
+                  --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
+                  --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
+                  --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
+                  --set JUPYTER_DATA_DIR ".jupyter/data" \
+                  --set IPYTHONDIR "/path-not-set" \
+                  --set JUPYTER_RUNTIME_DIR "/path-not-set"
+              done
 
-        exampleJupyterlabAllKernels = mkJupyterlabInstance {
-          kernels = k:
+              # add Julia for IJulia
+              allKernelPaths=${lib.concatStringsSep ":" kernelDerivations}
+              if [[ $allKernelPaths = *julia* ]]
+              then
+                echo 'Adding Julia as an available package.'
+                for i in ${pkgs.julia-bin}/bin/*; do
+                  filename=$(basename $i)
+                  ln -s ${pkgs.julia-bin}/bin/$filename $out/bin/$filename
+                done
+              fi
+            '';
+
+        exampleJupyterlabKernels = (
+          builtins.listToAttrs
+          (
             builtins.map
             (
-              kernelName:
-                k.${kernelName}.override (
-                  exampleKernelConfigurations.${kernelName}
-                  // {name = "example_${kernelName}";}
-                )
+              name: {
+                name = "jupyterlab-kernel-${pkgs.lib.replaceStrings ["_"] ["-"] name}";
+                value = mkJupyterlab {
+                  kernels = availableKernels: [
+                    (import kernelsConfig.kernels.${name} {
+                      inherit name availableKernels;
+                      extraArgs = {inherit pkgs pkgs_stable;};
+                    })
+                  ];
+                };
+              }
             )
-            (builtins.attrNames exampleKernelConfigurations);
-        };
+            (builtins.attrNames kernelsConfig.kernels)
+          )
+        );
+
+        exampleJupyterlabAllKernels = mkJupyterlabFromPath ./kernels {inherit pkgs pkgs_stable;};
 
         /*
         Returns kernel instance from a folder.
@@ -434,40 +514,39 @@
           getKernelInstance "python" (self + /kernels) ->
             <kernelInstance>
         */
-        getKernelInstance = availableKernels: {
+        getKernelInstance = availableKernels: extraArgs: {
           name,
           path,
         }:
           import path {
-            inherit availableKernels pkgs;
-            kernelName = name;
+            inherit availableKernels name;
+            extraArgs = baseArgs // extraArgs;
           };
 
         /*
         Return jupyterEnvironment with kernels
         Example:
-          mkJupyterlabEnvironmentFromPath ./kernels ->
+          mkJupyterlabFromPath ./kernels ->
             <jupyterEnvironment>
         */
-        mkJupyterlabEnvironmentFromPath = kernelsPath:
-          mkJupyterlabInstance {
+        mkJupyterlabFromPath = kernelsPath: extraArgs:
+          mkJupyterlab {
             kernels = availableKernels:
               builtins.map
-              (getKernelInstance availableKernels)
+              (getKernelInstance availableKernels extraArgs)
               (getKernelAttrsetFromPath kernelsPath);
           };
       in rec {
         lib = {
           inherit
-            mkJupyterlabInstance
-            mkJupyterlabEnvironmentFromPath
-            getAvailableKernelsFromPath
+            mkJupyterlab
+            mkJupyterlabFromPath
             ;
         };
         packages =
           {
             inherit jupyterlab;
-            jupyterlab-all-kernels = exampleJupyterlabAllKernels;
+            jupyterlab-all-example-kernels = exampleJupyterlabAllKernels;
             update-poetry-lock =
               pkgs.writeShellApplication
               {
@@ -493,6 +572,7 @@
             pkgs.typos
             poetry2nix.defaultPackage.${system}
             pkgs.python3Packages.poetry
+            pkgs.rnix-lsp
             self.packages."${system}".update-poetry-lock
           ];
           shellHook = ''
@@ -510,7 +590,7 @@
       }
     ))
     // rec {
-      inherit jupyterKernels;
+      jupyterKernels = builtins.mapAttrs mkKernelFlakeOutput kernelsConfig.available;
       templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyterWith project";
