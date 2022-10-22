@@ -1,11 +1,20 @@
 # JupyterLab Templates
 
-This readme assumes you have already initialized a project using the available templates.
-If not, follow the instructions in the [top level README](../README.md).
+## Initialize a Project
+
+Run the following commands to create a project directory, `my-project`, `cd` into it, and copy the flake template from the jupyterWith repository.
+
+```shell
+mkdir my-project
+cd my-project
+nix flake init --template github:tweag/jupyterWith
+```
+
+Your project directory will be populated with a `flake.nix` file and a `kernels` directory.
 
 ## Quick Start
 
-As mentioned in the top level README, run the following to start JupyterLab:
+Run the following to start JupyterLab:
 
 ```shell
 nix run
