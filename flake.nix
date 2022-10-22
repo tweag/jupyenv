@@ -595,9 +595,14 @@
         path = ./template;
         description = "Boilerplate for your jupyterWith project";
         welcomeText = ''
-          You have created a jupyterWith template that will help you manage
-          your JupyterLab project. Run `nix run` to immediately try out the
-          environment. See the README for instructions on extending kernels.
+          You have created a jupyterWith template.
+
+          Run `nix run` to immediately try it out.
+
+          See the jupyterWith documentation for more information.
+
+            https://github.com/tweag/jupyterWith/blob/main/docs/HOWTO.md
+            https://github.com/tweag/jupyterWith/blob/main/docs/TUTORIALS.md
         '';
       };
     };
