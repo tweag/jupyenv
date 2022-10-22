@@ -20,13 +20,13 @@ By extending a kernel, we mean modifying the arguments given to an available ker
 
 ```nix
 {
-  pkgs,
+  name
   availableKernels,
-  kernelName,
+  extraArgs,
 }:
-availableKernels.python.override {
-  name = "custom-${kernelName}";  # must be unique
-  displayName = "custom ${kernelName}";
+availableKernels.python {
+  name = "custom-${name}";  # must be unique
+  displayName = "custom ${name}";
 }
 ```
 
@@ -34,11 +34,11 @@ As a simple starter, let us add `numpy` to the Python kernel and change the name
 
 ```nix
 {
-  pkgs,
+  name,
   availableKernels,
-  kernelName,
+  extraArgs,
 }:
-availableKernels.python.override {
+availableKernels.python {
   name = "python-with-numpy"; # must be unique
   displayName = "python with numpy";
   extraPackages = ps: [ ps.numpy ];
@@ -47,13 +47,13 @@ availableKernels.python.override {
 
 We have added the `extraPackages` attribute, a function which takes a package set, `ps`, as an argument and returns a list of packages. Anything available as a python package in `nixpkgs` should be added as easily as we added numpy. For example, if we wanted to add `scipy` and `pandas`, we could modify the list to be `[ ps.numpy ps.scipy ps.pandas ]`.
 
-We also modified the `name` and `displayName` attributes, which is not necessary, but modifying `displayName` makes it easier to distinguish from other kernels in the JupyterLab Web UI. One very important note is that if you have multiple kernel files in your project, they must all have unique `name` attributes.
+We also modified the `name` and `displayName` attributes. Modifying `displayName` is not necessary but makes it easier to distinguish from other kernels in the JupyterLab Web UI. One very important note is that if you have multiple kernel files in your project, they must all have unique `name` attributes.
 
 Additional Info: The `extraPackages` argument is used with [poetry2nix][mkpoetryenv] and it takes a function that returns a list. We are using `mkPoetryEnv` from poetry2nix which uses `python.withPackages` -- see the related [documentation][withpackages] for details.
 
 ### Extending Kernels (Advanced)
 
-While you can override the `extraPackages` as seen previously, you are relying on the version of the package in `nixpkgs`. If you want to specify particular versions, it is easier to extend the kernel in a different. Below is a tree structure showing where our new kernel will be created. Our new kernel will be located in `custom-python` under the `kernels` directory. We will create the `default.nix` and `pyproject.toml` files and the `poetry.lock` file will be generated for us using `poetry`.
+While you can provide `extraPackages` as seen previously, you are relying on the version of the package in `nixpkgs`. If you want to specify particular versions, it is easier to extend the kernel using Poetry. Below is a tree structure showing where our new kernel will be created. Our new kernel will be located in `custom-python` under the `kernels` directory. We will create the `default.nix` and `pyproject.toml` files and the `poetry.lock` file will be generated for us using `poetry`.
 
 ```
 my-project/
@@ -89,15 +89,15 @@ build-backend = "poetry.core.masonry.api"
 ```
 
 3. Generate a `poetry.lock` file by running `poetry lock` in the kernel directory, `custom-python`.
-1. Below is the `default.nix` file which looks similar to the file in the [previous example](#extending-kernels). However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory. This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified. Similar to before we override the `name` and `displayName` attribute so we can distinguish it from other kernels.
+1. Below is the `default.nix` file which looks similar to the file in the [previous example](#extending-kernels). However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory. This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified. Similar to before we set the `name` and `displayName` attribute so we can distinguish it from other kernels.
 
 ```nix
 {
-  pkgs,
+  name,
   availableKernels,
-  kernelName,
+  extraArgs,
 }:
-availableKernels.python.override {
+availableKernels.python {
   projectDir = ./.;
   displayName = "Python with Numpy 1.23.x";
   name = "my-python-with-numpy";
