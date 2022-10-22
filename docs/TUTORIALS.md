@@ -1,6 +1,7 @@
 # JupyterLab Templates
 
-This readme assumes you have already initialized a project using the available templates. If not, follow the instructions in the [top level README](../README.md).
+This readme assumes you have already initialized a project using the available templates.
+If not, follow the instructions in the [top level README](../README.md).
 
 ## Quick Start
 
@@ -10,13 +11,16 @@ As mentioned in the top level README, run the following to start JupyterLab:
 nix run
 ```
 
-JupyterLab will start up and you can start using it inside your browser. The default kernels generally only have standard libraries and packages available. If you want to extend the kernels to have additional libraries and packages, see the following sections.
+JupyterLab will start up and you can start using it inside your browser.
+The default kernels generally only have standard libraries and packages available.
+If you want to extend the kernels to have additional libraries and packages, see the following sections.
 
 ## Kernels
 
 ### Extending Kernels
 
-By extending a kernel, we mean modifying the arguments given to an available kernel. Open up the `kernels/python.nix` kernel and you should see something like the following:
+By extending a kernel, we mean modifying the arguments given to an available kernel.
+Open up the `kernels/python.nix` kernel and you should see something like the following:
 
 ```nix
 {
@@ -45,15 +49,24 @@ availableKernels.python {
 }
 ```
 
-We have added the `extraPackages` attribute, a function which takes a package set, `ps`, as an argument and returns a list of packages. Anything available as a python package in `nixpkgs` should be added as easily as we added numpy. For example, if we wanted to add `scipy` and `pandas`, we could modify the list to be `[ ps.numpy ps.scipy ps.pandas ]`.
+We have added the `extraPackages` attribute, a function which takes a package set, `ps`, as an argument and returns a list of packages.
+Anything available as a python package in `nixpkgs` should be added as easily as we added numpy.
+For example, if we wanted to add `scipy` and `pandas`, we could modify the list to be `[ ps.numpy ps.scipy ps.pandas ]`.
 
-We also modified the `name` and `displayName` attributes. Modifying `displayName` is not necessary but makes it easier to distinguish from other kernels in the JupyterLab Web UI. One very important note is that if you have multiple kernel files in your project, they must all have unique `name` attributes.
+We also modified the `name` and `displayName` attributes.
+Modifying `displayName` is not necessary but makes it easier to distinguish from other kernels in the JupyterLab Web UI.
+One very important note is that if you have multiple kernel files in your project, they must all have unique `name` attributes.
 
-Additional Info: The `extraPackages` argument is used with [poetry2nix][mkpoetryenv] and it takes a function that returns a list. We are using `mkPoetryEnv` from poetry2nix which uses `python.withPackages` -- see the related [documentation][withpackages] for details.
+Additional Info: The `extraPackages` argument is used with [poetry2nix][mkpoetryenv] and it takes a function that returns a list.
+We are using `mkPoetryEnv` from poetry2nix which uses `python.withPackages` -- see the related [documentation][withpackages] for details.
 
 ### Extending Kernels (Advanced)
 
-While you can provide `extraPackages` as seen previously, you are relying on the version of the package in `nixpkgs`. If you want to specify particular versions, it is easier to extend the kernel using Poetry. Below is a tree structure showing where our new kernel will be created. Our new kernel will be located in `custom-python` under the `kernels` directory. We will create the `default.nix` and `pyproject.toml` files and the `poetry.lock` file will be generated for us using `poetry`.
+While you can provide `extraPackages` as seen previously, you are relying on the version of the package in `nixpkgs`.
+If you want to specify particular versions, it is easier to extend the kernel using Poetry.
+Below is a tree structure showing where our new kernel will be created.
+Our new kernel will be located in `custom-python` under the `kernels` directory.
+We will create the `default.nix` and `pyproject.toml` files and the `poetry.lock` file will be generated for us using `poetry`.
 
 ```
 my-project/
@@ -65,7 +78,8 @@ my-project/
 ```
 
 1. The first step is to create a directory to put our new kernel which I named `custom-python`.
-1. The easiest way to create the `pyproject.toml` file is to copy it from the existing kernel in the repository. I have copied the Python kernels `pyproject.toml` file and added a `numpy` dependency under `tool.poetry.dependencies`.
+1. The easiest way to create the `pyproject.toml` file is to copy it from the existing kernel in the repository.
+I have copied the Python kernels `pyproject.toml` file and added a `numpy` dependency under `tool.poetry.dependencies`.
 
 ```toml
 [tool.poetry]
@@ -89,7 +103,10 @@ build-backend = "poetry.core.masonry.api"
 ```
 
 3. Generate a `poetry.lock` file by running `poetry lock` in the kernel directory, `custom-python`.
-1. Below is the `default.nix` file which looks similar to the file in the [previous example](#extending-kernels). However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory. This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified. Similar to before we set the `name` and `displayName` attribute so we can distinguish it from other kernels.
+1. Below is the `default.nix` file which looks similar to the file in the [previous example](#extending-kernels).
+However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory.
+This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified.
+Similar to before we set the `name` and `displayName` attribute so we can distinguish it from other kernels.
 
 ```nix
 {
@@ -104,7 +121,10 @@ availableKernels.python {
 }
 ```
 
-5. From the project top level directory, run `nix run`. This make take some time as new packages and dependencies have to be fetched. Eventually, you will see the recognizable messages from JupyterLab in your terminal. Open up the Web UI in your browser and use your custom kernel.
+5. From the project top level directory, run `nix run`.
+This make take some time as new packages and dependencies have to be fetched.
+Eventually, you will see the recognizable messages from JupyterLab in your terminal.
+Open up the Web UI in your browser and use your custom kernel.
 
 ### Custom Kernels
 
@@ -114,7 +134,8 @@ TODO
 
 ### Stateful Extensions
 
-JupyterLab extensions can be statefully installed using the CLI or Web UI as shown in the [JupyterLab Extensions documentation][jlab-extensions]. To use the CLI, the `jupyter` binary is located in the `result` directory and can be run as follows: `./result/bin/jupyter labextension install <extension>`.
+JupyterLab extensions can be statefully installed using the CLI or Web UI as shown in the [JupyterLab Extensions documentation][jlab-extensions].
+To use the CLI, the `jupyter` binary is located in the `result` directory and can be run as follows: `./result/bin/jupyter labextension install <extension>`.
 
 ### Pure Extensions
 
