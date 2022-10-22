@@ -24,7 +24,7 @@ Open up the `kernels/python.nix` kernel and you should see something like the fo
 
 ```nix
 {
-  name
+  name,
   availableKernels,
   extraArgs,
 }:
@@ -79,7 +79,7 @@ my-project/
 
 1. The first step is to create a directory to put our new kernel which I named `custom-python`.
 1. The easiest way to create the `pyproject.toml` file is to copy it from the existing kernel in the repository.
-I have copied the Python kernels `pyproject.toml` file and added a `numpy` dependency under `tool.poetry.dependencies`.
+   I have copied the Python kernels `pyproject.toml` file and added a `numpy` dependency under `tool.poetry.dependencies`.
 
 ```toml
 [tool.poetry]
@@ -104,9 +104,9 @@ build-backend = "poetry.core.masonry.api"
 
 3. Generate a `poetry.lock` file by running `poetry lock` in the kernel directory, `custom-python`.
 1. Below is the `default.nix` file which looks similar to the file in the [previous example](#extending-kernels).
-However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory.
-This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified.
-Similar to before we set the `name` and `displayName` attribute so we can distinguish it from other kernels.
+   However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory.
+   This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified.
+   Similar to before we set the `name` and `displayName` attribute so we can distinguish it from other kernels.
 
 ```nix
 {
@@ -122,9 +122,9 @@ availableKernels.python {
 ```
 
 5. From the project top level directory, run `nix run`.
-This make take some time as new packages and dependencies have to be fetched.
-Eventually, you will see the recognizable messages from JupyterLab in your terminal.
-Open up the Web UI in your browser and use your custom kernel.
+   This make take some time as new packages and dependencies have to be fetched.
+   Eventually, you will see the recognizable messages from JupyterLab in your terminal.
+   Open up the Web UI in your browser and use your custom kernel.
 
 ### Custom Kernels
 

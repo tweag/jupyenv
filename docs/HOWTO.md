@@ -33,7 +33,7 @@ To enable any kernel, rename it so it no longer has an underscore prefix.
 cp kernels/_python.nix kernels/my-python.nix
 ```
 
-Notice that we gave the kernel file a new name, `my-python.nix.
+Notice that we gave the kernel file a new name, `my-python.nix`.
 You can have multiple kernels in the same project!
 We recommend you give each one a descriptive file name to help you remember in the future.
 

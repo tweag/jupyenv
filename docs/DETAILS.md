@@ -10,8 +10,8 @@ A kernel file located in the `kernels` directory can have virtually any name as 
 These are all valid kernel file names: `python.nix`, `go.nix`, and `my-custom-kernel.nix`.
 
 When creating a custom kernel, it may be necessary to put the kernel file along with any supporting files, in its own directory in the `kernels` directory.
-For example, you can create a directory, `my-kernel`, in the `kernels` directory like so: `kernels/my-kernel.
-In `my-kernel`, your kernel file _must_ be named `default.nix.
+For example, you can create a directory, `my-kernel`, in the `kernels` directory like so: `kernels/my-kernel`.
+In `my-kernel`, your kernel file _must_ be named `default.nix`.
 This is a standard practice in the Nix ecosystem to make finding files easy and unabiguous.
 
 One last note is that you can disable kernels by prefixing the kernel file or directory with an underscore.
@@ -25,12 +25,12 @@ Below are some definitions we will use to minimize ambiguity and confusion in th
 There is no need to memorize these definitions now and we recommend skipping below to the example of a kernel file and referring back to these definitions as needed.
 
 - available kernel: This is synonymous with a kernel file.
-It is a function that takes an attribute set as an argument.
-The applied attribute set must contain `self` and `pkgs`, and there are additional keys, such as `name` and `displayName`, that may be optionally provided.
+  It is a function that takes an attribute set as an argument.
+  The applied attribute set must contain `self` and `pkgs`, and there are additional keys, such as `name` and `displayName`, that may be optionally provided.
 - kernel instance: This is the available kernel with its argument applied.
-It returns an attribute set that is similar in structure and naming to Jupyter's kernelspec.
+  It returns an attribute set that is similar in structure and naming to Jupyter's kernelspec.
 - kernel derivation: This is the kernel instance after being processed using internal functions.
-It creates a derivation that lives in the Nix store and is provided to the JupyterLab instance as an available kernel.
+  It creates a derivation that lives in the Nix store and is provided to the JupyterLab instance as an available kernel.
 
 Below is an minimal example of how every kernel is structured.
 This is what you would see if you opened a kernel file (e.g. `python.nix` or `default.nix`) and what we refer to as an available kernel.
