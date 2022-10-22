@@ -24,51 +24,47 @@ and configurable Jupyter kernels.
 
 ## Getting started
 
-### Bootstrap your projects
-
-Create a new project folder and `cd` into it.
+The following snippet will create a new project directory, initialize the project with a flake template, enable a Python kernel, and start the JupyterLab environment.
 
 ```shell
-$ mkdir my-project
-$ cd my-project
-```
-
-JupyterWith uses templates! Initialize your project with the jupyterWith template. There will be a `README.md` in there to help you get started.
-
-```shell
-$ nix flake init --template github:tweag/jupyterWith
-```
-
-### Enable kernels
-
-Your new project should have a `kernels` directory which contains all the kernels. Any kernels prefixed with an underscore is disabled. To enable any kernel, rename it so it no longer has an underscore prefix.
-
-```shell
-$ cp kernels/_ipython.nix kernels/my-ipython.nix
-```
-
-Notice that we gave the kernel file a new name, `my-ipython.nix`. You can have multiple kernels in the same project! We recommend you give each one a descriptive file name to help you remember in the future.
-
-### Extensions
-
-Extensions are currently being worked on to be reproducible.
-
-### Start JupyterLab
-
-Make sure you are in the top directory of your project (e.g. `my-project`), and run the following command.
-
-```shell
+mkdir my-project
+cd my-project
+nix flake init --template github:tweag/jupyterWith
+cp kernels/_python.nix kernels/my-python.nix
 nix run
 ```
 
-The environment should start up with instructions on what to do next.
+After some time, you should see the following in your terminal. Your default web browser should open and enter the JupyterLab environment. If it does not, use one of the suggested URLs.
+
+```shell
+...
+[I 2022-10-11 18:47:30.346 ServerApp] Jupyter Server 1.17.1 is running at:
+[I 2022-10-11 18:47:30.346 ServerApp] http://localhost:8888/lab?token=8f2261a45601848bd79eda97d8d39c3d0f4978bc61fbe346
+[I 2022-10-11 18:47:30.346 ServerApp]  or http://127.0.0.1:8888/lab?token=8f2261a45601848bd79eda97d8d39c3d0f4978bc61fbe346
+[I 2022-10-11 18:47:30.346 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 2022-10-11 18:47:30.359 ServerApp] 
+    
+    To access the server, open this file in a browser:
+        file:///home/bakerdn/.local/share/jupyter/runtime/jpserver-286971-open.html
+    Or copy and paste one of these URLs:
+        http://localhost:8888/lab?token=8f2261a45601848bd79eda97d8d39c3d0f4978bc61fbe346
+     or http://127.0.0.1:8888/lab?token=8f2261a45601848bd79eda97d8d39c3d0f4978bc61fbe346
+```
+
+## How To
+
+For further instructions about the environment, kernels, and extensions, see the [HOWTO](docs/HOWTO.md).
 
 ## Contributing
 
-PRs are welcome! This project provides a development shell which you can enter with `nix develop`. Please run `pre-commit run -all` before submitting your pull request for review. This will run a nix formatter for consistency.
+PRs are welcome!
+
+This project provides a development shell which you can enter with `nix develop`. Please run `pre-commit run -all` before submitting your pull request for review. This will run a nix formatter for consistency.
+
+See the [DETAILS](docs/DETAILS.md) document for information about how jupyterWith is architected.
 
 If you are new to contributing to open source, [this guide](https://opensource.guide/how-to-contribute/) helps explain why, what, and how to successfully get involved.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
