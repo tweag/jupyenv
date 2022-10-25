@@ -30,7 +30,6 @@ The following snippet will create a new project directory, initialize the projec
 mkdir my-project
 cd my-project
 nix flake init --template github:tweag/jupyterWith
-cp kernels/_python.nix kernels/my-python.nix
 nix run
 ```
 
