@@ -604,7 +604,7 @@
         '';
       in rec {
         python-flake = {
-          path = ./template/flake-python;
+          path = ./template/python-flake;
           description = "Boilerplate for your jupyterWith project";
           inherit welcomeText;
         };
