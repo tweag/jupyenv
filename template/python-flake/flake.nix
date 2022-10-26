@@ -35,6 +35,7 @@
             (
               k.python {
                 name = "python-with-numpy";
+                displayName = "Python with Numpy";
                 extraPackages = ps: [ps.numpy];
               }
             )
