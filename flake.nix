@@ -618,7 +618,7 @@
           description = "Boilerplate for your jupyterWith project";
           inherit welcomeText;
         };
-        default = python-flake;
+        default = python-nixpkgs;
       };
     };
 }
