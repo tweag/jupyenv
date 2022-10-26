@@ -591,9 +591,7 @@
     ))
     // rec {
       jupyterKernels = builtins.mapAttrs mkKernelFlakeOutput kernelsConfig.available;
-      templates.default = {
-        path = ./template;
-        description = "Boilerplate for your jupyterWith project";
+      templates = let
         welcomeText = ''
           You have created a jupyterWith template.
 
@@ -604,6 +602,23 @@
             https://github.com/tweag/jupyterWith/blob/main/docs/HOWTO.md
             https://github.com/tweag/jupyterWith/blob/main/docs/TUTORIALS.md
         '';
+      in rec {
+        python-flake = {
+          path = ./template/flake-python;
+          description = "Boilerplate for your jupyterWith project";
+          inherit welcomeText;
+        };
+        python-nixpkgs = {
+          path = ./template/python-nixpkgs;
+          description = "Boilerplate for your jupyterWith project";
+          inherit welcomeText;
+        };
+        python-poetry = {
+          path = ./template/python-poetry;
+          description = "Boilerplate for your jupyterWith project";
+          inherit welcomeText;
+        };
+        default = python-flake;
       };
     };
 }
