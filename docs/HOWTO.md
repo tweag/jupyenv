@@ -21,6 +21,28 @@ nix run
 
 The environment should start up with instructions on what to do next.
 
+## Julia kernel
+
+The Julia kernel requires some stateful operations to work properly.
+If you have not initialized a project yet, do so with the following commands.
+
+```shell
+mkdir my-project
+cd my-project
+nix flake init --template github:tweag/jupyterWith
+```
+
+1. Build the project with `nix build .#`.
+1. Enter the Julia REPL with `./result/bin/julia`.
+1. Follow the commands from [IJulia](https://julialang.github.io/IJulia.jl/stable/manual/installation/#Installing-IJulia) documentation to install IJulia.
+   ```
+   julia
+   julia> using Pkg
+   julia> Pkg.add("IJulia")
+   ```
+1. After installing IJulia, make sure you exit the Julia REPL and are back at the top level of your project folder.
+1. Start the JupyterLab environment with `nix run`.
+
 # Kernels
 
 ## Enable kernels
