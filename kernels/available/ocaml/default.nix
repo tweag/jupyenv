@@ -27,6 +27,11 @@
     with ocamlPackages; [
       bigstringaf
       result
+      lwt
+      stdint
+      zmq
+      zarith
+      cryptokit
     ],
 }: let
   allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ ocamlBuildInputs;
@@ -66,9 +71,9 @@
       mkdir -p $out/bin
       for i in ${env}/bin/*; do
         filename=$(basename $i)
-        ln -s ${env}/bin/$filename $out/bin/$filename
-        wrapProgram $out/bin/$filename \
-          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+        makeWrapper ${env}/bin/$filename $out/bin/$filename \
+          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
+          --set CAML_LD_LIBRARY_PATH "${pkgs.lib.makeSearchPath "lib/ocaml/4.10.2/site-lib/stublibs" ocamlPropagatedBuildInputs}"
       done
     '';
 in {
