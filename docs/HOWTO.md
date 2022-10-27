@@ -23,7 +23,7 @@ The environment should start up with instructions on what to do next.
 
 # Kernels
 
-After initializing your project with a flake template, it should have a `kernels` directory which contains all the kernels.
+After initializing your project with a flake template, it should have a `kernels` directory, which contains `python.nix` kernel. You can find more kernel derivations in `kernels` directory at the root of this repository.
 
 ## Disabling kernels
 
