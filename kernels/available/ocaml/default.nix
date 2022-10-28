@@ -64,7 +64,9 @@
   };
 
   env = OcamlKernel;
-  wrappedEnv =
+  wrappedEnv = let
+    ocamlVersion = ocamlPackages.ocaml.version;
+  in
     pkgs.runCommand "wrapper-${env.name}"
     {nativeBuildInputs = [pkgs.makeWrapper];}
     ''
@@ -73,7 +75,7 @@
         filename=$(basename $i)
         makeWrapper ${env}/bin/$filename $out/bin/$filename \
           --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
-          --set CAML_LD_LIBRARY_PATH "${pkgs.lib.makeSearchPath "lib/ocaml/4.10.2/site-lib/stublibs" ocamlPropagatedBuildInputs}"
+          --set CAML_LD_LIBRARY_PATH "${pkgs.lib.makeSearchPath "lib/ocaml/${ocamlVersion}/site-lib/stublibs" ocamlPropagatedBuildInputs}"
       done
     '';
 in {
