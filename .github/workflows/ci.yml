@@ -29,8 +29,8 @@ jobs:
       run: |
         kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
         echo $kernels
-        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-example-")]')
-        echo "::set-output name=kernels::$filterKernels"
+        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-example-")]')
+        echo "kernels=$filterKernels" >> $GITHUB_OUTPUT
 
     - name: Check
       run: |
@@ -59,7 +59,7 @@ jobs:
 
     - name: Build ${{ matrix.kernel }} kernel
       run: |
-        nix build -L .#jupyterlab-kernel-example${{ matrix.kernel }}
+        nix build -L .#jupyterlab-kernel-example-${{ matrix.kernel }}
 
     # TODO remove once we have a better solution. For more info see
     # https://github.com/tweag/jupyterWith/pull/280
