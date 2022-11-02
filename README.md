@@ -10,6 +10,7 @@
   <img src="kernels/available/javascript/logo64.png" width="45" />
   <img src="kernels/available/julia/logo64.png" width="45" />
   <img src="kernels/available/nix/logo64.png" width="45" />
+  <img src="kernels/available/ocaml/logo64.png" width="45" />
   <img src="kernels/available/postgres/logo64.png" width="45" />
   <img src="kernels/available/r/logo64.png" width="45" />
   <img src="kernels/available/rust/logo64.png" width="45" />
