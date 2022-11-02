@@ -23,19 +23,62 @@ The environment should start up with instructions on what to do next.
 
 # Kernels
 
+After initializing your project with a flake template, it should have a `kernels` directory, which contains `python.nix` kernel. You can find more kernel derivations in `kernels` directory at the root of this repository.
+
+## Disabling kernels
+
+Any kernels prefixed with an underscore is disabled. To disable a kernel, rename the file with an underscore prefix.
+
+```shell
+mv kernels/python.nix kernels/_python.nix
+```
+
+If you have started using Poetry, you will have a folder which contains a `default.nix`, `poetry.lock`, and `pyproject.toml` as shown below.
+
+```shell
+$ tree kernels
+kernels
+├── python.nix
+└── python-numpy
+    ├── default.nix
+    ├── poetry.lock
+    └── pyproject.toml
+```
+
+You can rename the folder in the same way to disable that kernel.
+
+```shell
+mv kernels/python-numpy kernels/_python-numpy
+```
+
 ## Enable kernels
 
-After initializing your project with a flake template, it should have a `kernels` directory which contains all the kernels.
-Any kernels prefixed with an underscore is disabled.
 To enable any kernel, rename it so it no longer has an underscore prefix.
 
 ```shell
-cp kernels/_python.nix kernels/my-python.nix
+mv kernels/_python.nix kernels/python.nix
 ```
 
-Notice that we gave the kernel file a new name, `my-python.nix`.
-You can have multiple kernels in the same project!
+## Kernel file names
+
+You can have multiple kernels of the same type in the same project!
 We recommend you give each one a descriptive file name to help you remember in the future.
+For example, the following kernels directory has 4 valid kernels.
+
+```shell
+$ tree kernels
+kernels
+├── python.nix
+├── python-project-A.nix
+├──── python-numpy
+│   ├── default.nix
+│   ├── poetry.lock
+│   └── pyproject.toml
+└──── python-project-B
+    ├── default.nix
+    ├── poetry.lock
+    └── pyproject.toml
+```
 
 # Extensions
 
