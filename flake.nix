@@ -195,25 +195,33 @@
               types = ["file"];
               files = "\\.((txt)|(md)|(nix)|\\d)$";
             };
-            mdformat = {
-              enable = true;
-              name = "mdformat";
-              description = "An opinionated Markdown formatter";
-              entry = "${jupyterlab}/bin/mdformat .";
-              types = ["file" "text" "markdown"];
-            };
           };
           excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
         };
 
-        jupyterlab' = pkgs.poetry2nix.mkPoetryEnv {
-          python = pkgs.python3;
-          projectDir = self; # TODO: only include relevant files/folders
-          overrides = pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix);
-        };
-
-        #jupyterlab = pkgs.writeScriptBin "chmod-${jupyterlab'.name}"
-        jupyterlab = let
+        jupyterlabEnvWrapped = {
+          projectDir ? self, # TODO: only include relevant files/folders
+          pyproject ? projectDir + "/pyproject.toml",
+          poetrylock ? projectDir + "/poetry.lock",
+          overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
+          python ? pkgs.python3,
+          editablePackageSources ? {},
+          extraPackages ? (ps: []),
+          preferWheels ? false,
+          # groups ? ["devs"], # TODO: add groups after updating to latest poetry2nix. make sure to inherit below
+        }: let
+          jupyterlabEnvBase = pkgs.poetry2nix.mkPoetryEnv {
+            inherit
+              projectDir
+              pyproject
+              poetrylock
+              overrides
+              python
+              editablePackageSources
+              extraPackages
+              preferWheels
+              ;
+          };
           jupyterlab-checker =
             pkgs.writeText "jupyterlab-checker"
             ''
@@ -231,23 +239,23 @@
           jupyterlab-cond-build =
             pkgs.writeShellScript "jupyterlab-cond-build"
             ''
-              ${jupyterlab'}/bin/python ${jupyterlab-checker}
+              ${jupyterlabEnvBase}/bin/python ${jupyterlab-checker}
               checker=$?
               if [ "$checker" -ne 0 ]
               then
                 echo jupyterWith needs to build JupyterLab.
                 # we need to build the jupyter lab environment before it can be used
-                ${jupyterlab'}/bin/jupyter lab build
+                ${jupyterlabEnvBase}/bin/jupyter lab build
               else
                 echo jupyterWith does not need build JupyterLab. Starting...
               fi
             '';
         in
-          pkgs.runCommand "chmod-${jupyterlab'.name}"
+          pkgs.runCommand "chmod-${jupyterlabEnvBase.name}"
           {nativeBuildInputs = [pkgs.makeWrapper];}
           ''
             mkdir -p $out/bin
-            for i in ${jupyterlab'}/bin/*; do
+            for i in ${jupyterlabEnvBase}/bin/*; do
               filename=$(basename $i)
 
               if [[ "$filename" == jupyter* ]]; then
@@ -255,12 +263,12 @@
             #!${pkgs.runtimeShell} -e
             trap "chmod +w --recursive \$PWD/.jupyter" EXIT
             ${jupyterlab-cond-build}
-            ${jupyterlab'}/bin/$filename "\$@"
+            ${jupyterlabEnvBase}/bin/$filename "\$@"
             EOF
                 chmod +x $out/bin/$filename
               else
                 makeWrapper \
-                  ${jupyterlab'}/bin/$filename \
+                  ${jupyterlabEnvBase}/bin/$filename \
                   $out/bin/$filename
             fi
             done
@@ -341,6 +349,7 @@
         */
 
         mkJupyterlab = {
+          jupyterlabEnvArgs ? {},
           kernels ? k: [], # k: [ (k.python {}) k.bash ],
           # extensions ? e: [], # e: [ e.jupy-ext ]
           runtimePackages ? [], # runtime package available to all binaries
@@ -412,6 +421,8 @@
           kernelDerivations =
             builtins.map mkKernel userKernels;
 
+          jupyterlabEnv = jupyterlabEnvWrapped jupyterlabEnvArgs;
+
           # create directories for storing jupyter configs
           jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
             # make jupyter config and data directories
@@ -453,13 +464,13 @@
               ${lib.concatStringsSep "\n" listOfDuplicates}
             ''
           else
-            pkgs.runCommand "wrapper-${jupyterlab.name}"
+            pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
             {nativeBuildInputs = [pkgs.makeWrapper];}
             ''
               mkdir -p $out/bin
-              for i in ${jupyterlab}/bin/*; do
+              for i in ${jupyterlabEnv}/bin/*; do
                 filename=$(basename $i)
-                ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
+                ln -s ${jupyterlabEnv}/bin/$filename $out/bin/$filename
                 wrapProgram $out/bin/$filename \
                   --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
                   --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
@@ -545,7 +556,7 @@
         };
         packages =
           {
-            inherit jupyterlab;
+            jupyterlabEnv = jupyterlabEnvWrapped {};
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernels;
             update-poetry-lock =
               pkgs.writeShellApplication
@@ -563,7 +574,7 @@
                   done
                 '';
               };
-            default = jupyterlab;
+            default = jupyterlabEnvWrapped {};
           }
           // exampleJupyterlabKernels;
         devShells.default = pkgs.mkShell {
@@ -580,7 +591,8 @@
           '';
         };
         checks = {
-          inherit pre-commit jupyterlab;
+          inherit pre-commit;
+          jupyterlabEnv = jupyterlabEnvWrapped {};
         };
         apps = {
           update-poetry-lock =
