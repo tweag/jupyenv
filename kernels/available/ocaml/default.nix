@@ -73,6 +73,8 @@
       mkdir -p $out/bin
       for i in ${env}/bin/*; do
         filename=$(basename $i)
+        # XXX: 'CAML_LD_LIBRARY_PATH' should be set automatically by the kernel.
+        # Not sure why it doesn't, but setting it manually seems to fix things
         makeWrapper ${env}/bin/$filename $out/bin/$filename \
           --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
           --set CAML_LD_LIBRARY_PATH "${pkgs.lib.makeSearchPath "lib/ocaml/${ocamlVersion}/site-lib/stublibs" ocamlPropagatedBuildInputs}"
