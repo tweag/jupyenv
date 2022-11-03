@@ -203,7 +203,7 @@
           projectDir ? self, # TODO: only include relevant files/folders
           pyproject ? projectDir + "/pyproject.toml",
           poetrylock ? projectDir + "/poetry.lock",
-          overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix pkgs),
+          overrides ? import ./overrides.nix pkgs,
           python ? pkgs.python3,
           editablePackageSources ? {},
           extraPackages ? (ps: []),
@@ -556,7 +556,7 @@
         };
         packages =
           {
-            jupyterlabEnv = jupyterlabEnvWrapped {};
+            jupyterlab = jupyterlabEnvWrapped {};
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernels;
             update-poetry-lock =
               pkgs.writeShellApplication
