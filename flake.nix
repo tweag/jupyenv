@@ -203,7 +203,7 @@
           projectDir ? self, # TODO: only include relevant files/folders
           pyproject ? projectDir + "/pyproject.toml",
           poetrylock ? projectDir + "/poetry.lock",
-          overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
+          overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix pkgs),
           python ? pkgs.python3,
           editablePackageSources ? {},
           extraPackages ? (ps: []),
