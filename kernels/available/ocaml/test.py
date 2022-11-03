@@ -8,7 +8,7 @@ def test_nb(tb):
     result = tb.cell_output_text(0)
     print("Output:")
     print(result)
-    assert str(result) == '- : string = "hello ocaml"'
+    assert result == '- : string = "hello ocaml"'
 
 if __name__ == '__main__':
     test_nb()
