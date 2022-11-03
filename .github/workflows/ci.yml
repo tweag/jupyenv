@@ -9,6 +9,7 @@ on:
 jobs:
 
   build:
+    name: Build jupyterlab (no kernels)
     runs-on: ubuntu-latest
 
     outputs:

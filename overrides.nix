@@ -1,4 +1,4 @@
-final: prev: let
+pkgs: final: prev: let
   addNativeBuildInputs = drvName: inputs: {
     "${drvName}" = prev.${drvName}.overridePythonAttrs (old: {
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
@@ -40,6 +40,18 @@ in
         sed -i \
           -e "/def jupyter_runtime_dir():/!b;n;i\    return pjoin(get_home_dir(), '.local', 'share', 'jupyter', 'runtime')" \
           ./jupyter_core/paths.py
+      '';
+    });
+    testbook = prev.testbook.overridePythonAttrs (old: {
+      postPatch = ''
+        mkdir ./tmp
+        ${pkgs.unzip}/bin/unzip dist/testbook-${old.version}-py3-none-any.whl -d ./tmp
+        sed -i -e "s|if not any(arg.startswith('--Kernel|if False and not any(arg.startswith('--Kernel|" tmp/testbook/client.py
+        rm dist/testbook-${old.version}-py3-none-any.whl
+        pushd tmp
+          ${pkgs.zip}/bin/zip -r ../dist/testbook-${old.version}-py3-none-any.whl ./*
+        popd
+        rm -rf tmp
       '';
     });
   }
