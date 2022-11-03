@@ -10,8 +10,10 @@
   inherit (pkgs) lib stdenv writeScriptBin;
   inherit (lib) makeBinPath;
 
+  version = "1.0.15";
+
   tslabSrc = fetchTarball {
-    url = "https://github.com/yunabe/tslab/archive/f056a88baf81a1fc6a01b0446a3febcf919ff8e4.tar.gz";
+    url = "https://github.com/yunabe/tslab/archive/v${version}.tar.gz";
     sha256 = "1q2wsdcgha6qivs238pysgmiabjhyflpd1bqbx0cgisgiz2nq3vs";
   };
 
