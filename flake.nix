@@ -480,7 +480,7 @@
                   --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
                   --set JUPYTER_DATA_DIR ".jupyter/data" \
                   --set IPYTHONDIR "/path-not-set" \
-                  --set JUPYTER_RUNTIME_DIR "/path-not-set"
+                  --set JUPYTER_RUNTIME_DIR ".jupyter/runtime"
               done
 
               # add Julia for IJulia
