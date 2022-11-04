@@ -5,7 +5,7 @@
   displayName ? "OCaml",
   runtimePackages ? [],
   extraRuntimePackages ? [],
-  ocamlPackages ? pkgs.ocaml-ng.ocamlPackages_4_10,
+  ocamlPackages ? pkgs.ocaml-ng.ocamlPackages_4_12,
   ocamlBuildInputs ?
     with ocamlPackages; [
       ocaml-syntax-shims
@@ -38,8 +38,8 @@
 
   OcamlKernel = ocamlPackages.buildDunePackage rec {
     pname = "jupyter";
-    version = "2.7.5"; # TODO: upgrade this to 2.8.0
-    useDune2 = true;
+    version = "2.7.5"; # TODO: upgrade this to 2.8.0. Need to have ppx_yojson_conv in nixpkgs first; not ppx_yojson_conv_lib.
+    duneVersion = "3";
 
     minimalOCamlVersion = "4.04";
 
