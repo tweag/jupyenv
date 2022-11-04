@@ -199,6 +199,18 @@
           excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
         };
 
+        mkdocs = pkgs.python3.withPackages (p: [
+          p.mkdocs
+          p.mkdocs-material
+          p.mkdocs-material-extensions
+        ]);
+
+        # mkdocs = pkgs.poetry2nix.mkPoetryEnv rec {
+        #   python = pkgs.python3;
+        #   projectDir = self + "/docs";
+        #   overrides = import (projectDir + "/overrides.nix");
+        # };
+
         jupyterlabEnvWrapped = {
           projectDir ? self, # TODO: only include relevant files/folders
           pyproject ? projectDir + "/pyproject.toml",
@@ -574,6 +586,7 @@
                   done
                 '';
               };
+            inherit mkdocs;
             default = jupyterlabEnvWrapped {};
           }
           // exampleJupyterlabKernels;
@@ -585,6 +598,7 @@
             pkgs.python3Packages.poetry
             pkgs.rnix-lsp
             self.packages."${system}".update-poetry-lock
+            mkdocs
           ];
           shellHook = ''
             ${pre-commit.shellHook}

@@ -1,0 +1,12 @@
+site_name: jupyterWith
+site_url: https://tweag.github.io/jupyterWith
+nav:
+    - Home: README.md
+    - How To: HOWTO.md
+    - Tutorials: TUTORIALS.md
+    - References: DETAILS.md
+markdown_extensions:
+  # TODO - material doesn't show up int the environment for some reason
+  #  - pymdownx.emoji:
+  #      emoji_index: !!python/name:materialx.emoji.twemoji
+  #      emoji_generator: !!python/name:materialx.emoji.to_svg
