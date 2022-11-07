@@ -104,13 +104,12 @@ jobs:
         fetch-depth: 0
 
     - name: Setup
-      uses: ./../github/actions/common-setup
+      uses: ./jupyterWith/github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: Initialize template
       run: |
-        cd ../
         nix flake new --template ./jupyterWith example
         cd example
         nix build
