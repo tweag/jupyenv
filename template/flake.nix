@@ -11,8 +11,7 @@
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  # TODO: inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/1158501e7c7cba26d922723cf9f70099995eb755";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.jupyterWith.url = "github:tweag/jupyterWith";
 
   outputs = {

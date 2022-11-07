@@ -91,3 +91,25 @@ jobs:
     - name: Build all kernels
       run: |
         nix build -L .#jupyterlab-all-example-kernels
+
+  template:
+    name: Build a template
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: jupyterWith
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+    - name: Initialize template
+      run: |
+        nix flake new --template ./jupyterWith example
+        cd example
+        nix build
