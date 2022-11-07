@@ -100,16 +100,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        path: jupyterWith
+        path: repo
         fetch-depth: 0
 
     - name: Setup
-      uses: ./jupyterWith/github/actions/common-setup
+      uses: ./repo/.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: Initialize template
       run: |
-        nix flake new --template ./jupyterWith example
+        nix flake new --template ./repo example
         cd example
         nix build
