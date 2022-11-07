@@ -4,7 +4,7 @@ nav:
     - Home: README.md
     - How To: HOWTO.md
     - Tutorials: TUTORIALS.md
-    - References: DETAILS.md
+    - Developer: DETAILS.md
 markdown_extensions:
   # TODO - material doesn't show up int the environment for some reason
   #  - pymdownx.emoji:
