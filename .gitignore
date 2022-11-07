@@ -1,5 +1,5 @@
 /template/flake.lock
-/result*
+result*
 /.direnv/
 /.pre-commit-config.yaml
 
@@ -8,5 +8,5 @@
 
 # generated folder of jupyter distribution
 /jupyterlab/
-/.jupyter/
+.jupyter/
 /template/flake.lock

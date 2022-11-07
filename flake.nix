@@ -203,7 +203,7 @@
           projectDir ? self, # TODO: only include relevant files/folders
           pyproject ? projectDir + "/pyproject.toml",
           poetrylock ? projectDir + "/poetry.lock",
-          overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix pkgs),
+          overrides ? import ./overrides.nix pkgs,
           python ? pkgs.python3,
           editablePackageSources ? {},
           extraPackages ? (ps: []),
@@ -480,7 +480,7 @@
                   --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
                   --set JUPYTER_DATA_DIR ".jupyter/data" \
                   --set IPYTHONDIR "/path-not-set" \
-                  --set JUPYTER_RUNTIME_DIR "/path-not-set"
+                  --set JUPYTER_RUNTIME_DIR ".jupyter/runtime"
               done
 
               # add Julia for IJulia
@@ -556,7 +556,7 @@
         };
         packages =
           {
-            jupyterlabEnv = jupyterlabEnvWrapped {};
+            jupyterlab = jupyterlabEnvWrapped {};
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernels;
             update-poetry-lock =
               pkgs.writeShellApplication
