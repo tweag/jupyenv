@@ -9,7 +9,7 @@ python = "^3.10"
 jupyterlab = "*"
 
 [tool.poetry.dev-dependencies]
-# build systems for dependencies
+testbook = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

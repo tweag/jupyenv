@@ -504,7 +504,7 @@ python-versions = "*"
 
 [[package]]
 name = "nbclassic"
-version = "0.4.7"
+version = "0.4.8"
 description = "A web-based notebook environment for interactive computing"
 category = "main"
 optional = false
@@ -532,7 +532,7 @@ traitlets = ">=4.2.1"
 [package.extras]
 docs = ["myst-parser", "nbsphinx", "sphinx", "sphinx-rtd-theme", "sphinxcontrib-github-alt"]
 json-logging = ["json-logging"]
-test = ["coverage", "nbval", "pytest", "pytest-cov", "pytest-tornasync", "requests", "requests-unixsocket", "selenium (==4.1.5)", "testpath"]
+test = ["coverage", "nbval", "pytest", "pytest-cov", "pytest-playwright", "pytest-tornasync", "requests", "requests-unixsocket", "testpath"]
 
 [[package]]
 name = "nbclient"
@@ -719,7 +719,7 @@ twisted = ["twisted"]
 
 [[package]]
 name = "prompt-toolkit"
-version = "3.0.31"
+version = "3.0.32"
 description = "Library for building powerful interactive command lines in Python"
 category = "main"
 optional = false
@@ -825,7 +825,7 @@ python-versions = "*"
 
 [[package]]
 name = "pywin32"
-version = "304"
+version = "305"
 description = "Python for Window Extensions"
 category = "main"
 optional = false
@@ -940,6 +940,23 @@ docs = ["pydata-sphinx-theme", "sphinx"]
 test = ["pre-commit", "pytest (>=7.0)", "pytest-timeout"]
 
 [[package]]
+name = "testbook"
+version = "0.4.2"
+description = "A unit testing framework for Jupyter Notebooks"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+nbclient = ">=0.4.0"
+nbformat = ">=5.0.4"
+
+[package.extras]
+dev = ["black", "bumpversion", "check-manifest", "codecov", "coverage", "flake8", "ipykernel", "ipython", "ipywidgets", "pandas", "pip (>=18.1)", "pytest (>=4.1)", "pytest-cov (>=2.6.1)", "setuptools (>=38.6.0)", "tox", "twine (>=1.11.0)", "wheel (>=0.31.0)", "xmltodict"]
+sphinx = ["Sphinx (>=1.7,<3.0)", "myst-parser (==0.9.1)", "sphinx-book-theme (==0.0.35)"]
+test = ["black", "bumpversion", "check-manifest", "codecov", "coverage", "flake8", "ipykernel", "ipython", "ipywidgets", "pandas", "pip (>=18.1)", "pytest (>=4.1)", "pytest-cov (>=2.6.1)", "setuptools (>=38.6.0)", "tox", "twine (>=1.11.0)", "wheel (>=0.31.0)", "xmltodict"]
+
+[[package]]
 name = "tinycss2"
 version = "1.2.1"
 description = "A tiny CSS parser"
@@ -1013,7 +1030,7 @@ python-versions = "*"
 
 [[package]]
 name = "websocket-client"
-version = "1.4.1"
+version = "1.4.2"
 description = "WebSocket client for Python with low level API options"
 category = "main"
 optional = false
@@ -1027,7 +1044,7 @@ test = ["websockets"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "8260d93ab12ae9da52a90aaed2fca0795967913adb0623ef0f5054e39ad0e27c"
+content-hash = "f3f066442cd37c1409827f95448dc03239584123f87cefeb5e7f51de130a1d93"
 
 [metadata.files]
 anyio = [
@@ -1314,8 +1331,8 @@ mistune = [
     {file = "mistune-2.0.4.tar.gz", hash = "sha256:9ee0a66053e2267aba772c71e06891fa8f1af6d4b01d5e84e267b4570d4d9808"},
 ]
 nbclassic = [
-    {file = "nbclassic-0.4.7-py3-none-any.whl", hash = "sha256:d71d18aa6605eaf59e9b99b34c96360af45847f2a30ee2fefbe2f7bed4bc3df2"},
-    {file = "nbclassic-0.4.7.tar.gz", hash = "sha256:1e0470583b55089c427940ed31b8a866ffef7ccab101494e409efe5ac7ba9897"},
+    {file = "nbclassic-0.4.8-py3-none-any.whl", hash = "sha256:cbf05df5842b420d5cece0143462380ea9d308ff57c2dc0eb4d6e035b18fbfb3"},
+    {file = "nbclassic-0.4.8.tar.gz", hash = "sha256:c74d8a500f8e058d46b576a41e5bc640711e1032cf7541dde5f73ea49497e283"},
 ]
 nbclient = [
     {file = "nbclient-0.7.0-py3-none-any.whl", hash = "sha256:434c91385cf3e53084185334d675a0d33c615108b391e260915d1aa8e86661b8"},
@@ -1366,8 +1383,8 @@ prometheus-client = [
     {file = "prometheus_client-0.15.0.tar.gz", hash = "sha256:be26aa452490cfcf6da953f9436e95a9f2b4d578ca80094b4458930e5f584ab1"},
 ]
 prompt-toolkit = [
-    {file = "prompt_toolkit-3.0.31-py3-none-any.whl", hash = "sha256:9696f386133df0fc8ca5af4895afe5d78f5fcfe5258111c2a79a1c3e41ffa96d"},
-    {file = "prompt_toolkit-3.0.31.tar.gz", hash = "sha256:9ada952c9d1787f52ff6d5f3484d0b4df8952787c087edf6a1f7c2cb1ea88148"},
+    {file = "prompt_toolkit-3.0.32-py3-none-any.whl", hash = "sha256:24becda58d49ceac4dc26232eb179ef2b21f133fecda7eed6018d341766ed76e"},
+    {file = "prompt_toolkit-3.0.32.tar.gz", hash = "sha256:e7f2129cba4ff3b3656bbdda0e74ee00d2f874a8bcdb9dd16f5fec7b3e173cae"},
 ]
 psutil = [
     {file = "psutil-5.9.3-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:b4a247cd3feaae39bb6085fcebf35b3b8ecd9b022db796d89c8f05067ca28e71"},
@@ -1464,20 +1481,20 @@ pytz = [
     {file = "pytz-2022.6.tar.gz", hash = "sha256:e89512406b793ca39f5971bc999cc538ce125c0e51c27941bef4568b460095e2"},
 ]
 pywin32 = [
-    {file = "pywin32-304-cp310-cp310-win32.whl", hash = "sha256:3c7bacf5e24298c86314f03fa20e16558a4e4138fc34615d7de4070c23e65af3"},
-    {file = "pywin32-304-cp310-cp310-win_amd64.whl", hash = "sha256:4f32145913a2447736dad62495199a8e280a77a0ca662daa2332acf849f0be48"},
-    {file = "pywin32-304-cp310-cp310-win_arm64.whl", hash = "sha256:d3ee45adff48e0551d1aa60d2ec066fec006083b791f5c3527c40cd8aefac71f"},
-    {file = "pywin32-304-cp311-cp311-win32.whl", hash = "sha256:30c53d6ce44c12a316a06c153ea74152d3b1342610f1b99d40ba2795e5af0269"},
-    {file = "pywin32-304-cp311-cp311-win_amd64.whl", hash = "sha256:7ffa0c0fa4ae4077e8b8aa73800540ef8c24530057768c3ac57c609f99a14fd4"},
-    {file = "pywin32-304-cp311-cp311-win_arm64.whl", hash = "sha256:cbbe34dad39bdbaa2889a424d28752f1b4971939b14b1bb48cbf0182a3bcfc43"},
-    {file = "pywin32-304-cp36-cp36m-win32.whl", hash = "sha256:be253e7b14bc601718f014d2832e4c18a5b023cbe72db826da63df76b77507a1"},
-    {file = "pywin32-304-cp36-cp36m-win_amd64.whl", hash = "sha256:de9827c23321dcf43d2f288f09f3b6d772fee11e809015bdae9e69fe13213988"},
-    {file = "pywin32-304-cp37-cp37m-win32.whl", hash = "sha256:f64c0377cf01b61bd5e76c25e1480ca8ab3b73f0c4add50538d332afdf8f69c5"},
-    {file = "pywin32-304-cp37-cp37m-win_amd64.whl", hash = "sha256:bb2ea2aa81e96eee6a6b79d87e1d1648d3f8b87f9a64499e0b92b30d141e76df"},
-    {file = "pywin32-304-cp38-cp38-win32.whl", hash = "sha256:94037b5259701988954931333aafd39cf897e990852115656b014ce72e052e96"},
-    {file = "pywin32-304-cp38-cp38-win_amd64.whl", hash = "sha256:ead865a2e179b30fb717831f73cf4373401fc62fbc3455a0889a7ddac848f83e"},
-    {file = "pywin32-304-cp39-cp39-win32.whl", hash = "sha256:25746d841201fd9f96b648a248f731c1dec851c9a08b8e33da8b56148e4c65cc"},
-    {file = "pywin32-304-cp39-cp39-win_amd64.whl", hash = "sha256:d24a3382f013b21aa24a5cfbfad5a2cd9926610c0affde3e8ab5b3d7dbcf4ac9"},
+    {file = "pywin32-305-cp310-cp310-win32.whl", hash = "sha256:421f6cd86e84bbb696d54563c48014b12a23ef95a14e0bdba526be756d89f116"},
+    {file = "pywin32-305-cp310-cp310-win_amd64.whl", hash = "sha256:73e819c6bed89f44ff1d690498c0a811948f73777e5f97c494c152b850fad478"},
+    {file = "pywin32-305-cp310-cp310-win_arm64.whl", hash = "sha256:742eb905ce2187133a29365b428e6c3b9001d79accdc30aa8969afba1d8470f4"},
+    {file = "pywin32-305-cp311-cp311-win32.whl", hash = "sha256:19ca459cd2e66c0e2cc9a09d589f71d827f26d47fe4a9d09175f6aa0256b51c2"},
+    {file = "pywin32-305-cp311-cp311-win_amd64.whl", hash = "sha256:326f42ab4cfff56e77e3e595aeaf6c216712bbdd91e464d167c6434b28d65990"},
+    {file = "pywin32-305-cp311-cp311-win_arm64.whl", hash = "sha256:4ecd404b2c6eceaca52f8b2e3e91b2187850a1ad3f8b746d0796a98b4cea04db"},
+    {file = "pywin32-305-cp36-cp36m-win32.whl", hash = "sha256:48d8b1659284f3c17b68587af047d110d8c44837736b8932c034091683e05863"},
+    {file = "pywin32-305-cp36-cp36m-win_amd64.whl", hash = "sha256:13362cc5aa93c2beaf489c9c9017c793722aeb56d3e5166dadd5ef82da021fe1"},
+    {file = "pywin32-305-cp37-cp37m-win32.whl", hash = "sha256:a55db448124d1c1484df22fa8bbcbc45c64da5e6eae74ab095b9ea62e6d00496"},
+    {file = "pywin32-305-cp37-cp37m-win_amd64.whl", hash = "sha256:109f98980bfb27e78f4df8a51a8198e10b0f347257d1e265bb1a32993d0c973d"},
+    {file = "pywin32-305-cp38-cp38-win32.whl", hash = "sha256:9dd98384da775afa009bc04863426cb30596fd78c6f8e4e2e5bbf4edf8029504"},
+    {file = "pywin32-305-cp38-cp38-win_amd64.whl", hash = "sha256:56d7a9c6e1a6835f521788f53b5af7912090674bb84ef5611663ee1595860fc7"},
+    {file = "pywin32-305-cp39-cp39-win32.whl", hash = "sha256:9d968c677ac4d5cbdaa62fd3014ab241718e619d8e36ef8e11fb930515a1e918"},
+    {file = "pywin32-305-cp39-cp39-win_amd64.whl", hash = "sha256:50768c6b7c3f0b38b7fb14dd4104da93ebced5f1a50dc0e834594bff6fbe1271"},
 ]
 pywinpty = [
     {file = "pywinpty-2.0.9-cp310-none-win_amd64.whl", hash = "sha256:30a7b371446a694a6ce5ef906d70ac04e569de5308c42a2bdc9c3bc9275ec51f"},
@@ -1591,6 +1608,9 @@ terminado = [
     {file = "terminado-0.17.0-py3-none-any.whl", hash = "sha256:bf6fe52accd06d0661d7611cc73202121ec6ee51e46d8185d489ac074ca457c2"},
     {file = "terminado-0.17.0.tar.gz", hash = "sha256:520feaa3aeab8ad64a69ca779be54be9234edb2d0d6567e76c93c2c9a4e6e43f"},
 ]
+testbook = [
+    {file = "testbook-0.4.2-py3-none-any.whl", hash = "sha256:21e03818017d1315607e117c101cf4b5f5b6dcd5ead77eab65ac9508a281f644"},
+]
 tinycss2 = [
     {file = "tinycss2-1.2.1-py3-none-any.whl", hash = "sha256:2b80a96d41e7c3914b8cda8bc7f705a4d9c49275616e886103dd839dfc847847"},
     {file = "tinycss2-1.2.1.tar.gz", hash = "sha256:8cff3a8f066c2ec677c06dbc7b45619804a6938478d9d73c284b29d14ecb0627"},
@@ -1629,6 +1649,6 @@ webencodings = [
     {file = "webencodings-0.5.1.tar.gz", hash = "sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"},
 ]
 websocket-client = [
-    {file = "websocket-client-1.4.1.tar.gz", hash = "sha256:f9611eb65c8241a67fb373bef040b3cf8ad377a9f6546a12b620b6511e8ea9ef"},
-    {file = "websocket_client-1.4.1-py3-none-any.whl", hash = "sha256:398909eb7e261f44b8f4bd474785b6ec5f5b499d4953342fe9755e01ef624090"},
+    {file = "websocket-client-1.4.2.tar.gz", hash = "sha256:d6e8f90ca8e2dd4e8027c4561adeb9456b54044312dba655e7cae652ceb9ae59"},
+    {file = "websocket_client-1.4.2-py3-none-any.whl", hash = "sha256:d6b06432f184438d99ac1f456eaf22fe1ade524c3dd16e661142dc54e9cba574"},
 ]
