@@ -51,5 +51,3 @@ After some time, you should see the following in your terminal. Your default web
 ```
 
 For further instructions about the environment, kernels, and extensions, see the [How To](HOWTO.md) and [Tutorials](TUTORIALS.md).
-
-See [References](DETAILS.md) for information about how jupyterWith is architected.
