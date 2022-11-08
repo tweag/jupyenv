@@ -9,21 +9,27 @@ on:
       - test-template-in-ci
 
 jobs:
+
   test-template:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          path: repo
 
       - name: Setup
-        uses: ./.github/actions/common-setup
+        uses: ./repo/.github/actions/common-setup
         with:
           CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
       - name: Initialize template
         run: |
-          nix flake init --template github:tweag/jupyterWith
+          nix flake new --template github:tweag/jupyterWith example
 
       - name: Build
         run: |
+          cd example/
           nix build
 
