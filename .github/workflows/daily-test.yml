@@ -4,13 +4,11 @@ on:
   workflow_dispatch: # allows manual triggering
   schedule:
     - cron: "8 0 * * *" # run on a daily basis
-  push:
-    branches:
-      - test-template-in-ci
 
 jobs:
 
   test-template:
+    name: Test template
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +31,7 @@ jobs:
           cd example/
           nix build
 
-      - name: Slack notify
+      - name: Slack Notify
         uses: act10ns/slack@v1.6.0
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
