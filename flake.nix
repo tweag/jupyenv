@@ -205,6 +205,19 @@
           p.mkdocs-material-extensions
         ]);
 
+        docs = pkgs.stdenv.mkDerivation {
+          name = "jupyterwith-docs";
+          src = self;
+          nativeBuildInputs = [mkdocs];
+          buildPhase = ''
+            mkdocs build --site-dir dist
+          '';
+          installPhase = ''
+            mkdir $out
+            cp -R dist/* $out/
+          '';
+        };
+
         jupyterlabEnvWrapped = {
           projectDir ? self, # TODO: only include relevant files/folders
           pyproject ? projectDir + "/pyproject.toml",
@@ -580,7 +593,7 @@
                   done
                 '';
               };
-            inherit mkdocs;
+            inherit mkdocs docs;
             default = jupyterlabEnvWrapped {};
           }
           // exampleJupyterlabKernels;
