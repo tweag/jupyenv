@@ -205,12 +205,6 @@
           p.mkdocs-material-extensions
         ]);
 
-        # mkdocs = pkgs.poetry2nix.mkPoetryEnv rec {
-        #   python = pkgs.python3;
-        #   projectDir = self + "/docs";
-        #   overrides = import (projectDir + "/overrides.nix");
-        # };
-
         jupyterlabEnvWrapped = {
           projectDir ? self, # TODO: only include relevant files/folders
           pyproject ? projectDir + "/pyproject.toml",
