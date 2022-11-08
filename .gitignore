@@ -10,3 +10,6 @@ result*
 /jupyterlab/
 .jupyter/
 /template/flake.lock
+
+# mkdocs
+site/

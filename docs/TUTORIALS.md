@@ -31,7 +31,7 @@ If you want to extend the kernels to have additional libraries and packages, see
 By extending a kernel, we mean modifying the arguments given to an available kernel.
 Open up the `kernels/python.nix` kernel and you should see something like the following:
 
-```nix
+```nix title="python.nix"
 {
   name,
   availableKernels,
@@ -45,7 +45,7 @@ availableKernels.python {
 
 As a simple starter, let us add `numpy` to the Python kernel and change the names to be more descriptive.
 
-```nix
+```nix title="python.nix"
 {
   name,
   availableKernels,
@@ -90,47 +90,47 @@ my-project/
 1. The easiest way to create the `pyproject.toml` file is to copy it from the existing kernel in the repository.
    I have copied the Python kernels `pyproject.toml` file and added a `numpy` dependency under `tool.poetry.dependencies`.
 
-```toml
-[tool.poetry]
-name = "jupyter-nix-kernel-ipython"
-version = "0.1.0"
-description = ""
-authors = []
+    ```toml title="pyproject.toml"
+    [tool.poetry]
+    name = "jupyter-nix-kernel-ipython"
+    version = "0.1.0"
+    description = ""
+    authors = []
 
-[tool.poetry.dependencies]
-python = "^3.9"
-numpy = "^1.23.0"
-ipykernel = "^6.15.0"
+    [tool.poetry.dependencies]
+    python = "^3.9"
+    numpy = "^1.23.0"
+    ipykernel = "^6.15.0"
 
-[tool.poetry.dev-dependencies]
-# build systems for dependencies
-hatchling = "^1.3.1"
+    [tool.poetry.dev-dependencies]
+    # build systems for dependencies
+    hatchling = "^1.3.1"
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-```
+    [build-system]
+    requires = ["poetry-core>=1.0.0"]
+    build-backend = "poetry.core.masonry.api"
+    ```
 
-3. Generate a `poetry.lock` file by running `poetry lock` in the kernel directory, `custom-python`.
+1. Generate a `poetry.lock` file by running `poetry lock` in the kernel directory, `custom-python`.
 1. Below is the `default.nix` file which looks similar to the file in the [previous example](#extending-kernels).
    However now we are overriding the `projectDir` attribute of the available kernel and setting it to the current directory.
    This tells `poetry2nix` to look in the current directory for the `pyproject.toml` and `poetry.lock` files which will create a new Python kernel with the version of `numpy` that we specified.
    Similar to before we set the `name` and `displayName` attribute so we can distinguish it from other kernels.
 
-```nix
-{
-  name,
-  availableKernels,
-  extraArgs,
-}:
-availableKernels.python {
-  projectDir = ./.;
-  displayName = "Python with Numpy 1.23.x";
-  name = "my-python-with-numpy";
-}
-```
+    ```nix title="default.nix"
+    {
+      name,
+      availableKernels,
+      extraArgs,
+    }:
+    availableKernels.python {
+      projectDir = ./.;
+      displayName = "Python with Numpy 1.23.x";
+      name = "my-python-with-numpy";
+    }
+    ```
 
-5. From the project top level directory, run `nix run`.
+1. From the project top level directory, run `nix run`.
    This make take some time as new packages and dependencies have to be fetched.
    Eventually, you will see the recognizable messages from JupyterLab in your terminal.
    Open up the Web UI in your browser and use your custom kernel.

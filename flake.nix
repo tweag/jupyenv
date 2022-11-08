@@ -199,6 +199,25 @@
           excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
         };
 
+        mkdocs = pkgs.python3.withPackages (p: [
+          p.mkdocs
+          p.mkdocs-material
+          p.mkdocs-material-extensions
+        ]);
+
+        docs = pkgs.stdenv.mkDerivation {
+          name = "jupyterwith-docs";
+          src = self;
+          nativeBuildInputs = [mkdocs];
+          buildPhase = ''
+            mkdocs build --site-dir dist
+          '';
+          installPhase = ''
+            mkdir $out
+            cp -R dist/* $out/
+          '';
+        };
+
         jupyterlabEnvWrapped = {
           projectDir ? self, # TODO: only include relevant files/folders
           pyproject ? projectDir + "/pyproject.toml",
@@ -574,6 +593,7 @@
                   done
                 '';
               };
+            inherit mkdocs docs;
             default = jupyterlabEnvWrapped {};
           }
           // exampleJupyterlabKernels;
@@ -585,6 +605,7 @@
             pkgs.python3Packages.poetry
             pkgs.rnix-lsp
             self.packages."${system}".update-poetry-lock
+            mkdocs
           ];
           shellHook = ''
             ${pre-commit.shellHook}

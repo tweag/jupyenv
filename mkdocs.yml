@@ -1,0 +1,41 @@
+site_name: jupyterWith
+site_url: https://tweag.github.io/jupyterWith
+nav:
+    - Home: index.md
+    - How To: HOWTO.md
+    - Tutorials: TUTORIALS.md
+    - Developer: DETAILS.md
+    - Roadmap: ROADMAP.md
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for dark mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+markdown_extensions:
+    # lists
+    - def_list
+    - pymdownx.tasklist:
+        custom_checkbox: true
+    # images
+    - attr_list
+    - md_in_html
+    # code blocks
+    - pymdownx.highlight:
+        anchor_linenums: true
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - pymdownx.superfences
+    # emojis
+    - pymdownx.emoji:
+        emoji_index: !!python/name:materialx.emoji.twemoji
+        emoji_generator: !!python/name:materialx.emoji.to_svg
