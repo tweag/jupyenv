@@ -132,6 +132,7 @@ jobs:
         mkdir ./public
         cp -R ./result ./public
         chmod -R +w ./public
+        ls -la ./public
 
     - name: Publish to Netlify
       uses: nwtgck/actions-netlify@v1.2
