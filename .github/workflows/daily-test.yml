@@ -12,30 +12,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          path: repo
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        path: repo
 
-      - name: Setup
-        uses: ./repo/.github/actions/common-setup
-        with:
-          CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+    - name: Setup
+      uses: ./repo/.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
-      - name: Initialize template
-        run: |
-          nix flake new --template github:tweag/jupyterWith example
+    - name: Initialize template
+      run: |
+        nix flake new --template github:tweag/jupyterWith example
 
-      - name: Build
-        run: |
-          cd example/
-          nix build
+    - name: Build
+      run: |
+        cd example/
+        nix build
 
-      - name: Slack Notify
-        uses: act10ns/slack@v1.6.0
-        with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          status: ${{ job.status }}
-          channel: '#jupyter'
-
-
+    - name: Slack Notify
+      uses: act10ns/slack@v1.6.0
+      with:
+        webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        status: ${{ job.status }}
+        channel: '#jupyter'

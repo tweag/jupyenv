@@ -130,27 +130,28 @@ jobs:
       run: |
         nix build -L .#docs
 
-#  template:
-#    name: Test a template
-#    needs: build-kernel
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#    - uses: actions/checkout@v3
-#      with:
-#        path: repo
-#        fetch-depth: 0
-#
-#    - name: Setup
-#      uses: ./repo/.github/actions/common-setup
-#      with:
-#        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-#
-#    - name: Initialize template
-#      run: |
-#        nix flake new --template ./repo example
-#        cd example
-#        sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../|" flake.nix
-#        nix build
+  template:
+    name: Test a template
+    needs: build-kernel
+    runs-on: ubuntu-latest
 
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: repo
+        fetch-depth: 0
 
+    - name: Setup
+      uses: ./repo/.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+    - name: Initialize template
+      run: |
+        nix flake new --template path:$PWD/repo example
+
+    - name: Build
+      run: |
+        cd example
+        sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../repo|" flake.nix
+        nix build
