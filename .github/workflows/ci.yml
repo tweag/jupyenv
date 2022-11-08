@@ -152,6 +152,11 @@ jobs:
 
     - name: Build
       run: |
-        cd example
-        sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../repo|" flake.nix
-        nix build
+        pushd example
+          sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../repo|" flake.nix
+          nix build
+        popd
+
+    - name: Test
+      run: |
+        ./example/result/bin/python ./repo/kernel/available/python/test.py
