@@ -22,13 +22,20 @@ theme:
         name: Switch to dark mode
 
 markdown_extensions:
+    # lists
+    - def_list
+    - pymdownx.tasklist:
+        custom_checkbox: true
+    # images
     - attr_list
     - md_in_html
+    # code blocks
     - pymdownx.highlight:
         anchor_linenums: true
     - pymdownx.inlinehilite
     - pymdownx.snippets
     - pymdownx.superfences
+    # emojis
     - pymdownx.emoji:
         emoji_index: !!python/name:materialx.emoji.twemoji
         emoji_generator: !!python/name:materialx.emoji.to_svg
