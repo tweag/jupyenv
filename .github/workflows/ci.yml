@@ -132,7 +132,7 @@ jobs:
 
   template:
     name: Test a template
-      #    needs: build-kernel
+    #    needs: build-kernel
     runs-on: ubuntu-latest
 
     steps:
