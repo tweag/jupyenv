@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  workflow_dispatch: # allows manual triggering
+  schedule:
+    - cron: "8 0 * * *" # run on a daily basis
+  push:
+    branches:
+      - test-template-in-ci
+
+jobs:
+  test-template:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Setup
+        uses: ./.github/actions/common-setup
+        with:
+          CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+      - name: Initialize template
+        run: |
+          nix flake init --template github:tweag/jupyterWith
+
+      - name: Build
+        run: |
+          nix build
+
