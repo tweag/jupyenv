@@ -130,8 +130,8 @@ jobs:
       run: |
         nix build -L .#docs
         mkdir ./public
-        cp -R ./result ./public
-        chmod -R +w ./public
+        cp -R ./result/* ./public/
+        chmod -R +w ./public/
         ls -la ./public
 
     - name: Publish to Netlify
