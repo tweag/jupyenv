@@ -8,131 +8,131 @@ on:
 
 jobs:
 
-  #  build:
-  #    name: Build jupyterlab (no kernels)
-  #    runs-on: ubuntu-latest
-  #
-  #    outputs:
-  #      kernels: ${{ steps.kernels.outputs.kernels }}
-  #
-  #    steps:
-  #    - uses: actions/checkout@v3
-  #      with:
-  #        fetch-depth: 0
-  #
-  #    - name: Setup
-  #      uses: ./.github/actions/common-setup
-  #      with:
-  #        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-  #
-  #    - name: List all available kernels
-  #      id: kernels
-  #      run: |
-  #        kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
-  #        echo $kernels
-  #        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-example-")]')
-  #        echo "kernels=$filterKernels" >> $GITHUB_OUTPUT
-  #
-  #    - name: Check
-  #      run: |
-  #        nix flake check --show-trace -L
-  #
-  #
-  #  build-kernel:
-  #    name: Build ${{ matrix.kernel }} kernel
-  #    needs: build
-  #    runs-on: ubuntu-latest
-  #
-  #    strategy:
-  #      fail-fast: false
-  #      matrix:
-  #        kernel: ${{ fromJSON(needs.build.outputs.kernels) }}
-  #
-  #    steps:
-  #    - uses: actions/checkout@v3
-  #      with:
-  #        fetch-depth: 0
-  #
-  #    - name: Setup
-  #      uses: ./.github/actions/common-setup
-  #      with:
-  #        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-  #
-  #    - name: Build ${{ matrix.kernel }} kernel
-  #      run: |
-  #        nix build -L .#jupyterlab-kernel-example-${{ matrix.kernel }}
-  #
-  #    # TODO remove once we have a better solution. For more info see
-  #    # https://github.com/tweag/jupyterWith/pull/280
-  #    - name: Install IJulia
-  #      if: matrix.kernel == 'julia'
-  #      run: |
-  #        result/bin/julia kernels/available/julia/installDeps.jl
-  #
-  #    - name: Test notebook for ${{ matrix.kernel }} kernel
-  #      run: |
-  #        result/bin/python kernels/available/$( echo "${{ matrix.kernel }}" | sed -e "s|^stable-||" )/test.py
-  #
-  #  build-all-kernels:
-  #    name: Build all kernels
-  #    needs: build-kernel
-  #    runs-on: ubuntu-latest
-  #
-  #    steps:
-  #    - uses: actions/checkout@v3
-  #      with:
-  #        fetch-depth: 0
-  #
-  #    - name: Setup
-  #      uses: ./.github/actions/common-setup
-  #      with:
-  #        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-  #
-  #    - name: Build all kernels
-  #      run: |
-  #        nix build -L .#jupyterlab-all-example-kernels
-  #
-  #  build-devshell:
-  #    name: Build devshell
-  #    needs: build-kernel
-  #    runs-on: ubuntu-latest
-  #
-  #    steps:
-  #    - uses: actions/checkout@v3
-  #      with:
-  #        fetch-depth: 0
-  #
-  #    - name: Setup
-  #      uses: ./.github/actions/common-setup
-  #      with:
-  #        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-  #
-  #    - name: Build all kernels
-  #      run: |
-  #        nix build -L .\#devShells.x86_64-linux.default
-  #
-  #  build-docs:
-  #    name: Build docs
-  #    needs: build-kernel
-  #    runs-on: ubuntu-latest
-  #
-  #    steps:
-  #    - uses: actions/checkout@v3
-  #      with:
-  #        fetch-depth: 0
-  #
-  #    - name: Setup
-  #      uses: ./.github/actions/common-setup
-  #      with:
-  #        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-  #
-  #    - name: Build all kernels
-  #      run: |
-  #        nix build -L .#docs
+  build:
+    name: Build jupyterlab (no kernels)
+    runs-on: ubuntu-latest
+
+    outputs:
+      kernels: ${{ steps.kernels.outputs.kernels }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+    - name: List all available kernels
+      id: kernels
+      run: |
+        kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
+        echo $kernels
+        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-example-")]')
+        echo "kernels=$filterKernels" >> $GITHUB_OUTPUT
+
+    - name: Check
+      run: |
+        nix flake check --show-trace -L
+
+
+  build-kernel:
+    name: Build ${{ matrix.kernel }} kernel
+    needs: build
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        kernel: ${{ fromJSON(needs.build.outputs.kernels) }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+    - name: Build ${{ matrix.kernel }} kernel
+      run: |
+        nix build -L .#jupyterlab-kernel-example-${{ matrix.kernel }}
+
+    # TODO remove once we have a better solution. For more info see
+    # https://github.com/tweag/jupyterWith/pull/280
+    - name: Install IJulia
+      if: matrix.kernel == 'julia'
+      run: |
+        result/bin/julia kernels/available/julia/installDeps.jl
+
+    - name: Test notebook for ${{ matrix.kernel }} kernel
+      run: |
+        result/bin/python kernels/available/$( echo "${{ matrix.kernel }}" | sed -e "s|^stable-||" )/test.py
+
+  build-all-kernels:
+    name: Build all kernels
+    needs: build-kernel
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+    - name: Build all kernels
+      run: |
+        nix build -L .#jupyterlab-all-example-kernels
+
+  build-devshell:
+    name: Build devshell
+    needs: build-kernel
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+    - name: Build all kernels
+      run: |
+        nix build -L .\#devShells.x86_64-linux.default
+
+  build-docs:
+    name: Build docs
+    needs: build-kernel
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+    - name: Build all kernels
+      run: |
+        nix build -L .#docs
 
   template:
     name: Test a template
-      #needs: build-kernel
+    needs: build-kernel
     runs-on: ubuntu-latest
 
     steps:
