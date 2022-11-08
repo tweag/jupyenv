@@ -129,29 +129,49 @@ jobs:
     - name: Build all kernels
       run: |
         nix build -L .#docs
+        mkdir ./public
+        cp -R ./result/* ./public/
+        chmod -R +w ./public/
 
-  template:
-    name: Test a template
-    needs: build-kernel
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
+    - name: Publish to Netlify
+      uses: nwtgck/actions-netlify@v1.2
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       with:
-        path: repo
-        fetch-depth: 0
+        production-branch: 'main'
+        production-deploy: ${{ github.event_name == 'push' }}
+        publish-dir: 'public'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: 'Published from GitHub Actions'
+        enable-pull-request-comment: true
+        overwrites-pull-request-comment: true
+        enable-commit-comment: false
+        enable-commit-status: true
+      if: github.repository_owner == 'tweag'
 
-    - name: Setup
-      uses: ./repo/.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-
-    - name: Initialize template
-      run: |
-        nix flake new --template path:$PWD/repo example
-
-    - name: Build
-      run: |
-        cd example
-        sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../repo|" flake.nix
-        nix build
+        #  test-template:
+        #    name: Test a template
+        #    needs: build-kernel
+        #    runs-on: ubuntu-latest
+        #
+        #    steps:
+        #    - uses: actions/checkout@v3
+        #      with:
+        #        path: repo
+        #        fetch-depth: 0
+        #
+        #    - name: Setup
+        #      uses: ./repo/.github/actions/common-setup
+        #      with:
+        #        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        #
+        #    - name: Initialize template
+        #      run: |
+        #        nix flake new --template path:$PWD/repo example
+        #
+        #    - name: Build
+        #      run: |
+        #        cd example
+        #        sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../repo|" flake.nix
+        #        nix build
