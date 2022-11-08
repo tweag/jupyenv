@@ -129,6 +129,26 @@ jobs:
     - name: Build all kernels
       run: |
         nix build -L .#docs
+        mkdir ./public
+        cp -R ./result/* ./public/
+        chmod -R +w ./public/
+
+    - name: Publish to Netlify
+      uses: nwtgck/actions-netlify@v1.2
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      with:
+        production-branch: 'main'
+        production-deploy: ${{ github.event_name == 'push' }}
+        publish-dir: 'public'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: 'Published from GitHub Actions'
+        enable-pull-request-comment: true
+        overwrites-pull-request-comment: true
+        enable-commit-comment: false
+        enable-commit-status: true
+      if: github.repository_owner == 'tweag'
 
   template:
     name: Test a template
