@@ -92,9 +92,47 @@ jobs:
       run: |
         nix build -L .#jupyterlab-all-example-kernels
 
+  build-devshell:
+    name: Build devshell
+    needs: build-kernel
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+    - name: Build all kernels
+      run: |
+        nix build -L .\#devShells.x86_64-linux.default
+
+  build-docs:
+    name: Build docs
+    needs: build-kernel
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup
+      uses: ./.github/actions/common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+
+    - name: Build all kernels
+      run: |
+        nix build -L .#docs
+
 #  template:
 #    name: Test a template
-#    needs: build
+#    needs: build-kernel
 #    runs-on: ubuntu-latest
 #
 #    steps:
@@ -114,3 +152,5 @@ jobs:
 #        cd example
 #        sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../|" flake.nix
 #        nix build
+
+
