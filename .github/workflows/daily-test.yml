@@ -1,4 +1,4 @@
-name: CI
+name: Test template (daily)
 
 on:
   workflow_dispatch: # allows manual triggering
@@ -32,4 +32,12 @@ jobs:
         run: |
           cd example/
           nix build
+
+      - name: Slack notify
+        uses: act10ns/slack@v1.6.0
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          status: ${{ job.status }}
+          channel: '#jupyter'
+
 
