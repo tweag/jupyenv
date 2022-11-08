@@ -1,4 +1,4 @@
-# Jupyter ❤️  Nix
+# Jupyter :heart: Nix
 
 <p float="left">
   <img src="img/logos/bash-logo64.png" width="45" />
