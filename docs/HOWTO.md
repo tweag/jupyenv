@@ -35,7 +35,7 @@ nix flake init --template github:tweag/jupyterWith
 1. Build the project with `nix build .#`.
 1. Enter the Julia REPL with `./result/bin/julia`.
 1. Follow the commands from [IJulia](https://julialang.github.io/IJulia.jl/stable/manual/installation/#Installing-IJulia) documentation to install IJulia.
-   ```
+   ```julia
    julia
    julia> using Pkg
    julia> Pkg.add("IJulia")
