@@ -1,5 +1,6 @@
 site_name: jupyterWith
 site_url: https://tweag.github.io/jupyterWith
+repo_url: https://github.com/tweag/jupyterWith
 nav:
     - Home: index.md
     - How To: HOWTO.md
