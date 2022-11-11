@@ -5,10 +5,11 @@ repo_name: tweag/jupyterWith
 
 nav:
     - Home: index.md
-    - How To: HOWTO.md
-    - Tutorials: TUTORIALS.md
-    - Developer: DETAILS.md
-    - Roadmap: ROADMAP.md
+    - Getting Started: getting-started.md
+    - How To: how-to.md
+    - Tutorials: tutorials.md
+    - Developer Guide: developers.md
+    - Roadmap: roadmap.md
 
 theme:
   name: material

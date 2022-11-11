@@ -634,8 +634,8 @@
 
           See the jupyterWith documentation for more information.
 
-            https://github.com/tweag/jupyterWith/blob/main/docs/HOWTO.md
-            https://github.com/tweag/jupyterWith/blob/main/docs/TUTORIALS.md
+            https://github.com/tweag/jupyterWith/blob/main/docs/how-to.md
+            https://github.com/tweag/jupyterWith/blob/main/docs/tutorials.md
         '';
       };
     };
