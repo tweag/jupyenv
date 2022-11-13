@@ -62,7 +62,7 @@ PRs are welcome!
 
 This project provides a development shell which you can enter with `nix develop`. Please run `pre-commit run -all` before submitting your pull request for review. This will run a nix formatter for consistency.
 
-See the [DETAILS](docs/DETAILS.md) document for information about how jupyterWith is architected.
+See the [Developers](docs/developers.md) document for information about how jupyterWith is architected.
 
 If you are new to contributing to open source, [this guide](https://opensource.guide/how-to-contribute/) helps explain why, what, and how to successfully get involved.
 
