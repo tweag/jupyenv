@@ -2,13 +2,15 @@ site_name: jupyterWith
 site_url: https://tweag.github.io/jupyterWith
 repo_url: https://github.com/tweag/jupyterWith
 repo_name: tweag/jupyterWith
+edit_uri: tree/main/docs/
 
 nav:
     - Home: index.md
-    - How To: HOWTO.md
-    - Tutorials: TUTORIALS.md
-    - Developer: DETAILS.md
-    - Roadmap: ROADMAP.md
+    - Getting Started: getting-started.md
+    - How To: how-to.md
+    - Tutorials: tutorials.md
+    - Developer Guide: developers.md
+    - Roadmap: roadmap.md
 
 theme:
   name: material
@@ -42,3 +44,7 @@ markdown_extensions:
     - pymdownx.emoji:
         emoji_index: !!python/name:materialx.emoji.twemoji
         emoji_generator: !!python/name:materialx.emoji.to_svg
+    # admonitions/call-outs
+    - admonition
+    - pymdownx.details
+    - pymdownx.superfences
