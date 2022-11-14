@@ -64,10 +64,16 @@ For example, if we wanted to add `scipy` and `pandas`, we could modify the list 
 
 We also modified the `name` and `displayName` attributes.
 Modifying `displayName` is not necessary but makes it easier to distinguish from other kernels in the JupyterLab Web UI.
-One very important note is that if you have multiple kernel files in your project, they must all have unique `name` attributes.
 
-Additional Info: The `extraPackages` argument is used with [poetry2nix][mkpoetryenv] and it takes a function that returns a list.
-We are using `mkPoetryEnv` from poetry2nix which uses `python.withPackages` -- see the related [documentation][withpackages] for details.
+
+???+ tip
+
+    One very important note is that if you have multiple kernel files in your project, they must all have unique `name` attributes.
+
+??? info
+
+    The `extraPackages` argument is used with [poetry2nix][mkpoetryenv] and it takes a function that returns a list.
+    We are using `mkPoetryEnv` from poetry2nix which uses `python.withPackages` -- see the related [documentation][withpackages] for details.
 
 ### Extending Kernels (Advanced)
 
