@@ -36,40 +36,53 @@
       cryptokit
     ],
 }: let
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ ocamlBuildInputs;
+  # allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ ocamlBuildInputs;
+  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
-  OcamlKernel = ocamlPackages.buildDunePackage rec {
-    pname = "jupyter";
+  OcamlKernel = let
+    name = "jupyter";
     version = "2.7.5"; # TODO: upgrade this to 2.8.0. Need to have ppx_yojson_conv in nixpkgs first; not ppx_yojson_conv_lib.
-    duneVersion = "3";
-
-    minimalOCamlVersion = "4.04";
-
     src = pkgs.fetchFromGitHub {
       owner = "akabe";
       repo = "ocaml-jupyter";
       rev = "v${version}";
       sha256 = "0dayyhvw3ynvncy9b7daiz3bcybfh38mbivgr693i16ld3gp6c6v";
     };
+  in
+    pkgs.opam-nix.buildDuneProject {inherit pkgs;} name src {};
 
-    buildInputs = ocamlBuildInputs;
-    propagatedBuildInputs = ocamlPropagatedBuildInputs;
+  # OcamlKernel = ocamlPackages.buildDunePackage rec {
+  #   pname = "jupyter";
+  #   version = "2.7.5"; # TODO: upgrade this to 2.8.0. Need to have ppx_yojson_conv in nixpkgs first; not ppx_yojson_conv_lib.
+  #   duneVersion = "3";
 
-    doCheck = false;
+  #   minimalOCamlVersion = "4.04";
 
-    meta = with pkgs.lib; {
-      homepage = "https://github.com/akabe/ocaml-jupyter";
-      description = "An OCaml kernel for Jupyter (IPython) notebook.";
-      license = licenses.mit;
-      maintainers = with lib.maintainers; [akabe];
-    };
-  };
+  #   src = pkgs.fetchFromGitHub {
+  #     owner = "akabe";
+  #     repo = "ocaml-jupyter";
+  #     rev = "v${version}";
+  #     sha256 = "0dayyhvw3ynvncy9b7daiz3bcybfh38mbivgr693i16ld3gp6c6v";
+  #   };
 
-  env = OcamlKernel;
+  #   buildInputs = ocamlBuildInputs;
+  #   propagatedBuildInputs = ocamlPropagatedBuildInputs;
+
+  #   doCheck = false;
+
+  #   meta = with pkgs.lib; {
+  #     homepage = "https://github.com/akabe/ocaml-jupyter";
+  #     description = "An OCaml kernel for Jupyter (IPython) notebook.";
+  #     license = licenses.mit;
+  #     maintainers = with lib.maintainers; [akabe];
+  #   };
+  # };
+
+  env = pkgs.callPackage OcamlKernel.jupyter {};
   wrappedEnv = let
     ocamlVersion = ocamlPackages.ocaml.version;
   in
-    pkgs.runCommand "wrapper-${env.name}"
+    pkgs.runCommand "wrapper-ocaml-kernel"
     {nativeBuildInputs = [pkgs.makeWrapper];}
     ''
       mkdir -p $out/bin
@@ -77,9 +90,11 @@
         filename=$(basename $i)
         # XXX: 'CAML_LD_LIBRARY_PATH' should be set automatically by the kernel.
         # Not sure why it doesn't, but setting it manually seems to fix things
+        # makeWrapper ${env}/bin/$filename $out/bin/$filename \
+        #   --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
+        #   --set CAML_LD_LIBRARY_PATH "${pkgs.lib.makeSearchPath "lib/ocaml/${ocamlVersion}/site-lib/stublibs" ocamlPropagatedBuildInputs}"
         makeWrapper ${env}/bin/$filename $out/bin/$filename \
-          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
-          --set CAML_LD_LIBRARY_PATH "${pkgs.lib.makeSearchPath "lib/ocaml/${ocamlVersion}/site-lib/stublibs" ocamlPropagatedBuildInputs}"
+          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
       done
     '';
 in {
