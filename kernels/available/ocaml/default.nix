@@ -7,96 +7,47 @@
   displayName ? "OCaml",
   runtimePackages ? [],
   extraRuntimePackages ? [],
-  ocamlPackages ? pkgs.ocaml-ng.ocamlPackages_4_12,
-  ocamlBuildInputs ?
-    with ocamlPackages; [
-      ocaml-syntax-shims
-      yojson
-      lwt_ppx
-      ppx_deriving
-      ppx_deriving_yojson
-      base64
-      uuidm
-      logs
-      cryptokit
-      zmq
-      zmq-lwt
-      cppo
-      ounit
-      merlin
-    ],
-  ocamlPropagatedBuildInputs ?
-    with ocamlPackages; [
-      bigstringaf
-      result
-      lwt
-      stdint
-      zmq
-      zarith
-      cryptokit
-    ],
 }: let
-  # allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ ocamlBuildInputs;
   allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
   OcamlKernel = let
     name = "jupyter";
-    version = "2.7.5"; # TODO: upgrade this to 2.8.0. Need to have ppx_yojson_conv in nixpkgs first; not ppx_yojson_conv_lib.
+    version = "2.8.0";
     src = pkgs.fetchFromGitHub {
       owner = "akabe";
       repo = "ocaml-jupyter";
       rev = "v${version}";
-      sha256 = "0dayyhvw3ynvncy9b7daiz3bcybfh38mbivgr693i16ld3gp6c6v";
+      sha256 = "sha256-IWbM6rOjcE1QHO+GVl8ZwiZQpNmdBbTdfMZe69D5lIU=";
     };
   in
-    pkgs.opam-nix.buildDuneProject {inherit pkgs;} name src {};
+    pkgs.opam-nix.buildDuneProject
+    {
+      pkgs = pkgs.extend (final: _: {zeromq3 = final.zeromq4;});
+    }
+    name
+    src
+    {
+      # Merlin was specified in the kernel depopts but not pulled in automatically.
+      merlin = "*";
+    };
 
-  # OcamlKernel = ocamlPackages.buildDunePackage rec {
-  #   pname = "jupyter";
-  #   version = "2.7.5"; # TODO: upgrade this to 2.8.0. Need to have ppx_yojson_conv in nixpkgs first; not ppx_yojson_conv_lib.
-  #   duneVersion = "3";
-
-  #   minimalOCamlVersion = "4.04";
-
-  #   src = pkgs.fetchFromGitHub {
-  #     owner = "akabe";
-  #     repo = "ocaml-jupyter";
-  #     rev = "v${version}";
-  #     sha256 = "0dayyhvw3ynvncy9b7daiz3bcybfh38mbivgr693i16ld3gp6c6v";
-  #   };
-
-  #   buildInputs = ocamlBuildInputs;
-  #   propagatedBuildInputs = ocamlPropagatedBuildInputs;
-
-  #   doCheck = false;
-
-  #   meta = with pkgs.lib; {
-  #     homepage = "https://github.com/akabe/ocaml-jupyter";
-  #     description = "An OCaml kernel for Jupyter (IPython) notebook.";
-  #     license = licenses.mit;
-  #     maintainers = with lib.maintainers; [akabe];
-  #   };
-  # };
-
-  env = pkgs.callPackage OcamlKernel.jupyter {};
-  wrappedEnv = let
-    ocamlVersion = ocamlPackages.ocaml.version;
-  in
-    pkgs.runCommand "wrapper-ocaml-kernel"
-    {nativeBuildInputs = [pkgs.makeWrapper];}
-    ''
-      mkdir -p $out/bin
-      for i in ${env}/bin/*; do
+  env = OcamlKernel.jupyter;
+  wrappedEnv = env.overrideAttrs (oa: {
+    nativeBuildInputs = oa.nativeBuildInputs ++ [pkgs.makeWrapper];
+    postInstall = ''
+      for i in $out/bin/*; do
         filename=$(basename $i)
-        # XXX: 'CAML_LD_LIBRARY_PATH' should be set automatically by the kernel.
-        # Not sure why it doesn't, but setting it manually seems to fix things
-        # makeWrapper ${env}/bin/$filename $out/bin/$filename \
-        #   --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
-        #   --set CAML_LD_LIBRARY_PATH "${pkgs.lib.makeSearchPath "lib/ocaml/${ocamlVersion}/site-lib/stublibs" ocamlPropagatedBuildInputs}"
-        makeWrapper ${env}/bin/$filename $out/bin/$filename \
-          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+        # The kernel expects to run in the environment provided by opam, which
+        # usually has all the transitive dependencies (including stublibs)
+        # installed in the same switch, with the corresponding variables pointed to it.
+        # This is not the case with the nix store, so we have to point it to
+        # the corresponding store paths manually.
+        wrapProgram $out/bin/$filename \
+          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
+          --set CAML_LD_LIBRARY_PATH "$CAML_LD_LIBRARY_PATH"
       done
     '';
+  });
 in {
   inherit name displayName;
   language = "ocaml";
@@ -105,7 +56,7 @@ in {
     "-init"
     "/home/$USER/.ocamlinit"
     "--merlin"
-    "${pkgs.ocamlPackages.merlin}/bin/ocamlmerlin"
+    "${OcamlKernel.merlin}/bin/ocamlmerlin"
     "--verbosity"
     "app"
     "--connection-file"
