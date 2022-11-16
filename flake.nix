@@ -15,6 +15,8 @@
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.ihaskell.url = "github:ihaskell/ihaskell";
   inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
+  inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
   inputs.npmlock2nix.url = "github:nix-community/npmlock2nix";
   inputs.npmlock2nix.flake = false;
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
