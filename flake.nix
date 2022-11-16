@@ -179,6 +179,7 @@
             ihaskellPkgs = import "${ihaskell}/release.nix";
           })
         ];
+        _overlay = pkgs.lib.composeManyExtensions overlays;
 
         pkgs = import nixpkgs {
           inherit overlays system;
@@ -606,7 +607,7 @@
             default = jupyterlabEnvWrapped {};
           }
           // exampleJupyterlabKernels;
-        overlays.default = pkgs.lib.composeManyExtensions overlays;
+        overlays.default = _overlay;
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
