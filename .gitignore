@@ -3,7 +3,7 @@ result*
 /.direnv/
 /.pre-commit-config.yaml
 
-/.ipynb_checkpoints/
+.ipynb_checkpoints
 /*.ipynb
 
 # generated folder of jupyter distribution
