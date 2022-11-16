@@ -13,6 +13,8 @@
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.ihaskell.url = "github:ihaskell/ihaskell";
+  inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
   inputs.npmlock2nix.url = "github:nix-community/npmlock2nix";
   inputs.npmlock2nix.flake = false;
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
@@ -31,6 +33,7 @@
     nixpkgs-stable,
     flake-compat,
     flake-utils,
+    ihaskell,
     npmlock2nix,
     pre-commit-hooks,
     poetry2nix,
@@ -168,6 +171,10 @@
           rust-overlay.overlays.default
           (self: super: {
             npmlock2nix = pkgs.callPackage npmlock2nix {};
+          })
+          (self: super: {
+            # XXX: Putting that in pkgs is a bit ugly
+            ihaskellPkgs = import "${ihaskell}/release.nix";
           })
         ];
 

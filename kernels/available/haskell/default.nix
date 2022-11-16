@@ -3,44 +3,24 @@
   pkgs,
   name ? "haskell",
   displayName ? "Haskell",
-  ihaskell ? pkgs.haskellPackages.ihaskell,
-  extraHaskellFlags ? "",
+  haskellKernelPkg ? pkgs.ihaskellPkgs,
+  haskellCompiler ? "ghc902",
+  extraHaskellFlags ? "-M3g -N2",
   extraHaskellPackages ? (_: []),
 }: let
-  inherit (pkgs) haskellPackages lib stdenv writeScriptBin;
-
-  ghcEnv = haskellPackages.ghcWithPackages (self: [ihaskell] ++ extraHaskellPackages self);
-
-  ghciBin = writeScriptBin "ghciBin" ''
-    ${ghcEnv}/bin/ghci "$@"
-  '';
-
-  ghcBin = writeScriptBin "ghcBin" ''
-    ${ghcEnv}/bin/ghc "$@"
-  '';
-
-  ihaskellSh = writeScriptBin "ihaskell" ''
-    #! ${stdenv.shell}
-    export GHC_PACKAGE_PATH="$(echo ${ghcEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
-    export PATH="${lib.makeBinPath [ghcEnv]}:$PATH"
-    if [[ ''${@: -1} == --Kernel* ]] ; then
-      ${ihaskell}/bin/ihaskell ${extraHaskellFlags} -l $(${ghcEnv}/bin/ghc --print-libdir) "''${@:1:$#-1}"
-    else
-      ${ihaskell}/bin/ihaskell ${extraHaskellFlags} -l $(${ghcEnv}/bin/ghc --print-libdir) "$@"
-    fi
-  '';
+  env = haskellKernelPkg {
+    compiler = haskellCompiler;
+    nixpkgs = pkgs;
+    packages = extraHaskellPackages;
+  };
+  kernelspec =
+    env.ihaskellKernelFileFunc
+    (env.ihaskellGhcLibFunc env.ihaskellExe env.ihaskellEnv)
+    extraHaskellFlags;
 in {
   inherit name displayName;
   language = "haskell";
-  argv = [
-    "${ihaskellSh}/bin/ihaskell"
-    "kernel"
-    "{connection_file}"
-    "+RTS"
-    "-M3g"
-    "-N2"
-    "-RTS"
-  ];
+  argv = kernelspec.argv;
   codemirrorMode = "haskell";
   logo64 = ./logo64.png;
 }
