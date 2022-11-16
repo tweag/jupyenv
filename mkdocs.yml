@@ -14,6 +14,7 @@ nav:
 
 theme:
   name: material
+  custom_dir: docs/overrides
   palette:
     # Palette toggle for dark mode
     - scheme: default

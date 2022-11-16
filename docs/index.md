@@ -1,3 +1,7 @@
+---
+template: home.html
+---
+
 # Jupyter :heart: Nix
 
 <figure markdown>

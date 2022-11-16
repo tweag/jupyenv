@@ -1,0 +1,31 @@
+{% extends "main.html" %}
+
+
+{% block tabs %}
+  {{ super() }}
+
+<style>
+
+/* Hide main content for now */
+.md-content {
+  display: none!important;
+}
+
+/* Hide navigation */
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--primary {
+    display: none!important;
+  }
+}
+
+/* Hide table of contents */
+@media screen and (min-width: 60em) {
+  .md-sidebar--secondary {
+    display: none!important;
+  }
+}
+
+</style>
+
+{% endblock %}
+
