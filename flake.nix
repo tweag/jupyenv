@@ -607,7 +607,7 @@
             default = jupyterlabEnvWrapped {};
           }
           // exampleJupyterlabKernels;
-        overlays.default = _overlay;
+        overlays = _overlay;
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
