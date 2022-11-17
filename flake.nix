@@ -165,22 +165,22 @@
     };
 
     kernelsConfig = getKernelsFromPath (self + /kernels);
+
+    overlays = [
+      poetry2nix.overlay
+      rust-overlay.overlays.default
+      (self: super: {
+        npmlock2nix = self.callPackage npmlock2nix {};
+      })
+      (self: super: {
+        # XXX: Putting that in pkgs is a bit ugly
+        ihaskellPkgs = import "${ihaskell}/release.nix";
+      })
+    ];
+    _overlay = lib.composeManyExtensions overlays;
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
-        overlays = [
-          poetry2nix.overlay
-          rust-overlay.overlays.default
-          (self: super: {
-            npmlock2nix = pkgs.callPackage npmlock2nix {};
-          })
-          (self: super: {
-            # XXX: Putting that in pkgs is a bit ugly
-            ihaskellPkgs = import "${ihaskell}/release.nix";
-          })
-        ];
-        _overlay = pkgs.lib.composeManyExtensions overlays;
-
         pkgs = import nixpkgs {
           inherit overlays system;
         };
@@ -607,7 +607,6 @@
             default = jupyterlabEnvWrapped {};
           }
           // exampleJupyterlabKernels;
-        overlays = _overlay;
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
@@ -649,5 +648,6 @@
             https://github.com/tweag/jupyterWith/blob/main/docs/tutorials.md
         '';
       };
+      overlays.default = _overlay;
     };
 }
