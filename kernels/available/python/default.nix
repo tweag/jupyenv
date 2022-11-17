@@ -7,7 +7,7 @@
   projectDir ? self + "/kernels/available/python",
   pyproject ? projectDir + "/pyproject.toml",
   poetrylock ? projectDir + "/poetry.lock",
-  overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
+  overrides ? import ./overrides.nix pkgs,
   python ? pkgs.python3,
   editablePackageSources ? {},
   extraPackages ? ps: [],

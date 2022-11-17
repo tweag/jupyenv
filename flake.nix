@@ -44,6 +44,68 @@
       # flake-utils.lib.system.x86_64-darwin
     ];
 
+    poetryBuildSystems = final: prev:
+      lib.mapAttrs
+      (attr: systems:
+        builtins.foldl'
+        (drv: attr:
+          addBuildSystem {
+            inherit drv final attr;
+          })
+        prev.${attr}
+        systems)
+      (lib.importJSON "${poetry2nix}/overrides/build-systems.json");
+
+    addBuildSystem = {
+      final,
+      drv,
+      attr,
+      extraAttrs ? [],
+    }: let
+      buildSystem =
+        if builtins.isAttrs attr
+        then let
+          fromIsValid =
+            if builtins.hasAttr "from" attr
+            then lib.versionAtLeast drv.version attr.from
+            else true;
+          untilIsValid =
+            if builtins.hasAttr "until" attr
+            then lib.versionOlder drv.version attr.until
+            else true;
+          intendedBuildSystem =
+            if attr.buildSystem == "cython"
+            then final.python.pythonForBuild.cython
+            else final.${attr.buildSystem};
+        in
+          if fromIsValid && untilIsValid
+          then intendedBuildSystem
+          else null
+        else if attr == "cython"
+        then final.python.pythonForBuild.pkgs.cython
+        else final.${attr};
+    in (
+      # Flit only works on Python3
+      if (attr == "flit-core" || attr == "flit" || attr == "hatchling") && !final.isPy3k
+      then drv
+      else if drv == null
+      then null
+      else if drv ? overridePythonAttrs == false
+      then drv
+      else
+        drv.overridePythonAttrs (
+          old:
+          # We do not need the build system for wheels.
+            if old ? format && old.format == "wheel"
+            then {}
+            else {
+              nativeBuildInputs =
+                (old.nativeBuildInputs or [])
+                ++ lib.optionals (!(builtins.isNull buildSystem)) [buildSystem]
+                ++ map (a: final.${a}) extraAttrs;
+            }
+        )
+    );
     /*
     Takes a path to the kernels directory, `kernelsPath`,
     a kernel name, `fileName`,
@@ -166,8 +228,9 @@
         overlays = [
           poetry2nix.overlay
           rust-overlay.overlays.default
-          (self: super: {
+          (final: prev: {
             npmlock2nix = pkgs.callPackage npmlock2nix {};
+            inherit poetryBuildSystems;
           })
         ];
 
