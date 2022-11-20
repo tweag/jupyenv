@@ -5,6 +5,6 @@
 }:
 availableKernels.python {
   inherit name;
-  inherit (extraArgs) pkgs;
+  inherit (extraArgs) system;
   displayName = "Custom ${name}";
 }

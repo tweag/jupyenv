@@ -180,7 +180,7 @@
         };
 
         baseArgs = {
-          inherit self pkgs;
+          inherit self system;
         };
 
         pre-commit = pre-commit-hooks.lib.${system}.run {
@@ -525,7 +525,7 @@
                   kernels = availableKernels: [
                     (import kernelsConfig.kernels.${name} {
                       inherit name availableKernels;
-                      extraArgs = {inherit pkgs pkgs_stable;};
+                      extraArgs = {inherit pkgs_stable;};
                     })
                   ];
                 };
@@ -535,7 +535,7 @@
           )
         );
 
-        exampleJupyterlabAllKernels = mkJupyterlabFromPath ./kernels {inherit pkgs pkgs_stable;};
+        exampleJupyterlabAllKernels = mkJupyterlabFromPath ./kernels {inherit system;};
 
         /*
         Returns kernel instance from a folder.
