@@ -5,6 +5,6 @@
 }:
 availableKernels.zsh {
   inherit name;
-  inherit (extraArgs) pkgs;
+  inherit (extraArgs) system;
   displayName = "Example Zsh Kernel";
 }

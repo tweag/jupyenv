@@ -531,7 +531,7 @@
           )
         );
 
-        exampleJupyterlabAllKernels = mkJupyterlabFromPath ./kernels {inherit system;};
+        exampleJupyterlabAllKernels = mkJupyterlabFromPath ./kernels {inherit system pkgs_stable;};
 
         /*
         Returns kernel instance from a folder.
