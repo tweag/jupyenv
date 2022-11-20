@@ -5,6 +5,6 @@
 }:
 availableKernels.julia {
   inherit name;
-  inherit (extraArgs) pkgs;
+  inherit (extraArgs) system;
   displayName = "Example Julia Kernel";
 }

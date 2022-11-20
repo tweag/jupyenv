@@ -1,6 +1,8 @@
 {
   self,
-  pkgs,
+  system,
+  # custom arguments
+  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "r",
   displayName ? "R",
   rWrapper ? pkgs.rWrapper,

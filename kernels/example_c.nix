@@ -5,6 +5,6 @@
 }:
 availableKernels.c {
   inherit name;
-  inherit (extraArgs) pkgs;
+  inherit (extraArgs) system;
   displayName = "Example C Kernel";
 }

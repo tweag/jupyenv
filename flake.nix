@@ -165,10 +165,6 @@
       system: let
         overlays = [
           poetry2nix.overlay
-          rust-overlay.overlays.default
-          (self: super: {
-            npmlock2nix = pkgs.callPackage npmlock2nix {};
-          })
         ];
 
         pkgs = import nixpkgs {
@@ -525,7 +521,7 @@
                   kernels = availableKernels: [
                     (import kernelsConfig.kernels.${name} {
                       inherit name availableKernels;
-                      extraArgs = {inherit pkgs_stable;};
+                      extraArgs = {inherit system pkgs_stable;};
                     })
                   ];
                 };

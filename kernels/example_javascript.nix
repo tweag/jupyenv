@@ -5,6 +5,6 @@
 }:
 availableKernels.javascript {
   inherit name;
-  inherit (extraArgs) pkgs;
+  inherit (extraArgs) system;
   displayName = "Example Javascript Kernel";
 }

@@ -5,6 +5,6 @@
 }:
 availableKernels.nix {
   inherit name;
-  inherit (extraArgs) pkgs;
+  inherit (extraArgs) system;
   displayName = "Example Nix Kernel";
 }

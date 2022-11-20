@@ -1,6 +1,13 @@
 {
   self,
-  pkgs,
+  system,
+  # custom arguments
+  pkgs ?
+    import self.inputs.nixpkgs {
+      inherit system;
+      overlays = [rust-overlay];
+    },
+  rust-overlay ? self.inputs.rust-overlay.overlays.default,
   name ? "rust",
   displayName ? "Rust",
   runtimePackages ? with pkgs; [cargo gcc binutils-unwrapped],

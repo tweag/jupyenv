@@ -1,11 +1,13 @@
 {
   self,
-  pkgs,
+  system,
+  # custom arguments
+  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "typescript",
   displayName ? "Typescript",
   runtimePackages ? [],
   extraRuntimePackages ? [],
-  npmlock2nix ? pkgs.npmlock2nix,
+  npmlock2nix ? pkgs.callPackage self.inputs.npmlock2nix {},
 }: let
   inherit (pkgs) lib stdenv writeScriptBin;
   inherit (lib) makeBinPath;
