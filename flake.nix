@@ -163,17 +163,13 @@
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
-        overlays = [
-          poetry2nix.overlay
-        ];
+        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs_stable = nixpkgs-stable.legacyPackages.${system};
 
-        pkgs = import nixpkgs {
-          inherit overlays system;
-        };
-
-        pkgs_stable = import nixpkgs-stable {
-          inherit overlays system;
-        };
+        python = pkgs.python3;
+        python3 = python;
+        poetry2nixPkgs = import "${poetry2nix}/default.nix" {inherit pkgs poetry;};
+        poetry = pkgs.callPackage "${poetry2nix}/pkgs/poetry" {inherit python;};
 
         baseArgs = {
           inherit self system;
@@ -218,14 +214,14 @@
           projectDir ? self, # TODO: only include relevant files/folders
           pyproject ? projectDir + "/pyproject.toml",
           poetrylock ? projectDir + "/poetry.lock",
-          overrides ? import ./overrides.nix pkgs,
-          python ? pkgs.python3,
+          overrides ? import ./overrides.nix pkgs poetry2nixPkgs,
+          python ? python3,
           editablePackageSources ? {},
           extraPackages ? (ps: []),
           preferWheels ? false,
           # groups ? ["devs"], # TODO: add groups after updating to latest poetry2nix. make sure to inherit below
         }: let
-          jupyterlabEnvBase = pkgs.poetry2nix.mkPoetryEnv {
+          jupyterlabEnvBase = poetry2nixPkgs.mkPoetryEnv {
             inherit
               projectDir
               pyproject
@@ -577,7 +573,7 @@
               pkgs.writeShellApplication
               {
                 name = "update-poetry-lock";
-                runtimeInputs = [pkgs.python3Packages.poetry];
+                runtimeInputs = [poetry];
                 text = ''
                   shopt -s globstar
                   for lock in **/poetry.lock; do
@@ -597,8 +593,8 @@
           packages = [
             pkgs.alejandra
             pkgs.typos
-            poetry2nix.defaultPackage.${system}
-            pkgs.python3Packages.poetry
+            poetry2nixPkgs.cli
+            poetry
             pkgs.rnix-lsp
             self.packages."${system}".update-poetry-lock
             mkdocs
