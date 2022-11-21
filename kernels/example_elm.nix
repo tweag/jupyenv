@@ -5,6 +5,6 @@
 }:
 availableKernels.elm {
   inherit name;
-  inherit (extraArgs) pkgs;
+  inherit (extraArgs) system;
   displayName = "Example Elm Kernel";
 }

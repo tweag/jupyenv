@@ -5,6 +5,6 @@
 }:
 availableKernels.r {
   inherit name;
-  inherit (extraArgs) pkgs;
+  inherit (extraArgs) system;
   displayName = "Example R Kernel";
 }

@@ -5,6 +5,6 @@
 }:
 availableKernels.rust {
   inherit name;
-  inherit (extraArgs) pkgs;
+  inherit (extraArgs) system;
   displayName = "Example Rust Kernel";
 }

@@ -1,6 +1,8 @@
 {
   self,
-  pkgs,
+  system,
+  # custom arguments
+  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "go",
   displayName ? "Go",
   runtimePackages ? with pkgs; [go],
