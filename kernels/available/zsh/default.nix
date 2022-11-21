@@ -1,21 +1,26 @@
 {
   self,
-  pkgs,
+  system,
+  # custom arguments
+  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "zsh",
   displayName ? "zsh",
   runtimePackages ? with pkgs; [zsh coreutils],
   extraRuntimePackages ? [],
+  # https://github.com/nix-community/poetry2nix
+  poetry2nix ? import "${self.inputs.poetry2nix}/default.nix" {inherit pkgs poetry;},
+  poetry ? pkgs.callPackage "${self.inputs.poetry2nix}/pkgs/poetry" {inherit python;},
   # https://github.com/nix-community/poetry2nix#mkPoetryPackages
   projectDir ? self + "/kernels/available/zsh",
   pyproject ? projectDir + "/pyproject.toml",
   poetrylock ? projectDir + "/poetry.lock",
-  overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
+  overrides ? poetry2nix.overrides.withDefaults (import ./overrides.nix),
   python ? pkgs.python3,
   editablePackageSources ? {},
   extraPackages ? ps: [],
   preferWheels ? false,
 }: let
-  env = pkgs.poetry2nix.mkPoetryEnv {
+  env = poetry2nix.mkPoetryEnv {
     inherit
       projectDir
       pyproject

@@ -1,11 +1,13 @@
 {
   self,
-  pkgs,
+  system,
+  # custom arguments
+  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "typescript",
   displayName ? "Typescript",
   runtimePackages ? [],
   extraRuntimePackages ? [],
-  npmlock2nix ? pkgs.npmlock2nix,
+  npmlock2nix ? pkgs.callPackage self.inputs.npmlock2nix {},
 }: let
   inherit (pkgs) lib stdenv writeScriptBin;
   inherit (lib) makeBinPath;
@@ -17,7 +19,7 @@
     sha256 = "1q2wsdcgha6qivs238pysgmiabjhyflpd1bqbx0cgisgiz2nq3vs";
   };
 
-  tslab = pkgs.npmlock2nix.build {
+  tslab = npmlock2nix.build {
     src = tslabSrc;
     node_modules_attrs.packageLockJson = ./package-lock.json;
     buildInputs = [pkgs.makeWrapper];

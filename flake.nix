@@ -165,10 +165,6 @@
       system: let
         overlays = [
           poetry2nix.overlay
-          rust-overlay.overlays.default
-          (self: super: {
-            npmlock2nix = pkgs.callPackage npmlock2nix {};
-          })
         ];
 
         pkgs = import nixpkgs {
@@ -180,7 +176,7 @@
         };
 
         baseArgs = {
-          inherit self pkgs;
+          inherit self system;
         };
 
         pre-commit = pre-commit-hooks.lib.${system}.run {
@@ -525,7 +521,7 @@
                   kernels = availableKernels: [
                     (import kernelsConfig.kernels.${name} {
                       inherit name availableKernels;
-                      extraArgs = {inherit pkgs pkgs_stable;};
+                      extraArgs = {inherit system pkgs_stable;};
                     })
                   ];
                 };
@@ -535,7 +531,7 @@
           )
         );
 
-        exampleJupyterlabAllKernels = mkJupyterlabFromPath ./kernels {inherit pkgs pkgs_stable;};
+        exampleJupyterlabAllKernels = mkJupyterlabFromPath ./kernels {inherit system pkgs_stable;};
 
         /*
         Returns kernel instance from a folder.

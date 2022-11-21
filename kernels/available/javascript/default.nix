@@ -1,6 +1,8 @@
 {
   self,
-  pkgs,
+  system,
+  # custom arguments
+  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "javascript",
   displayName ? "Javascript",
   ijavascript ? pkgs.nodePackages.ijavascript,
