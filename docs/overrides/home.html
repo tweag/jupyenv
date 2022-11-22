@@ -1,0 +1,149 @@
+{% extends "main.html" %}
+
+
+{% block tabs %}
+  {{ super() }}
+
+<style>
+
+/* Hide main content for now */
+.md-content {
+  display: none!important;
+}
+
+/* Hide navigation */
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--primary {
+    display: none!important;
+  }
+}
+
+/* Hide table of contents */
+@media screen and (min-width: 60em) {
+  .md-sidebar--secondary {
+    display: none!important;
+  }
+}
+
+.tx-hero {
+  max-width: 700px;
+  display: flex;
+  padding: .4rem;
+  margin: 0 auto;
+  text-align: center;
+}
+.tx-hero h1 {
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 46px;
+  /*color: rgb(38, 38, 38);*/
+}
+.tx-hero p {
+  /*color: rgb(92, 92, 92);*/
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 32px;
+}
+
+.circle-container {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 0;
+  left: 0;
+  margin-right: auto;
+  margin-left: auto;
+  width: 90%;
+  /*list-style-type: none;*/
+}
+
+.circle-list {
+  display: flex!important;
+  align-items: center;
+  justify-content: center;
+  right: 0;
+  left: 0;
+}
+
+.circle-element {
+  position: absolute;
+  margin: 0 0 0 0!important;
+}
+
+</style>
+
+  <!-- Hero for landing page -->
+  <div class="md-container tx-hero">
+    <div class="md-grid md-typeset">
+      <div class="md-main__inner">
+        <div>
+          <h1>Jupyter &#128151 Nix</h1>
+          <p>
+            jupyterWith provides a Nix-based framework for the definition of declarative and reproducible Jupyter environments.
+            These environments include JupyterLab - configurable with extensions - the classic notebook, and configurable Jupyter kernels.
+          </p>
+          <a
+            href="getting-started/"
+            title="Get Started"
+            class="md-button md-button--primary"
+          >
+            Get Started
+          </a>
+          <div class='circle-container'>
+
+            <ul class='circle-list'>
+              <li class='circle-element'><img src="assets/logos/external/squarelogo-greytext-orangebody-greymoons.png" width="160" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/bash-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/c-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/elm-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/go-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/haskell-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/python-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/javascript-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/julia-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/nix-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/ocaml-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/postgres-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/r-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/rust-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/scala-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/typescript-logo64.png" width="45" /></li>
+              <li class='circle-element'><img src="assets/logos/kernels/zsh-logo64.png" width="45" /></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var type = 1;
+    var radius = '12em';
+    var offset = '14em';
+    var start = -180;
+    //var $elements = $('li:not(:first-child)');
+    var elements = Array.prototype.slice.call(document.getElementsByClassName('circle-element'));
+    var centerImage = elements.shift();
+    //var numberOfElements = (type === 1) ?  $elements.length : $elements.length - 1;
+    var numberOfElements = (type === 1) ?  elements.length : elements.length - 1;
+    var slice = 360 * type / numberOfElements;
+
+    centerImage.style.transform = 'translateY(' + offset + ')';
+    centerImage.style.listStyleType = 'none';
+    elements.forEach((element, index) => {
+        var self = element,
+            rotate = slice * index + start,
+            rotateReverse = rotate * -1;
+        element.style.transform = 'rotate(' + rotate + 'deg) translate(' + radius + ') rotate(' + rotateReverse + 'deg)' + ' translateY(' + offset + ')';
+        element.style.listStyleType = 'none';
+        console.log(rotate);
+
+        // element.css({
+        //     'transform': 'rotate(' + rotate + 'deg) translate(' + radius + ') rotate(' + rotateReverse + 'deg)'
+        // });
+    });
+  </script>
+
+{% endblock %}
+

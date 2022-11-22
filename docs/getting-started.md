@@ -1,4 +1,54 @@
-# Quick Start
+## Setup
+
+
+a) Install [Nix](https://nixos.org/download.html#nix-install-linux)
+
+=== "Linux"
+
+    ```
+    sh <(curl -L https://nixos.org/nix/install) --daemon
+    ```
+
+=== "macOS"
+
+    ```
+    sh <(curl -L https://nixos.org/nix/install)
+    ```
+
+=== "Windows (WSL2)"
+
+    ```
+    sh <(curl -L https://nixos.org/nix/install) --no-daemon
+    ```
+
+=== "Docker"
+
+    ```
+    docker run -it nixos/nix
+    ```
+
+b) Enable `nix command` and `flakes`. See the [Wiki](https://nixos.wiki/wiki/Flakes#Enable_flakes).
+
+=== "Newcomers"
+
+    ```bash
+    # ~/.config/nix/nix.conf
+    experimental-features = nix-command flakes
+    ```
+
+=== "configuration.nix"
+
+    ```nix
+    # /etc/nixos/configuration.nix
+    { pkgs, ... }: {
+      ...
+      nix.settings.experimental-features = [ "nix-command" "flakes" ];
+      ...
+    }
+    ```
+
+
+## Quick Start
 
 The following snippet will create a new project directory, initialize the project with a flake template, enable a Python kernel, and start the JupyterLab environment.
 
