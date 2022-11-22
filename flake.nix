@@ -211,17 +211,26 @@
         };
 
         jupyterlabEnvWrapped = {
+          self,
+          system,
+          poetry2nix ? self.inputs.poetry2nix,
+          pkgs ?
+            import self.inputs.nixpkgs {
+              inherit system;
+              overlays = [poetry2nix.overlay];
+            },
+          # https://github.com/nix-community/poetry2nix#mkPoetryEnv
           projectDir ? self, # TODO: only include relevant files/folders
           pyproject ? projectDir + "/pyproject.toml",
           poetrylock ? projectDir + "/poetry.lock",
-          overrides ? import ./overrides.nix pkgs poetry2nixPkgs,
+          overrides ? import ./overrides.nix pkgs,
           python ? python3,
           editablePackageSources ? {},
           extraPackages ? (ps: []),
           preferWheels ? false,
           # groups ? ["devs"], # TODO: add groups after updating to latest poetry2nix. make sure to inherit below
         }: let
-          jupyterlabEnvBase = poetry2nixPkgs.mkPoetryEnv {
+          jupyterlabEnvBase = pkgs.poetry2nix.mkPoetryEnv {
             inherit
               projectDir
               pyproject
@@ -432,7 +441,7 @@
           kernelDerivations =
             builtins.map mkKernel userKernels;
 
-          jupyterlabEnv = jupyterlabEnvWrapped jupyterlabEnvArgs;
+          jupyterlabEnv = jupyterlabEnvWrapped (baseArgs // jupyterlabEnvArgs);
 
           # create directories for storing jupyter configs
           jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
@@ -567,7 +576,7 @@
         };
         packages =
           {
-            jupyterlab = jupyterlabEnvWrapped {};
+            jupyterlab = jupyterlabEnvWrapped baseArgs;
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernels;
             update-poetry-lock =
               pkgs.writeShellApplication
@@ -586,7 +595,7 @@
                 '';
               };
             inherit mkdocs docs;
-            default = jupyterlabEnvWrapped {};
+            default = jupyterlabEnvWrapped baseArgs;
           }
           // exampleJupyterlabKernels;
         devShells.default = pkgs.mkShell {
@@ -605,7 +614,7 @@
         };
         checks = {
           inherit pre-commit;
-          jupyterlabEnv = jupyterlabEnvWrapped {};
+          jupyterlabEnv = jupyterlabEnvWrapped baseArgs;
         };
         apps = {
           update-poetry-lock =

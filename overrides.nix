@@ -1,4 +1,4 @@
-pkgs: poetry2nixPkgs: let
+pkgs: let
   addNativeBuildInputs = prev: drvName: inputs: {
     "${drvName}" = prev.${drvName}.overridePythonAttrs (old: {
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
@@ -33,4 +33,4 @@ pkgs: poetry2nixPkgs: let
       });
     };
 in
-  (poetry2nixPkgs.defaultPoetryOverrides.overrideOverlay preOverlay).extend postOverlay
+  (pkgs.poetry2nix.defaultPoetryOverrides.overrideOverlay preOverlay).extend postOverlay
