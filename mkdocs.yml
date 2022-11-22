@@ -6,15 +6,19 @@ edit_uri: tree/main/docs/
 
 nav:
     - Home: index.md
-    - Getting Started: getting-started.md
-    - How To: how-to.md
-    - Tutorials: tutorials.md
-    - Developer Guide: developers.md
-    - Roadmap: roadmap.md
+    - Documentation:
+      - Getting Started: getting-started.md
+      - How To: how-to.md
+      - Tutorials: tutorials.md
+      - Developer Guide: developers.md
+      - Roadmap: roadmap.md
 
 theme:
   name: material
   custom_dir: docs/overrides
+  features:
+    - navigation.instant
+    - navigation.tabs
   palette:
     # Palette toggle for dark mode
     - scheme: default
