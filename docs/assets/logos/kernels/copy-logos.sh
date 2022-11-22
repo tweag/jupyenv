@@ -4,7 +4,7 @@ rm ./*.png
 
 logoFilename='logo64.png'
 
-for directory in ../../../kernels/available/*; do
+for directory in ../../../../kernels/available/*; do
   dirName=$(basename $directory)
   #echo "$directory/$logoFilename"
   #echo  "$dirName-$logoFilename"
