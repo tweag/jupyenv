@@ -45,6 +45,10 @@ markdown_extensions:
     - pymdownx.inlinehilite
     - pymdownx.snippets
     - pymdownx.superfences
+    # content tabs
+    - pymdownx.superfences
+    - pymdownx.tabbed:
+        alternate_style: true
     # emojis
     - pymdownx.emoji:
         emoji_index: !!python/name:materialx.emoji.twemoji
