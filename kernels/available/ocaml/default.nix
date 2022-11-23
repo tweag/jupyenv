@@ -7,6 +7,8 @@
   displayName ? "OCaml",
   runtimePackages ? [],
   extraRuntimePackages ? [],
+  # https://github.com/tweag/opam-nix
+  opam-nix ? self.inputs.opam-nix.lib.${system},
 }: let
   allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
@@ -20,7 +22,7 @@
       sha256 = "sha256-IWbM6rOjcE1QHO+GVl8ZwiZQpNmdBbTdfMZe69D5lIU=";
     };
   in
-    pkgs.opam-nix.buildDuneProject
+    opam-nix.buildDuneProject
     {
       pkgs = pkgs.extend (final: _: {zeromq3 = final.zeromq4;});
     }
