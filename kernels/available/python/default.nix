@@ -15,6 +15,12 @@
   overrides ? import ./overrides.nix,
   python ? pkgs.python3,
   editablePackageSources ? {},
+  runtimePackages ?
+    with pkgs; [
+      bashInteractive
+      coreutils
+    ],
+  extraRuntimePackages ? with pkgs; [sox],
   extraPackages ? ps: [],
   preferWheels ? false,
 }: let
@@ -32,11 +38,26 @@
       ;
     overrides = env-overrides;
   };
+
+  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+
+  wrappedEnv =
+    pkgs.runCommand "wrapper-${env.name}"
+    {nativeBuildInputs = [pkgs.makeWrapper];}
+    ''
+      mkdir -p $out/bin
+      for i in ${env}/bin/*; do
+        filename=$(basename $i)
+        ln -s ${env}/bin/$filename $out/bin/$filename
+        wrapProgram $out/bin/$filename \
+          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+      done
+    '';
 in {
   inherit name displayName;
   language = "python";
   argv = [
-    "${env}/bin/python"
+    "${wrappedEnv}/bin/python"
     "-m"
     "ipykernel_launcher"
     "-f"
