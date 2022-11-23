@@ -9,6 +9,7 @@
   extraRuntimePackages ? [],
   # https://github.com/tweag/opam-nix
   opam-nix ? self.inputs.opam-nix.lib.${system},
+  extraOcamlPackages ? {},
 }: let
   allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
@@ -31,7 +32,8 @@
     {
       # Merlin was specified in the kernel depopts but not pulled in automatically.
       merlin = "*";
-    };
+    }
+    // extraOcamlPackages;
 
   env = OcamlKernel.jupyter;
   wrappedEnv = env.overrideAttrs (oa: {
@@ -46,7 +48,8 @@
         # the corresponding store paths manually.
         wrapProgram $out/bin/$filename \
           --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
-          --set CAML_LD_LIBRARY_PATH "$CAML_LD_LIBRARY_PATH"
+          --set CAML_LD_LIBRARY_PATH "$CAML_LD_LIBRARY_PATH" \
+          --set OCAMLPATH "lib/ocaml/${OcamlKernel.ocaml.version}/site-lib" \
       done
     '';
   });
