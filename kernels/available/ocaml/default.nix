@@ -49,7 +49,7 @@
         wrapProgram $out/bin/$filename \
           --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
           --set CAML_LD_LIBRARY_PATH "$CAML_LD_LIBRARY_PATH" \
-          --set OCAMLPATH "lib/ocaml/${OcamlKernel.ocaml.version}/site-lib" \
+          --set OCAMLPATH "lib/ocaml/${OcamlKernel.ocaml.version}/site-lib"
       done
     '';
   });
