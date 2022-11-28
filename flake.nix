@@ -19,7 +19,7 @@
   inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
   inputs.npmlock2nix.url = "github:nix-community/npmlock2nix";
   inputs.npmlock2nix.flake = false;
-  inputs.opam-nix.url = "github:tweag/opam-nix";
+  inputs.opam-nix.url = "github:tweag/opam-nix/fix-list-repo-func";
   inputs.opam-nix.inputs.flake-compat.follows = "flake-compat";
   inputs.opam-nix.inputs.flake-utils.follows = "flake-utils";
   inputs.opam-nix.inputs.nixpkgs.follows = "nixpkgs";

@@ -9,11 +9,22 @@
   extraRuntimePackages ? [],
   # https://github.com/tweag/opam-nix
   opam-nix ? self.inputs.opam-nix.lib.${system},
+  # Set of required packages
   ocamlPackages ? {merlin = "*";},
-  extraOcamlPackages ? {},
+  # Set of user desired packages
+  extraOcamlPackages ? {}, # { hex = "*"; owl = "*"; },
+  # List of directories containing .opam files
+  #extraOpamProjects ? [], # [ self.inputs.myOpamProject ],
+  # See opam-nix.buildDuneProject first argument
+  extraOpamNixArgs ? {},
 }: let
   allRuntimePackages = runtimePackages ++ extraRuntimePackages;
-  allOcamlPackages = ocamlPackages // extraOcamlPackages;
+
+  #customOpamRepo = opam-nix.joinRepos (map opam-nix.makeOpamRepo extraOpamProjects);
+  #customOpamPackages = __mapAttrs (_: pkgs.lib.last) (opam-nix.listRepo customOpamRepo);
+
+  userOcamlPackages = extraOcamlPackages; # // customOpamPackages;
+  allOcamlPackages = ocamlPackages // userOcamlPackages;
 
   scope = let
     name = "jupyter";
@@ -26,15 +37,17 @@
     };
   in
     opam-nix.buildDuneProject
-    {
-      pkgs = pkgs.extend (final: _: {zeromq3 = final.zeromq4;});
-    }
+    ({
+        pkgs = pkgs.extend (final: _: {zeromq3 = final.zeromq4;});
+        #repos = [opam-nix.opamRepository customOpamRepo];
+      }
+      // extraOpamNixArgs)
     name
     src
     allOcamlPackages;
 
   # Derivations corresponding to the user-requested ocaml package dependencies.
-  ocamlPackageDerivations = __attrValues (pkgs.lib.getAttrs (__attrNames extraOcamlPackages) scope);
+  ocamlPackageDerivations = __attrValues (pkgs.lib.getAttrs (__attrNames userOcamlPackages) scope);
   # A derivation which represents all our runtime dependencies.
   # It cannot be built, but its `inputDerivation` can.
   # The said `inputDerivation` will set all the required environment variables.
