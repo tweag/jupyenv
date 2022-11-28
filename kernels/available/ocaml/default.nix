@@ -14,16 +14,16 @@
   # Set of user desired packages
   extraOcamlPackages ? {}, # { hex = "*"; owl = "*"; },
   # List of directories containing .opam files
-  #extraOpamProjects ? [], # [ self.inputs.myOpamProject ],
+  extraOpamProjects ? [], # [ self.inputs.myOpamProject ],
   # See opam-nix.buildDuneProject first argument
   extraOpamNixArgs ? {},
 }: let
   allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
-  #customOpamRepo = opam-nix.joinRepos (map opam-nix.makeOpamRepo extraOpamProjects);
-  #customOpamPackages = __mapAttrs (_: pkgs.lib.last) (opam-nix.listRepo customOpamRepo);
+  customOpamRepo = opam-nix.joinRepos (map opam-nix.makeOpamRepo extraOpamProjects);
+  customOpamPackages = __mapAttrs (_: pkgs.lib.last) (opam-nix.listRepo customOpamRepo);
 
-  userOcamlPackages = extraOcamlPackages; # // customOpamPackages;
+  userOcamlPackages = extraOcamlPackages // customOpamPackages;
   allOcamlPackages = ocamlPackages // userOcamlPackages;
 
   scope = let
@@ -39,7 +39,7 @@
     opam-nix.buildDuneProject
     ({
         pkgs = pkgs.extend (final: _: {zeromq3 = final.zeromq4;});
-        #repos = [opam-nix.opamRepository customOpamRepo];
+        repos = [opam-nix.opamRepository customOpamRepo];
       }
       // extraOpamNixArgs)
     name
