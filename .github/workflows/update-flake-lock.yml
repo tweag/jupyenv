@@ -6,7 +6,8 @@ on:
 
 jobs:
   lockfile:
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     steps:
     - uses: actions/checkout@v3
       with:

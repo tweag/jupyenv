@@ -10,7 +10,8 @@ jobs:
 
   build:
     name: Build jupyterlab (no kernels)
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
 
     outputs:
       kernels: ${{ steps.kernels.outputs.kernels }}
@@ -20,10 +21,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup
-      uses: ./.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+          #- name: Setup
+          #  uses: ./.github/actions/common-setup
+          #  with:
+          #    CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: List all available kernels
       id: kernels
@@ -41,7 +42,8 @@ jobs:
   build-kernel:
     name: Build ${{ matrix.kernel }} kernel
     needs: build
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
 
     strategy:
       fail-fast: false
@@ -53,10 +55,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup
-      uses: ./.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+          #- name: Setup
+          #  uses: ./.github/actions/common-setup
+          #  with:
+          #    CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: Build ${{ matrix.kernel }} kernel
       run: |
@@ -76,17 +78,18 @@ jobs:
   build-all-kernels:
     name: Build all kernels
     needs: build-kernel
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
 
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - name: Setup
-      uses: ./.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+          #- name: Setup
+          #  uses: ./.github/actions/common-setup
+          #  with:
+          #    CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: Build all kernels
       run: |
@@ -95,17 +98,18 @@ jobs:
   build-devshell:
     name: Build devshell
     needs: build-kernel
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
 
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - name: Setup
-      uses: ./.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+          #- name: Setup
+          #  uses: ./.github/actions/common-setup
+          #  with:
+          #    CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: Build all kernels
       run: |
@@ -114,17 +118,18 @@ jobs:
   build-docs:
     name: Build docs
     needs: build-kernel
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
 
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - name: Setup
-      uses: ./.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+          #- name: Setup
+          #  uses: ./.github/actions/common-setup
+          #  with:
+          #    CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: Build all kernels
       run: |
@@ -153,7 +158,8 @@ jobs:
   template:
     name: Test a template
     needs: build-kernel
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
 
     steps:
     - uses: actions/checkout@v3
@@ -161,10 +167,10 @@ jobs:
         path: repo
         fetch-depth: 0
 
-    - name: Setup
-      uses: ./repo/.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+          #- name: Setup
+          #  uses: ./repo/.github/actions/common-setup
+          #  with:
+          #    CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
     - name: Initialize template
       run: |
