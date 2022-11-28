@@ -168,17 +168,12 @@
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
-        overlays = [
-          poetry2nix.overlay
-        ];
+        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs_stable = nixpkgs-stable.legacyPackages.${system};
 
-        pkgs = import nixpkgs {
-          inherit overlays system;
-        };
-
-        pkgs_stable = import nixpkgs-stable {
-          inherit overlays system;
-        };
+        python = pkgs.python3;
+        poetry2nixPkgs = import "${poetry2nix}/default.nix" {inherit pkgs poetry;};
+        poetry = pkgs.callPackage "${poetry2nix}/pkgs/poetry" {inherit python;};
 
         baseArgs = {
           inherit self system;
@@ -200,7 +195,7 @@
           excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
         };
 
-        mkdocs = pkgs.python3.withPackages (p: [
+        mkdocs = python.withPackages (p: [
           p.mkdocs
           p.mkdocs-material
           p.mkdocs-material-extensions
@@ -219,80 +214,7 @@
           '';
         };
 
-        jupyterlabEnvWrapped = {
-          projectDir ? self, # TODO: only include relevant files/folders
-          pyproject ? projectDir + "/pyproject.toml",
-          poetrylock ? projectDir + "/poetry.lock",
-          overrides ? import ./overrides.nix pkgs,
-          python ? pkgs.python3,
-          editablePackageSources ? {},
-          extraPackages ? (ps: []),
-          preferWheels ? false,
-          # groups ? ["devs"], # TODO: add groups after updating to latest poetry2nix. make sure to inherit below
-        }: let
-          jupyterlabEnvBase = pkgs.poetry2nix.mkPoetryEnv {
-            inherit
-              projectDir
-              pyproject
-              poetrylock
-              overrides
-              python
-              editablePackageSources
-              extraPackages
-              preferWheels
-              ;
-          };
-          jupyterlab-checker =
-            pkgs.writeText "jupyterlab-checker"
-            ''
-              from jupyterlab.commands import build_check, ensure_app;
-              import sys
-
-              ensure_app_return = ensure_app('.jupyter/lab/share/jupyter/lab')
-              build_check_return = build_check()
-              if ensure_app_return is None and not build_check_return:
-                sys.exit(0)
-              # print(f'{ensure_app_return = }')
-              # print(f'{build_check_return = }')
-              sys.exit(1)
-            '';
-          jupyterlab-cond-build =
-            pkgs.writeShellScript "jupyterlab-cond-build"
-            ''
-              ${jupyterlabEnvBase}/bin/python ${jupyterlab-checker}
-              checker=$?
-              if [ "$checker" -ne 0 ]
-              then
-                echo jupyterWith needs to build JupyterLab.
-                # we need to build the jupyter lab environment before it can be used
-                ${jupyterlabEnvBase}/bin/jupyter lab build
-              else
-                echo jupyterWith does not need build JupyterLab. Starting...
-              fi
-            '';
-        in
-          pkgs.runCommand "chmod-${jupyterlabEnvBase.name}"
-          {nativeBuildInputs = [pkgs.makeWrapper];}
-          ''
-            mkdir -p $out/bin
-            for i in ${jupyterlabEnvBase}/bin/*; do
-              filename=$(basename $i)
-
-              if [[ "$filename" == jupyter* ]]; then
-                cat <<EOF > $out/bin/$filename
-            #!${pkgs.runtimeShell} -e
-            trap "chmod +w --recursive \$PWD/.jupyter" EXIT
-            ${jupyterlab-cond-build}
-            ${jupyterlabEnvBase}/bin/$filename "\$@"
-            EOF
-                chmod +x $out/bin/$filename
-              else
-                makeWrapper \
-                  ${jupyterlabEnvBase}/bin/$filename \
-                  $out/bin/$filename
-            fi
-            done
-          '';
+        jupyterlabEnvWrapped = import (self + "/jupyterlab.nix");
 
         # Creates a derivation with kernel.json and logos
         mkKernel = kernelInstance_: let
@@ -441,7 +363,7 @@
           kernelDerivations =
             builtins.map mkKernel userKernels;
 
-          jupyterlabEnv = jupyterlabEnvWrapped jupyterlabEnvArgs;
+          jupyterlabEnv = jupyterlabEnvWrapped (baseArgs // jupyterlabEnvArgs);
 
           # create directories for storing jupyter configs
           jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
@@ -576,13 +498,13 @@
         };
         packages =
           {
-            jupyterlab = jupyterlabEnvWrapped {};
+            jupyterlab = jupyterlabEnvWrapped baseArgs;
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernels;
             update-poetry-lock =
               pkgs.writeShellApplication
               {
                 name = "update-poetry-lock";
-                runtimeInputs = [pkgs.python3Packages.poetry];
+                runtimeInputs = [poetry];
                 text = ''
                   shopt -s globstar
                   for lock in **/poetry.lock; do
@@ -595,15 +517,15 @@
                 '';
               };
             inherit mkdocs docs;
-            default = jupyterlabEnvWrapped {};
+            default = jupyterlabEnvWrapped baseArgs;
           }
           // exampleJupyterlabKernels;
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
             pkgs.typos
-            poetry2nix.defaultPackage.${system}
-            pkgs.python3Packages.poetry
+            poetry2nixPkgs.cli
+            poetry
             pkgs.rnix-lsp
             self.packages."${system}".update-poetry-lock
             mkdocs
@@ -614,7 +536,7 @@
         };
         checks = {
           inherit pre-commit;
-          jupyterlabEnv = jupyterlabEnvWrapped {};
+          jupyterlabEnv = jupyterlabEnvWrapped baseArgs;
         };
         apps = {
           update-poetry-lock =
