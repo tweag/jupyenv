@@ -9,11 +9,13 @@
   extraRuntimePackages ? [],
   # https://github.com/tweag/opam-nix
   opam-nix ? self.inputs.opam-nix.lib.${system},
+  ocamlPackages ? {merlin = "*";},
   extraOcamlPackages ? {},
 }: let
   allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allOcamlPackages = ocamlPackages // extraOcamlPackages;
 
-  OcamlKernel = let
+  scope = let
     name = "jupyter";
     version = "2.8.0";
     src = pkgs.fetchFromGitHub {
@@ -29,27 +31,36 @@
     }
     name
     src
-    {
-      # Merlin was specified in the kernel depopts but not pulled in automatically.
-      merlin = "*";
-    }
-    // extraOcamlPackages;
+    allOcamlPackages;
 
-  env = OcamlKernel.jupyter;
-  wrappedEnv = env.overrideAttrs (oa: {
+  # Derivations corresponding to the user-requested ocaml package dependencies.
+  ocamlPackageDerivations = __attrValues (pkgs.lib.getAttrs (__attrNames extraOcamlPackages) scope);
+  # A derivation which represents all our runtime dependencies.
+  # It cannot be built, but its `inputDerivation` can.
+  # The said `inputDerivation` will set all the required environment variables.
+  runtimeEnv = pkgs.mkShell {
+    name = "extra-ocaml-path";
+    packages = ocamlPackageDerivations ++ allRuntimePackages;
+  };
+  ocamlinit = ''
+    #use "${scope.ocamlfind}/lib/ocaml/${scope.ocaml.version}/site-lib/topfind";;
+    Topfind.log:=ignore;;
+  '';
+  wrappedKernel = scope.jupyter.overrideAttrs (oa: {
     nativeBuildInputs = oa.nativeBuildInputs ++ [pkgs.makeWrapper];
     postInstall = ''
       for i in $out/bin/*; do
         filename=$(basename $i)
-        # The kernel expects to run in the environment provided by opam, which
-        # usually has all the transitive dependencies (including stublibs)
-        # installed in the same switch, with the corresponding variables pointed to it.
-        # This is not the case with the nix store, so we have to point it to
-        # the corresponding store paths manually.
+        # (1) Load the environment from our runtime dependencies derivation.
+        #     Sourcing the stdenv is required to actually export all the variables.
+        # (2) The kernel expects to run in the environment provided by opam, which
+        #     usually has all the transitive dependencies (including stublibs)
+        #     installed in the same switch, with the corresponding variables pointed to it.
+        #     This is not the case with the nix store, so we have to point it to
+        #     the corresponding store paths manually.
         wrapProgram $out/bin/$filename \
-          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
-          --set CAML_LD_LIBRARY_PATH "$CAML_LD_LIBRARY_PATH" \
-          --set OCAMLPATH "lib/ocaml/${OcamlKernel.ocaml.version}/site-lib"
+          --run 'source ${runtimeEnv.inputDerivation}; source $stdenv/setup' \
+          --suffix CAML_LD_LIBRARY_PATH : "$CAML_LD_LIBRARY_PATH"
       done
     '';
   });
@@ -57,11 +68,11 @@ in {
   inherit name displayName;
   language = "ocaml";
   argv = [
-    "${wrappedEnv}/bin/ocaml-jupyter-kernel"
+    "${wrappedKernel}/bin/ocaml-jupyter-kernel"
     "-init"
-    "/home/$USER/.ocamlinit"
+    (pkgs.writeText "ocamlinit" ocamlinit)
     "--merlin"
-    "${OcamlKernel.merlin}/bin/ocamlmerlin"
+    "${scope.merlin}/bin/ocamlmerlin"
     "--verbosity"
     "app"
     "--connection-file"
