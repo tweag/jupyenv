@@ -15,12 +15,8 @@
   overrides ? poetry2nix.overrides.withDefaults (import ./overrides.nix),
   python ? pkgs.python3,
   editablePackageSources ? {},
-  runtimePackages ?
-    with pkgs; [
-      bashInteractive
-      coreutils
-    ],
-  extraRuntimePackages ? with pkgs; [sox],
+  runtimePackages ? [],
+  extraRuntimePackages ? [],
   extraPackages ? ps: [],
   preferWheels ? false,
 }: let
