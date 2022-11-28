@@ -12,7 +12,7 @@
   projectDir ? self + "/kernels/available/python",
   pyproject ? projectDir + "/pyproject.toml",
   poetrylock ? projectDir + "/poetry.lock",
-  overrides ? import ./overrides.nix,
+  overrides ? poetry2nix.overrides.withDefaults (import ./overrides.nix),
   python ? pkgs.python3,
   editablePackageSources ? {},
   runtimePackages ?
@@ -24,19 +24,17 @@
   extraPackages ? ps: [],
   preferWheels ? false,
 }: let
-  env-overrides = poetry2nix.overrides.withDefaults overrides;
-
   env = poetry2nix.mkPoetryEnv {
     inherit
       projectDir
       pyproject
       poetrylock
+      overrides
       python
       editablePackageSources
       extraPackages
       preferWheels
       ;
-    overrides = env-overrides;
   };
 
   allRuntimePackages = runtimePackages ++ extraRuntimePackages;
