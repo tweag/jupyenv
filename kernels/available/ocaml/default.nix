@@ -7,90 +7,85 @@
   displayName ? "OCaml",
   runtimePackages ? [],
   extraRuntimePackages ? [],
-  ocamlPackages ? pkgs.ocaml-ng.ocamlPackages_4_12,
-  ocamlBuildInputs ?
-    with ocamlPackages; [
-      ocaml-syntax-shims
-      yojson
-      lwt_ppx
-      ppx_deriving
-      ppx_deriving_yojson
-      base64
-      uuidm
-      logs
-      cryptokit
-      zmq
-      zmq-lwt
-      cppo
-      ounit
-      merlin
-    ],
-  ocamlPropagatedBuildInputs ?
-    with ocamlPackages; [
-      bigstringaf
-      result
-      lwt
-      stdint
-      zmq
-      zarith
-      cryptokit
-    ],
+  # https://github.com/tweag/opam-nix
+  opam-nix ? self.inputs.opam-nix.lib.${system},
+  # Set of required packages
+  ocamlPackages ? {merlin = "*";},
+  # Set of user desired packages
+  extraOcamlPackages ? {}, # { hex = "*"; owl = "*"; },
+  # List of directories containing .opam files
+  extraOpamProjects ? [], # [ self.inputs.myOpamProject ],
+  # See opam-nix.buildDuneProject first argument
+  extraOpamNixArgs ? {},
 }: let
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ ocamlBuildInputs;
+  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
-  OcamlKernel = ocamlPackages.buildDunePackage rec {
-    pname = "jupyter";
-    version = "2.7.5"; # TODO: upgrade this to 2.8.0. Need to have ppx_yojson_conv in nixpkgs first; not ppx_yojson_conv_lib.
-    duneVersion = "3";
+  customOpamRepo = opam-nix.joinRepos (map opam-nix.makeOpamRepo extraOpamProjects);
+  customOpamPackages = __mapAttrs (_: pkgs.lib.last) (opam-nix.listRepo customOpamRepo);
 
-    minimalOCamlVersion = "4.04";
+  userOcamlPackages = extraOcamlPackages // customOpamPackages;
+  allOcamlPackages = ocamlPackages // userOcamlPackages;
 
+  scope = let
+    name = "jupyter";
+    version = "2.8.0";
     src = pkgs.fetchFromGitHub {
       owner = "akabe";
       repo = "ocaml-jupyter";
       rev = "v${version}";
-      sha256 = "0dayyhvw3ynvncy9b7daiz3bcybfh38mbivgr693i16ld3gp6c6v";
+      sha256 = "sha256-IWbM6rOjcE1QHO+GVl8ZwiZQpNmdBbTdfMZe69D5lIU=";
     };
-
-    buildInputs = ocamlBuildInputs;
-    propagatedBuildInputs = ocamlPropagatedBuildInputs;
-
-    doCheck = false;
-
-    meta = with pkgs.lib; {
-      homepage = "https://github.com/akabe/ocaml-jupyter";
-      description = "An OCaml kernel for Jupyter (IPython) notebook.";
-      license = licenses.mit;
-      maintainers = with lib.maintainers; [akabe];
-    };
-  };
-
-  env = OcamlKernel;
-  wrappedEnv = let
-    ocamlVersion = ocamlPackages.ocaml.version;
   in
-    pkgs.runCommand "wrapper-${env.name}"
-    {nativeBuildInputs = [pkgs.makeWrapper];}
-    ''
-      mkdir -p $out/bin
-      for i in ${env}/bin/*; do
+    opam-nix.buildDuneProject
+    ({
+        pkgs = pkgs.extend (final: _: {zeromq3 = final.zeromq4;});
+        repos = [opam-nix.opamRepository customOpamRepo];
+      }
+      // extraOpamNixArgs)
+    name
+    src
+    allOcamlPackages;
+
+  # Derivations corresponding to the user-requested ocaml package dependencies.
+  ocamlPackageDerivations = __attrValues (pkgs.lib.getAttrs (__attrNames userOcamlPackages) scope);
+  # A derivation which represents all our runtime dependencies.
+  # It cannot be built, but its `inputDerivation` can.
+  # The said `inputDerivation` will set all the required environment variables.
+  runtimeEnv = pkgs.mkShell {
+    name = "extra-ocaml-path";
+    packages = ocamlPackageDerivations ++ allRuntimePackages;
+  };
+  ocamlinit = ''
+    #use "${scope.ocamlfind}/lib/ocaml/${scope.ocaml.version}/site-lib/topfind";;
+    Topfind.log:=ignore;;
+  '';
+  wrappedKernel = scope.jupyter.overrideAttrs (oa: {
+    nativeBuildInputs = oa.nativeBuildInputs ++ [pkgs.makeWrapper];
+    postInstall = ''
+      for i in $out/bin/*; do
         filename=$(basename $i)
-        # XXX: 'CAML_LD_LIBRARY_PATH' should be set automatically by the kernel.
-        # Not sure why it doesn't, but setting it manually seems to fix things
-        makeWrapper ${env}/bin/$filename $out/bin/$filename \
-          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" \
-          --set CAML_LD_LIBRARY_PATH "${pkgs.lib.makeSearchPath "lib/ocaml/${ocamlVersion}/site-lib/stublibs" ocamlPropagatedBuildInputs}"
+        # (1) Load the environment from our runtime dependencies derivation.
+        #     Sourcing the stdenv is required to actually export all the variables.
+        # (2) The kernel expects to run in the environment provided by opam, which
+        #     usually has all the transitive dependencies (including stublibs)
+        #     installed in the same switch, with the corresponding variables pointed to it.
+        #     This is not the case with the nix store, so we have to point it to
+        #     the corresponding store paths manually.
+        wrapProgram $out/bin/$filename \
+          --run 'source ${runtimeEnv.inputDerivation}; source $stdenv/setup' \
+          --suffix CAML_LD_LIBRARY_PATH : "$CAML_LD_LIBRARY_PATH"
       done
     '';
+  });
 in {
   inherit name displayName;
   language = "ocaml";
   argv = [
-    "${wrappedEnv}/bin/ocaml-jupyter-kernel"
+    "${wrappedKernel}/bin/ocaml-jupyter-kernel"
     "-init"
-    "/home/$USER/.ocamlinit"
+    (pkgs.writeText "ocamlinit" ocamlinit)
     "--merlin"
-    "${pkgs.ocamlPackages.merlin}/bin/ocamlmerlin"
+    "${scope.merlin}/bin/ocamlmerlin"
     "--verbosity"
     "app"
     "--connection-file"
