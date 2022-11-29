@@ -19,4 +19,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Update flake.lock
-      uses: DeterminateSystems/update-flake-lock@v14
+      uses: DeterminateSystems/update-flake-lock@v15
