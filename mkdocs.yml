@@ -12,6 +12,7 @@ nav:
       - Tutorials: tutorials.md
       - Developer Guide: developers.md
       - Roadmap: roadmap.md
+      - (NEW) Options: options.md
 
 theme:
   name: material

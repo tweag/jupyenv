@@ -212,6 +212,7 @@
           nativeBuildInputs = [mkdocs];
           buildPhase = ''
             mkdocs build --site-dir dist
+            cp ${options.optionsCommonMark} ./docs/options.md
           '';
           installPhase = ''
             mkdir $out
@@ -423,11 +424,11 @@
                   --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
                   --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
                   --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
-                  --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
                   --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
                   --set JUPYTER_DATA_DIR ".jupyter/data" \
                   --set IPYTHONDIR "/path-not-set" \
-                  --set JUPYTER_RUNTIME_DIR ".jupyter/runtime"
+                  --set JUPYTER_RUNTIME_DIR ".jupyter/runtime" \
+                  --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations}
               done
 
               # add Julia for IJulia
@@ -494,15 +495,34 @@
               (getKernelInstance availableKernels extraArgs)
               (getKernelAttrsetFromPath kernelsPath);
           };
+
+        /*
+        NixOS Modules stuff
+        */
+        mkJupyterlabEval = customModule:
+          pkgs.lib.evalModules {
+            specialArgs = {inherit self system pkgs mkJupyterlab;};
+            modules = [./modules] ++ lib.optional (customModule != null) customModule;
+          };
+
+        mkJupyterlabNew = customModule:
+          (mkJupyterlabEval customModule).config.build;
+
+        eval = mkJupyterlabEval null;
+        options = pkgs.nixosOptionsDoc {
+          options = builtins.removeAttrs eval.options ["_module"];
+        };
       in rec {
         lib = {
           inherit
             mkJupyterlab
             mkJupyterlabFromPath
+            mkJupyterlabNew
             ;
         };
         packages =
           {
+            jupyterlab-new = mkJupyterlabNew ./config.nix;
             jupyterlab = jupyterlabEnvWrapped baseArgs;
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernels;
             update-poetry-lock =
