@@ -27,8 +27,8 @@
     ]
     (
       system: let
-        inherit (jupyterWith.lib.${system}) mkJupyterlabNew;
-        jupyterlab = mkJupyterlabNew ./config.nix;
+        inherit (jupyterWith.lib.${system}) mkJupyterlabFromPath;
+        jupyterlab = mkJupyterlabFromPath ./kernels {inherit system;};
       in rec {
         packages = {inherit jupyterlab;};
         packages.default = jupyterlab;
