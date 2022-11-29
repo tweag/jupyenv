@@ -5,6 +5,8 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "c",
   displayName ? "C",
+  runtimePackages ? [pkgs.stdenv.cc],
+  extraRuntimePackages ? [],
   # https://github.com/nix-community/poetry2nix
   poetry2nix ? import "${self.inputs.poetry2nix}/default.nix" {inherit pkgs poetry;},
   poetry ? pkgs.callPackage "${self.inputs.poetry2nix}/pkgs/poetry" {inherit python;},
@@ -30,11 +32,26 @@
       preferWheels
       ;
   };
+
+  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+
+  wrappedEnv =
+    pkgs.runCommand "wrapper-${env.name}"
+    {nativeBuildInputs = [pkgs.makeWrapper];}
+    ''
+      mkdir -p $out/bin
+      for i in ${env}/bin/*; do
+        filename=$(basename $i)
+        ln -s ${env}/bin/$filename $out/bin/$filename
+        wrapProgram $out/bin/$filename \
+          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+      done
+    '';
 in {
   inherit name displayName;
   language = "c";
   argv = [
-    "${env}/bin/python"
+    "${wrappedEnv}/bin/python"
     "-m"
     "jupyter_c_kernel"
     "-f"

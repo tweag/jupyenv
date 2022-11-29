@@ -5,18 +5,35 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "r",
   displayName ? "R",
+  runtimePackages ? [],
+  extraRuntimePackages ? [],
   rWrapper ? pkgs.rWrapper,
   rPackages ? pkgs.rPackages,
   extraRPackages ? (_: []),
 }: let
-  kernelEnv = rWrapper.override {
+  env = rWrapper.override {
     packages = (extraRPackages rPackages) ++ [rPackages.IRkernel];
   };
+
+  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+
+  wrappedEnv =
+    pkgs.runCommand "wrapper-${env.name}"
+    {nativeBuildInputs = [pkgs.makeWrapper];}
+    ''
+      mkdir -p $out/bin
+      for i in ${env}/bin/*; do
+        filename=$(basename $i)
+        ln -s ${env}/bin/$filename $out/bin/$filename
+        wrapProgram $out/bin/$filename \
+          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+      done
+    '';
 in {
   inherit name displayName;
   language = "r";
   argv = [
-    "${kernelEnv}/bin/R"
+    "${wrappedEnv}/bin/R"
     "--slave"
     "-e"
     "IRkernel::main()"
