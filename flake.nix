@@ -211,8 +211,8 @@
           src = self;
           nativeBuildInputs = [mkdocs];
           buildPhase = ''
-            mkdocs build --site-dir dist
             cp ${options.optionsCommonMark} ./docs/options.md
+            mkdocs build --site-dir dist
           '';
           installPhase = ''
             mkdir $out
