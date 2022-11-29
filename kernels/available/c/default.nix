@@ -5,7 +5,7 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "c",
   displayName ? "C",
-  runtimePackages ? [],
+  runtimePackages ? [pkgs.stdenv.cc],
   extraRuntimePackages ? [],
   # https://github.com/nix-community/poetry2nix
   poetry2nix ? import "${self.inputs.poetry2nix}/default.nix" {inherit pkgs poetry;},
