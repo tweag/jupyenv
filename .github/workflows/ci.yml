@@ -60,7 +60,7 @@ jobs:
 
     - name: Build ${{ matrix.kernel }} kernel
       run: |
-        nix build -L .#jupyterlab-kernel-example-${{ matrix.kernel }}
+        nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
 
     # TODO remove once we have a better solution. For more info see
     # https://github.com/tweag/jupyterWith/pull/280
