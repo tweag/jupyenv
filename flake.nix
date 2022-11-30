@@ -146,6 +146,8 @@
         )
       );
 
+    examples = import ./examples.nix {inherit lib;};
+
     /*
     Takes a path to the kernels directory, `kernelsPath`,
     reads all files from the kernels directory and returns a set of
@@ -165,7 +167,7 @@
         }
     */
     getKernelsFromPath = kernelsPath: {
-      kernels = mapKernelsFromPath kernelsPath;
+      kernels = examples.getKernelAttrsetFromPath "${kernelsPath}/example";
       available = mapKernelsFromPath "${kernelsPath}/available";
     };
 
