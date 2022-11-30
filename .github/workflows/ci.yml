@@ -126,7 +126,7 @@ jobs:
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
 
-    - name: Build all kernels
+    - name: Build docs
       run: |
         nix build -L .#docs
         mkdir ./public
