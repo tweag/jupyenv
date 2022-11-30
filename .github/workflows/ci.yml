@@ -179,4 +179,4 @@ jobs:
 
     - name: Test
       run: |
-        ./example/result/bin/python ./repo/kernels/available/python/test.py
+        ./example/result/bin/python ./repo/kernels/example/python/minimal/test.py
