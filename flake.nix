@@ -508,7 +508,7 @@
         mkJupyterlabNew = customModule:
           (mkJupyterlabEval customModule).config.build;
 
-        eval = mkJupyterlabEval null;
+        eval = mkJupyterlabEval ({...}: {_module.check = false;});
         options = pkgs.nixosOptionsDoc {
           options = builtins.removeAttrs eval.options ["_module"];
         };

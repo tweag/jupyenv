@@ -151,7 +151,7 @@
       };
 
       nixpkgs = lib.mkOption {
-        type = types.package;
+        type = types.path;
         default = self.inputs.nixpkgs;
         example = ''
           self.inputs.nixpkgs
@@ -162,7 +162,7 @@
       };
 
       poetry2nix = lib.mkOption {
-        type = types.package;
+        type = types.path;
         default = self.inputs.poetry2nix;
         example = ''
           self.inputs.poetry2nix
@@ -170,6 +170,39 @@
         description = lib.mdDoc ''
           poetry2nix flake input to be used for this python kernel.
         '';
+      };
+
+      kernelArgs = lib.mkOption {
+        type = types.lazyAttrsOf types.raw;
+        readOnly = true;
+        internal = true;
+      };
+    };
+
+    config = lib.mkIf config.enable {
+      kernelArgs = rec {
+        inherit self system;
+        inherit
+          (config)
+          name
+          displayName
+          runtimePackages
+          projectDir
+          pyproject
+          poetrylock
+          editablePackageSources
+          extraPackages
+          preferWheels
+          groups
+          ;
+        pkgs = config.nixpkgs.legacyPackages.${system};
+        python = pkgs.${config.python};
+        poetry = pkgs.callPackage "${config.poetry2nix}/pkgs/poetry" {inherit python;};
+        poetry2nix = import "${config.poetry2nix}/default.nix" {inherit pkgs poetry;};
+        overrides =
+          if config.withDefaultOverrides == true
+          then poetry2nix.overrides.withDefaults (import config.overrides)
+          else import config.overrides;
       };
     };
   };

@@ -34,7 +34,22 @@ in {
   config = {
     build = mkJupyterlab {
       #jupyterlabEnvArgs = config.jupyterlabEnvArgs;
-      #kernels = k: [];  # TODO: list of from config.kernels
+      kernels = availableKernels:
+        lib.flatten
+        (
+          builtins.map
+          (
+            kernelTypeName:
+              builtins.map
+              (
+                kernelName:
+                  availableKernels.${kernelTypeName}
+                  config.kernel.${kernelTypeName}.${kernelName}.kernelArgs
+              )
+              (builtins.attrNames config.kernel.${kernelTypeName})
+          )
+          (builtins.attrNames config.kernel)
+        );
       runtimePackages = config.runtimePackages;
       #flakes = config.flakes;
     };
