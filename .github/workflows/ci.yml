@@ -145,7 +145,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         deploy-message: 'Published from GitHub Actions'
         enable-pull-request-comment: true
-        overwrites-pull-request-comment: true
+        overwrites-pull-request-comment: false
         enable-commit-comment: false
         enable-commit-status: true
       if: github.repository_owner == 'tweag'
