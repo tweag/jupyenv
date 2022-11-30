@@ -4,7 +4,7 @@
     (
       fileName: fileType: let
         parentString = builtins.toString parentPath;
-        parentDir = lib.last (lib.splitString "/" parentString);
+        parentDir = builtins.unsafeDiscardStringContext (lib.last (lib.splitString "/" parentString));
 
         nextPath = parentPath + "/${fileName}";
         nextName =
