@@ -1,9 +1,11 @@
 {lib}: let
-  getKernelListFromPath = parentPath: prevName:
+  _getKernelListFromPath = parentPath: prevName:
     lib.mapAttrsToList
     (
       fileName: fileType: let
-        parentDir = builtins.unsafeDiscardStringContext (builtins.baseNameOf parentPath);
+        parentDir =
+          builtins.unsafeDiscardStringContext
+          (builtins.baseNameOf parentPath);
 
         nextPath = parentPath + "/${fileName}";
         nextName =
@@ -11,7 +13,7 @@
           then parentDir
           else (prevName + "-" + parentDir);
 
-        nextLevel = getKernelListFromPath nextPath nextName;
+        nextLevel = _getKernelListFromPath nextPath nextName;
         defaultNixFile = "${parentPath}/default.nix";
       in
         if
@@ -21,24 +23,49 @@
         else if
           (fileType == "regular")
           && lib.pathExists defaultNixFile
+          && lib.hasSuffix ".nix" fileName
+          && !lib.hasPrefix "_" fileName
         then {
           name = nextName;
-          value = defaultNixFile;
+          path = defaultNixFile;
         }
         else null
     )
     (builtins.readDir parentPath);
 
-  getKernelAttrsetFromPath = path: (
-    builtins.listToAttrs (
+  getKernelAttrsetFromPath = path:
+    lib.unique
+    (
       lib.remove
       null
       (
         lib.flatten
-        (getKernelListFromPath path "")
+        (_getKernelListFromPath path "")
       )
-    )
-  );
+    );
+
+  mapKernelsFromPath = path:
+    lib.optionalAttrs
+    (lib.pathExists path)
+    (
+      builtins.listToAttrs
+      (
+        builtins.map
+        (
+          {
+            name,
+            path,
+          }: {
+            inherit name;
+            value = path;
+          }
+        )
+        (getKernelAttrsetFromPath path)
+      )
+    );
 in {
-  inherit getKernelAttrsetFromPath;
+  inherit
+    getKernelAttrsetFromPath
+    mapKernelsFromPath
+    ;
 }
