@@ -67,7 +67,7 @@ jobs:
     - name: Install IJulia
       if: matrix.kernel == 'julia'
       run: |
-        result/bin/julia kernels/available/julia/installDeps.jl
+        result/bin/julia kernels/example/julia/minimal/installDeps.jl
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
