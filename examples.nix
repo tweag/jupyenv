@@ -3,8 +3,7 @@
     lib.mapAttrsToList
     (
       fileName: fileType: let
-        parentString = builtins.toString parentPath;
-        parentDir = builtins.unsafeDiscardStringContext (lib.last (lib.splitString "/" parentString));
+        parentDir = builtins.unsafeDiscardStringContext (builtins.baseNameOf parentPath);
 
         nextPath = parentPath + "/${fileName}";
         nextName =
