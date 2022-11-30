@@ -71,7 +71,7 @@ jobs:
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
-        result/bin/python kernels/available/$( echo "${{ matrix.kernel }}" | sed -e "s|^stable-||" )/test.py
+        result/bin/python kernels/available/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|" )/test.py
 
   build-all-kernels:
     name: Build all kernels
