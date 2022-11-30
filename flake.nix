@@ -450,7 +450,7 @@
             builtins.map
             (
               name: {
-                name = "jupyterlab-kernel-${pkgs.lib.replaceStrings ["_"] ["-"] name}";
+                name = "jupyterlab-kernel-${name}";
                 value = mkJupyterlab {
                   kernels = availableKernels: [
                     (import kernelsConfig.kernels.${name} {
