@@ -8,151 +8,151 @@ on:
 
 jobs:
 
-  build:
-    name: Build jupyterlab (no kernels)
-    runs-on: ubuntu-latest
-
-    outputs:
-      kernels: ${{ steps.kernels.outputs.kernels }}
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Setup
-      uses: ./.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-
-    - name: List all available kernels
-      id: kernels
-      run: |
-        kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
-        echo $kernels
-        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-")]')
-        echo "kernels=$filterKernels" >> $GITHUB_OUTPUT
-
-    - name: Check
-      run: |
-        nix flake check --show-trace -L
-
-
-  build-kernel:
-    name: Build ${{ matrix.kernel }} kernel
-    needs: build
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        kernel: ${{ fromJSON(needs.build.outputs.kernels) }}
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Setup
-      uses: ./.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-
-    - name: Build ${{ matrix.kernel }} kernel
-      run: |
-        nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
-
-    # TODO remove once we have a better solution. For more info see
-    # https://github.com/tweag/jupyterWith/pull/280
-    - name: Install IJulia
-      if: contains(matrix.kernel, 'julia')
-      run: |
-        result/bin/julia kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/installDeps.jl
-
-    - name: Test notebook for ${{ matrix.kernel }} kernel
-      run: |
-        result/bin/python kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/test.py
-
-  build-all-kernels:
-    name: Build all kernels
-    needs: build-kernel
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Setup
-      uses: ./.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-
-    - name: Build all kernels
-      run: |
-        nix build -L .#jupyterlab-all-example-kernels
-
-  build-devshell:
-    name: Build devshell
-    needs: build-kernel
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Setup
-      uses: ./.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-
-    - name: Build all kernels
-      run: |
-        nix build -L .\#devShells.x86_64-linux.default
-
-  build-docs:
-    name: Build docs
-    needs: build-kernel
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Setup
-      uses: ./.github/actions/common-setup
-      with:
-        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
-
-    - name: Build all kernels
-      run: |
-        nix build -L .#docs
-        mkdir ./public
-        cp -R ./result/* ./public/
-        chmod -R +w ./public/
-
-    - name: Publish to Netlify
-      uses: nwtgck/actions-netlify@v1.2
-      env:
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      with:
-        production-branch: 'main'
-        production-deploy: ${{ github.event_name == 'push' }}
-        publish-dir: 'public'
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        deploy-message: 'Published from GitHub Actions'
-        enable-pull-request-comment: true
-        overwrites-pull-request-comment: true
-        enable-commit-comment: false
-        enable-commit-status: true
-      if: github.repository_owner == 'tweag'
+#  build:
+#    name: Build jupyterlab (no kernels)
+#    runs-on: ubuntu-latest
+#
+#    outputs:
+#      kernels: ${{ steps.kernels.outputs.kernels }}
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#      with:
+#        fetch-depth: 0
+#
+#    - name: Setup
+#      uses: ./.github/actions/common-setup
+#      with:
+#        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+#
+#    - name: List all available kernels
+#      id: kernels
+#      run: |
+#        kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
+#        echo $kernels
+#        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-")]')
+#        echo "kernels=$filterKernels" >> $GITHUB_OUTPUT
+#
+#    - name: Check
+#      run: |
+#        nix flake check --show-trace -L
+#
+#
+#  build-kernel:
+#    name: Build ${{ matrix.kernel }} kernel
+#    needs: build
+#    runs-on: ubuntu-latest
+#
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        kernel: ${{ fromJSON(needs.build.outputs.kernels) }}
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#      with:
+#        fetch-depth: 0
+#
+#    - name: Setup
+#      uses: ./.github/actions/common-setup
+#      with:
+#        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+#
+#    - name: Build ${{ matrix.kernel }} kernel
+#      run: |
+#        nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
+#
+#    # TODO remove once we have a better solution. For more info see
+#    # https://github.com/tweag/jupyterWith/pull/280
+#    - name: Install IJulia
+#      if: contains(matrix.kernel, 'julia')
+#      run: |
+#        result/bin/julia kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/installDeps.jl
+#
+#    - name: Test notebook for ${{ matrix.kernel }} kernel
+#      run: |
+#        result/bin/python kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/test.py
+#
+#  build-all-kernels:
+#    name: Build all kernels
+#    needs: build-kernel
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#      with:
+#        fetch-depth: 0
+#
+#    - name: Setup
+#      uses: ./.github/actions/common-setup
+#      with:
+#        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+#
+#    - name: Build all kernels
+#      run: |
+#        nix build -L .#jupyterlab-all-example-kernels
+#
+#  build-devshell:
+#    name: Build devshell
+#    needs: build-kernel
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#      with:
+#        fetch-depth: 0
+#
+#    - name: Setup
+#      uses: ./.github/actions/common-setup
+#      with:
+#        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+#
+#    - name: Build all kernels
+#      run: |
+#        nix build -L .\#devShells.x86_64-linux.default
+#
+#  build-docs:
+#    name: Build docs
+#    needs: build-kernel
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#      with:
+#        fetch-depth: 0
+#
+#    - name: Setup
+#      uses: ./.github/actions/common-setup
+#      with:
+#        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+#
+#    - name: Build all kernels
+#      run: |
+#        nix build -L .#docs
+#        mkdir ./public
+#        cp -R ./result/* ./public/
+#        chmod -R +w ./public/
+#
+#    - name: Publish to Netlify
+#      uses: nwtgck/actions-netlify@v1.2
+#      env:
+#        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+#        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+#      with:
+#        production-branch: 'main'
+#        production-deploy: ${{ github.event_name == 'push' }}
+#        publish-dir: 'public'
+#        github-token: ${{ secrets.GITHUB_TOKEN }}
+#        deploy-message: 'Published from GitHub Actions'
+#        enable-pull-request-comment: true
+#        overwrites-pull-request-comment: true
+#        enable-commit-comment: false
+#        enable-commit-status: true
+#      if: github.repository_owner == 'tweag'
 
   template:
     name: Test a template
-    needs: build-kernel
+#    needs: build-kernel
     runs-on: ubuntu-latest
 
     steps:
@@ -177,6 +177,10 @@ jobs:
           nix build
         popd
 
+    # TODO this should not be dependent on the example kernels tests as the kernel names are different
     - name: Test
       run: |
+        pushd ./repo/kernels/example/python/minimal
+          sed -i -e "s|example-python-minimal|kernels-python|" test.py
+        popd
         ./example/result/bin/python ./repo/kernels/example/python/minimal/test.py
