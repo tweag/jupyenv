@@ -30,7 +30,7 @@ jobs:
       run: |
         kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
         echo $kernels
-        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-example-")]')
+        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-")]')
         echo "kernels=$filterKernels" >> $GITHUB_OUTPUT
 
     - name: Check
