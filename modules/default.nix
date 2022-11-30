@@ -25,9 +25,11 @@ in {
     };
   };
 
+  imports = [
+    ./../kernels/available/python/module.nix
+  ];
   # TODO: add kernels
-  #imports = [
-  #] ++ map (name: ./. + "/../kernels/available/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../kernels/available));
+  #++ map (name: ./. + "/../kernels/available/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../kernels/available));
 
   config = {
     build = mkJupyterlab {
