@@ -320,33 +320,13 @@
           }
           */
           availableKernels =
-            builtins.listToAttrs
-            (
-              lib.flatten
-              (
-                builtins.map
-                (
-                  flake:
-                    if builtins.hasAttr "jupyterKernels" flake
-                    then
-                      (
-                        lib.mapAttrsToList
-                        (
-                          name: kernel: {
-                            inherit name;
-                            value = args: {
-                              inherit args;
-                              inherit (kernel) path;
-                            };
-                          }
-                        )
-                        flake.jupyterKernels
-                      )
-                    else []
-                )
-                ([self] ++ flakes)
-              )
-            );
+            builtins.mapAttrs (
+              name: kernel: args: {
+                inherit args;
+                inherit (kernel) path;
+              }
+            )
+            self.jupyterKernels;
 
           # user kernels (imported and initialized)
           userKernels =
@@ -384,18 +364,8 @@
           instance name and adds them to a list.
           */
           duplicateKernelNames =
-            lib.foldl'
-            (
-              acc: e:
-                if
-                  let
-                    allNames = map (k: k.name) userKernels;
-                  in
-                    (lib.count (x: x == e.name) allNames) > 1
-                then acc ++ [e]
-                else acc
-            )
-            []
+            lib.filter
+            (x: lib.any (y: x.name == y.name) userKernels)
             userKernels;
         in
           # If any duplicates are found, throw an error and list them.
