@@ -47,13 +47,17 @@
   jupyterlab-cond-build =
     pkgs.writeShellScript "jupyterlab-cond-build"
     ''
-      ${jupyterlabEnvBase}/bin/python ${jupyterlab-checker}
-      checker=$?
-      if [ "$checker" -ne 0 ]
-      then
-        echo jupyterWith needs to build JupyterLab.
+      tmp=$(mktemp -d)
+      if ! ${jupyterlabEnvBase}/bin/python ${jupyterlab-checker}; then
+
+        echo "jupyterWith needs to build JupyterLab, calling ${jupyterlabEnvBase}/bin/jupyter lab build, stracing into $tmp/strace-out"
         # we need to build the jupyter lab environment before it can be used
-        ${jupyterlabEnvBase}/bin/jupyter lab build
+        ${pkgs.strace}/bin/strace -e trace=process -f -o "$tmp/strace-out" ${jupyterlabEnvBase}/bin/jupyter lab build
+
+        # Run the check again just to be sure it worked
+        if ! ${jupyterlabEnvBase}/bin/python ${jupyterlab-checker}; then
+          echo "Tried to rebuild but it didn't work!"
+        fi
       else
         echo jupyterWith does not need build JupyterLab. Starting...
       fi
