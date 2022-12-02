@@ -217,6 +217,7 @@
           installPhase = ''
             mkdir $out
             cp -R dist/* $out/
+            cp ${options.optionsJSON} $out/options.json
           '';
         };
 
