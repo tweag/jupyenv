@@ -30,7 +30,7 @@ jobs:
       run: |
         kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
         echo $kernels
-        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-example-")]')
+        filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-")]')
         echo "kernels=$filterKernels" >> $GITHUB_OUTPUT
 
     - name: Check
@@ -60,18 +60,18 @@ jobs:
 
     - name: Build ${{ matrix.kernel }} kernel
       run: |
-        nix build -L .#jupyterlab-kernel-example-${{ matrix.kernel }}
+        nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
 
     # TODO remove once we have a better solution. For more info see
     # https://github.com/tweag/jupyterWith/pull/280
     - name: Install IJulia
-      if: matrix.kernel == 'julia'
+      if: contains(matrix.kernel, 'julia')
       run: |
-        result/bin/julia kernels/available/julia/installDeps.jl
+        result/bin/julia kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/installDeps.jl
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
-        result/bin/python kernels/available/$( echo "${{ matrix.kernel }}" | sed -e "s|^stable-||" )/test.py
+        result/bin/python kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/test.py
 
   build-all-kernels:
     name: Build all kernels
@@ -177,6 +177,10 @@ jobs:
           nix build
         popd
 
+    # TODO this should not be dependent on the example kernels tests as the kernel names are different
     - name: Test
       run: |
-        ./example/result/bin/python ./repo/kernels/available/python/test.py
+        pushd ./repo/kernels/example/python/minimal
+          sed -i -e "s|example-python-minimal|custom-python|" test.py
+        popd
+        ./example/result/bin/python ./repo/kernels/example/python/minimal/test.py
