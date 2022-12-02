@@ -153,7 +153,7 @@ jobs:
   template:
     name: Test a template
     needs: build-kernel
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
