@@ -167,8 +167,8 @@
         }
     */
     getKernelsFromPath = kernelsPath: {
-      kernels = examples.mapKernelsFromPath "${kernelsPath}/example";
-      available = mapKernelsFromPath "${kernelsPath}/available";
+      kernels = examples.mapKernelsFromPath "${kernelsPath}/example" ["example"];
+      available = examples.mapKernelsFromPath "${kernelsPath}/available" [];
     };
 
     kernelsConfig = getKernelsFromPath (self + /kernels);
@@ -497,7 +497,7 @@
             kernels = availableKernels:
               builtins.map
               (getKernelInstance availableKernels extraArgs)
-              (examples.getKernelAttrsetFromPath kernelsPath);
+              (examples.getKernelAttrsetFromPath kernelsPath []);
           };
       in rec {
         lib = {

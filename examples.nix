@@ -1,9 +1,9 @@
 {lib}: let
   /*
   Creates a nested list of kernels instances from a path, `parentPath`, and a
-  name, `prevName`.
+  prefix name, `prefix`.
 
-  Generally, `prevName` should be set as `""`, an empty string, but is needed
+  Generally, `prefix` should be set as `[]`, an empty list, but is needed
   for recursive calls.
 
   A kernel instance is an attrset with a `name` that is constructed from the
@@ -49,21 +49,14 @@
     ...
     ]
   */
-  _getKernelListFromPath = parentPath: prevName:
+  _getKernelListFromPath = parentPath: prefix:
     lib.mapAttrsToList
     (
       fileName: fileType: let
-        parentDir =
-          builtins.unsafeDiscardStringContext
-          (builtins.baseNameOf parentPath);
-
         nextPath = parentPath + "/${fileName}";
-        nextName =
-          if prevName == ""
-          then parentDir
-          else (prevName + "-" + parentDir);
-
+        nextName = prefix ++ [fileName];
         nextLevel = _getKernelListFromPath nextPath nextName;
+
         defaultNixFile = "${parentPath}/default.nix";
       in
         if
@@ -76,7 +69,7 @@
           && lib.hasSuffix ".nix" fileName
           && !lib.hasPrefix "_" fileName
         then {
-          name = nextName;
+          name = lib.concatStringsSep "-" prefix;
           path = defaultNixFile;
         }
         else null
@@ -114,14 +107,14 @@
     ...
     ]
   */
-  getKernelAttrsetFromPath = path:
+  getKernelAttrsetFromPath = path: prefix:
     lib.unique
     (
       lib.remove
       null
       (
         lib.flatten
-        (_getKernelListFromPath path "")
+        (_getKernelListFromPath path prefix)
       )
     );
 
@@ -141,7 +134,7 @@
     ...
     }
   */
-  mapKernelsFromPath = path:
+  mapKernelsFromPath = path: prefix:
     lib.optionalAttrs
     (lib.pathExists path)
     (
@@ -157,7 +150,7 @@
             value = path;
           }
         )
-        (getKernelAttrsetFromPath path)
+        (getKernelAttrsetFromPath path prefix)
       )
     );
 in {
