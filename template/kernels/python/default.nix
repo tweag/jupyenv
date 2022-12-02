@@ -4,7 +4,7 @@
   extraArgs,
 }:
 availableKernels.python {
-  inherit name;
+  name = "custom-${name}";
   inherit (extraArgs) system;
   displayName = "Custom ${name}";
 }

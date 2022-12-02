@@ -146,6 +146,8 @@
         )
       );
 
+    examples = import ./examples.nix {inherit lib;};
+
     /*
     Takes a path to the kernels directory, `kernelsPath`,
     reads all files from the kernels directory and returns a set of
@@ -165,8 +167,8 @@
         }
     */
     getKernelsFromPath = kernelsPath: {
-      kernels = mapKernelsFromPath kernelsPath;
-      available = mapKernelsFromPath "${kernelsPath}/available";
+      kernels = examples.mapKernelsFromPath "${kernelsPath}/example" ["example"];
+      available = examples.mapKernelsFromPath "${kernelsPath}/available" [];
     };
 
     kernelsConfig = getKernelsFromPath (self + /kernels);
@@ -418,7 +420,7 @@
             builtins.map
             (
               name: {
-                name = "jupyterlab-kernel-${pkgs.lib.replaceStrings ["_"] ["-"] name}";
+                name = "jupyterlab-kernel-${name}";
                 value = mkJupyterlab {
                   kernels = availableKernels: [
                     (import kernelsConfig.kernels.${name} {
@@ -433,7 +435,10 @@
           )
         );
 
-        exampleJupyterlabAllKernels = mkJupyterlabFromPath ./kernels {inherit system pkgs_stable;};
+        exampleJupyterlabAllKernels =
+          mkJupyterlabFromPath
+          ./kernels/example
+          {inherit system pkgs_stable;};
 
         /*
         Returns kernel instance from a folder.
@@ -462,7 +467,7 @@
             kernels = availableKernels:
               builtins.map
               (getKernelInstance availableKernels extraArgs)
-              (getKernelAttrsetFromPath kernelsPath);
+              (examples.getKernelAttrsetFromPath kernelsPath []);
           };
       in rec {
         lib = {
