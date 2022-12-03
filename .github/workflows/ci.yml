@@ -10,7 +10,7 @@ jobs:
 
   build:
     name: Build jupyterlab (no kernels)
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     outputs:
       kernels: ${{ steps.kernels.outputs.kernels }}
@@ -41,7 +41,7 @@ jobs:
   build-kernel:
     name: Build ${{ matrix.kernel }} kernel
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     strategy:
       fail-fast: false
@@ -76,7 +76,7 @@ jobs:
   build-all-kernels:
     name: Build all kernels
     needs: build-kernel
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -95,7 +95,7 @@ jobs:
   build-devshell:
     name: Build devshell
     needs: build-kernel
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -114,7 +114,7 @@ jobs:
   build-docs:
     name: Build docs
     needs: build-kernel
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
