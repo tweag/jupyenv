@@ -1,5 +1,3 @@
-export { fetchOptions };
-
 function fetchOptions(path) {
   fetch(path)
     .then((response) => response.json())
