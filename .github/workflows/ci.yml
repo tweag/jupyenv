@@ -33,9 +33,9 @@ jobs:
         filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-")]')
         echo "kernels=$filterKernels" >> $GITHUB_OUTPUT
 
-    - name: Check
-      run: |
-        nix flake check --show-trace -L
+#    - name: Check
+#      run: |
+#        nix flake check --show-trace -L
 
 
   build-kernel:
