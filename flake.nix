@@ -146,6 +146,8 @@
         )
       );
 
+    examples = import ./examples.nix {inherit lib;};
+
     /*
     Takes a path to the kernels directory, `kernelsPath`,
     reads all files from the kernels directory and returns a set of
@@ -165,8 +167,8 @@
         }
     */
     getKernelsFromPath = kernelsPath: {
-      kernels = mapKernelsFromPath kernelsPath;
-      available = mapKernelsFromPath "${kernelsPath}/available";
+      kernels = examples.mapKernelsFromPath "${kernelsPath}/example" ["example"];
+      available = examples.mapKernelsFromPath "${kernelsPath}/available" [];
     };
 
     kernelsConfig = getKernelsFromPath (self + /kernels);
@@ -376,6 +378,7 @@
           jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
             # make jupyter config and data directories
             mkdir -p $out/config $out/data
+            echo "c.NotebookApp.use_redirect_file = False" > $out/config/jupyter_notebook_config.py
 
             # make jupyter lab user settings and workspaces directories
             mkdir -p $out/config/lab/{user-settings,workspaces}
@@ -450,7 +453,7 @@
             builtins.map
             (
               name: {
-                name = "jupyterlab-kernel-${pkgs.lib.replaceStrings ["_"] ["-"] name}";
+                name = "jupyterlab-kernel-${name}";
                 value = mkJupyterlab {
                   kernels = availableKernels: [
                     (import kernelsConfig.kernels.${name} {
@@ -465,7 +468,10 @@
           )
         );
 
-        exampleJupyterlabAllKernels = mkJupyterlabFromPath ./kernels {inherit system pkgs_stable;};
+        exampleJupyterlabAllKernels =
+          mkJupyterlabFromPath
+          ./kernels/example
+          {inherit system pkgs_stable;};
 
         /*
         Returns kernel instance from a folder.
@@ -494,7 +500,7 @@
             kernels = availableKernels:
               builtins.map
               (getKernelInstance availableKernels extraArgs)
-              (getKernelAttrsetFromPath kernelsPath);
+              (examples.getKernelAttrsetFromPath kernelsPath []);
           };
 
         /*
