@@ -4,6 +4,7 @@ function fetchOptions(path) {
     .then((json) => nestJsonChildren(json))
     .then((json) => generateCommonMark(json))
     .then((json) => updateOptions(json))
+    .then(() => nestOptionsInDOM())
 }
 
 function nestJsonChildren(jsonObj) {
@@ -59,4 +60,30 @@ function updateOptions(data) {
   let optionsInfo = document.getElementById("optionsInfo");
   var converter = new showdown.Converter();
   optionsInfo.innerHTML = converter.makeHtml(data);
+}
+
+function nestOptionsInDOM() {
+  let possibleHeaders = ["H6", "H5", "H4", "H3", "H2"];
+  let allOptions = document.getElementById("optionsInfo").children;
+
+  possibleHeaders.forEach((headerElem, headerIdx, headerArray) => {
+    let childList = [];
+
+    for (var idx = allOptions.length - 1; idx >= 0; idx--) {
+      let childElement = allOptions[idx];
+
+      if (headerElem === childElement.nodeName) {
+        let newDiv = document.createElement("div");
+        childElement.parentNode.insertBefore(newDiv, childElement.nextElementSibling);
+        childList.reverse().forEach((elem) => {
+          newDiv.appendChild(elem);
+        });
+        childList = [];
+      } else if (headerArray.slice(headerIdx).includes(childElement.nodeName)) {
+        childList = [];
+      } else {
+        childList.push(childElement);
+      }
+    }
+  })
 }
