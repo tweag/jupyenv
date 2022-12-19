@@ -5,6 +5,7 @@ function fetchOptions(path) {
     .then((json) => generateCommonMark(json))
     .then((json) => updateOptions(json))
     .then(() => nestOptionsInDOM())
+    .then(() => makeOptionsCollapsible())
 }
 
 function nestJsonChildren(jsonObj) {
@@ -74,8 +75,10 @@ function nestOptionsInDOM() {
 
       if (headerElem === childElement.nodeName) {
         let newDiv = document.createElement("div");
+        childElement.classList.add("collapsibleHeader");
         childElement.parentNode.insertBefore(newDiv, childElement.nextElementSibling);
         childList.reverse().forEach((elem) => {
+          elem.classList.add("collapsibleContent");
           newDiv.appendChild(elem);
         });
         childList = [];
@@ -86,4 +89,33 @@ function nestOptionsInDOM() {
       }
     }
   })
+}
+
+function makeOptionsCollapsible() {
+  var coll = document.getElementsByClassName("collapsibleHeader");
+
+  for (var idx = 0; idx < coll.length; idx++) {
+    coll[idx].nextElementSibling.style.display = "none";
+
+    coll[idx].addEventListener("click", function() {
+      var content = this.nextElementSibling;
+      if (content.style.display === "block") {
+        recursivelyCollapseOptions(this);
+      } else {
+        this.classList.add("active");
+        content.style.display = "block";
+      }
+    });
+  }
+}
+
+function recursivelyCollapseOptions(element) {
+  element.classList.remove("active");
+  var content = element.nextElementSibling;
+  content.style.display = "none";
+  for (let child of content.children) {
+    if (child.classList.contains("collapsibleHeader")) {
+      recursivelyCollapseOptions(child);
+    }
+  }
 }
