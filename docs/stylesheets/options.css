@@ -2,6 +2,24 @@
   color: white;
   text-indent: 1em;
   background-color: darkgray;
+  margin-bottom: 0.1em !important;
+  margin-top: 0.1em !important;
+  padding-right: 0.5em;
+}
+
+.collapsibleHeader:hover, .active {
+  background-color: #555;
+}
+
+.collapsibleHeader:after {
+  content: "\002B"; /* Unicode character for "plus" sign (+) */
+  color: white;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2212"; /* Unicode character for "minus" sign (-) */
 }
 
 .collapsibleHeader + * {
