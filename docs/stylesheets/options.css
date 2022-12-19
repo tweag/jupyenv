@@ -1,14 +1,14 @@
 .collapsibleHeader {
   color: white;
   text-indent: 1em;
-  background-color: darkgray;
+  background-color: var(--md-default-fg-color--lighter);
   margin-bottom: 0.1em !important;
   margin-top: 0.1em !important;
   padding-right: 0.5em;
 }
 
 .collapsibleHeader:hover, .active {
-  background-color: #555;
+  background-color: var(--md-default-fg-color--light);
 }
 
 .collapsibleHeader:after {
