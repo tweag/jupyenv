@@ -75,6 +75,7 @@ function nestOptionsInDOM() {
 
       if (headerElem === childElement.nodeName) {
         let newDiv = document.createElement("div");
+        newDiv.classList.add("collapsibleContentContainer");
         childElement.classList.add("collapsibleHeader");
         childElement.parentNode.insertBefore(newDiv, childElement.nextElementSibling);
         childList.reverse().forEach((elem) => {
@@ -95,15 +96,12 @@ function makeOptionsCollapsible() {
   var coll = document.getElementsByClassName("collapsibleHeader");
 
   for (var idx = 0; idx < coll.length; idx++) {
-    coll[idx].nextElementSibling.style.display = "none";
-
     coll[idx].addEventListener("click", function() {
       var content = this.nextElementSibling;
-      if (content.style.display === "block") {
+      if (content.style.maxHeight) {
         recursivelyCollapseOptions(this);
       } else {
-        this.classList.add("active");
-        content.style.display = "block";
+        recursivelyExpandOptions(this, 0);
       }
     });
   }
@@ -112,10 +110,21 @@ function makeOptionsCollapsible() {
 function recursivelyCollapseOptions(element) {
   element.classList.remove("active");
   var content = element.nextElementSibling;
-  content.style.display = "none";
+  content.style.maxHeight = null;
   for (let child of content.children) {
     if (child.classList.contains("collapsibleHeader")) {
       recursivelyCollapseOptions(child);
     }
+  }
+}
+
+function recursivelyExpandOptions(element, childHeight = 0) {
+  element.classList.add("active");
+  var content = element.nextElementSibling;
+  content.style.maxHeight = content.scrollHeight + childHeight + "px";
+
+  possibleParentHeader = content.parentElement.previousElementSibling;
+  if (possibleParentHeader.classList.contains("collapsibleHeader")) {
+    recursivelyExpandOptions(possibleParentHeader, content.scrollHeight);
   }
 }

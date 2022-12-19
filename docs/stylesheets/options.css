@@ -1,0 +1,15 @@
+.collapsibleHeader {
+  color: white;
+  text-indent: 1em;
+  background-color: darkgray;
+}
+
+.collapsibleHeader + * {
+  margin-left: 1em;
+}
+
+.collapsibleContentContainer {
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
