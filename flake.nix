@@ -219,7 +219,7 @@
           installPhase = ''
             mkdir $out
             cp -R dist/* $out/
-            cp ${options.optionsJSON} $out/options.json
+            cp ${options.optionsJSON}/share/doc/nixos/options.json $out/options.json
           '';
         };
 
