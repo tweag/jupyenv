@@ -5,6 +5,8 @@
   margin-top: 0.1em !important;
   padding-left: 1em;
   padding-right: 0.5em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
 }
 
 .collapsibleHeaderContainer:hover, .active {
@@ -32,4 +34,8 @@
   max-height: 0px;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
+}
+
+.toggleAllButton {
+  float: right;
 }
