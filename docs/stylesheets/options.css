@@ -18,11 +18,11 @@
   margin-left: 5px;
 }
 
-.active:after {
+.active > .collapsibleHeader:after {
   content: "\2212"; /* Unicode character for "minus" sign (-) */
 }
 
-.collapsibleHeader + * {
+.collapsibleHeaderContainer + * {
   margin-left: 1em;
 }
 

@@ -6,6 +6,7 @@ function fetchOptions(path) {
     .then((json) => updateOptions(json))
     .then(() => nestOptionsInDOM())
     .then(() => makeOptionsCollapsible())
+    .then(() => addKernelIcons())
 }
 
 function nestJsonChildren(jsonObj) {
@@ -83,6 +84,11 @@ function nestOptionsInDOM() {
           newDiv.appendChild(elem);
         });
         childList = [];
+
+        let headerDiv = document.createElement("div");
+        headerDiv.classList.add("collapsibleHeaderContainer");
+        childElement.parentNode.insertBefore(headerDiv, childElement);
+        headerDiv.appendChild(childElement);
       } else if (headerArray.slice(headerIdx).includes(childElement.nodeName)) {
         childList = [];
       } else {
@@ -93,7 +99,7 @@ function nestOptionsInDOM() {
 }
 
 function makeOptionsCollapsible() {
-  var coll = document.getElementsByClassName("collapsibleHeader");
+  var coll = document.getElementsByClassName("collapsibleHeaderContainer");
 
   for (var idx = 0; idx < coll.length; idx++) {
     coll[idx].addEventListener("click", function() {
@@ -112,7 +118,7 @@ function recursivelyCollapseOptions(element) {
   var content = element.nextElementSibling;
   content.style.maxHeight = null;
   for (let child of content.children) {
-    if (child.classList.contains("collapsibleHeader")) {
+    if (child.classList.contains("collapsibleHeaderContainer")) {
       recursivelyCollapseOptions(child);
     }
   }
@@ -124,7 +130,30 @@ function recursivelyExpandOptions(element, childHeight = 0) {
   content.style.maxHeight = content.scrollHeight + childHeight + "px";
 
   possibleParentHeader = content.parentElement.previousElementSibling;
-  if (possibleParentHeader.classList.contains("collapsibleHeader")) {
+  if (possibleParentHeader.classList.contains("collapsibleHeaderContainer")) {
     recursivelyExpandOptions(possibleParentHeader, content.scrollHeight);
   }
+}
+
+function addKernelIcons() {
+  var allHeaders = [].slice.call(document.getElementsByClassName("collapsibleHeaderContainer"));
+  var regexKernels = RegExp("kernel\.([a-z]*)$");
+  var onlyKernelHeaders = allHeaders.filter((element) => {
+    return regexKernels.test(element.innerText);
+  });
+
+  var imgSizeOffset = 8;
+
+  onlyKernelHeaders.forEach((element) => {
+    var kernelName = element.innerText.match(regexKernels)[1];
+    var img = document.createElement("img");
+    img.src = "../assets/logos/kernels/" + kernelName + "-logo64.png";
+    img.style.position = "absolute";
+
+    var imgHeight = (element.offsetHeight - imgSizeOffset);
+    img.style.height = imgHeight + "px";
+    img.style.transform = "translate(-150%, " + (imgSizeOffset / 2) + "px)";
+
+    element.insertBefore(img, element.children[0]);
+  });
 }
