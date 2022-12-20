@@ -218,7 +218,7 @@ function addKernelIcons() {
     return regexKernels.test(element.innerText);
   });
 
-  var imgSizeOffset = 8;
+  var imgSizeOffsetPercent = 0.8;
 
   onlyKernelHeaders.forEach((element) => {
     var kernelName = element.innerText.match(regexKernels)[1];
@@ -226,9 +226,10 @@ function addKernelIcons() {
     img.src = "../assets/logos/kernels/" + kernelName + "-logo64.png";
     img.style.position = "absolute";
 
-    var imgHeight = (element.offsetHeight - imgSizeOffset);
+    var imgHeight = Math.floor(imgSizeOffsetPercent * element.offsetHeight);
+    var imgHeightOffset = element.offsetHeight - imgHeight;
     img.style.height = imgHeight + "px";
-    img.style.transform = "translate(-150%, " + (imgSizeOffset / 2) + "px)";
+    img.style.transform = "translate(-150%, " + Math.floor(imgHeightOffset / 2) + "px)";
 
     element.insertBefore(img, element.children[0]);
   });
