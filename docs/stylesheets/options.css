@@ -1,5 +1,5 @@
 .collapsibleHeader {
-  color: white;
+  color: var(--md-default-fg-color);
   background-color: var(--md-default-fg-color--lighter);
   margin-bottom: 0.1em !important;
   margin-top: 0.1em !important;
@@ -16,7 +16,7 @@
 .collapsibleHeader:after {
   font-family: 'Material Icons';
   content: "expand_more";
-  color: white;
+  color: var(--md-default-fg-color);
   float: right;
   transition: all 0.2s;
 }
