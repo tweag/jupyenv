@@ -1,25 +1,27 @@
 .collapsibleHeader {
   color: white;
-  text-indent: 1em;
   background-color: var(--md-default-fg-color--lighter);
   margin-bottom: 0.1em !important;
   margin-top: 0.1em !important;
+  padding-left: 1em;
   padding-right: 0.5em;
 }
 
-.collapsibleHeader:hover, .active {
+.collapsibleHeaderContainer:hover, .active {
   background-color: var(--md-default-fg-color--light);
 }
 
 .collapsibleHeader:after {
-  content: "\002B"; /* Unicode character for "plus" sign (+) */
+  font-family: 'Material Icons';
+  content: "expand_more";
   color: white;
   float: right;
-  margin-left: 5px;
+  transition: all 0.2s;
 }
 
 .active > .collapsibleHeader:after {
-  content: "\2212"; /* Unicode character for "minus" sign (-) */
+  font-family: 'Material Icons';
+  transform: rotate(180deg);
 }
 
 .collapsibleHeaderContainer + * {
