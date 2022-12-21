@@ -76,6 +76,24 @@ function nestJsonChildren(jsonObj) {
   return jsonObj;
 }
 
+/**
+ * Creates a CommonMark compliant markdown from JSON similar to how optionsCommonMark and generateDoc.py do in nixpkgs.
+ * https://github.com/NixOS/nixpkgs/blob/42ad7722055405860eadccee37327de3a3fe9f00/nixos/lib/make-options-doc/default.nix#L103
+ * https://github.com/NixOS/nixpkgs/blob/42ad7722055405860eadccee37327de3a3fe9f00/nixos/lib/make-options-doc/generateDoc.py#L37
+ *
+ * Unlike the aforementioned functions, this function is recursive. The reason
+ * is so that children are converted to a header level one lower than their
+ * parent. Also the examples are not stringify'd as testing showed it renders
+ * better without.
+ *
+ * @param {Object} jsonObj      A nested JSON object.
+ * @param {String} markdown=""  Where the output markdown is stored.
+ * @param {String} header="## " The header level of the current keys being converted.
+ *
+ * @return {String} The resulting markdown.
+ *
+ */
+
 function generateCommonMark(jsonObj, markdown = "", header = "## ") {
   for (const [key, value] of Object.entries(jsonObj)) {
 
@@ -95,6 +113,7 @@ function generateCommonMark(jsonObj, markdown = "", header = "## ") {
     if ('example' in value) {
       markdown = markdown.concat("*_Example_*:", "\n");
       markdown = markdown.concat("```", "\n");
+      // Examples look better when they are not stringify'd.
       markdown = markdown.concat(value['example'], "\n\n");
       markdown = markdown.concat("```", "\n");
     }
