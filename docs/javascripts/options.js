@@ -1,11 +1,14 @@
 function fetchOptions(path) {
   fetch(path)
+    // TODO : eventually move to server side
     .then((response) => response.json())
     .then((json) => nestJsonChildren(json))
     .then((json) => generateCommonMark(json))
     .then((json) => updateOptions(json))
+    // TODO : consider doing this in CSS
     .then(() => nestOptionsInDOM())
     .then(() => makeOptionsCollapsible())
+    // this needs to stay in JS
     .then(() => addExpandAll())
     .then(() => addKernelIcons())
 }
