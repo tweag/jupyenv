@@ -83,8 +83,8 @@ function nestJsonChildren(jsonObj) {
  *
  * Unlike the aforementioned functions, this function is recursive. The reason
  * is so that children are converted to a header level one lower than their
- * parent. Also the examples are not stringify'd as testing showed it renders
- * better without.
+ * parent. This makes it easier to nest options in the DOM. Also the examples
+ * are not stringify'd as testing showed it renders better without.
  *
  * @param {Object} jsonObj      A nested JSON object.
  * @param {String} markdown=""  Where the output markdown is stored.
