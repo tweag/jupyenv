@@ -10,18 +10,63 @@ function fetchOptions(path) {
     .then(() => addKernelIcons())
 }
 
+/**
+ * Takes a flat JSON object and nests children based on key strings.
+ *
+ * The JSON object created from NixOS module options has all options listed at
+ * the top level. The goal is to find options that are sub-options and append
+ * them as children to their parent option.
+ *
+ * The function iterates forward through the object. If the current key starts
+ * with the previous key, the current key is appended as a child of the
+ * previous key. This carries on until there is no match and then the current
+ * key becomes the new previous key.
+ *
+ * @param {Object} jsonObj The flat JSON object.
+ *
+ * @return {Object} The nested JSON object.
+ */
 function nestJsonChildren(jsonObj) {
-  let prevKey = "random prev key";
+  let keyList = [];
+  // Key to store nested options.
+  const nestingKey = "children";
 
-  for (var key in jsonObj) {
-    if (key.includes(prevKey)) {
-      if (!jsonObj[prevKey].hasOwnProperty("children")) {
-        jsonObj[prevKey].children = {};
+  for (let currKey in jsonObj) {
+    // The key list can change in the loop.
+    let keyListLength = keyList.length;
+
+    for (let unused = 0; unused < keyListLength; unused++) {
+      // Grabs the most recent key added to the key list and checks if the
+      // current key is a child.
+      let prevKey = keyList.slice(-1)[0];
+      if (currKey.startsWith(prevKey)) {
+        // Insert the nesting key in between the key list elements and get the
+        // object associated with the previous key to store the current key as
+        // a child.
+        let keyListWithChildren = keyList.flatMap((elem, idx) => idx ? [nestingKey, elem]: [elem])
+        let prevObj = keyListWithChildren.reduce((obj, key) => obj[key], jsonObj);
+
+        // First time adding a child.
+        if (!prevObj.hasOwnProperty(nestingKey)) {
+          prevObj.children = {};
+        }
+
+        // Add the child, delete it from the top level, and push its key to the
+        // key list in case the next key is a child of the current.
+        prevObj.children[currKey] = jsonObj[currKey];
+        delete jsonObj[currKey];
+        keyList.push(currKey);
+        break;
+      } else {
+        // If the current key is not a child, pop the last element from the key
+        // list and check the next level up.
+        keyList.pop();
       }
-      jsonObj[prevKey].children[key] = jsonObj[key];
-      delete jsonObj[key];
-    } else {
-      prevKey = key;
+    }
+
+    // Used in the first iteration and whenever the current key has no parent.
+    if (keyList.length === 0) {
+      keyList.push(currKey);
     }
   }
 
