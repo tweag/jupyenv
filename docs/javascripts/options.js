@@ -151,52 +151,48 @@ function updateOptions(data) {
  * DOM changing.
  */
 function nestOptionsInDOM() {
-  let possibleHeaders = ["H6", "H5", "H4", "H3", "H2"];
-  let allOptions = document.getElementById("optionsInfo").children;
-
-  possibleHeaders.forEach((headerElem, headerIdx, headerArray) => {
+  ["H6", "H5", "H4", "H3", "H2"].forEach((headerElem, headerIdx, headerArray) => {
     let childList = [];
 
     // Go through the options elements in the DOM in reverse order. This was
     // the easiest way as you can collect elements in a list and relocate them
     // as appropriate or reset the list. Going forward through the elements is
     // much more complicated.
-    for (var idx = allOptions.length - 1; idx >= 0; idx--) {
-      //Current element for this iteration.
-      let childElement = allOptions[idx];
+    Array.from(document.getElementById("optionsInfo").children)
+      .reverse()
+      .forEach((childElement) => {
+        if (headerElem === childElement.nodeName) {
+          // Current element is a heading of the current iteration.
 
-      if (headerElem === childElement.nodeName) {
-        // Current element is a heading of the current iteration.
+          // Create a new DIV for the content under the heading and add the
+          // content. Empty the child list for the next iteration. Headings
+          // lower than H2 can be children of higher headings.
+          let contentDiv = document.createElement("div");
+          childElement.insertAdjacentElement('afterend', contentDiv);
+          contentDiv.classList.add("collapsibleContentContainer");
+          childList.reverse().forEach((child) => {
+            child.classList.add("collapsibleContent");
+            contentDiv.append(child);
+          });
+          childList = [];
 
-        // Create a new DIV for the content under the heading and add the
-        // content. Empty the child list for the next iteration. Headings lower
-        // than H2 can be children of higher headings.
-        let contentDiv = document.createElement("div");
-        childElement.insertAdjacentElement('afterend', contentDiv);
-        contentDiv.classList.add("collapsibleContentContainer");
-        childList.reverse().forEach((elem) => {
-          elem.classList.add("collapsibleContent");
-          contentDiv.appendChild(elem);
-        });
-        childList = [];
-
-        // Create a new DIV for the heading and add the heading. This needs to
-        // happen last as the heading is moved in the DOM at this point.
-        let headerDiv = document.createElement("div");
-        childElement.insertAdjacentElement('beforebegin', headerDiv);
-        headerDiv.classList.add("collapsibleHeaderContainer");
-        childElement.classList.add("collapsibleHeader");
-        headerDiv.appendChild(childElement);
-      } else if (headerArray.slice(headerIdx + 1).includes(childElement.nodeName)) {
-        // Current element is a heading higher than the current iteration.
-        childList = [];
-      } else {
-        // Current element is a heading lower than the current iteration or
-        // anything else.
-        childList.push(childElement);
-      }
-    }
-  })
+          // Create a new DIV for the heading and add the heading. This needs
+          // to happen last as the heading is moved in the DOM at this point.
+          let headerDiv = document.createElement("div");
+          childElement.insertAdjacentElement('beforebegin', headerDiv);
+          headerDiv.classList.add("collapsibleHeaderContainer");
+          childElement.classList.add("collapsibleHeader");
+          headerDiv.append(childElement);
+        } else if (headerArray.slice(headerIdx + 1).includes(childElement.nodeName)) {
+          // Current element is a heading higher than the current iteration.
+          childList = [];
+        } else {
+          // Current element is a heading lower than the current iteration or
+          // anything else.
+          childList.push(childElement);
+        }
+    });
+  });
 }
 
 /**
@@ -204,18 +200,17 @@ function nestOptionsInDOM() {
  * collapse/expand functionality.
  */
 function makeOptionsCollapsible() {
-  var container = document.getElementsByClassName("collapsibleHeaderContainer");
-
-  Array.from(container).forEach((element) => {
-    element.addEventListener("click", function() {
-      var content = this.nextElementSibling;
-      if (content.style.maxHeight) {
-        collapseOptions(this);
-      } else {
-        expandOptions(this);
-      }
+  Array.from(document.getElementsByClassName("collapsibleHeaderContainer"))
+    .forEach((element) => {
+      element.addEventListener("click", function() {
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+          collapseOptions(this);
+        } else {
+          expandOptions(this);
+        }
+      });
     });
-  });
 }
 
 /**
@@ -304,46 +299,45 @@ function recursivelyExpandOptions(element, childHeight = 0) {
  * container children.
  */
 function addExpandCollapseAllButtons() {
-  var contentContainers = document.getElementsByClassName("collapsibleContentContainer");
+  Array.from(document.getElementsByClassName("collapsibleContentContainer"))
+    .forEach((container) => {
+      var contentChildren = Array.from(container.children);
+      if (contentChildren.some((child) => child.classList.contains("collapsibleHeaderContainer"))) {
 
-  Array.from(contentContainers).forEach((container) => {
-    var contentChildren = Array.from(container.children);
-    if (contentChildren.some((child) => child.classList.contains("collapsibleHeaderContainer"))) {
-
-      var expandAllButton = document.createElement("button");
-      expandAllButton.type = "button";
-      expandAllButton.innerText = "expand all";
-      expandAllButton.classList.add("expandAllButton", "toggleAllButton");
-      expandAllButton.classList.add("md-button");
+        var expandAllButton = document.createElement("button");
+        expandAllButton.type = "button";
+        expandAllButton.innerText = "expand all";
+        expandAllButton.classList.add("expandAllButton", "toggleAllButton");
+        expandAllButton.classList.add("md-button");
 
 
-      var collapseAllButton = document.createElement("button");
-      collapseAllButton.type = "button";
-      collapseAllButton.innerText = "collapse all";
-      collapseAllButton.classList.add("collapseAllButton", "toggleAllButton");
-      collapseAllButton.classList.add("md-button");
-      collapseAllButton.style.display = "none";
+        var collapseAllButton = document.createElement("button");
+        collapseAllButton.type = "button";
+        collapseAllButton.innerText = "collapse all";
+        collapseAllButton.classList.add("collapseAllButton", "toggleAllButton");
+        collapseAllButton.classList.add("md-button");
+        collapseAllButton.style.display = "none";
 
-      expandAllButton.addEventListener("click", function() {
-        var headerChildren = Array.from(this.parentElement.children)
-          .filter(container => container.classList.contains("collapsibleHeaderContainer"));
-        headerChildren.forEach(elem => expandOptions(elem));
-        this.style.display = "none";
-        collapseAllButton.style = "inline-block";
-      });
+        expandAllButton.addEventListener("click", function() {
+          Array.from(this.parentElement.children)
+            .filter(container => container.classList.contains("collapsibleHeaderContainer"))
+            .forEach(elem => expandOptions(elem));
+          this.style.display = "none";
+          collapseAllButton.style = "inline-block";
+        });
 
-      collapseAllButton.addEventListener("click", function() {
-        var headerChildren = Array.from(this.parentElement.children)
-          .filter(container => container.classList.contains("collapsibleHeaderContainer"));
-        headerChildren.forEach(elem => collapseOptions(elem));
-        this.style.display = "none";
-        expandAllButton.style = "inline-block";
-      });
+        collapseAllButton.addEventListener("click", function() {
+          Array.from(this.parentElement.children)
+            .filter(container => container.classList.contains("collapsibleHeaderContainer"))
+            .forEach(elem => collapseOptions(elem));
+          this.style.display = "none";
+          expandAllButton.style = "inline-block";
+        });
 
-      container.prepend(expandAllButton);
-      container.prepend(collapseAllButton);
-    }
-  });
+        container.prepend(expandAllButton);
+        container.prepend(collapseAllButton);
+      }
+    });
 }
 
 /**
