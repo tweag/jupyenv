@@ -29,7 +29,7 @@ in {
 
   imports = [
     ./../kernels/available/bash/module.nix
-    #./../kernels/available/c/module.nix
+    ./../kernels/available/c/module.nix
     #./../kernels/available/elm/module.nix
     #./../kernels/available/go/module.nix
     #./../kernels/available/haskell/module.nix
