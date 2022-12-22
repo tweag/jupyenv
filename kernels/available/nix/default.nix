@@ -21,6 +21,7 @@
   editablePackageSources ? {},
   extraPackages ? ps: [],
   preferWheels ? false,
+  groups ? ["dev"],
 }: let
   env = poetry2nix.mkPoetryEnv {
     inherit
@@ -32,6 +33,7 @@
       editablePackageSources
       extraPackages
       preferWheels
+      groups
       ;
   };
 
