@@ -9,7 +9,7 @@ function fetchOptions(path) {
     .then(() => nestOptionsInDOM())
     .then(() => makeOptionsCollapsible())
     // this needs to stay in JS
-    .then(() => addExpandAll())
+    .then(() => addExpandCollapseAllButtons())
     .then(() => addKernelIcons())
 }
 
@@ -299,11 +299,15 @@ function recursivelyExpandOptions(element, childHeight = 0) {
   }
 }
 
-function addExpandAll() {
-  var contentContainers = [].slice.call(document.getElementsByClassName("collapsibleContentContainer"));
+/**
+ * Create expand/collapse all buttons in content containers that have content
+ * container children.
+ */
+function addExpandCollapseAllButtons() {
+  var contentContainers = document.getElementsByClassName("collapsibleContentContainer");
 
-  contentContainers.forEach((element) => {
-    var contentChildren = [].slice.call(element.children);
+  Array.from(contentContainers).forEach((container) => {
+    var contentChildren = Array.from(container.children);
     if (contentChildren.some((child) => child.classList.contains("collapsibleHeaderContainer"))) {
 
       var expandAllButton = document.createElement("button");
@@ -321,23 +325,23 @@ function addExpandAll() {
       collapseAllButton.style.display = "none";
 
       expandAllButton.addEventListener("click", function() {
-        var headerChildren = [].slice.call(this.parentElement.children)
-          .filter(element => element.classList.contains("collapsibleHeaderContainer"));
+        var headerChildren = Array.from(this.parentElement.children)
+          .filter(container => container.classList.contains("collapsibleHeaderContainer"));
         headerChildren.forEach(elem => expandOptions(elem));
         this.style.display = "none";
         collapseAllButton.style = "inline-block";
       });
 
       collapseAllButton.addEventListener("click", function() {
-        var headerChildren = [].slice.call(this.parentElement.children)
-          .filter(element => element.classList.contains("collapsibleHeaderContainer"));
+        var headerChildren = Array.from(this.parentElement.children)
+          .filter(container => container.classList.contains("collapsibleHeaderContainer"));
         headerChildren.forEach(elem => collapseOptions(elem));
         this.style.display = "none";
         expandAllButton.style = "inline-block";
       });
 
-      element.prepend(expandAllButton);
-      element.prepend(collapseAllButton);
+      container.prepend(expandAllButton);
+      container.prepend(collapseAllButton);
     }
   });
 }
