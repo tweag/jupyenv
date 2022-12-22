@@ -199,11 +199,15 @@ function nestOptionsInDOM() {
   })
 }
 
+/**
+ * Loops through all the collapsible heading containers and adds the click to
+ * collapse/expand functionality.
+ */
 function makeOptionsCollapsible() {
-  var coll = document.getElementsByClassName("collapsibleHeaderContainer");
+  var container = document.getElementsByClassName("collapsibleHeaderContainer");
 
-  for (var idx = 0; idx < coll.length; idx++) {
-    coll[idx].addEventListener("click", function() {
+  Array.from(container).forEach((element) => {
+    element.addEventListener("click", function() {
       var content = this.nextElementSibling;
       if (content.style.maxHeight) {
         collapseOptions(this);
@@ -211,15 +215,24 @@ function makeOptionsCollapsible() {
         expandOptions(this);
       }
     });
-  }
+  });
 }
 
+/**
+ * Things to do when collapsing a heading's content.
+ */
 function collapseOptions(element) {
   recursivelyCollapseOptions(element);
   setButtonToExpand(element);
+  // The content needs to finish collapsing before the parents can be updated.
   setTimeout(updateParentDuringChildToggle, 250, element);
 }
 
+/**
+ * Recursively collapses a heading. Resets the content maxHeight so it
+ * collapses, removes the active class so the heading is not highlighted, and
+ * checks the children to see if there is a heading container to recurse into.
+ */
 function recursivelyCollapseOptions(element) {
   element.classList.remove("active");
   var content = element.nextElementSibling;
@@ -231,6 +244,9 @@ function recursivelyCollapseOptions(element) {
   }
 }
 
+/**
+ * When a heading is collapsed, reset the expand/collapse all buttons.
+ */
 function setButtonToExpand(element) {
   var content = element.nextElementSibling;
   content
@@ -245,6 +261,10 @@ function setButtonToExpand(element) {
     });
 }
 
+/**
+ * When a heading container's content is collapsed, the parent container's
+ * style needs to be updated if one exists.
+ */
 function updateParentDuringChildToggle(element) {
   var possibleParentContent = element.parentElement;
   if (possibleParentContent.classList.contains("collapsibleContentContainer")) {
@@ -252,11 +272,22 @@ function updateParentDuringChildToggle(element) {
   }
 }
 
+/**
+ * Things to do when expanding a heading's content.
+ */
 function expandOptions(element) {
   recursivelyExpandOptions(element, 0);
+  // The content needs to finish expanding before the parents can be updated.
   setTimeout(updateParentDuringChildToggle, 250, element);
 }
 
+/**
+ * Expands a heading container's content.
+ *
+ * This is done by updating the contents maxHeight style.
+ * Recursively checks parents element's previous sibling if they are a heading
+ * container and updates the content maxHeight style if so.
+ */
 function recursivelyExpandOptions(element, childHeight = 0) {
   element.classList.add("active");
   var content = element.nextElementSibling;
