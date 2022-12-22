@@ -346,26 +346,31 @@ function addExpandCollapseAllButtons() {
   });
 }
 
+/**
+ * Adds kernel icons next to the associated option heading.
+ */
 function addKernelIcons() {
-  var allHeaders = [].slice.call(document.getElementsByClassName("collapsibleHeaderContainer"));
+  // Only look for things that start with "kernel." and ends with some kernel
+  // name (e.g. kernel.bash or kernel.python but not kernel.python.science).
   var regexKernels = RegExp("kernel\.([a-z]*)$");
-  var onlyKernelHeaders = allHeaders.filter((element) => {
-    return regexKernels.test(element.innerText);
-  });
 
+  // Make icons slightly shorter than the heading they are next to.
   var imgSizeOffsetPercent = 0.8;
 
-  onlyKernelHeaders.forEach((element) => {
-    var kernelName = element.innerText.match(regexKernels)[1];
-    var img = document.createElement("img");
-    img.src = "../assets/logos/kernels/" + kernelName + "-logo64.png";
-    img.style.position = "absolute";
+  // Get only heading containers that match the regex and put the icon next to it.
+  Array.from(document.getElementsByClassName("collapsibleHeaderContainer"))
+    .filter(element => regexKernels.test(element.innerText))
+    .forEach((element) => {
+      var kernelName = element.innerText.match(regexKernels)[1];
+      var img = document.createElement("img");
+      img.src = "../assets/logos/kernels/" + kernelName + "-logo64.png";
+      img.style.position = "absolute";
 
-    var imgHeight = Math.floor(imgSizeOffsetPercent * element.offsetHeight);
-    var imgHeightOffset = element.offsetHeight - imgHeight;
-    img.style.height = imgHeight + "px";
-    img.style.transform = "translate(-150%, " + Math.floor(imgHeightOffset / 2) + "px)";
+      var imgHeight = Math.floor(imgSizeOffsetPercent * element.offsetHeight);
+      var imgHeightOffset = element.offsetHeight - imgHeight;
+      img.style.height = imgHeight + "px";
+      img.style.transform = "translate(-150%, " + Math.floor(imgHeightOffset / 2) + "px)";
 
-    element.insertBefore(img, element.children[0]);
-  });
+      element.prepend(img);
+    });
 }
