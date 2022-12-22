@@ -111,17 +111,6 @@ in {
       '';
     };
 
-    nixpkgs = lib.mkOption {
-      type = types.path;
-      default = self.inputs.nixpkgs;
-      example = ''
-        self.inputs.nixpkgs
-      '';
-      description = lib.mdDoc ''
-        nixpkgs flake input to be used for this ${kernelName} kernel.
-      '';
-    };
-
     poetry2nix = lib.mkOption {
       type = types.path;
       default = self.inputs.poetry2nix;

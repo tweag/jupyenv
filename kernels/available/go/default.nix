@@ -5,8 +5,8 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "go",
   displayName ? "Go",
-  runtimePackages ? with pkgs; [go],
-  extraRuntimePackages ? [],
+  requiredRuntimePackages ? with pkgs; [go],
+  runtimePackages ? [],
   gophernotes ? pkgs.gophernotes,
 }: let
   inherit (pkgs) lib stdenv writeScriptBin;
@@ -16,7 +16,7 @@
     export PATH="${lib.makeBinPath [gophernotes]}:$PATH"
     ${gophernotes}/bin/gophernotes "$@"'';
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   env = gophernotesSh;
   wrappedEnv =
