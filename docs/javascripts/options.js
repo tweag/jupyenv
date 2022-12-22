@@ -126,12 +126,30 @@ function generateCommonMark(jsonObj, markdown = "", header = "## ") {
   return markdown;
 }
 
+/**
+ * Updates the DOM with the options Markdown.
+ *
+ * @param {String} data The options markdown.
+ */
 function updateOptions(data) {
   let optionsInfo = document.getElementById("optionsInfo");
   var converter = new showdown.Converter();
   optionsInfo.innerHTML = converter.makeHtml(data);
 }
 
+/**
+ * Nests options with lower heading levels under those with higher.
+ *
+ * The function loops over all possible headings from lowest to highest level,
+ * and then through the elements where the markdown is stored in reverse order.
+ * If the current element is not a header, it is appended to a child list. If a
+ * heading is encountered that is higher than the current heading level being
+ * searched, the child list is reset. Finally, if a heading level of the
+ * current iteration is encountered, the children are moved to a content
+ * element and the heading is moved to a heading element. This is useful so
+ * icons and buttons can be added later without worring about the order of the
+ * DOM changing.
+ */
 function nestOptionsInDOM() {
   let possibleHeaders = ["H6", "H5", "H4", "H3", "H2"];
   let allOptions = document.getElementById("optionsInfo").children;
@@ -139,27 +157,42 @@ function nestOptionsInDOM() {
   possibleHeaders.forEach((headerElem, headerIdx, headerArray) => {
     let childList = [];
 
+    // Go through the options elements in the DOM in reverse order. This was
+    // the easiest way as you can collect elements in a list and relocate them
+    // as appropriate or reset the list. Going forward through the elements is
+    // much more complicated.
     for (var idx = allOptions.length - 1; idx >= 0; idx--) {
+      //Current element for this iteration.
       let childElement = allOptions[idx];
 
       if (headerElem === childElement.nodeName) {
-        let newDiv = document.createElement("div");
-        newDiv.classList.add("collapsibleContentContainer");
-        childElement.classList.add("collapsibleHeader");
-        childElement.parentNode.insertBefore(newDiv, childElement.nextElementSibling);
+        // Current element is a heading of the current iteration.
+
+        // Create a new DIV for the content under the heading and add the
+        // content. Empty the child list for the next iteration. Headings lower
+        // than H2 can be children of higher headings.
+        let contentDiv = document.createElement("div");
+        childElement.insertAdjacentElement('afterend', contentDiv);
+        contentDiv.classList.add("collapsibleContentContainer");
         childList.reverse().forEach((elem) => {
           elem.classList.add("collapsibleContent");
-          newDiv.appendChild(elem);
+          contentDiv.appendChild(elem);
         });
         childList = [];
 
+        // Create a new DIV for the heading and add the heading. This needs to
+        // happen last as the heading is moved in the DOM at this point.
         let headerDiv = document.createElement("div");
+        childElement.insertAdjacentElement('beforebegin', headerDiv);
         headerDiv.classList.add("collapsibleHeaderContainer");
-        childElement.parentNode.insertBefore(headerDiv, childElement);
+        childElement.classList.add("collapsibleHeader");
         headerDiv.appendChild(childElement);
-      } else if (headerArray.slice(headerIdx).includes(childElement.nodeName)) {
+      } else if (headerArray.slice(headerIdx + 1).includes(childElement.nodeName)) {
+        // Current element is a heading higher than the current iteration.
         childList = [];
       } else {
+        // Current element is a heading lower than the current iteration or
+        // anything else.
         childList.push(childElement);
       }
     }
