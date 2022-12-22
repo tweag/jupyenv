@@ -43,7 +43,7 @@ in {
     #./../kernels/available/rust/module.nix
     #./../kernels/available/scala/module.nix
     #./../kernels/available/typescript/module.nix
-    #./../kernels/available/zsh/module.nix
+    ./../kernels/available/zsh/module.nix
   ];
   # TODO: add kernels
   #++ map (name: ./. + "/../kernels/available/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../kernels/available));
