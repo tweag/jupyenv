@@ -12,11 +12,6 @@
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-  <script
-    src = "../javascripts/options.js"
-    type="text/javascript">
-  </script>
-
   <link rel="stylesheet" href="../stylesheets/options.css">
 
   <!-- Add scripts that need to run before here -->
@@ -25,7 +20,9 @@
 
   <div id="optionsInfo"></div>
 
-  <script type="text/javascript">
+  <script type="module">
+    import {fetchOptions} from "../javascripts/modules/options.js";
+
     fetchOptions("../options.json")
   </script>
 
