@@ -173,7 +173,6 @@ jobs:
 #      run: |
 #        pushd ./example
 #          sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../repo|" flake.nix
-           sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../repo|" flake.nix
 #          nix build
 #        popd
 #
