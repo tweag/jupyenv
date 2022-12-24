@@ -69,7 +69,7 @@
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          inherit (config) requiredRuntimePackages;
+          inherit (config) requiredRuntimePackages extraHaskellFlags extraHaskellPackages;
           haskellKernelPkg = import "${config.ihaskell}/release.nix";
           gophernotes = kernelModule.kernelArgs.pkgs.gophernotes;
         }
