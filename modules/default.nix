@@ -34,7 +34,7 @@ in {
     ./../kernels/available/go/module.nix
     ./../kernels/available/haskell/module.nix
     ./../kernels/available/javascript/module.nix
-    #./../kernels/available/julia/module.nix
+    ./../kernels/available/julia/module.nix
     ./../kernels/available/nix/module.nix
     #./../kernels/available/ocaml/module.nix
     ./../kernels/available/postgres/module.nix
