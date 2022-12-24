@@ -2,28 +2,15 @@
 
 {% block content %}
 
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"
-    integrity="sha512-LhccdVNGe2QMEfI3x4DVV3ckMRe36TfydKss6mJpdHjNFiV07dFpS2xzeZedptKZrwxfICJpez09iNioiSZ3hA=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-    >
-  </script>
-
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="../stylesheets/options.css">
 
   <!-- Add scripts that need to run before here -->
   {{ super() }}
   <!-- Add scripts that need to run afterwards here -->
 
-  <div id="optionsInfo"></div>
-
-  <script type="module">
-    import {fetchOptions} from "../javascripts/modules/options.js";
-
-    fetchOptions("../options.json")
-  </script>
+  <div id="optionsContent">
+    {% include "optionsContent.html" %}
+  </div>
 
 {% endblock %}
