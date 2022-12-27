@@ -16,7 +16,7 @@ import re
 from typing import Any
 
 from docopt import docopt
-from markdown import markdown
+from markdown_it import MarkdownIt
 
 
 def main(args):
@@ -28,7 +28,8 @@ def main(args):
 
 def to_html(pathin: Path, pathout: Path):
     commonmark = _to_commonmark(pathin)
-    html = markdown(commonmark, extensions=['fenced_code'])
+    md = MarkdownIt()
+    html = md.render(commonmark)
     with open(pathout, 'w', encoding='utf-8') as fout:
         fout.write(html)
 
@@ -112,14 +113,14 @@ def json_to_commonmark(data, markdown = "", header = "## "):
         markdown += "".join([value["description"], "\n\n"])
 
         if ('type' in value):
-            markdown += "".join(["*_Type_*:", "\n"])
+            markdown += "".join(["_Type_:", "\n"])
             markdown += "".join([value['type'], "\n\n"])
 
         if ('default' in value):
             default_value = json.dumps(value['default'])
             default_value = codecs.decode(default_value, 'unicode_escape')
 
-            markdown += "".join(["*_Default_*:", "\n\n"])
+            markdown += "".join(["_Default_:", "\n\n"])
             markdown += "".join([
                 "```",
                 "\n",
@@ -143,7 +144,7 @@ def json_to_commonmark(data, markdown = "", header = "## "):
                 .strip()
             )
 
-            markdown += "".join(["*_Example_*:", "\n\n"])
+            markdown += "".join(["_Example_:", "\n\n"])
             markdown += "".join([
                 "```",
                 "\n",

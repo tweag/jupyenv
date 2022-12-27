@@ -206,7 +206,7 @@
           p.mkdocs
           p.mkdocs-material
           p.mkdocs-material-extensions
-          p.markdown
+          p.markdown-it-py
           p.docopt
         ]);
 
