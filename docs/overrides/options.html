@@ -2,9 +2,6 @@
 
 {% block content %}
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="../stylesheets/options.css">
-
   <!-- Add scripts that need to run before here -->
   {{ super() }}
   <!-- Add scripts that need to run afterwards here -->
@@ -12,5 +9,34 @@
   <div id="optionsContent">
     {% include "optionsContent.html" %}
   </div>
+
+  <!-- dynamically load stylesheets if javascript is enabled -->
+  <script type="text/javascript">
+    hrefs = [
+      "https://fonts.googleapis.com/icon?family=Material+Icons",
+      "../stylesheets/options.css"
+    ];
+    hrefs.forEach((href) => {
+      var link = document.createElement( "link" );
+      link.href = href;
+      link.type = "text/css";
+      link.rel = "stylesheet";
+
+      document.getElementsByTagName( "head" )[0].appendChild( link );
+    });
+  </script>
+
+  <script type="module">
+    import {
+      nestOptionsInDOM,
+      makeOptionsCollapsible,
+      addExpandCollapseAllButtons,
+      addKernelIcons
+    } from "../javascripts/modules/options.js";
+    nestOptionsInDOM();
+    makeOptionsCollapsible();
+    addExpandCollapseAllButtons();
+    addKernelIcons();
+  </script>
 
 {% endblock %}

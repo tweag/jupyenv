@@ -31,9 +31,15 @@ def to_html(pathin: Path, pathout: Path):
     commonmark = _to_commonmark(pathin)
     md = MarkdownIt()
     html = md.render(commonmark)
-    soup = nest_options_in_dom(html)
-    with open(pathout, 'wb') as fout:
-        fout.write(soup.prettify('utf-8'))
+
+    # without soup
+    with open(pathout, 'w', encoding='utf-8') as fout:
+        fout.write(html)
+
+    # with soup
+    #soup = nest_options_in_dom(html)
+    #with open(pathout, 'wb') as fout:
+    #    fout.write(soup.prettify('utf-8'))
 
 
 def to_commonmark(pathin: Path, pathout: Path):

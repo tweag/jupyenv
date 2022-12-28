@@ -132,9 +132,9 @@ function generateCommonMark(jsonObj, markdown = "", header = "## ") {
  * @param {String} data The options markdown.
  */
 function updateOptions(data) {
-  let optionsInfo = document.getElementById("optionsInfo");
+  let optionsContent = document.getElementById("optionsContent");
   var converter = new showdown.Converter();
-  optionsInfo.innerHTML = converter.makeHtml(data);
+  optionsContent.innerHTML = converter.makeHtml(data);
 }
 
 /**
@@ -158,7 +158,7 @@ function nestOptionsInDOM() {
     // the easiest way as you can collect elements in a list and relocate them
     // as appropriate or reset the list. Going forward through the elements is
     // much more complicated.
-    Array.from(document.getElementById("optionsInfo").children)
+    Array.from(document.getElementById("optionsContent").children)
       .reverse()
       .forEach((childElement) => {
         if (headerElem === childElement.nodeName) {
