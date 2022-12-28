@@ -207,6 +207,7 @@
           p.mkdocs-material
           p.mkdocs-material-extensions
           p.markdown-it-py
+          p.beautifulsoup4
           p.docopt
         ]);
 

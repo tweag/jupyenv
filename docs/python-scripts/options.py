@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 from typing import Any
 
+from bs4 import BeautifulSoup
 from docopt import docopt
 from markdown_it import MarkdownIt
 
@@ -30,8 +31,9 @@ def to_html(pathin: Path, pathout: Path):
     commonmark = _to_commonmark(pathin)
     md = MarkdownIt()
     html = md.render(commonmark)
-    with open(pathout, 'w', encoding='utf-8') as fout:
-        fout.write(html)
+    soup = nest_options_in_dom(html)
+    with open(pathout, 'wb') as fout:
+        fout.write(soup.prettify('utf-8'))
 
 
 def to_commonmark(pathin: Path, pathout: Path):
@@ -160,6 +162,51 @@ def json_to_commonmark(data, markdown = "", header = "## "):
     markdown = re.sub("(?:\\[rn])+", "\n", markdown)
 
     return markdown
+
+
+def nest_options_in_dom(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    headers = ['h' + str(level) for level in reversed(range(2, 7))]
+    child_list = []
+
+    for header_idx, header_elem in enumerate(headers):
+        # not pretty but quickest way I found to iterate through all children in reverse
+        for child_elem in reversed(list(soup.children)):
+            if header_elem == child_elem.name:
+                content_div = soup.new_tag("div")
+                child_elem.insert_after(content_div)
+                content_div['class'] = content_div.get('class', []) + ['collapsibleContentContainer']
+                for child in reversed(child_list):
+                    #child_li = soup.new_tag("li")
+                    #child_li.append(child)
+                    content_div.append(child)
+                child_list = []
+
+                header_div = soup.new_tag("div")
+                child_elem.insert_before(header_div)
+                header_div['class'] = header_div.get('class', []) + ['collapsibleHeaderContainer']
+                child_elem['class'] = child_elem.get('class', []) + ['collapsibleHeader']
+                header_div.append(child_elem)
+
+                #wrapper_div = soup.new_tag("div")
+                #header_div.insert_before(wrapper_div)
+                #wrapper_div.append(header_div)
+                #wrapper_div.append(content_div)
+            elif child_elem.name in headers[header_idx + 1:]:
+                child_list = []
+            else:
+                child_list.append(child_elem)
+
+    #for child in soup.find_all("div", recursive=False):
+    #    top_li = soup.new_tag("li")
+    #    child.insert_before(top_li)
+    #    top_li.append(child)
+
+    #top_ul = soup.new_tag("ul")
+    #soup.li.insert_before(top_ul)
+    #top_ul.extend(soup.find_all("li", recursive=False))
+
+    return soup
 
 
 if __name__ == '__main__':
