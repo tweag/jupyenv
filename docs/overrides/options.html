@@ -2,6 +2,8 @@
 
 {% block content %}
 
+  <script type="text/javascript" src = "../javascripts/options.js"></script>
+
   <!-- Add scripts that need to run before here -->
   {{ super() }}
   <!-- Add scripts that need to run afterwards here -->
@@ -26,13 +28,7 @@
     });
   </script>
 
-  <script type="module">
-    import {
-      nestOptionsInDOM,
-      makeOptionsCollapsible,
-      addExpandCollapseAllButtons,
-      addKernelIcons
-    } from "../javascripts/modules/options.js";
+  <script type="text/javascript">
     nestOptionsInDOM();
     makeOptionsCollapsible();
     addExpandCollapseAllButtons();

@@ -368,14 +368,3 @@ function addKernelIcons() {
       element.prepend(img);
     });
 }
-
-export {
-  fetchOptions,
-  nestJsonChildren,
-  generateCommonMark,
-  updateOptions,
-  nestOptionsInDOM,
-  makeOptionsCollapsible,
-  addExpandCollapseAllButtons,
-  addKernelIcons
-};
