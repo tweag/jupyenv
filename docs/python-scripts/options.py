@@ -33,13 +33,13 @@ def to_html(pathin: Path, pathout: Path):
     html = md.render(commonmark)
 
     # without soup
-    with open(pathout, 'w', encoding='utf-8') as fout:
-        fout.write(html)
+    #with open(pathout, 'w', encoding='utf-8') as fout:
+    #    fout.write(html)
 
     # with soup
-    #soup = nest_options_in_dom(html)
-    #with open(pathout, 'wb') as fout:
-    #    fout.write(soup.prettify('utf-8'))
+    soup = nest_options_in_dom(html)
+    with open(pathout, 'wb') as fout:
+        fout.write(soup.prettify('utf-8'))
 
 
 def to_commonmark(pathin: Path, pathout: Path):
@@ -183,8 +183,6 @@ def nest_options_in_dom(html):
                 child_elem.insert_after(content_div)
                 content_div['class'] = content_div.get('class', []) + ['collapsibleContentContainer']
                 for child in reversed(child_list):
-                    #child_li = soup.new_tag("li")
-                    #child_li.append(child)
                     content_div.append(child)
                 child_list = []
 
@@ -193,25 +191,10 @@ def nest_options_in_dom(html):
                 header_div['class'] = header_div.get('class', []) + ['collapsibleHeaderContainer']
                 child_elem['class'] = child_elem.get('class', []) + ['collapsibleHeader']
                 header_div.append(child_elem)
-
-                #wrapper_div = soup.new_tag("div")
-                #header_div.insert_before(wrapper_div)
-                #wrapper_div.append(header_div)
-                #wrapper_div.append(content_div)
             elif child_elem.name in headers[header_idx + 1:]:
                 child_list = []
             else:
                 child_list.append(child_elem)
-
-    #for child in soup.find_all("div", recursive=False):
-    #    top_li = soup.new_tag("li")
-    #    child.insert_before(top_li)
-    #    top_li.append(child)
-
-    #top_ul = soup.new_tag("ul")
-    #soup.li.insert_before(top_ul)
-    #top_ul.extend(soup.find_all("li", recursive=False))
-
     return soup
 
 
