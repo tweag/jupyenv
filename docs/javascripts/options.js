@@ -200,6 +200,9 @@ function nestOptionsInDOM() {
  * collapse/expand functionality.
  */
 function makeOptionsCollapsible() {
+  const KEY_ENTER = 13;
+  const KEY_SPACE = 32;
+
   Array.from(document.getElementsByClassName("collapsibleHeaderContainer"))
     .forEach((element) => {
       element.addEventListener("click", function() {
@@ -208,6 +211,12 @@ function makeOptionsCollapsible() {
           collapseOptions(this);
         } else {
           expandOptions(this);
+        }
+      });
+
+      element.addEventListener("keydown", (event) => {
+        if (event.keyCode === KEY_ENTER || event.keyCode === KEY_SPACE) {
+          document.activeElement.click();
         }
       });
     });
@@ -357,14 +366,9 @@ function addKernelIcons() {
     .forEach((element) => {
       var kernelName = element.innerText.match(regexKernels)[1];
       var img = document.createElement("img");
+      img.classList.add("kernelLogo");
       img.src = "../assets/logos/kernels/" + kernelName + "-logo64.png";
-      img.style.position = "absolute";
-
-      var imgHeight = Math.floor(imgSizeOffsetPercent * element.offsetHeight);
-      var imgHeightOffset = element.offsetHeight - imgHeight;
-      img.style.height = imgHeight + "px";
-      img.style.transform = "translate(-150%, " + Math.floor(imgHeightOffset / 2) + "px)";
-
+      img.alt = kernelName + " kernel logo";
       element.prepend(img);
     });
 }

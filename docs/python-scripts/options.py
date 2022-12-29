@@ -191,6 +191,9 @@ def nest_options_in_dom(html):
                 header_div['class'] = header_div.get('class', []) + ['collapsibleHeaderContainer']
                 child_elem['class'] = child_elem.get('class', []) + ['collapsibleHeader']
                 header_div.append(child_elem)
+
+                # make options focusable
+                header_div['tabindex'] = "0"
             elif child_elem.name in headers[header_idx + 1:]:
                 child_list = []
             else:

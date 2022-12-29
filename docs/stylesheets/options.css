@@ -13,6 +13,10 @@
   background-color: var(--md-default-fg-color--light);
 }
 
+.collapsibleHeaderContainer:not(.active) + .collapsibleContentContainer {
+  visibility: hidden; /* hide child options from tab search when collapsed. */
+}
+
 .collapsibleHeader:after {
   font-family: 'Material Icons';
   content: "expand_more";
@@ -38,4 +42,10 @@
 
 .toggleAllButton {
   float: right;
+}
+
+.kernelLogo {
+  position: absolute;
+  transform: translate(-150%, 10%);
+  height: 2.5em !important;
 }
