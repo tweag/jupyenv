@@ -9,6 +9,14 @@
   padding-bottom: 0.25em;
 }
 
+.collapsibleHeaderContainer {
+  position: relative;
+}
+
+.collapsibleHeaderContainer + * {
+  padding-left: 2em !important;
+}
+
 .collapsibleHeaderContainer:hover, .active {
   background-color: var(--md-default-fg-color--light);
 }
@@ -30,10 +38,6 @@
   transform: rotate(180deg);
 }
 
-.collapsibleHeaderContainer + * {
-  margin-left: 1em;
-}
-
 .collapsibleContentContainer {
   max-height: 0px;
   overflow: hidden;
@@ -48,4 +52,52 @@
   position: absolute;
   transform: translate(-150%, 10%);
   height: 2.5em !important;
+}
+
+div#optionsContent li {
+  list-style-type: none;
+  margin: 0;
+}
+
+div#optionsContent ul {
+  margin: 0;
+  position: relative;
+}
+
+div#optionsContent ul.collapsibleContentContainer::before {
+  content: '';
+  border-left: 3px solid var(--md-default-fg-color);
+  width: 3px;
+  position: absolute;
+  height: 100%;
+  bottom: 1.3em;
+  left: 1em;
+}
+
+div#optionsContent ul.collapsibleContentContainer::after {
+  content: '';
+  border-bottom: 3px solid var(--md-default-fg-color);
+  width: 3px;
+  position: absolute;
+  width: 0.8em;
+  bottom: 1.3em;
+  left: 1em;
+}
+
+div#optionsContent div.collapsibleHeaderContainer::before {
+  content: '';
+  border-bottom: 3px solid var(--md-default-fg-color);
+  width: 3px;
+  position: absolute;
+  width: 0.8em;
+  bottom: 1.2em;
+  left: -1em;
+}
+
+div#optionsContent > ul > li > div > div.collapsibleHeaderContainer::before {
+  border: 0;
+}
+
+#optionsContent {
+  position: relative;
 }

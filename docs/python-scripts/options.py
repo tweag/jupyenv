@@ -179,11 +179,13 @@ def nest_options_in_dom(html):
         # not pretty but quickest way I found to iterate through all children in reverse
         for child_elem in reversed(list(soup.children)):
             if header_elem == child_elem.name:
-                content_div = soup.new_tag("div")
+                content_div = soup.new_tag("ul")
                 child_elem.insert_after(content_div)
                 content_div['class'] = content_div.get('class', []) + ['collapsibleContentContainer']
                 for child in reversed(child_list):
-                    content_div.append(child)
+                    child_li = soup.new_tag("li")
+                    child_li.append(child)
+                    content_div.append(child_li)
                 child_list = []
 
                 header_div = soup.new_tag("div")
@@ -192,12 +194,27 @@ def nest_options_in_dom(html):
                 child_elem['class'] = child_elem.get('class', []) + ['collapsibleHeader']
                 header_div.append(child_elem)
 
+                wrapper_div = soup.new_tag("div")
+                header_div.insert_before(wrapper_div)
+                wrapper_div.append(header_div)
+                wrapper_div.append(content_div)
+
                 # make options focusable
                 header_div['tabindex'] = "0"
             elif child_elem.name in headers[header_idx + 1:]:
                 child_list = []
-            else:
+            elif child_elem != "\n":
                 child_list.append(child_elem)
+
+    for child in soup.find_all("div", recursive=False):
+        top_li = soup.new_tag("li")
+        child.insert_before(top_li)
+        top_li.append(child)
+
+    top_ul = soup.new_tag("ul")
+    soup.li.insert_before(top_ul)
+    top_ul.extend(soup.find_all("li", recursive=False))
+
     return soup
 
 

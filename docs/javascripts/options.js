@@ -241,11 +241,10 @@ function recursivelyCollapseOptions(element) {
   element.classList.remove("active");
   var content = element.nextElementSibling;
   content.style.maxHeight = null;
-  for (let child of content.children) {
-    if (child.classList.contains("collapsibleHeaderContainer")) {
-      recursivelyCollapseOptions(child);
-    }
-  }
+
+  content.querySelectorAll(".collapsibleHeaderContainer").forEach((child) => {
+    recursivelyCollapseOptions(child);
+  });
 }
 
 /**
@@ -270,8 +269,8 @@ function setButtonToExpand(element) {
  * style needs to be updated if one exists.
  */
 function updateParentDuringChildToggle(element) {
-  var possibleParentContent = element.parentElement;
-  if (possibleParentContent.classList.contains("collapsibleContentContainer")) {
+  var possibleParentContent = element.closest(".collapsibleContentContainer");
+  if (possibleParentContent !== null) {
     possibleParentContent.style.maxHeight = possibleParentContent.scrollHeight + "px";
   }
 }
@@ -297,9 +296,9 @@ function recursivelyExpandOptions(element, childHeight = 0) {
   var content = element.nextElementSibling;
   content.style.maxHeight = content.scrollHeight + childHeight + "px";
 
-  let possibleParentHeader = content.parentElement.previousElementSibling;
-  if (possibleParentHeader.classList.contains("collapsibleHeaderContainer")) {
-    recursivelyExpandOptions(possibleParentHeader, content.scrollHeight);
+  let possibleParentContent = content.parentElement.closest(".collapsibleContentContainer");
+  if (possibleParentContent !== null) {
+    recursivelyExpandOptions(possibleParentContent.previousElementSibling, content.scrollHeight);
   }
 }
 
@@ -311,7 +310,7 @@ function addExpandCollapseAllButtons() {
   Array.from(document.getElementsByClassName("collapsibleContentContainer"))
     .forEach((container) => {
       var contentChildren = Array.from(container.children);
-      if (contentChildren.some((child) => child.classList.contains("collapsibleHeaderContainer"))) {
+      if (container.querySelectorAll('.collapsibleHeaderContainer').length !== 0) {
 
         var expandAllButton = document.createElement("button");
         expandAllButton.type = "button";
@@ -328,16 +327,14 @@ function addExpandCollapseAllButtons() {
         collapseAllButton.style.display = "none";
 
         expandAllButton.addEventListener("click", function() {
-          Array.from(this.parentElement.children)
-            .filter(container => container.classList.contains("collapsibleHeaderContainer"))
+          container.querySelectorAll('.collapsibleHeaderContainer')
             .forEach(elem => expandOptions(elem));
           this.style.display = "none";
           collapseAllButton.style = "inline-block";
         });
 
         collapseAllButton.addEventListener("click", function() {
-          Array.from(this.parentElement.children)
-            .filter(container => container.classList.contains("collapsibleHeaderContainer"))
+          container.querySelectorAll('.collapsibleHeaderContainer')
             .forEach(elem => collapseOptions(elem));
           this.style.display = "none";
           expandAllButton.style = "inline-block";
