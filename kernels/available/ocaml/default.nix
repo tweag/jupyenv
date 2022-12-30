@@ -10,21 +10,21 @@
   # https://github.com/tweag/opam-nix
   opam-nix ? self.inputs.opam-nix.lib.${system},
   # Set of required packages
-  ocamlPackages ? {merlin = "*";},
+  requiredOcamlPackages ? {merlin = "*";},
   # Set of user desired packages
-  extraOcamlPackages ? {}, # { hex = "*"; owl = "*"; },
+  ocamlPackages ? {}, # { hex = "*"; owl = "*"; },
   # List of directories containing .opam files
-  extraOpamProjects ? [], # [ self.inputs.myOpamProject ],
+  opamProjects ? [], # [ self.inputs.myOpamProject ],
   # See opam-nix.buildDuneProject first argument
-  extraOpamNixArgs ? {},
+  opamNixArgs ? {},
 }: let
   allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
-  customOpamRepo = opam-nix.joinRepos (map opam-nix.makeOpamRepo extraOpamProjects);
+  customOpamRepo = opam-nix.joinRepos (map opam-nix.makeOpamRepo opamProjects);
   customOpamPackages = __mapAttrs (_: pkgs.lib.last) (opam-nix.listRepo customOpamRepo);
 
-  userOcamlPackages = extraOcamlPackages // customOpamPackages;
-  allOcamlPackages = ocamlPackages // userOcamlPackages;
+  userOcamlPackages = ocamlPackages // customOpamPackages;
+  allOcamlPackages = requiredOcamlPackages // userOcamlPackages;
 
   scope = let
     name = "jupyter";
@@ -41,7 +41,7 @@
         pkgs = pkgs.extend (final: _: {zeromq3 = final.zeromq4;});
         repos = [opam-nix.opamRepository customOpamRepo];
       }
-      // extraOpamNixArgs)
+      // opamNixArgs)
     name
     src
     allOcamlPackages;
