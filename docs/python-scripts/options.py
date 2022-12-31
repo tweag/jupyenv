@@ -175,47 +175,96 @@ def nest_options_in_dom(html):
     headers = ['h' + str(level) for level in reversed(range(2, 7))]
     child_list = []
 
-    for header_idx, header_elem in enumerate(headers):
+    for header_idx, header_tag in enumerate(headers):
         # not pretty but quickest way I found to iterate through all children in reverse
         for child_elem in reversed(list(soup.children)):
-            if header_elem == child_elem.name:
+            if header_tag == child_elem.name:
                 content_div = soup.new_tag("ul")
                 child_elem.insert_after(content_div)
-                content_div['class'] = content_div.get('class', []) + ['collapsibleContentContainer']
+                add_class(content_div, 'collapsible-content')
+                content_div['state'] = "closed"
                 for child in reversed(child_list):
                     child_li = soup.new_tag("li")
                     child_li.append(child)
                     content_div.append(child_li)
                 child_list = []
 
-                header_div = soup.new_tag("div")
-                child_elem.insert_before(header_div)
-                header_div['class'] = header_div.get('class', []) + ['collapsibleHeaderContainer']
-                child_elem['class'] = child_elem.get('class', []) + ['collapsibleHeader']
-                header_div.append(child_elem)
+                # header_div = soup.new_tag("div")
+                # child_elem.insert_before(header_div)
+                # header_div['class'] = header_div.get('class', []) + ['collapsibleHeaderContainer']
+                # child_elem['class'] = child_elem.get('class', []) + ['collapsibleHeader']
+                # header_div.append(child_elem)
 
                 wrapper_div = soup.new_tag("div")
-                header_div.insert_before(wrapper_div)
-                wrapper_div.append(header_div)
+                child_elem.insert_before(wrapper_div)
+                wrapper_div.append(child_elem)
                 wrapper_div.append(content_div)
 
-                # make options focusable
-                header_div['tabindex'] = "0"
+                # replace header with button for better functionality and aria
+                button_elem = soup.new_tag("button")
+                button_elem['type'] = "button"
+                add_class(button_elem, 'md-typeset', 'option-button')
+                button_elem.contents = child_elem.contents
+                child_elem.replace_with(button_elem)
+
+                # add aria info
+                aria_controls = (button_elem.contents[0]
+                    .replace('.', '-')
+                    .replace('<', '')
+                    .replace('>', '')
+                )
+                button_elem['aria-controls'] = aria_controls
+                content_div['id'] = aria_controls
+                button_elem['aria-label'] = aria_controls.replace('-', ' ')
+                button_elem['aria-expanded'] = 'false'
+
+                add_kernel_icon(soup, button_elem)
+                add_expand_all_button(soup, content_div)
+
             elif child_elem.name in headers[header_idx + 1:]:
                 child_list = []
             elif child_elem != "\n":
                 child_list.append(child_elem)
 
-    for child in soup.find_all("div", recursive=False):
-        top_li = soup.new_tag("li")
-        child.insert_before(top_li)
-        top_li.append(child)
+    # for child in soup.find_all("div", recursive=False):
+    #     top_li = soup.new_tag("li")
+    #     child.insert_before(top_li)
+    #     top_li.append(child)
 
-    top_ul = soup.new_tag("ul")
-    soup.li.insert_before(top_ul)
-    top_ul.extend(soup.find_all("li", recursive=False))
+    # top_ul = soup.new_tag("ul")
+    # soup.li.insert_before(top_ul)
+    # top_ul.extend(soup.find_all("li", recursive=False))
 
     return soup
+
+
+def add_class(elem, *classes):
+    elem['class'] = elem.get('class', []) + list(classes)
+
+
+def add_kernel_icon(soup, elem):
+    match = re.fullmatch("^kernel\.([a-z]*)$", elem.contents[0])
+    if match:
+        kernel_name = match.group(1)
+        img_elem = soup.new_tag("img")
+        add_class(img_elem, 'kernel-logo')
+        img_elem['src'] = "../assets/logos/kernels/" + kernel_name + "-logo64.png"
+        img_elem['alt'] = kernel_name + " kernel logo"
+        elem.insert_before(img_elem)
+
+
+def add_expand_all_button(soup, elem):
+    if elem.find('button', {'class', 'option-button'}):
+        # create and add button
+        button_elem = soup.new_tag("button")
+        button_elem['type'] = "button"
+        add_class(button_elem, 'md-button', 'toggle-children')
+        # button_elem.string = 'expand all'
+        elem.insert(0, button_elem)
+
+        # aria
+        button_elem['aria-label'] = elem['id'].replace('-', ' ') + " toggle children"
+        button_elem['aria-expanded'] = 'false'
 
 
 if __name__ == '__main__':

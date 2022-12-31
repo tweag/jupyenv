@@ -1,3 +1,160 @@
+/* styling for clickable options */
+.option-button {
+  background-color: var(--md-default-fg-color--lighter);
+  color: var(--md-default-fg-color);
+  cursor: pointer;
+  font-size: 1.5625em;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  padding-top: 0.25em;
+  padding-right: 0.5em;
+  padding-bottom: 0.25em;
+  padding-left: 1em;
+  text-align: left;
+  width: 100%;
+}
+
+/* make child options smaller font */
+li .option-button {
+  font-size: 1.25em;
+  font-weight: 400;
+}
+
+/* borders between top level options */
+div:not(:last-child) > .option-button[aria-expanded="false"] {
+  border-bottom: 1px dotted var(--md-default-fg-color--light);
+}
+
+/* borders between child options */
+li .option-button[aria-expanded="false"] {
+  border-bottom: 1px dotted var(--md-default-fg-color--light);
+}
+
+/* darken clickable options on hover or when expanded */
+.option-button:hover, .option-button[aria-expanded="true"] {
+  filter: brightness(70%);
+}
+
+/* arrow to signify option can be expanded */
+.option-button::after {
+  font-family: 'Material Icons';
+  content: "expand_more";
+  color: var(--md-default-fg-color);
+  float: right;
+  transition: all 0.2s;
+}
+
+/* rotate arrow when expanded */
+.option-button[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
+/* nest all child content of an option */
+.option-button + * {
+  padding-left: 2em !important;
+}
+
+/* expand/collapse all buttons */
+button.toggle-children {
+  float: right;
+}
+
+button.toggle-children::after {
+  content: "expand all";
+}
+
+button.toggle-children[aria-expanded="true"]::after {
+  content: "collapse all";
+}
+
+/* animations for collapsible content */
+.collapsible-content[state="opened"] {
+  animation: clipPathOptionsOpen 500ms ease-in-out forwards;
+}
+
+.collapsible-content[state="closing"] {
+  animation: clipPathOptionsClose 500ms ease-in-out forwards;
+}
+
+.collapsible-content[state="closed"] {
+  display: none !important;
+}
+
+@keyframes clipPathOptionsOpen {
+  0% { clip-path: inset(0 0 100% 0); }
+  100% { clip-path: inset(0); }
+}
+
+@keyframes clipPathOptionsClose {
+  0% { clip-path: inset(0); }
+  100% { clip-path: inset(0 0 100% 0); }
+}
+
+/* remove the styling of list items */
+#options-content li {
+  list-style-type: none;
+  margin: 0;
+}
+
+/* remove the styling of unordered lists */
+#options-content ul {
+  margin: 0;
+  position: relative;
+}
+
+/* fix so tree lines can be positioned properly */
+#options-content > div, ul>li>div {
+  position: relative
+}
+
+/* parent option vertical line */
+#options-content ul::before {
+  content: '';
+  border-left: 3px solid var(--md-default-fg-color);
+  width: 3px;
+  position: absolute;
+  top: 0.2em;
+  bottom: 1.9em;
+  left: 1em;
+}
+
+/* option horizontal tree lines */
+#options-content ul::after, #options-content div::before {
+  content: '';
+  border-bottom: 3px solid var(--md-default-fg-color);
+  border-left: 3px solid var(--md-default-fg-color);
+  border-bottom-left-radius: 0.8em;
+  position: absolute;
+  width: 0.8em;
+  height: 0.8em;
+}
+
+/* parent option horizontal line at bottom */
+#options-content ul::after {
+  bottom: 1.1em;
+  left: 1em;
+}
+
+/* child option horizontal line to the left */
+#options-content div::before {
+  left: -1em;
+  top: 0.5em;
+}
+
+/* horizontal line at top level */
+#options-content > div::before {
+  border: 0;
+}
+
+.kernel-logo {
+  position: absolute;
+  height: 2.5em !important;
+  top: 0.25em;
+  left: -3.5em;
+}
+
+/*
 .collapsibleHeader {
   color: var(--md-default-fg-color);
   background-color: var(--md-default-fg-color--lighter);
@@ -22,7 +179,7 @@
 }
 
 .collapsibleHeaderContainer:not(.active) + .collapsibleContentContainer {
-  visibility: hidden; /* hide child options from tab search when collapsed. */
+  visibility: hidden;
 }
 
 .collapsibleHeader:after {
@@ -101,3 +258,4 @@ div#optionsContent > ul > li > div > div.collapsibleHeaderContainer::before {
 #optionsContent {
   position: relative;
 }
+*/
