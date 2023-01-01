@@ -298,6 +298,21 @@ def nest_options_in_dom(html: str) -> BeautifulSoup:
             elif child_elem != "\n":
                 child_list.append(child_elem)
 
+    soup.smooth()
+    sections = ['JupyterLab', 'Kernel']
+    for option in soup.children:
+        if option.name is None:
+            continue
+
+        for section in sections:
+            if re.fullmatch(f"^{section.lower()}.*", option.button.string.strip()):
+                title = soup.new_tag("h2")
+                title.string = section + " Options"
+                option.insert_before(title)
+                sections.remove(section)
+                skip = True
+                break
+
     return soup
 
 
