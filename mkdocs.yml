@@ -13,6 +13,8 @@ nav:
       - Developer Guide: developers.md
       - Roadmap: roadmap.md
       - (NEW) Options: options.md
+    - Blog:
+      - blogs/release-0.1.0.md
 
 theme:
   name: material
