@@ -74,3 +74,21 @@ function getNextSibling(elem, selector) {
     sibling = sibling.nextElementSibling
   }
 };
+
+function initializePage() {
+  document
+    .querySelectorAll('[state="opened"]')
+    .forEach(elem => elem.setAttribute('state', 'closed'));
+
+  document
+    .querySelectorAll('[aria-expanded="true"]')
+    .forEach(elem => elem.setAttribute('aria-expanded', 'false'));
+
+  document
+    .querySelectorAll('.option-button')
+    .forEach(elem => elem.style.setProperty('--icon-visibility', 'visible'));
+
+  document
+    .querySelectorAll('.toggle-children')
+    .forEach(elem => elem.style.display = "block");
+}

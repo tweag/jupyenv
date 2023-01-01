@@ -257,7 +257,7 @@ def nest_options_in_dom(html: str) -> BeautifulSoup:
                 content_container = soup.new_tag("ul")
                 child_elem.insert_after(content_container)
                 add_class(content_container, 'collapsible-content')
-                content_container['state'] = "closed"
+                content_container['state'] = "opened"
                 for child in reversed(child_list):
                     child_li = soup.new_tag("li")
                     child_li.append(child)
@@ -288,7 +288,7 @@ def nest_options_in_dom(html: str) -> BeautifulSoup:
                 button_elem['aria-controls'] = aria_controls
                 content_container['id'] = aria_controls
                 button_elem['aria-label'] = aria_controls.replace('-', ' ')
-                button_elem['aria-expanded'] = 'false'
+                button_elem['aria-expanded'] = 'true'
 
                 add_kernel_icon(soup, button_elem)
                 add_expand_all_button(soup, content_container)
@@ -299,18 +299,6 @@ def nest_options_in_dom(html: str) -> BeautifulSoup:
                 child_list.append(child_elem)
 
     return soup
-
-
-def add_class(elem: Tag, *classes: str) -> None:
-    '''Adds any number of classes to an HTML tag.
-
-    Mutates the tag.
-
-    Args:
-        elem: The tag to add classes to.
-        *classes: Variable number of classes to add.
-    '''
-    elem['class'] = elem.get('class', []) + list(classes)
 
 
 def add_kernel_icon(soup: BeautifulSoup, elem: Tag) -> None:
@@ -346,12 +334,36 @@ def add_expand_all_button(soup: BeautifulSoup, elem: Tag) -> None:
         button_elem = soup.new_tag("button")
         button_elem['type'] = "button"
         add_class(button_elem, 'md-button', 'toggle-children')
-        # button_elem.string = 'expand all'
+        add_style(button_elem, 'display: none;')
         elem.insert(0, button_elem)
 
         # aria
         button_elem['aria-label'] = elem['id'].replace('-', ' ') + " toggle children"
-        button_elem['aria-expanded'] = 'false'
+        button_elem['aria-expanded'] = 'true'
+
+
+def add_class(elem: Tag, *classes: str) -> None:
+    '''Adds any number of classes to an HTML tag.
+
+    Mutates the tag.
+
+    Args:
+        elem: The tag to add classes to.
+        *classes: Variable number of classes to add.
+    '''
+    elem['class'] = elem.get('class', []) + list(classes)
+
+
+def add_style(elem: Tag, style: str) -> None:
+    '''Adds a style to an HTML tag.
+
+    Mutates the tag.
+
+    Args:
+        elem: The tag to add the style to.
+        style: The style to add.
+    '''
+    elem['style'] = elem.get('style', '') + style
 
 
 if __name__ == '__main__':

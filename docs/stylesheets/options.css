@@ -13,6 +13,7 @@
   padding-left: 1em;
   text-align: left;
   width: 100%;
+  --icon-visibility: hidden;
 }
 
 /* make child options smaller font */
@@ -43,6 +44,7 @@ li .option-button[aria-expanded="false"] {
   color: var(--md-default-fg-color);
   float: right;
   transition: all 0.2s;
+  visibility: var(--icon-visibility);
 }
 
 /* rotate arrow when expanded */
