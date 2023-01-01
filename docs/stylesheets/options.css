@@ -70,29 +70,6 @@ button.toggle-children[aria-expanded="true"]::after {
   content: "collapse all";
 }
 
-/* animations for collapsible content */
-.collapsible-content[state="opened"] {
-  animation: clipPathOptionsOpen 500ms ease-in-out forwards;
-}
-
-.collapsible-content[state="closing"] {
-  animation: clipPathOptionsClose 500ms ease-in-out forwards;
-}
-
-.collapsible-content[state="closed"] {
-  display: none !important;
-}
-
-@keyframes clipPathOptionsOpen {
-  0% { clip-path: inset(0 0 100% 0); }
-  100% { clip-path: inset(0); }
-}
-
-@keyframes clipPathOptionsClose {
-  0% { clip-path: inset(0); }
-  100% { clip-path: inset(0 0 100% 0); }
-}
-
 /* remove the styling of list items */
 #options-content li {
   list-style-type: none;

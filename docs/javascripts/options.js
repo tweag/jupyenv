@@ -26,7 +26,7 @@ function makeOptionsCollapsible() {
 function openOption(button) {
   button.setAttribute('aria-expanded', "true");
   var content = getNextSibling(button, '.collapsible-content');
-  content.setAttribute('state', 'opened');
+  $(content).slideDown();
 }
 
 /**
@@ -35,7 +35,7 @@ function openOption(button) {
 function closeOption(button) {
   button.setAttribute('aria-expanded', "false");
   var content = getNextSibling(button, '.collapsible-content');
-  content.setAttribute('state', 'closing');
+  $(content).slideUp();
 
   /* reset toggle children button */
   var toggleChildrenButton = content.querySelector('button.toggle-children');
@@ -49,11 +49,6 @@ function closeOption(button) {
       closeOption(childButton);
     }
   });
-
-  /* end closing state and hide content */
-  content.addEventListener('animationend', () => {
-    content.setAttribute('state', 'closed');
-  }, {once: true});
 }
 
 /**
@@ -77,12 +72,11 @@ function getNextSibling(elem, selector) {
 
 function initializePage() {
   document
-    .querySelectorAll('[state="opened"]')
-    .forEach(elem => elem.setAttribute('state', 'closed'));
-
-  document
     .querySelectorAll('[aria-expanded="true"]')
-    .forEach(elem => elem.setAttribute('aria-expanded', 'false'));
+    .forEach((elem) => {
+      elem.setAttribute('aria-expanded', 'false');
+      elem.nextElementSibling.style.display = "none";
+    });
 
   document
     .querySelectorAll('.option-button')

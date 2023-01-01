@@ -257,7 +257,7 @@ def nest_options_in_dom(html: str) -> BeautifulSoup:
                 content_container = soup.new_tag("ul")
                 child_elem.insert_after(content_container)
                 add_class(content_container, 'collapsible-content')
-                content_container['state'] = "opened"
+                add_style(content_container, 'display: flow-root;')
                 for child in reversed(child_list):
                     child_li = soup.new_tag("li")
                     child_li.append(child)
