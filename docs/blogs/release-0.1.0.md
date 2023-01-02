@@ -29,7 +29,7 @@ of that.
 
 We want to foster a growing community around jupyenv but there is not a space
 for users to directly communicate with each other and us. So we have created a
- new Matrix space [TBD].
+ new [Matrix space](https://matrix.to/#/#jupyenv:matrix.org).
 
 ### Name
 

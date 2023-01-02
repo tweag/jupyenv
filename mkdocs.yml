@@ -15,6 +15,8 @@ nav:
       - (NEW) Options: options.md
     - Blog:
       - blogs/release-0.1.0.md
+    - Community:
+      - Get Involved: community/get-involved.md
 
 theme:
   name: material
