@@ -67,7 +67,7 @@ in {
           )
           (builtins.attrNames config.kernel)
         );
-      runtimePackages = config.runtimePackages;
+      runtimePackages = config.jupyterlab.runtimePackages;
       #flakes = config.flakes;
     };
   };
