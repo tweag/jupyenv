@@ -1,11 +1,10 @@
 {
-  availableKernels,
-  name,
-  extraArgs,
-}:
-availableKernels.python {
-  inherit name;
-  inherit (extraArgs) system;
-  pkgs = extraArgs.pkgs_stable;
-  displayName = "Example (nixpkgs stable) Python Kernel";
+  pkgs,
+  pkgs_stable,
+  ...
+}: {
+  kernel.python.example = {
+    enable = true;
+    nixpkgs = pkgs_stable;
+  };
 }

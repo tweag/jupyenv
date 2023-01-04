@@ -1,10 +1,5 @@
-{
-  availableKernels,
-  name,
-  extraArgs,
-}:
-availableKernels.nix {
-  inherit name;
-  inherit (extraArgs) system;
-  displayName = "Example Nix Kernel";
+{pkgs, ...}: {
+  kernel.nix.example = {
+    enable = true;
+  };
 }

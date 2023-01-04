@@ -1,10 +1,5 @@
-{
-  availableKernels,
-  name,
-  extraArgs,
-}:
-availableKernels.bash {
-  inherit name;
-  inherit (extraArgs) system;
-  displayName = "Example Bash Kernel";
+{pkgs, ...}: {
+  kernel.bash.example = {
+    enable = true;
+  };
 }
