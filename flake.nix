@@ -521,28 +521,30 @@
         mkJupyterlabNew = customModule:
           (mkJupyterlabEval customModule).config.build;
 
+        kernelsInProgress = [
+          # TODO - remove these as modules are created
+          "example-ocaml-minimal"
+          "example-r-minimal"
+          "example-rust-minimal"
+          "example-scala-minimal"
+          "example-typescript-minimal"
+        ];
+
         exampleJupyterlabKernelsNew = (
-          lib.filterAttrs
+          lib.mapAttrs'
           (
             name: value:
-              !builtins.elem
-              name
-              [
-                # TODO - remove these as modules are created
-                "jupyterlab-kernel-example-ocaml-minimal"
-                "jupyterlab-kernel-example-r-minimal"
-                "jupyterlab-kernel-example-rust-minimal"
-                "jupyterlab-kernel-example-scala-minimal"
-                "jupyterlab-kernel-example-typescript-minimal"
-              ]
+              lib.nameValuePair
+              ("jupyterlab-kernel-" + name)
+              (mkJupyterlabNew value)
           )
           (
-            lib.mapAttrs'
+            lib.filterAttrs
             (
               name: value:
-                lib.nameValuePair
-                ("jupyterlab-kernel-" + name)
-                (mkJupyterlabNew value)
+                !builtins.elem
+                name
+                kernelsInProgress
             )
             kernelsConfig.kernels
           )
@@ -558,14 +560,7 @@
                 name: value:
                   !builtins.elem
                   name
-                  [
-                    # TODO - remove these as modules are created
-                    "example-ocaml-minimal"
-                    "example-r-minimal"
-                    "example-rust-minimal"
-                    "example-scala-minimal"
-                    "example-typescript-minimal"
-                  ]
+                  kernelsInProgress
               )
               kernelsConfig.kernels
             )
