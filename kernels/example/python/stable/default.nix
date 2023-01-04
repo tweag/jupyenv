@@ -1,10 +1,10 @@
 {
-  pkgs,
-  pkgs_stable,
+  self,
+  system,
   ...
 }: {
-  kernel.python.example = {
+  kernel.python.stable = {
     enable = true;
-    nixpkgs = pkgs_stable;
+    nixpkgs = self.inputs.nixpkgs-stable;
   };
 }
