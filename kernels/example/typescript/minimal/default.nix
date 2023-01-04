@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.typescript.example = {
+  kernel.typescript.minimal = {
     enable = true;
   };
 }

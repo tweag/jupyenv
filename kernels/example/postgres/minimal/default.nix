@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.postgres.example = {
+  kernel.postgres.minimal = {
     enable = true;
   };
 }

@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.javascript.example = {
+  kernel.javascript.minimal = {
     enable = true;
   };
 }

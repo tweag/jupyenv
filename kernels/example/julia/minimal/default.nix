@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.julia.example = {
+  kernel.julia.minimal = {
     enable = true;
   };
 }

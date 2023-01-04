@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.rust.example = {
+  kernel.rust.minimal = {
     enable = true;
   };
 }

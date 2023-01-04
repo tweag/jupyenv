@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.python.example = {
+  kernel.python.minimal = {
     enable = true;
   };
 }

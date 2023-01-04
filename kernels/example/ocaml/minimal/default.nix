@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.ocaml.example = {
+  kernel.ocaml.minimal = {
     enable = true;
   };
 }
