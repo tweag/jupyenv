@@ -417,7 +417,10 @@
             ''
           else
             pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
-            {nativeBuildInputs = [pkgs.makeWrapper];}
+            {
+              nativeBuildInputs = [pkgs.makeWrapper];
+              meta.mainProgram = "jupyter-lab";
+            }
             ''
               mkdir -p $out/bin
               for i in ${jupyterlabEnv}/bin/*; do
