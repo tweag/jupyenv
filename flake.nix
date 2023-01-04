@@ -512,7 +512,10 @@
         mkJupyterlabEval = customModule:
           pkgs.lib.evalModules {
             specialArgs = {inherit self system pkgs mkJupyterlab;};
-            modules = [./modules] ++ lib.optional (customModule != null) customModule;
+            modules = lib.flatten (
+              [./modules]
+              ++ lib.optional (customModule != null) customModule
+            );
           };
 
         mkJupyterlabNew = customModule:
@@ -545,6 +548,29 @@
           )
         );
 
+        exampleJupyterlabAllKernelsNew =
+          mkJupyterlabNew
+          (
+            builtins.attrValues
+            (
+              lib.filterAttrs
+              (
+                name: value:
+                  !builtins.elem
+                  name
+                  [
+                    # TODO - remove these as modules are created
+                    "example-ocaml-minimal"
+                    "example-r-minimal"
+                    "example-rust-minimal"
+                    "example-scala-minimal"
+                    "example-typescript-minimal"
+                  ]
+              )
+              kernelsConfig.kernels
+            )
+          );
+
         eval = mkJupyterlabEval ({...}: {_module.check = false;});
         options = pkgs.nixosOptionsDoc {
           options = builtins.removeAttrs eval.options ["_module"];
@@ -561,7 +587,7 @@
           {
             jupyterlab-new = mkJupyterlabNew ./config.nix;
             jupyterlab = jupyterlabEnvWrapped baseArgs;
-            #jupyterlab-all-example-kernels = exampleJupyterlabAllKernels;
+            jupyterlab-all-example-kernels = exampleJupyterlabAllKernelsNew;
             update-poetry-lock =
               pkgs.writeShellApplication
               {
