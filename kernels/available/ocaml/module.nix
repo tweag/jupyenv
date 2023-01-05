@@ -57,7 +57,7 @@
           example = ''
             [ self.inputs.myOpamProject ]
           '';
-          description = lib.mdDoc ''
+          description = ''
             List of directories containing `.opam` files.
           '';
         };
@@ -65,7 +65,7 @@
         opamNixArgs = lib.mkOption {
           type = types.attrs;
           default = {};
-          description = lib.mdDoc ''
+          description = ''
             See the opam-nix [queryToScope](https://github.com/tweag/opam-nix#querytoscope) first argument which is the same as `buildDunePackage`.
           '';
         };
