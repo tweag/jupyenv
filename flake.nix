@@ -523,7 +523,6 @@
 
         kernelsInProgress = [
           # TODO - remove these as modules are created
-          "example-ocaml-minimal"
           "example-r-minimal"
           "example-rust-minimal"
           "example-scala-minimal"
