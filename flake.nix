@@ -526,7 +526,6 @@
           "example-ocaml-minimal"
           "example-r-minimal"
           "example-rust-minimal"
-          "example-scala-minimal"
           "example-typescript-minimal"
         ];
 
