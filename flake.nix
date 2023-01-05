@@ -527,7 +527,6 @@
           "example-r-minimal"
           "example-rust-minimal"
           "example-scala-minimal"
-          "example-typescript-minimal"
         ];
 
         exampleJupyterlabKernelsNew = (
