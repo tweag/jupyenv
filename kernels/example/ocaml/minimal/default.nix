@@ -1,10 +1,5 @@
-{
-  availableKernels,
-  name,
-  extraArgs,
-}:
-availableKernels.ocaml {
-  inherit name;
-  inherit (extraArgs) system;
-  displayName = "Example OCaml Kernel";
+{pkgs, ...}: {
+  kernel.ocaml.minimal = {
+    enable = true;
+  };
 }

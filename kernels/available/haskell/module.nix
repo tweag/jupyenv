@@ -71,7 +71,6 @@
         {
           inherit (config) requiredRuntimePackages extraHaskellFlags extraHaskellPackages;
           haskellKernelPkg = import "${config.ihaskell}/release.nix";
-          gophernotes = kernelModule.kernelArgs.pkgs.gophernotes;
         }
         // kernelModule.kernelArgs;
     };
