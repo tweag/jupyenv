@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.zsh.minimal = {
+  kernel.zsh.minimal-example = {
     enable = true;
   };
 }

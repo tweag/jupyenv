@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.nix.minimal = {
+  kernel.nix.minimal-example = {
     enable = true;
   };
 }

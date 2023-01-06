@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.go.minimal = {
+  kernel.go.minimal-example = {
     enable = true;
   };
 }

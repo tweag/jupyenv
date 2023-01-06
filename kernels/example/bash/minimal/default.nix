@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.bash.minimal = {
+  kernel.bash.minimal-example = {
     enable = true;
   };
 }
