@@ -42,7 +42,7 @@ in {
     ./../kernels/available/r/module.nix
     ./../kernels/available/rust/module.nix
     ./../kernels/available/scala/module.nix
-    #./../kernels/available/typescript/module.nix
+    ./../kernels/available/typescript/module.nix
     ./../kernels/available/zsh/module.nix
   ];
   # TODO: add kernels
