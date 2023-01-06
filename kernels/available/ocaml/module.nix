@@ -18,12 +18,57 @@
   in {
     options =
       {
-        #WIP:
-        #opam-nix
-        #requiredOcamlPackages
-        #ocamlPackages
-        #opamProjects
-        #opamNixArgs
+        opam-nix = lib.mkOption {
+          type = types.path;
+          default = self.inputs.opam-nix;
+          example = ''
+            self.inputs.opam-nix
+          '';
+          description = lib.mdDoc ''
+            opam-nix flake input to be used for this ${kernelName} kernel.
+          '';
+        };
+
+        requiredOcamlPackages = lib.mkOption {
+          type = types.attrs;
+          default = {merlin = "*";};
+          example = ''
+            { merlin = "*"; }
+          '';
+          description = lib.mdDoc ''
+            Attribute set of required OCaml packages.
+          '';
+        };
+
+        ocamlPackages = lib.mkOption {
+          type = types.attrs;
+          default = {};
+          example = ''
+            { hex = "*"; owl = "*"; }
+          '';
+          description = lib.mdDoc ''
+            Attribute set of user desired OCaml packages.
+          '';
+        };
+
+        opamProjects = lib.mkOption {
+          type = types.listOf types.path;
+          default = [];
+          example = ''
+            [ self.inputs.myOpamProject ]
+          '';
+          description = ''
+            List of directories containing `.opam` files.
+          '';
+        };
+
+        opamNixArgs = lib.mkOption {
+          type = types.attrs;
+          default = {};
+          description = ''
+            See the opam-nix [queryToScope](https://github.com/tweag/opam-nix#querytoscope) first argument which is the same as `buildDunePackage`.
+          '';
+        };
       }
       // kernelModule.options;
 

@@ -7,7 +7,7 @@
 }: let
   inherit (lib) types;
 
-  kernelName = "julia";
+  kernelName = "r";
   kernelOptions = {
     config,
     name,
@@ -18,30 +18,28 @@
   in {
     options =
       {
-        JULIA_DEPOT_PATH = lib.mkOption {
-          type = types.str;
-          default = "~/.julia";
-          example = "~/.julia";
+        rWrapper = lib.mkOption {
+          type = types.package;
+          default = config.nixpkgs.legacyPackages.${system}.rWrapper;
           description = lib.mdDoc ''
-            Julia path
+            R version from nixpkgs.
           '';
         };
 
-        activateDir = lib.mkOption {
-          type = types.str;
-          default = "";
-          example = "";
+        rPackages = lib.mkOption {
+          type = types.attrs;
+          default = config.nixpkgs.legacyPackages.${system}.rPackages;
           description = lib.mdDoc ''
-            Julia activate directory
+            A set of R packages.
           '';
         };
 
-        ijuliaRev = lib.mkOption {
-          type = types.str;
-          default = "AQu2H";
-          example = "AQu2H";
+        extraRPackages = lib.mkOption {
+          type = types.functionTo (types.listOf types.package);
+          default = _: [];
+          example = "(p: [p.foreign p.ggplot2])";
           description = lib.mdDoc ''
-            Julia revision
+            Extra R packages.
           '';
         };
       }
@@ -50,8 +48,7 @@
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          inherit (config) JULIA_DEPOT_PATH activateDir ijuliaRev;
-          julia-bin = config.nixpkgs.legacyPackages.${system}.julia-bin;
+          inherit (config) rWrapper rPackages extraRPackages;
         }
         // kernelModule.kernelArgs;
     };
