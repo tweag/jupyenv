@@ -206,6 +206,9 @@
           p.mkdocs
           p.mkdocs-material
           p.mkdocs-material-extensions
+          p.markdown-it-py
+          p.beautifulsoup4
+          p.docopt
         ]);
 
         docs = pkgs.stdenv.mkDerivation {
@@ -213,7 +216,8 @@
           src = self;
           nativeBuildInputs = [mkdocs];
           buildPhase = ''
-            cp ${options.optionsCommonMark} ./docs/options.md
+            cp ${options.optionsJSON}/share/doc/nixos/options.json ./options.json
+            python docs/python-scripts/options.py html ./options.json docs/overrides/optionsContent.html
             mkdocs build --site-dir dist
           '';
           installPhase = ''
