@@ -1,10 +1,5 @@
-{
-  availableKernels,
-  name,
-  extraArgs,
-}:
-availableKernels.javascript {
-  inherit name;
-  inherit (extraArgs) system;
-  displayName = "Example Javascript Kernel";
+{pkgs, ...}: {
+  kernel.javascript.minimal = {
+    enable = true;
+  };
 }

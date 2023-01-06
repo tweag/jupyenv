@@ -7,7 +7,7 @@
 }: let
   inherit (lib) types;
 
-  kernelName = "javascript";
+  kernelName = "typescript";
   kernelOptions = {
     config,
     name,
@@ -17,13 +17,24 @@
     kernelModule = import ./../../../modules/kernel.nix args;
   in {
     options =
-      {}
+      {
+        npmlock2nix = lib.mkOption {
+          type = types.path;
+          default = self.inputs.npmlock2nix;
+          example = ''
+            self.inputs.npmlock2nix
+          '';
+          description = lib.mdDoc ''
+            npmlock2nix flake input to be used to build this ${kernelName} kernel.
+          '';
+        };
+      }
       // kernelModule.options;
 
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          ijavascript = config.nixpkgs.legacyPackages.${system}.nodePackages.ijavascript;
+          inherit (config) npmlock2nix;
         }
         // kernelModule.kernelArgs;
     };

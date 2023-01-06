@@ -6,9 +6,8 @@
   name ? "ocaml",
   displayName ? "OCaml",
   runtimePackages ? [],
-  extraRuntimePackages ? [],
   # https://github.com/tweag/opam-nix
-  opam-nix ? self.inputs.opam-nix.lib.${system},
+  opam-nix ? self.inputs.opam-nix,
   # Set of required packages
   requiredOcamlPackages ? {merlin = "*";},
   # Set of user desired packages
@@ -18,10 +17,12 @@
   # See opam-nix.buildDuneProject first argument
   opamNixArgs ? {},
 }: let
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = runtimePackages;
 
-  customOpamRepo = opam-nix.joinRepos (map opam-nix.makeOpamRepo opamProjects);
-  customOpamPackages = __mapAttrs (_: pkgs.lib.last) (opam-nix.listRepo customOpamRepo);
+  _opam-nix = opam-nix.lib.${system};
+
+  customOpamRepo = _opam-nix.joinRepos (map _opam-nix.makeOpamRepo opamProjects);
+  customOpamPackages = __mapAttrs (_: pkgs.lib.last) (_opam-nix.listRepo customOpamRepo);
 
   userOcamlPackages = ocamlPackages // customOpamPackages;
   allOcamlPackages = requiredOcamlPackages // userOcamlPackages;
@@ -36,10 +37,10 @@
       sha256 = "sha256-IWbM6rOjcE1QHO+GVl8ZwiZQpNmdBbTdfMZe69D5lIU=";
     };
   in
-    opam-nix.buildDuneProject
+    _opam-nix.buildDuneProject
     ({
         pkgs = pkgs.extend (final: _: {zeromq3 = final.zeromq4;});
-        repos = [opam-nix.opamRepository customOpamRepo];
+        repos = [_opam-nix.opamRepository customOpamRepo];
       }
       // opamNixArgs)
     name

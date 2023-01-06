@@ -7,7 +7,7 @@
 }: let
   inherit (lib) types;
 
-  kernelName = "julia";
+  kernelName = "scala";
   kernelOptions = {
     config,
     name,
@@ -18,40 +18,43 @@
   in {
     options =
       {
-        JULIA_DEPOT_PATH = lib.mkOption {
-          type = types.str;
-          default = "~/.julia";
-          example = "~/.julia";
+        scala = lib.mkOption {
+          type = types.package;
+          default = config.nixpkgs.legacyPackages.${system}.scala;
           description = lib.mdDoc ''
-            Julia path
+            Scala package to use with almond.
           '';
         };
 
-        activateDir = lib.mkOption {
-          type = types.str;
-          default = "";
-          example = "";
+        coursier = lib.mkOption {
+          type = types.package;
+          default = config.nixpkgs.legacyPackages.${system}.coursier;
           description = lib.mdDoc ''
-            Julia activate directory
+            Coursier package to use with almond.
           '';
         };
 
-        ijuliaRev = lib.mkOption {
-          type = types.str;
-          default = "AQu2H";
-          example = "AQu2H";
+        jdk = lib.mkOption {
+          type = types.package;
+          default = config.nixpkgs.legacyPackages.${system}.jdk;
           description = lib.mdDoc ''
-            Julia revision
+            JDK package to use with almond.
+          '';
+        };
+
+        jre = lib.mkOption {
+          type = types.package;
+          default = config.nixpkgs.legacyPackages.${system}.jre;
+          description = lib.mdDoc ''
+            JRE package to use with almond.
           '';
         };
       }
       // kernelModule.options;
-
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          inherit (config) JULIA_DEPOT_PATH activateDir ijuliaRev;
-          julia-bin = config.nixpkgs.legacyPackages.${system}.julia-bin;
+          inherit (config) scala coursier jdk jre;
         }
         // kernelModule.kernelArgs;
     };

@@ -421,7 +421,10 @@
             ''
           else
             pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
-            {nativeBuildInputs = [pkgs.makeWrapper];}
+            {
+              nativeBuildInputs = [pkgs.makeWrapper];
+              meta.mainProgram = "jupyter-lab";
+            }
             ''
               mkdir -p $out/bin
               for i in ${jupyterlabEnv}/bin/*; do
@@ -513,11 +516,28 @@
         mkJupyterlabEval = customModule:
           pkgs.lib.evalModules {
             specialArgs = {inherit self system pkgs mkJupyterlab;};
-            modules = [./modules] ++ lib.optional (customModule != null) customModule;
+            modules = lib.flatten (
+              [./modules]
+              ++ lib.optional (customModule != null) customModule
+            );
           };
 
         mkJupyterlabNew = customModule:
           (mkJupyterlabEval customModule).config.build;
+
+        exampleJupyterlabKernelsNew = (
+          lib.mapAttrs'
+          (
+            name: value:
+              lib.nameValuePair
+              ("jupyterlab-kernel-" + name)
+              (mkJupyterlabNew value)
+          )
+          kernelsConfig.kernels
+        );
+
+        exampleJupyterlabAllKernelsNew =
+          mkJupyterlabNew (builtins.attrValues kernelsConfig.kernels);
 
         eval = mkJupyterlabEval ({...}: {_module.check = false;});
         options = pkgs.nixosOptionsDoc {
@@ -535,7 +555,7 @@
           {
             jupyterlab-new = mkJupyterlabNew ./config.nix;
             jupyterlab = jupyterlabEnvWrapped baseArgs;
-            jupyterlab-all-example-kernels = exampleJupyterlabAllKernels;
+            jupyterlab-all-example-kernels = exampleJupyterlabAllKernelsNew;
             update-poetry-lock =
               pkgs.writeShellApplication
               {
@@ -555,7 +575,7 @@
             inherit mkdocs docs;
             default = jupyterlabEnvWrapped baseArgs;
           }
-          // exampleJupyterlabKernels;
+          // exampleJupyterlabKernelsNew;
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
