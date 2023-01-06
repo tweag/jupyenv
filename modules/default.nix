@@ -39,9 +39,9 @@ in {
     #WIP:./../kernels/available/ocaml/module.nix
     ./../kernels/available/postgres/module.nix
     ./../kernels/available/python/module.nix
-    #./../kernels/available/r/module.nix
-    #./../kernels/available/rust/module.nix
-    #./../kernels/available/scala/module.nix
+    ./../kernels/available/r/module.nix
+    ./../kernels/available/rust/module.nix
+    ./../kernels/available/scala/module.nix
     ./../kernels/available/typescript/module.nix
     ./../kernels/available/zsh/module.nix
   ];

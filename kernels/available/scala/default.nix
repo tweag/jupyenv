@@ -6,7 +6,6 @@
   name ? "scala",
   displayName ? "Scala",
   runtimePackages ? [],
-  extraRuntimePackages ? [],
   scala ? pkgs.scala,
   coursier ? pkgs.coursier,
   jdk ? pkgs.jdk,
@@ -14,12 +13,12 @@
 }: let
   inherit (pkgs) lib makeWrapper stdenv;
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = runtimePackages;
 
   almondSh = let
     baseName = "almond";
     version = "0.13.1";
-    scalaVersion = pkgs.scala.version;
+    scalaVersion = scala.version;
     deps = stdenv.mkDerivation {
       name = "${baseName}-deps-${version}";
 
