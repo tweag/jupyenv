@@ -524,7 +524,6 @@
         kernelsInProgress = [
           # TODO - remove these as modules are created
           "example-ocaml-minimal"
-          "example-scala-minimal"
           "example-typescript-minimal"
         ];
 
