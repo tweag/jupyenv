@@ -521,11 +521,6 @@
         mkJupyterlabNew = customModule:
           (mkJupyterlabEval customModule).config.build;
 
-        kernelsInProgress = [
-          # TODO - remove these as modules are created
-          "example-ocaml-minimal"
-        ];
-
         exampleJupyterlabKernelsNew = (
           lib.mapAttrs'
           (
@@ -534,33 +529,11 @@
               ("jupyterlab-kernel-" + name)
               (mkJupyterlabNew value)
           )
-          (
-            lib.filterAttrs
-            (
-              name: value:
-                !builtins.elem
-                name
-                kernelsInProgress
-            )
-            kernelsConfig.kernels
-          )
+          kernelsConfig.kernels
         );
 
         exampleJupyterlabAllKernelsNew =
-          mkJupyterlabNew
-          (
-            builtins.attrValues
-            (
-              lib.filterAttrs
-              (
-                name: value:
-                  !builtins.elem
-                  name
-                  kernelsInProgress
-              )
-              kernelsConfig.kernels
-            )
-          );
+          mkJupyterlabNew (builtins.attrValues kernelsConfig.kernels);
 
         eval = mkJupyterlabEval ({...}: {_module.check = false;});
         options = pkgs.nixosOptionsDoc {
