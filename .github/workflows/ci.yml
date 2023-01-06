@@ -64,13 +64,13 @@ jobs:
     # TODO remove once we have a better solution. For more info see
     # https://github.com/tweag/jupyterWith/pull/280
     - name: Install IJulia
-      if: matrix.kernel == 'julia'
+      if: contains(matrix.kernel, 'julia')
       run: |
-        result/bin/julia kernels/available/julia/installDeps.jl
+        result/bin/julia kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/installDeps.jl
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
-        result/bin/python kernels/available/$( echo "${{ matrix.kernel }}" | sed -e "s|^stable-||" )/test.py
+        result/bin/python kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/test.py
 
   build-all-kernels:
     name: Build all kernels
