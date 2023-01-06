@@ -176,6 +176,10 @@ jobs:
           nix build
         popd
 
+    # TODO this should not be dependent on the example kernels tests as the kernel names are different
     - name: Test
       run: |
+        pushd ./repo/kernels/example/python/minimal
+          sed -i -e "s|example-python-minimal|custom-python|" test.py
+        popd
         ./example/result/bin/python ./repo/kernels/example/python/minimal/test.py
