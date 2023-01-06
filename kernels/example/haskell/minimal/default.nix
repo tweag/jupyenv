@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.haskell.minimal = {
+  kernel.haskell.minimal-example = {
     enable = true;
   };
 }

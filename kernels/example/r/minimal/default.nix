@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.r.minimal = {
+  kernel.r.minimal-example = {
     enable = true;
   };
 }

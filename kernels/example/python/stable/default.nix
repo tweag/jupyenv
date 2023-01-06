@@ -3,7 +3,7 @@
   system,
   ...
 }: {
-  kernel.python.stable = {
+  kernel.python.stable-example = {
     enable = true;
     nixpkgs = self.inputs.nixpkgs-stable;
   };
