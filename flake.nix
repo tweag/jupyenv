@@ -529,7 +529,7 @@
               ("jupyterlab-kernel-" + name)
               (mkJupyterlabNew value)
           )
-          (lib.filterAttrs kernelsConfig.kernels)
+          kernelsConfig.kernels
         );
 
         exampleJupyterlabAllKernelsNew =
