@@ -6,7 +6,6 @@
   name ? "r",
   displayName ? "R",
   runtimePackages ? [],
-  extraRuntimePackages ? [],
   rWrapper ? pkgs.rWrapper,
   rPackages ? pkgs.rPackages,
   extraRPackages ? (_: []),
@@ -15,7 +14,7 @@
     packages = (extraRPackages rPackages) ++ [rPackages.IRkernel];
   };
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = runtimePackages;
 
   wrappedEnv =
     pkgs.runCommand "wrapper-${env.name}"
