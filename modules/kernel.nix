@@ -5,6 +5,7 @@
   system,
   lib,
   config,
+  requiredRuntimePackages ? [],
 }: let
   inherit (lib) types;
 in {
@@ -33,6 +34,14 @@ in {
       example = "${kernelName} example kernel";
       description = lib.mdDoc ''
         Display name of the ${kernelName} kernel.
+      '';
+    };
+
+    requiredRuntimePackages = lib.mkOption {
+      type = types.listOf types.package;
+      default = requiredRuntimePackages;
+      description = ''
+        A list of required runtime packages for this ${kernelName} kernel.
       '';
     };
 

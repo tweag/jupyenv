@@ -6,8 +6,8 @@
   name ? "nix",
   displayName ? "Nix",
   nix ? pkgs.nixVersions.stable,
-  runtimePackages ? [nix],
-  extraRuntimePackages ? [],
+  requiredRuntimePackages ? [nix],
+  runtimePackages ? [],
   nixpkgsPath ? pkgs.path,
   # https://github.com/nix-community/poetry2nix
   poetry2nix ? import "${self.inputs.poetry2nix}/default.nix" {inherit pkgs poetry;},
@@ -37,7 +37,7 @@
       ;
   };
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   wrappedEnv =
     pkgs.runCommand "wrapper-${env.name}"
