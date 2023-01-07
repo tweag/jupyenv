@@ -65,12 +65,11 @@ jobs:
 
     # TODO remove once we have a better solution. For more info see
     # https://github.com/tweag/jupyterWith/pull/280
-    - name: Install IJulia
       # Temporarily don't build julia or haskell till they can be fixed
-      if: (!(contains(matrix.kernel, 'julia') || contains(matrix.kernel, 'haskell')))
-      # if: contains(matrix.kernel, 'julia')
-      run: |
-        result/bin/julia kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/installDeps.jl
+      #- name: Install IJulia
+      #  if: contains(matrix.kernel, 'julia')
+      #  run: |
+      #    result/bin/julia kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/installDeps.jl
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       # Temporarily don't build julia or haskell till they can be fixed
