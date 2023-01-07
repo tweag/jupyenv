@@ -70,11 +70,6 @@ jobs:
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
-        ls -FhoA ~/.julia
-        ls -FhoA ~/.julia/packages
-        ls -FhoA ~/.julia/packages/IJulia
-        ls -FhoA ~/.julia/packages/IJulia/AQu2H
-        ls -FhoA ~/.julia/packages/IJulia/AQu2H/src
         result/bin/python kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/test.py
 
   build-all-kernels:
