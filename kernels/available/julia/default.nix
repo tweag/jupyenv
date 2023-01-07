@@ -10,7 +10,7 @@
   julia-bin ? pkgs.julia-bin,
   JULIA_DEPOT_PATH ? "~/.julia",
   activateDir ? "",
-  ijuliaRev ? "AQu2H",
+  ijuliaRev ? "6TIq1",
 }: let
   inherit (pkgs) writeScriptBin writeText;
 

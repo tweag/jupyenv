@@ -70,6 +70,7 @@ jobs:
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
+        echo 'If Julia fails, see if IJulia was updated recently.'
         result/bin/python kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/test.py
 
   build-all-kernels:

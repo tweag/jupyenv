@@ -38,8 +38,8 @@
 
         ijuliaRev = lib.mkOption {
           type = types.str;
-          default = "AQu2H";
-          example = "AQu2H";
+          default = "6TIq1";
+          example = "6TIq1";
           description = lib.mdDoc ''
             Julia revision
           '';
