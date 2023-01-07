@@ -83,8 +83,9 @@ def nest_json_children(data: dict) -> dict:
     for current_key, current_value in data.copy().items():
         for previous_key in reversed(key_list):
             # Grabs the next key from the key list and checks if the current
-            # key is a child.
-            if current_key.startswith(previous_key):
+            # key is a child. Need the '+ "."' because 'kernel.rust' starts
+            # with 'kernel.r' but not 'kernel.r.'.
+            if current_key.startswith(previous_key + "."):
                 # Insert the nesting key in between the key list elements and
                 # get the object associated with the previous key to store the
                 # current key as a child.
