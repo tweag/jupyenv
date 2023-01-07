@@ -7,12 +7,12 @@ edit_uri: tree/main/docs/
 nav:
     - Home: index.md
     - Documentation:
-      - Getting Started: getting-started.md
-      - How To: how-to.md
-      - Tutorials: tutorials.md
-      - Developer Guide: developers.md
-      - Roadmap: roadmap.md
-      - Options: options.md
+      - Getting Started: documentation/getting-started.md
+      - How To: documentation/how-to.md
+      - Tutorials: documentation/tutorials.md
+      - Developer Guide: documentation/developers.md
+      - Roadmap: documentation/roadmap.md
+      - Options: documentation/options.md
     - Blog:
       - blogs/release-0.1.0.md
     - Community:
