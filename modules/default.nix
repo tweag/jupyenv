@@ -1,4 +1,5 @@
 {
+  self,
   config,
   lib,
   mkJupyterlab,
@@ -23,6 +24,12 @@ in {
 
     build = lib.mkOption {
       type = types.package;
+      internal = true;
+    };
+
+    nixpkgs = lib.mkOption {
+      type = types.path;
+      default = self.inputs.nixpkgs;
       internal = true;
     };
   };
