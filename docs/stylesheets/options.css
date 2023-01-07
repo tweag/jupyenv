@@ -132,3 +132,8 @@ button.toggle-children[aria-expanded="true"]::after {
   top: 0.25em;
   left: -3.5em;
 }
+
+/* Hide the Edit this page button. There is no markdown file to edit for options. */
+.md-content__button {
+  display: none;
+}
