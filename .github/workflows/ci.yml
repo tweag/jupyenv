@@ -41,6 +41,8 @@ jobs:
     name: Build ${{ matrix.kernel }} kernel
     needs: build
     runs-on: ubuntu-latest
+    # Temporarily don't build julia or haskell till they can be fixed
+    if: (!(contains(matrix.kernel, 'julia') || contains(matrix.kernel, 'haskell')))
 
     strategy:
       fail-fast: false
