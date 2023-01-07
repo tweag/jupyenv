@@ -12,7 +12,7 @@ nav:
       - Tutorials: tutorials.md
       - Developer Guide: developers.md
       - Roadmap: roadmap.md
-      - (NEW) Options: options.md
+      - Options: options.md
     - Blog:
       - blogs/release-0.1.0.md
     - Community:
