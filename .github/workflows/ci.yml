@@ -27,6 +27,8 @@ jobs:
 
     - name: List all available kernels
       id: kernels
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
       run: |
         kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
         echo $kernels
