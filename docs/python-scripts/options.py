@@ -145,8 +145,18 @@ def intersperse(lst: list, elem: Any) -> list:
 
 class OptionsEncoder(json.JSONEncoder):
     def encode(self, obj):
+        try:
+            return self.nix_handler(obj)
+        except TypeError:
+            pass
+
+        return super().encode(obj)
+
+    def nix_handler(self, obj):
         # Unpack literal expressions and other Nix types.
         # Don't escape the strings: they were escaped when initially serialized to JSON.
+        if isinstance(obj, list):
+            return super().encode([self.nix_handler(elem) for elem in obj])
         if isinstance(obj, dict):
             _type = obj.get('_type')
             if _type is not None:
