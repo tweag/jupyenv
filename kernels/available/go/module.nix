@@ -13,25 +13,17 @@
     name,
     ...
   }: let
-    args = {inherit self system lib config name kernelName;};
+    requiredRuntimePackages = [config.nixpkgs.legacyPackages.${system}.go];
+    args = {inherit self system lib config name kernelName requiredRuntimePackages;};
     kernelModule = import ./../../../modules/kernel.nix args;
   in {
     options =
-      {
-        requiredRuntimePackages = lib.mkOption {
-          type = types.listOf types.package;
-          default = [config.nixpkgs.legacyPackages.${system}.go];
-          description = ''
-            A list of runtime packages required by ${kernelName} kernel.
-          '';
-        };
-      }
+      {}
       // kernelModule.options;
 
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          inherit (config) requiredRuntimePackages;
           gophernotes = kernelModule.kernelArgs.pkgs.gophernotes;
         }
         // kernelModule.kernelArgs;
