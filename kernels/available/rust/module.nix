@@ -13,23 +13,16 @@
     name,
     ...
   }: let
-    args = {inherit self system lib config name kernelName;};
+    requiredRuntimePackages = [
+      config.nixpkgs.legacyPackages.${system}.cargo
+      config.nixpkgs.legacyPackages.${system}.gcc
+      config.nixpkgs.legacyPackages.${system}.binutils-unwrapped
+    ];
+    args = {inherit self system lib config name kernelName requiredRuntimePackages;};
     kernelModule = import ./../../../modules/kernel.nix args;
   in {
     options =
       {
-        requiredRuntimePackages = lib.mkOption {
-          type = types.listOf types.package;
-          default = [
-            config.nixpkgs.legacyPackages.${system}.cargo
-            config.nixpkgs.legacyPackages.${system}.gcc
-            config.nixpkgs.legacyPackages.${system}.binutils-unwrapped
-          ];
-          description = ''
-            A list of runtime packages required by ${kernelName} kernel.
-          '';
-        };
-
         evcxr = lib.mkOption {
           type = types.package;
           default = config.nixpkgs.legacyPackages.${system}.evcxr;
@@ -54,7 +47,7 @@
       kernelArgs =
         kernelModule.kernelArgs
         // {
-          inherit (config) requiredRuntimePackages evcxr rust-overlay;
+          inherit (config) evcxr rust-overlay;
           pkgs = import config.nixpkgs {
             inherit system;
             overlays = [config.rust-overlay.overlays.default];
