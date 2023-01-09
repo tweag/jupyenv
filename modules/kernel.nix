@@ -22,7 +22,7 @@ in {
     name = lib.mkOption {
       type = types.str;
       default = "${kernelName}-${name}";
-      example = "example";
+      example = "${kernelName}-example";
       description = lib.mdDoc ''
         Name of the ${kernelName} kernel.
       '';
@@ -30,7 +30,7 @@ in {
 
     displayName = lib.mkOption {
       type = types.str;
-      default = "${kernelName} ${config.name} kernel";
+      default = "${config.name} kernel";
       example = "${kernelName} example kernel";
       description = lib.mdDoc ''
         Display name of the ${kernelName} kernel.
@@ -40,7 +40,8 @@ in {
     requiredRuntimePackages = lib.mkOption {
       type = types.listOf types.package;
       default = requiredRuntimePackages;
-      description = ''
+      example = lib.literalExpression "[pkgs.example]";
+      description = lib.mdDoc ''
         A list of required runtime packages for this ${kernelName} kernel.
       '';
     };
@@ -48,17 +49,16 @@ in {
     runtimePackages = lib.mkOption {
       type = types.listOf types.package;
       default = [];
-      description = ''
-        A list of runtime packages available in this ${kernelName} kernel.
+      description = lib.mdDoc ''
+        A list of user desired runtime packages for this ${kernelName} kernel.
       '';
     };
 
     nixpkgs = lib.mkOption {
       type = types.path;
       default = self.inputs.nixpkgs;
-      example = ''
-        self.inputs.nixpkgs
-      '';
+      defaultText = lib.literalExpression "self.inputs.nixpkgs";
+      example = lib.literalExpression "self.inputs.nixpkgs";
       description = lib.mdDoc ''
         nixpkgs flake input to be used for this ${kernelName} kernel.
       '';
