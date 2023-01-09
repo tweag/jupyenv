@@ -38,8 +38,8 @@ def to_html(pathin: Path, pathout: Path):
 
     # with soup
     soup = nest_options_in_dom(html)
-    with open(pathout, 'wb') as fout:
-        fout.write(soup.prettify('utf-8'))
+    with open(pathout, 'w') as fout:
+        fout.write(str(soup))
 
 
 def to_commonmark(pathin: Path, pathout: Path):
@@ -143,6 +143,24 @@ def intersperse(lst: list, elem: Any) -> list:
     return result
 
 
+class OptionsEncoder(json.JSONEncoder):
+    def encode(self, obj):
+        # Unpack literal expressions and other Nix types.
+        # Don't escape the strings: they were escaped when initially serialized to JSON.
+        if isinstance(obj, dict):
+            _type = obj.get('_type')
+            if _type is not None:
+                if _type == 'literalExpression' or _type == 'literalDocBook':
+                    return obj['text']
+
+                if _type == 'derivation':
+                    return obj['name']
+
+                raise Exception(f'Unexpected type `{_type}` in {json.dumps(obj)}')
+
+        return super().encode(obj)
+
+
 def json_to_commonmark(data: dict, markdown: str = "", header: str = "## ") -> str:
     '''Creates a CommonMark compliant markdown from JSON similar to how optionsCommonMark and generateDoc.py do in nixpkgs.
 
@@ -169,14 +187,19 @@ def json_to_commonmark(data: dict, markdown: str = "", header: str = "## ") -> s
             key.replace('<', '&lt;').replace('>', '&gt;'),
             "\n",
         ])
-        markdown += "".join([value["description"], "\n\n"])
+        markdown += "".join([
+            value["description"]
+                .strip(' \n')
+                .replace('\n', ' '),
+            "\n\n"
+        ])
 
         if ('type' in value):
             markdown += "".join(["_Type_:", "\n"])
             markdown += "".join([value['type'], "\n\n"])
 
         if ('default' in value):
-            default_value = json.dumps(value['default'])
+            default_value = json.dumps(value['default'], cls=OptionsEncoder)
             default_value = codecs.decode(default_value, 'unicode_escape')
 
             markdown += "".join(["_Default_:", "\n\n"])
@@ -190,12 +213,7 @@ def json_to_commonmark(data: dict, markdown: str = "", header: str = "## ") -> s
             ])
 
         if ('example' in value):
-            example_value = json.dumps(value['example'])
-
-            if value['type'] not in ('string', 'boolean'):
-                # remove the surrounding double quotes.
-                # strip('"') doesn't work as desired in all cases
-                example_value = example_value[1:-1]
+            example_value = json.dumps(value['example'], cls=OptionsEncoder)
 
             example_value = (example_value
                 .replace('\\n', '\n')
