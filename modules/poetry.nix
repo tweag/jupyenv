@@ -120,6 +120,7 @@
         groups = lib.mkOption {
           type = types.listOf types.str;
           default = ["dev"];
+          defaultText = lib.literalExpression "[\"dev\"]";
           example = lib.literalExpression ''["dev" "doc"]'';
           description = lib.mdDoc ''
             Which Poetry 1.2.0+ dependency groups to install for this ${kernelName}
@@ -168,7 +169,7 @@ in {
   options.kernel.${kernelName} = lib.mkOption {
     type = types.attrsOf (types.submodule kernelOptions);
     default = {};
-    example = ''
+    example = lib.literalExpression ''
       {
         kernel.${kernelName}."example".enable = true;
       }
