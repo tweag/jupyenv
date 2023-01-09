@@ -77,6 +77,7 @@ in {
       (config)
       name
       displayName
+      requiredRuntimePackages
       runtimePackages
       ;
     pkgs = config.nixpkgs.legacyPackages.${system};
