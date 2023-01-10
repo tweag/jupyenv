@@ -28,6 +28,8 @@ jobs:
 
     - name: List all available kernels
       id: kernels
+      env:
+        NIX_CONFIG: "extra-access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}"
       run: |
         kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
         echo $kernels
