@@ -24,6 +24,7 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: List all available kernels
       id: kernels
@@ -57,6 +58,7 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build ${{ matrix.kernel }} kernel
       run: |
@@ -87,6 +89,7 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build all kernels
       run: |
@@ -106,6 +109,7 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build all kernels
       run: |
@@ -125,6 +129,7 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build all kernels
       run: |
@@ -165,6 +170,7 @@ jobs:
       uses: ./repo/.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Initialize template
       run: |
