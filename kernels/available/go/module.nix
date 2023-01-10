@@ -33,7 +33,7 @@ in {
   options.kernel.${kernelName} = lib.mkOption {
     type = types.attrsOf (types.submodule kernelOptions);
     default = {};
-    example = ''
+    example = lib.literalExpression ''
       {
         kernel.${kernelName}."example".enable = true;
       }

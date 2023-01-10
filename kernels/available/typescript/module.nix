@@ -21,9 +21,8 @@
         npmlock2nix = lib.mkOption {
           type = types.path;
           default = self.inputs.npmlock2nix;
-          example = ''
-            self.inputs.npmlock2nix
-          '';
+          defaultText = lib.literalExpression "self.inputs.npmlock2nix";
+          example = lib.literalExpression "self.inputs.npmlock2nix";
           description = lib.mdDoc ''
             npmlock2nix flake input to be used to build this ${kernelName} kernel.
           '';
@@ -43,7 +42,7 @@ in {
   options.kernel.${kernelName} = lib.mkOption {
     type = types.attrsOf (types.submodule kernelOptions);
     default = {};
-    example = ''
+    example = lib.literalExpression ''
       {
         kernel.${kernelName}."example".enable = true;
       }

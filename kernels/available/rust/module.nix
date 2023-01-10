@@ -26,6 +26,7 @@
         evcxr = lib.mkOption {
           type = types.package;
           default = config.nixpkgs.legacyPackages.${system}.evcxr;
+          example = lib.literalExpression "pkgs.evcxr";
           description = lib.mdDoc ''
             An evaluation context for Rust.
           '';
@@ -34,9 +35,8 @@
         rust-overlay = lib.mkOption {
           type = types.path;
           default = self.inputs.rust-overlay;
-          example = ''
-            self.inputs.rust-overlay
-          '';
+          defaultText = lib.literalExpression "self.inputs.rust-overlay";
+          example = lib.literalExpression "self.inputs.rust-overlay";
           description = lib.mdDoc ''
             An overlay for binary distributed rust toolchains. Adds `rust-bin` to nixpkgs which is needed for the Rust kernel.
           '';
@@ -59,7 +59,7 @@ in {
   options.kernel.${kernelName} = lib.mkOption {
     type = types.attrsOf (types.submodule kernelOptions);
     default = {};
-    example = ''
+    example = lib.literalExpression ''
       {
         kernel.${kernelName}."example".enable = true;
       }

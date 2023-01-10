@@ -21,6 +21,7 @@
         scala = lib.mkOption {
           type = types.package;
           default = config.nixpkgs.legacyPackages.${system}.scala;
+          example = lib.literalExpression "pkgs.scala";
           description = lib.mdDoc ''
             Scala package to use with almond.
           '';
@@ -29,6 +30,7 @@
         coursier = lib.mkOption {
           type = types.package;
           default = config.nixpkgs.legacyPackages.${system}.coursier;
+          example = lib.literalExpression "pkgs.coursier";
           description = lib.mdDoc ''
             Coursier package to use with almond.
           '';
@@ -37,6 +39,7 @@
         jdk = lib.mkOption {
           type = types.package;
           default = config.nixpkgs.legacyPackages.${system}.jdk;
+          example = lib.literalExpression "pkgs.jdk";
           description = lib.mdDoc ''
             JDK package to use with almond.
           '';
@@ -45,6 +48,7 @@
         jre = lib.mkOption {
           type = types.package;
           default = config.nixpkgs.legacyPackages.${system}.jre;
+          example = lib.literalExpression "pkgs.jre";
           description = lib.mdDoc ''
             JRE package to use with almond.
           '';
@@ -63,7 +67,7 @@ in {
   options.kernel.${kernelName} = lib.mkOption {
     type = types.attrsOf (types.submodule kernelOptions);
     default = {};
-    example = ''
+    example = lib.literalExpression ''
       {
         kernel.${kernelName}."example".enable = true;
       }

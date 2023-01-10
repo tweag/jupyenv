@@ -24,9 +24,8 @@
         ihaskell = lib.mkOption {
           type = types.path;
           default = self.inputs.ihaskell;
-          example = ''
-            self.inputs.ihaskell
-          '';
+          defaultText = lib.literalExpression "self.inputs.ihaskell";
+          example = lib.literalExpression "self.inputs.ihaskell";
           description = lib.mdDoc ''
             ihaskell flake input to be used for this ${kernelName} kernel.
           '';
@@ -35,7 +34,7 @@
         haskellCompiler = lib.mkOption {
           type = types.str;
           default = "ghc902";
-          example = "ghc902";
+          example = "ghc943";
           description = lib.mdDoc ''
             haskell compiler
           '';
@@ -53,7 +52,8 @@
         extraHaskellPackages = lib.mkOption {
           type = types.functionTo (types.listOf types.package);
           default = _: [];
-          example = "(_: [])";
+          defaultText = lib.literalExpression "ps: []";
+          example = lib.literalExpression "ps: [ps.lens ps.vector]";
           description = lib.mdDoc ''
             extra haskell packages
           '';
@@ -74,7 +74,7 @@ in {
   options.kernel.${kernelName} = lib.mkOption {
     type = types.attrsOf (types.submodule kernelOptions);
     default = {};
-    example = ''
+    example = lib.literalExpression ''
       {
         kernel.${kernelName}."example".enable = true;
       }

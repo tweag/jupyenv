@@ -8,7 +8,7 @@
   runtimePackages ? [],
   extraRuntimePackages ? [],
   julia-bin ? pkgs.julia-bin,
-  JULIA_DEPOT_PATH ? "~/.julia",
+  julia_depot_path ? "~/.julia",
   activateDir ? "",
   ijuliaRev ? "6TIq1",
 }: let
@@ -21,7 +21,7 @@
     Pkg.instantiate()
   '';
   activateJuliaPkg = writeScriptBin "activateJuliaPkg" ''
-    export JULIA_DEPOT_PATH=${JULIA_DEPOT_PATH}
+    export JULIA_DEPOT_PATH=${julia_depot_path}
     julia -L ${startupFile} -e 'println("Initializating DONE")'
   '';
   juliaStartup = writeScriptBin "juliaStartup" ''
@@ -53,7 +53,7 @@ in {
     "-i"
     "--startup-file=yes"
     "--color=yes"
-    "${JULIA_DEPOT_PATH}/packages/IJulia/${ijuliaRev}/src/kernel.jl"
+    "${julia_depot_path}/packages/IJulia/${ijuliaRev}/src/kernel.jl"
     "{connection_file}"
   ];
   codemirrorMode = "julia";

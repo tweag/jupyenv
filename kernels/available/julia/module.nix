@@ -18,7 +18,7 @@
   in {
     options =
       {
-        JULIA_DEPOT_PATH = lib.mkOption {
+        julia_depot_path = lib.mkOption {
           type = types.str;
           default = "~/.julia";
           example = "~/.julia";
@@ -50,7 +50,7 @@
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          inherit (config) JULIA_DEPOT_PATH activateDir ijuliaRev;
+          inherit (config) julia_depot_path activateDir ijuliaRev;
           julia-bin = config.nixpkgs.legacyPackages.${system}.julia-bin;
         }
         // kernelModule.kernelArgs;
@@ -60,7 +60,7 @@ in {
   options.kernel.${kernelName} = lib.mkOption {
     type = types.attrsOf (types.submodule kernelOptions);
     default = {};
-    example = ''
+    example = lib.literalExpression ''
       {
         kernel.${kernelName}."example".enable = true;
       }

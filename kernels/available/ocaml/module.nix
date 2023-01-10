@@ -21,9 +21,8 @@
         opam-nix = lib.mkOption {
           type = types.path;
           default = self.inputs.opam-nix;
-          example = ''
-            self.inputs.opam-nix
-          '';
+          defaultText = lib.literalExpression "self.inputs.opam-nix";
+          example = lib.literalExpression "self.inputs.opam-nix";
           description = lib.mdDoc ''
             opam-nix flake input to be used for this ${kernelName} kernel.
           '';
@@ -32,8 +31,11 @@
         requiredOcamlPackages = lib.mkOption {
           type = types.attrs;
           default = {merlin = "*";};
-          example = ''
+          defaultText = lib.literalExpression ''
             { merlin = "*"; }
+          '';
+          example = lib.literalExpression ''
+            { merlin = "4.7.1-500"; }
           '';
           description = lib.mdDoc ''
             Attribute set of required OCaml packages.
@@ -43,8 +45,11 @@
         ocamlPackages = lib.mkOption {
           type = types.attrs;
           default = {};
-          example = ''
-            { hex = "*"; owl = "*"; }
+          example = lib.literalExpression ''
+            {
+              hex = "*";
+              owl = "*";
+            }
           '';
           description = lib.mdDoc ''
             Attribute set of user desired OCaml packages.
@@ -54,8 +59,10 @@
         opamProjects = lib.mkOption {
           type = types.listOf types.path;
           default = [];
-          example = ''
-            [ self.inputs.myOpamProject ]
+          example = lib.literalExpression ''
+            [
+              self.inputs.myOpamProject
+            ]
           '';
           description = ''
             List of directories containing `.opam` files.
@@ -84,7 +91,7 @@ in {
   options.kernel.${kernelName} = lib.mkOption {
     type = types.attrsOf (types.submodule kernelOptions);
     default = {};
-    example = ''
+    example = lib.literalExpression ''
       {
         kernel.${kernelName}."example".enable = true;
       }
