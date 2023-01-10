@@ -5,8 +5,8 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "julia",
   displayName ? "Julia",
+  requiredRuntimePackages ? [],
   runtimePackages ? [],
-  extraRuntimePackages ? [],
   julia-bin ? pkgs.julia-bin,
   julia_depot_path ? "~/.julia",
   activateDir ? "",
@@ -28,7 +28,7 @@
     julia -L ${startupFile}
   '';
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   env = julia-bin;
   wrappedEnv =

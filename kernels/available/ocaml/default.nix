@@ -5,6 +5,7 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "ocaml",
   displayName ? "OCaml",
+  requiredRuntimePackages ? [],
   runtimePackages ? [],
   # https://github.com/tweag/opam-nix
   opam-nix ? self.inputs.opam-nix,
@@ -17,7 +18,7 @@
   # See opam-nix.buildDuneProject first argument
   opamNixArgs ? {},
 }: let
-  allRuntimePackages = runtimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   _opam-nix = opam-nix.lib.${system};
 

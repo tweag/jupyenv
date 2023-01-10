@@ -5,6 +5,7 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "scala",
   displayName ? "Scala",
+  requiredRuntimePackages ? [],
   runtimePackages ? [],
   scala ? pkgs.scala,
   coursier ? pkgs.coursier,
@@ -13,7 +14,7 @@
 }: let
   inherit (pkgs) lib makeWrapper stdenv;
 
-  allRuntimePackages = runtimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   almondSh = let
     baseName = "almond";

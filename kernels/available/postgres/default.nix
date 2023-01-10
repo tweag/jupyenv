@@ -5,8 +5,8 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "postgres",
   displayName ? "PostgreSQL",
+  requiredRuntimePackages ? [],
   runtimePackages ? with pkgs; [postgresql],
-  extraRuntimePackages ? [],
   # https://github.com/nix-community/poetry2nix
   poetry2nix ? import "${self.inputs.poetry2nix}/default.nix" {inherit pkgs poetry;},
   poetry ? pkgs.callPackage "${self.inputs.poetry2nix}/pkgs/poetry" {inherit python;},
@@ -35,7 +35,7 @@
       ;
   };
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   wrappedEnv =
     pkgs.runCommand "wrapper-${env.name}"

@@ -5,6 +5,7 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "typescript",
   displayName ? "TypeScript",
+  requiredRuntimePackages ? [],
   runtimePackages ? [],
   npmlock2nix ? self.inputs.npmlock2nix,
 }: let
@@ -62,7 +63,7 @@
     '';
   };
 
-  allRuntimePackages = runtimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   env = tslab;
   wrappedEnv =

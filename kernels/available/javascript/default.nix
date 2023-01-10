@@ -5,8 +5,8 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "javascript",
   displayName ? "Javascript",
+  requiredRuntimePackages ? [],
   runtimePackages ? [],
-  extraRuntimePackages ? [],
   ijavascript ? pkgs.nodePackages.ijavascript,
 }: let
   inherit (pkgs) lib stdenv writeScriptBin;
@@ -24,7 +24,7 @@
     fi
   '';
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   wrappedEnv =
     pkgs.runCommand "wrapper-${env.name}"
