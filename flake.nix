@@ -613,8 +613,7 @@
 
           See the jupyterWith documentation for more information.
 
-            https://github.com/tweag/jupyterWith/blob/main/docs/how-to.md
-            https://github.com/tweag/jupyterWith/blob/main/docs/tutorials.md
+            https://jupyterwith.tweag.io/getting-started/
         '';
       };
     };
