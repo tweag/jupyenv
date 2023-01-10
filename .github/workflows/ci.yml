@@ -29,6 +29,8 @@ jobs:
     - name: List all available kernels
       id: kernels
       env:
+        # Should only be needed until we use a `cachinx/install-nix` action that contains
+        # https://github.com/cachix/install-nix-action/pull/152 (should be in `v19`)
         NIX_CONFIG: "extra-access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}"
       run: |
         kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
