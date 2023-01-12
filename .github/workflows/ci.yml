@@ -24,9 +24,14 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: List all available kernels
       id: kernels
+      env:
+        # Should only be needed until we use a `cachinx/install-nix` action that contains
+        # https://github.com/cachix/install-nix-action/pull/152 (should be in `v19`)
+        NIX_CONFIG: "extra-access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}"
       run: |
         kernels=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
         echo $kernels
@@ -57,6 +62,7 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build ${{ matrix.kernel }} kernel
       run: |
@@ -87,6 +93,7 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build all kernels
       run: |
@@ -106,6 +113,7 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build all kernels
       run: |
@@ -125,6 +133,7 @@ jobs:
       uses: ./.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build all kernels
       run: |
@@ -165,6 +174,7 @@ jobs:
       uses: ./repo/.github/actions/common-setup
       with:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Initialize template
       run: |
