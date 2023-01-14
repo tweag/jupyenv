@@ -43,6 +43,29 @@ nix flake init --template github:tweag/jupyenv
 1. After installing IJulia, make sure you exit the Julia REPL and are back at the top level of your project folder.
 1. Start the JupyterLab environment with `nix run`.
 
+??? question "Did something go wrong?"
+
+    If a Julia kernel builds fine, but you get an error when trying to open a notebook, see if one of the error messages looks like the following.
+
+    ``` shell
+    ERROR: SystemError: opening file "/home/<USER>/.julia/packages/IJulia/<SLUG>/src/kernel.jl": No such file or directory
+    ```
+
+    Here are some possible problems and how to fix them. It can be more than one.
+
+    1. The version of IJulia you have installed does not match what jupyenv expects.
+    Check the version slug of IJulia with `ls ~/.julia/packages/IJulia/`.
+    If this is different than the default value, you can override it by adding the following line to your kernel configuration.
+    ``` nix
+      kernel.julia.<name>.ijuliaRev = <SLUG>;
+    ```
+
+    2. Your depot path is not the default.
+    If your Julia packages are not installed in `"~/.julia"`, you can override it by adding the following line to your kernel configuration.
+    ``` nix
+      kernel.julia.<name>.julia_depot_path = <PATH>;
+    ```
+
 # Kernels
 
 After initializing your project with a flake template, it should have a `kernels` directory, which contains `python.nix` kernel. You can find more kernel derivations in `kernels` directory at the root of this repository.
