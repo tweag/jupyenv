@@ -2,10 +2,11 @@
 
 ### Initialize a Project
 
-When you want to create a new project, make a project directory (e.g. `my-project`) and `cd` into it.
-Run the following command.
+Run the following commands to create a project directory, `my-project`, `cd` into it, and copy the flake template from the jupyenv repository.
 
-```shell
+``` shell
+mkdir my-project
+cd my-project
 nix flake init --template github:tweag/jupyenv
 ```
 
@@ -94,6 +95,60 @@ The following is an example `kernels.nix` file with a Python kernel and differen
     }
     ```
 
+### Python kernel with Poetry
+
+While you can use the `extraPackages` option, you are relying on the versions of the Python packages in `nixpkgs`.
+If you want to specify particular package versions, it is easier to use the `projectDir` option and use Poetry.
+
+Below is a tree structure showing what our project directory will look like when we are done.
+Our new kernel will need a directory to hold files, `my-custom-python`.
+We will create the `pyproject.toml` file and the `poetry.lock` file will be generated for us using Poetry.
+
+```
+my-project/
+├── flake.nix
+├── kernels.nix
+└── my-custom-python/
+    ├── pyproject.toml
+    └── poetry.lock
+```
+
+1. Create a directory to put our new kernel (e.g. `my-custom-python`).
+1. The easiest way to create the `pyproject.toml` file is to copy it from the existing kernel in the repository.
+   I have copied the Python kernels `pyproject.toml` file and added a `numpy` dependency under `tool.poetry.dependencies`.
+```toml title="pyproject.toml"
+[tool.poetry]
+name = "jupyter-nix-kernel-ipython"
+version = "0.1.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "^1.23.0"
+ipykernel = "^6.15.0"
+
+[tool.poetry.dev-dependencies]
+# build systems for dependencies
+hatchling = "^1.3.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+```
+
+1. Generate a `poetry.lock` file by running `poetry lock` in the kernel directory, `my-custom-python`.
+1. Modify the kernels.nix file by adding the following lines.
+``` nix title="kernels.nix"
+kernel.python.python-with-numpy.enable = true;
+kernel.python.python-with-numpy.projectDir = ./my-custom-python;
+```
+
+1. From the project top level directory, run `nix run`.
+   This make take some time as new packages and dependencies have to be fetched.
+   Eventually, you will see the recognizable messages from JupyterLab in your terminal.
+   Open up the Web UI in your browser and use your custom kernel.
+
 ### Julia kernel
 
 The Julia kernel requires some stateful operations to work properly.
@@ -135,4 +190,13 @@ If you have not initialized a project yet, see the [Initialize a Project](#initi
 
 ## Extensions
 
-Extensions are currently being worked on to be reproducible.
+### Stateful Extensions
+
+JupyterLab extensions can be statefully installed using the CLI or Web UI as shown in the [JupyterLab Extensions documentation][jlab-extensions].
+To use the CLI, the `jupyter` binary is located in the `result` directory and can be run as follows: `./result/bin/jupyter labextension install <extension>`.
+
+### Reproducible Extensions
+
+TODO
+
+[jlab-extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html

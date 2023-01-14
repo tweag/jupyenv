@@ -78,4 +78,4 @@ If it does not, use one of the suggested URLs.
      or http://127.0.0.1:8888/lab?token=8f2261a45601848bd79eda97d8d39c3d0f4978bc61fbe346
 ```
 
-For further instructions about the environment, kernels, and extensions, see the [How To](how-to.md) and [Tutorials](tutorials.md).
+For further instructions about the environment, kernels, and extensions, see the [How To](../how-to).
