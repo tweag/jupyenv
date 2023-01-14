@@ -9,9 +9,9 @@ nav:
     - Documentation:
       - Getting Started: documentation/getting-started.md
       - How To: documentation/how-to.md
+      - Options: documentation/options.md
       - Developer Guide: documentation/developers.md
       - Roadmap: documentation/roadmap.md
-      - Options: documentation/options.md
     - Blog:
       - blogs/release-0.1.0.md
     - Community:
