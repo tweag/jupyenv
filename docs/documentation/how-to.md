@@ -1,6 +1,6 @@
-# Basics
+## Basics
 
-## Initialize a Project
+### Initialize a Project
 
 When you want to create a new project, make a project directory (e.g. `my-project`) and `cd` into it.
 Run the following command.
@@ -9,9 +9,9 @@ Run the following command.
 nix flake init --template github:tweag/jupyenv
 ```
 
-Your project directory will be populated with a `flake.nix` file and a `kernels` directory.
+Your project directory will be populated with `flake.nix` and `kernels.nix` files.
 
-## Starting JupyterLab
+### Starting JupyterLab
 
 Make sure you are in the top directory of your project (e.g. `my-project`), and run the following command.
 
@@ -21,16 +21,83 @@ nix run
 
 The environment should start up with instructions on what to do next.
 
-## Julia kernel
+## Kernels
+
+After initializing your project with a flake template, it should have a `kernels.nix` file, with a minimally configured Python kernel.
+
+### Enable kernels
+
+To enable any kernel, add a line like the following to the `kernels.nix` file.
+
+``` nix
+kernel.<kernelType>.<kernelName>.enable = true;
+```
+
+`<kernelType>` is any of the kernels jupyenv supports (e.g. `python`, `julia`, `ocaml`, etc).
+`<kernelName>` can be virtually anything you want and is used so you can have multiple kernels of the same type with different configurations (e.g. `example`, `scientific`, `testing`, etc).
+
+??? warning "Conditions on `<kernelName>`"
+
+    `<kernelName>` does have some limitations and must only contain ASCII letters, ASCII numbers, and the simple separators: `-` hyphen, `.` period, `_` underscore.
+    This limitation is because `<kernelName>` makes up part of the kernel specs name that Jupyter uses.
+    See the [relevant documentation](https://jupyter-client.readthedocs.io/en/stable/kernels.html#kernel-specs) if you are interested.
+
+    Additionally, because Nix uses period as separator for attribute sets, a `<kernelName>` with a period must be enclosed in double quotes (e.g. `"my.example"`).
+
+The following is an example `kernels.nix` file with multiple enabled kernels.
+
+``` nix
+{...}: {
+  kernel.python.scientific.enable = true;
+  kernel.python.aiml.enable = true;
+  kernel.julia.learning-math.enable = true;
+  kernel.ocaml."functional.stuff".enable = true;
+  kernel.bash.scripting_cli.enable = true;
+}
+```
+
+### Modifying kernel default options
+
+To modify a kernel option, add a line like the following to the `kernels.nix` file.
+See the [Options](../options/) page for the available options for each kernel.
+
+``` nix
+kernel.<kernelType>.<kernelName>.<option> = <value>;
+```
+
+The following is an example `kernels.nix` file with a Python kernel and different options being set.
+
+``` nix
+{...}: {
+  kernel.python.example.enable = true;
+  kernel.python.example.displayName = "My Example Python Kernel";
+  kernel.python.example.extraPackages = ps: [ps.numpy ps.scipy];
+}
+```
+
+??? warning "Conditions on the `name` option"
+
+    Every kernel has a `name` option.
+    Generally, you will not have to and should not change this value.
+    If you do need to override the default, there are some limitations to be aware of.
+
+    - The `name` option has the same character limitations as `<kernelName>` as described in the "Conditions on `<kernelName>`" admonition above.
+    - `name` must only contain ASCII letters, ASCII numbers, and the simple separators: `-` hyphen, `.` period, `_` underscore.
+    - It is the exact value of the [kernel spec name](https://jupyter-client.readthedocs.io/en/stable/kernels.html#kernel-specs) and must be unique.
+    For example, the following configuration would cause unforeseen problems or might not build at all.
+    ``` nix
+    {...}: {
+      ...
+      kernel.python.example_1.name = "my-example-python";
+      kernel.python.example_2.name = "my-example-python";
+      ...
+    }
+    ```
+
+### Julia kernel
 
 The Julia kernel requires some stateful operations to work properly.
-If you have not initialized a project yet, do so with the following commands.
-
-```shell
-mkdir my-project
-cd my-project
-nix flake init --template github:tweag/jupyenv
-```
+If you have not initialized a project yet, see the [Initialize a Project](#initialize-a-project) section.
 
 1. Build the project with `nix build .#`.
 1. Enter the Julia REPL with `./result/bin/julia`.
@@ -53,78 +120,19 @@ nix flake init --template github:tweag/jupyenv
 
     Here are some possible problems and how to fix them. It can be more than one.
 
-    1. The version of IJulia you have installed does not match what jupyenv expects.
+    - The version of IJulia you have installed does not match what jupyenv expects.
     Check the version slug of IJulia with `ls ~/.julia/packages/IJulia/`.
     If this is different than the default value, you can override it by adding the following line to your kernel configuration.
     ``` nix
       kernel.julia.<name>.ijuliaRev = <SLUG>;
     ```
 
-    2. Your depot path is not the default.
+    - Your depot path is not the default.
     If your Julia packages are not installed in `"~/.julia"`, you can override it by adding the following line to your kernel configuration.
     ``` nix
       kernel.julia.<name>.julia_depot_path = <PATH>;
     ```
 
-# Kernels
-
-After initializing your project with a flake template, it should have a `kernels` directory, which contains `python.nix` kernel. You can find more kernel derivations in `kernels` directory at the root of this repository.
-
-## Disabling kernels
-
-Any kernels prefixed with an underscore is disabled. To disable a kernel, rename the file with an underscore prefix.
-
-```shell
-mv kernels/python.nix kernels/_python.nix
-```
-
-If you have started using Poetry, you will have a folder which contains a `default.nix`, `poetry.lock`, and `pyproject.toml` as shown below.
-
-```shell
-$ tree kernels
-kernels
-├── python.nix
-└── python-numpy
-    ├── default.nix
-    ├── poetry.lock
-    └── pyproject.toml
-```
-
-You can rename the folder in the same way to disable that kernel.
-
-```shell
-mv kernels/python-numpy kernels/_python-numpy
-```
-
-## Enable kernels
-
-To enable any kernel, rename it so it no longer has an underscore prefix.
-
-```shell
-mv kernels/_python.nix kernels/python.nix
-```
-
-## Kernel file names
-
-You can have multiple kernels of the same type in the same project!
-We recommend you give each one a descriptive file name to help you remember in the future.
-For example, the following kernels directory has 4 valid kernels.
-
-```shell
-$ tree kernels
-kernels
-├── python.nix
-├── python-project-A.nix
-├──── python-numpy
-│   ├── default.nix
-│   ├── poetry.lock
-│   └── pyproject.toml
-└──── python-project-B
-    ├── default.nix
-    ├── poetry.lock
-    └── pyproject.toml
-```
-
-# Extensions
+## Extensions
 
 Extensions are currently being worked on to be reproducible.
