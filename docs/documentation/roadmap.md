@@ -23,7 +23,7 @@
 
 - [ ] Add/Improve kernels
 
-    - [ ] See [this list](https://github.com/tweag/jupyterWith/issues/79#issuecomment-670774373).
+    - [ ] See [this list](https://github.com/tweag/jupyenv/issues/79#issuecomment-670774373).
     - [x] Add Scala kernel, #80. Possibly uses [IScala](https://github.com/mattpap/IScala).
     - [ ] Fix Ruby kernel.
     - [x] Fix OCaml kernel.

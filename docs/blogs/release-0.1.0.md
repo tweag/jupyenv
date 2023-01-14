@@ -45,9 +45,9 @@ As of this release, there will be a new NixOS module system for configuring
 JupyterLab and all the kernels.
 
 - [garbas](https://github.com/garbas) worked on creating a [new module
-  system](https://github.com/tweag/jupyterWith/pull/376) to configure
+  system](https://github.com/tweag/jupyenv/pull/376) to configure
   JupyterLab and all the kernels.
 
 - [djacu](https://github.com/djacu) worked on creating a [navigable
-  documentation page](https://github.com/tweag/jupyterWith/pull/389) for the
+  documentation page](https://github.com/tweag/jupyenv/pull/389) for the
   [new options](https://jupyterwith.tweag.io/options).

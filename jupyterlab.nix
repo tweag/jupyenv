@@ -51,11 +51,11 @@
       checker=$?
       if [ "$checker" -ne 0 ]
       then
-        echo jupyterWith needs to build JupyterLab.
+        echo jupyenv needs to build JupyterLab.
         # we need to build the jupyter lab environment before it can be used
         ${jupyterlabEnvBase}/bin/jupyter lab build
       else
-        echo jupyterWith does not need build JupyterLab. Starting...
+        echo jupyenv does not need build JupyterLab. Starting...
       fi
     '';
 in

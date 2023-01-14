@@ -6,7 +6,7 @@ When you want to create a new project, make a project directory (e.g. `my-projec
 Run the following command.
 
 ```shell
-nix flake init --template github:tweag/jupyterWith
+nix flake init --template github:tweag/jupyenv
 ```
 
 Your project directory will be populated with a `flake.nix` file and a `kernels` directory.
@@ -29,7 +29,7 @@ If you have not initialized a project yet, do so with the following commands.
 ```shell
 mkdir my-project
 cd my-project
-nix flake init --template github:tweag/jupyterWith
+nix flake init --template github:tweag/jupyenv
 ```
 
 1. Build the project with `nix build .#`.

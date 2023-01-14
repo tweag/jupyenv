@@ -1,7 +1,7 @@
-site_name: jupyterWith
-site_url: https://tweag.github.io/jupyterWith
-repo_url: https://github.com/tweag/jupyterWith
-repo_name: tweag/jupyterWith
+site_name: jupyenv
+site_url: https://jupyenv.io/
+repo_url: https://github.com/tweag/jupyenv
+repo_name: tweag/jupyenv
 edit_uri: tree/main/docs/
 
 nav:

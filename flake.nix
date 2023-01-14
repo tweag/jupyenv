@@ -605,13 +605,13 @@
       jupyterKernels = builtins.mapAttrs mkKernelFlakeOutput kernelsConfig.available;
       templates.default = {
         path = ./template;
-        description = "Boilerplate for your jupyterWith project";
+        description = "Boilerplate for your jupyenv project";
         welcomeText = ''
-          You have created a jupyterWith template.
+          You have created a jupyenv template.
 
           Run `nix run` to immediately try it out.
 
-          See the jupyterWith documentation for more information.
+          See the jupyenv documentation for more information.
 
             https://jupyterwith.tweag.io/getting-started/
         '';

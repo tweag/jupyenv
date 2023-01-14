@@ -2,12 +2,12 @@
 
 ## Initialize a Project
 
-Run the following commands to create a project directory, `my-project`, `cd` into it, and copy the flake template from the jupyterWith repository.
+Run the following commands to create a project directory, `my-project`, `cd` into it, and copy the flake template from the jupyenv repository.
 
 ```shell
 mkdir my-project
 cd my-project
-nix flake init --template github:tweag/jupyterWith
+nix flake init --template github:tweag/jupyenv
 ```
 
 Your project directory will be populated with a `flake.nix` file and a `kernels` directory.
