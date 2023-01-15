@@ -17,6 +17,9 @@
   inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
   inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
   inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
+  inputs.nix-dart.url = "github:djacu/nix-dart";
+  inputs.nix-dart.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.nix-dart.inputs.flake-utils.follows = "flake-utils";
   inputs.npmlock2nix.url = "github:nix-community/npmlock2nix";
   inputs.npmlock2nix.flake = false;
   inputs.opam-nix.url = "github:tweag/opam-nix/fix-list-repo-func";
@@ -40,6 +43,7 @@
     flake-compat,
     flake-utils,
     ihaskell,
+    nix-dart,
     npmlock2nix,
     opam-nix,
     pre-commit-hooks,
@@ -211,11 +215,18 @@
           p.docopt
         ]);
 
+        sass = pkgs.callPackage (self + "/dart-sass") {
+          inherit lib;
+          inherit (pkgs) stdenv fetchzip;
+          buildDartPackage = nix-dart.builders."${system}".buildDartPackage;
+        };
+
         docs = pkgs.stdenv.mkDerivation {
           name = "jupyterwith-docs";
           src = self;
-          nativeBuildInputs = [mkdocs];
+          nativeBuildInputs = [mkdocs sass];
           buildPhase = ''
+            sass docs/sass/home/style.scss docs/stylesheets/style.css
             cp ${options.optionsJSON}/share/doc/nixos/options.json ./options.json
             python docs/python-scripts/options.py html ./options.json docs/overrides/optionsContent.html
             mkdocs build --site-dir dist
@@ -556,6 +567,7 @@
             jupyterlab-new = mkJupyterlabNew ./config.nix;
             jupyterlab = jupyterlabEnvWrapped baseArgs;
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernelsNew;
+            pub2nix-lock = nix-dart.packages."${system}".pub2nix-lock;
             update-poetry-lock =
               pkgs.writeShellApplication
               {
