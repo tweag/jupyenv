@@ -56,6 +56,10 @@ $numPlanets: 16;
       --size: 2.5rem;
       position: absolute;
       margin: 0;
+      width: var(--size);
+      height: var(--size);
+      display: grid;
+      place-items: center;
 
       & > * {
         //animation: throb var(--speed) ease-in-out infinite alternate;
@@ -63,7 +67,8 @@ $numPlanets: 16;
       }
 
       img {
-        width: var(--size);
+        max-width: 100%;
+        max-height: 100%;
       }
     }
   }
