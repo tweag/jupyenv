@@ -226,7 +226,7 @@
           src = self;
           nativeBuildInputs = [mkdocs sass];
           buildPhase = ''
-            sass docs/sass/home/style.scss docs/stylesheets/style.css
+            sass docs/sass/home/style.scss docs/stylesheets/home.css
             cp ${options.optionsJSON}/share/doc/nixos/options.json ./options.json
             python docs/python-scripts/options.py html ./options.json docs/overrides/optionsContent.html
             mkdocs build --site-dir dist
