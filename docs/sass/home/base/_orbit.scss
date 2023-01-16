@@ -4,8 +4,8 @@ $numPlanets: 16;
 
 @function putPlanetInOrbit($idx) {
   @return
-    -10rem * math.cos(2 * math.$pi / $numPlanets * ($idx - 1)),
-    -10rem * math.sin(2 * math.$pi / $numPlanets * ($idx - 1));
+    -10rem * math.cos(2 * math.$pi / $numPlanets * $idx),
+    -10rem * math.sin(2 * math.$pi / $numPlanets * $idx);
 }
 
 .orbit {
@@ -46,8 +46,8 @@ $numPlanets: 16;
       }
     }
 
-    @for $idx from 1 through $numPlanets {
-      .planet:nth-child(#{$idx}) {
+    @for $idx from 0 through $numPlanets - 1 {
+      .planet:nth-child(#{$idx + 1}) {
         transform: translate(putPlanetInOrbit($idx));
       }
     }
