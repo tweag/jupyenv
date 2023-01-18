@@ -128,7 +128,9 @@ button.toggle-children[aria-expanded="true"]::after {
 
 .kernel-logo {
   position: absolute;
-  height: 2.5em !important;
+  max-height: 2.5em !important;
+  max-width: 2.5em !important;
+  aspect-ratio: 1 / 1;
   top: 0.25em;
   left: -3.5em;
 }

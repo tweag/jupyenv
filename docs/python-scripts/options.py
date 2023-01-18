@@ -359,7 +359,7 @@ def add_kernel_icon(soup: BeautifulSoup, elem: Tag) -> None:
         kernel_name = match.group(1)
         img_elem = soup.new_tag("img")
         add_class(img_elem, 'kernel-logo')
-        img_elem['src'] = "../../assets/logos/kernels/" + kernel_name + "-logo64.png"
+        img_elem['src'] = "../../assets/logos/kernels/" + kernel_name + "-logo.svg"
         img_elem['alt'] = kernel_name + " kernel logo"
         elem.insert_before(img_elem)
 
