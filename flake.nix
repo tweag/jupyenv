@@ -416,34 +416,35 @@
           else
             pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
             {nativeBuildInputs = [pkgs.makeWrapper];}
-            ''
-              mkdir -p $out/bin
-              for i in ${jupyterlabEnv}/bin/*; do
-                filename=$(basename $i)
-                ln -s ${jupyterlabEnv}/bin/$filename $out/bin/$filename
-                wrapProgram $out/bin/$filename \
-                  --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
-                  --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
-                  --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
-                  --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
-                  --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
-                  --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
-                  --set JUPYTER_DATA_DIR ".jupyter/data" \
-                  --set IPYTHONDIR "/path-not-set" \
-                  --set JUPYTER_RUNTIME_DIR ".jupyter/runtime"
-              done
-
-              # add Julia for IJulia
-              allKernelPaths=${lib.concatStringsSep ":" kernelDerivations}
-              if [[ $allKernelPaths = *julia* ]]
-              then
-                echo 'Adding Julia as an available package.'
-                for i in ${pkgs.julia-bin}/bin/*; do
+            (''
+                mkdir -p $out/bin
+                for i in ${jupyterlabEnv}/bin/*; do
                   filename=$(basename $i)
-                  ln -s ${pkgs.julia-bin}/bin/$filename $out/bin/$filename
+                  ln -s ${jupyterlabEnv}/bin/$filename $out/bin/$filename
+                  wrapProgram $out/bin/$filename \
+                    --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
+                    --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
+                    --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
+                    --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
+                    --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
+                    --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
+                    --set JUPYTER_DATA_DIR ".jupyter/data" \
+                    --set IPYTHONDIR "/path-not-set" \
+                    --set JUPYTER_RUNTIME_DIR ".jupyter/runtime"
                 done
-              fi
-            '';
+              ''
+              + (lib.strings.optionalString (
+                  builtins.any
+                  (kernel: kernel.kernelInstance.language == "julia")
+                  kernelDerivations
+                ) ''
+                  # add Julia for IJulia
+                  echo 'Adding Julia as an available package.'
+                  for i in ${pkgs.julia-bin}/bin/*; do
+                    filename=$(basename $i)
+                    ln -s ${pkgs.julia-bin}/bin/$filename $out/bin/$filename
+                  done
+                ''));
 
         exampleJupyterlabKernels = (
           builtins.listToAttrs
