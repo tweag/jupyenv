@@ -83,8 +83,7 @@ button.toggle-children[aria-expanded="true"]::after {
 }
 
 /* fix so tree lines can be positioned properly */
-#options-content > .collapsible-container,
-.collapsible-content>li>.collapsible-container {
+#options-content .collapsible-container {
   position: relative
 }
 
@@ -123,7 +122,7 @@ button.toggle-children[aria-expanded="true"]::after {
   top: 0.5em;
 }
 
-/* horizontal line at top level */
+/* no horizontal line at top level */
 #options-content > .collapsible-container::before {
   border: 0;
 }
