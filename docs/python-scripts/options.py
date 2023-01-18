@@ -297,6 +297,7 @@ def nest_options_in_dom(html: str) -> BeautifulSoup:
                 # options so that the content does get a second list item
                 # marker.
                 wrapper_div = soup.new_tag("div")
+                add_class(wrapper_div, 'collapsible-container')
                 child_elem.insert_before(wrapper_div)
                 wrapper_div.append(child_elem)
                 wrapper_div.append(content_container)
@@ -361,7 +362,12 @@ def add_kernel_icon(soup: BeautifulSoup, elem: Tag) -> None:
         add_class(img_elem, 'kernel-logo')
         img_elem['src'] = "../../assets/logos/kernels/" + kernel_name + "-logo.svg"
         img_elem['alt'] = kernel_name + " kernel logo"
-        elem.insert_before(img_elem)
+
+        img_cont = soup.new_tag("div")
+        add_class(img_cont, 'kernel-logo-container')
+        img_cont.insert(0, img_elem)
+
+        elem.insert_before(img_cont)
 
 
 def add_expand_all_button(soup: BeautifulSoup, elem: Tag) -> None:

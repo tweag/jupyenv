@@ -77,18 +77,19 @@ button.toggle-children[aria-expanded="true"]::after {
 }
 
 /* remove the styling of unordered lists */
-#options-content ul {
+#options-content .collapsible-content {
   margin: 0;
   position: relative;
 }
 
 /* fix so tree lines can be positioned properly */
-#options-content > div, ul>li>div {
+#options-content > .collapsible-container,
+.collapsible-content>li>.collapsible-container {
   position: relative
 }
 
 /* parent option vertical line */
-#options-content ul::before {
+#options-content .collapsible-content::before {
   content: '';
   border-left: 3px solid var(--md-default-fg-color);
   width: 3px;
@@ -99,7 +100,8 @@ button.toggle-children[aria-expanded="true"]::after {
 }
 
 /* option horizontal tree lines */
-#options-content ul::after, #options-content div::before {
+#options-content .collapsible-content::after,
+#options-content .collapsible-container::before {
   content: '';
   border-bottom: 3px solid var(--md-default-fg-color);
   border-left: 3px solid var(--md-default-fg-color);
@@ -110,29 +112,36 @@ button.toggle-children[aria-expanded="true"]::after {
 }
 
 /* parent option horizontal line at bottom */
-#options-content ul::after {
+#options-content .collapsible-content::after {
   bottom: 1.1em;
   left: 1em;
 }
 
 /* child option horizontal line to the left */
-#options-content div::before {
+#options-content .collapsible-container::before {
   left: -1em;
   top: 0.5em;
 }
 
 /* horizontal line at top level */
-#options-content > div::before {
+#options-content > .collapsible-container::before {
   border: 0;
 }
 
-.kernel-logo {
+.kernel-logo-container {
   position: absolute;
-  max-height: 2.5em !important;
-  max-width: 2.5em !important;
-  aspect-ratio: 1 / 1;
+  width: 2.5em !important;
+  height: 2.5em !important;
   top: 0.25em;
   left: -3.5em;
+  display: grid;
+  place-items: center;
+}
+
+.kernel-logo {
+  aspect-ratio: 1 / 1;
+  max-width: 100% !important;
+  max-height: 100% !important;
 }
 
 /* Hide the Edit this page button. There is no markdown file to edit for options. */
