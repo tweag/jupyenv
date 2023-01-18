@@ -433,7 +433,7 @@
                     --set JUPYTER_RUNTIME_DIR ".jupyter/runtime"
                 done
               ''
-              + (lib.strings.optionalString (lib.strings.optionalString (
+              + (lib.strings.optionalString (
                   builtins.any
                   (kernel: kernel.kernelInstance.language == "julia")
                   kernelDerivations
@@ -444,7 +444,7 @@
                     filename=$(basename $i)
                     ln -s ${pkgs.julia-bin}/bin/$filename $out/bin/$filename
                   done
-                '')));
+                ''));
 
         exampleJupyterlabKernels = (
           builtins.listToAttrs
