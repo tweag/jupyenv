@@ -247,16 +247,17 @@
     "npmlock2nix": {
       "flake": false,
       "locked": {
-        "lastModified": 1673447413,
-        "narHash": "sha256-sJM82Sj8yfQYs9axEmGZ9Evzdv/kDcI9sddqJ45frrU=",
+        "lastModified": 1668989938,
+        "narHash": "sha256-/IxdS0AiqSN0/VEOLnnfHyi4nP17yPrkhGf6KlXVwrc=",
         "owner": "nix-community",
         "repo": "npmlock2nix",
-        "rev": "9197bbf397d76059a76310523d45df10d2e4ca81",
+        "rev": "0ba0746d62974403daf717cded3f24c617622bc7",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "npmlock2nix",
+        "rev": "0ba0746d62974403daf717cded3f24c617622bc7",
         "type": "github"
       }
     },

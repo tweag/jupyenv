@@ -19,7 +19,7 @@
     sha256 = "1q2wsdcgha6qivs238pysgmiabjhyflpd1bqbx0cgisgiz2nq3vs";
   };
 
-  tslab = npmlock2nix.v2.build {
+  tslab = npmlock2nix.build {
     src = tslabSrc;
     node_modules_attrs.packageLockJson = ./package-lock.json;
     buildInputs = [pkgs.makeWrapper];
