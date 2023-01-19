@@ -192,14 +192,14 @@
             alejandra.enable = true;
             typos = {
               enable = true;
-              name = "typos";
-              description = "Source code spell checker";
-              entry = "${pkgs.typos}/bin/typos --write-changes --config _typos.toml";
               types = ["file"];
               files = "\\.((txt)|(md)|(nix)|\\d)$";
             };
           };
           excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
+          settings = {
+            typos.write = true;
+          };
         };
 
         mkdocs = python.withPackages (p: [
