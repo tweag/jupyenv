@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.python.minimal-example = {
+  kernel.python.science-example = {
     enable = true;
     extraPackages = ps: [ps.numpy ps.scipy ps.matplotlib];
   };
