@@ -17,9 +17,9 @@
   inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
   inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
   inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
-  inputs.npmlock2nix.url = "github:nix-community/npmlock2nix";
+  inputs.npmlock2nix.url = "github:nix-community/npmlock2nix/0ba0746d62974403daf717cded3f24c617622bc7";
   inputs.npmlock2nix.flake = false;
-  inputs.opam-nix.url = "github:tweag/opam-nix/fix-list-repo-func";
+  inputs.opam-nix.url = "github:tweag/opam-nix/75199758e1954f78286e7e79c0e3916e28b732b0";
   inputs.opam-nix.inputs.flake-compat.follows = "flake-compat";
   inputs.opam-nix.inputs.flake-utils.follows = "flake-utils";
   inputs.opam-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -192,14 +192,14 @@
             alejandra.enable = true;
             typos = {
               enable = true;
-              name = "typos";
-              description = "Source code spell checker";
-              entry = "${pkgs.typos}/bin/typos --write-changes --config _typos.toml";
               types = ["file"];
               files = "\\.((txt)|(md)|(nix)|\\d)$";
             };
           };
           excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
+          settings = {
+            typos.write = true;
+          };
         };
 
         mkdocs = python.withPackages (p: [
