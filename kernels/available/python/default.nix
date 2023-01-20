@@ -33,6 +33,7 @@
         editablePackageSources
         extraPackages
         preferWheels
+        groups
         ;
     })
     .override (args: {inherit ignoreCollisions;});

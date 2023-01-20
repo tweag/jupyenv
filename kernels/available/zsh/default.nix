@@ -20,20 +20,23 @@
   extraPackages ? ps: [],
   preferWheels ? false,
   groups ? ["dev"],
+  ignoreCollisions ? false,
 }: let
-  env = poetry2nix.mkPoetryEnv {
-    inherit
-      projectDir
-      pyproject
-      poetrylock
-      overrides
-      python
-      editablePackageSources
-      extraPackages
-      preferWheels
-      groups
-      ;
-  };
+  env =
+    (poetry2nix.mkPoetryEnv {
+      inherit
+        projectDir
+        pyproject
+        poetrylock
+        overrides
+        python
+        editablePackageSources
+        extraPackages
+        preferWheels
+        groups
+        ;
+    })
+    .override (args: {inherit ignoreCollisions;});
 
   allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 

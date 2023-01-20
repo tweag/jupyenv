@@ -137,6 +137,15 @@
             poetry2nix flake input to be used for this ${kernelName} kernel.
           '';
         };
+
+        ignoreCollisions = lib.mkOption {
+          type = types.bool;
+          default = false;
+          example = lib.literalExpression "true";
+          description = lib.mdDoc ''
+            Ignore file collisions inside the environment.
+          '';
+        };
       }
       // kernelModule.options;
 
@@ -152,6 +161,7 @@
             extraPackages
             preferWheels
             groups
+            ignoreCollisions
             ;
           pkgs = config.nixpkgs.legacyPackages.${system};
           python = pkgs.${config.python};
