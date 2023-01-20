@@ -20,9 +20,9 @@
   inputs.nix-dart.url = "github:djacu/nix-dart";
   inputs.nix-dart.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nix-dart.inputs.flake-utils.follows = "flake-utils";
-  inputs.npmlock2nix.url = "github:nix-community/npmlock2nix";
+  inputs.npmlock2nix.url = "github:nix-community/npmlock2nix/0ba0746d62974403daf717cded3f24c617622bc7";
   inputs.npmlock2nix.flake = false;
-  inputs.opam-nix.url = "github:tweag/opam-nix/fix-list-repo-func";
+  inputs.opam-nix.url = "github:tweag/opam-nix/75199758e1954f78286e7e79c0e3916e28b732b0";
   inputs.opam-nix.inputs.flake-compat.follows = "flake-compat";
   inputs.opam-nix.inputs.flake-utils.follows = "flake-utils";
   inputs.opam-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -196,14 +196,14 @@
             alejandra.enable = true;
             typos = {
               enable = true;
-              name = "typos";
-              description = "Source code spell checker";
-              entry = "${pkgs.typos}/bin/typos --write-changes --config _typos.toml";
               types = ["file"];
               files = "\\.((txt)|(md)|(nix)|\\d)$";
             };
           };
           excludes = ["^\\.jupyter/"]; # JUPYTERLAB_DIR
+          settings = {
+            typos.write = true;
+          };
         };
 
         mkdocs = python.withPackages (p: [
@@ -436,34 +436,35 @@
               nativeBuildInputs = [pkgs.makeWrapper];
               meta.mainProgram = "jupyter-lab";
             }
-            ''
-              mkdir -p $out/bin
-              for i in ${jupyterlabEnv}/bin/*; do
-                filename=$(basename $i)
-                ln -s ${jupyterlabEnv}/bin/$filename $out/bin/$filename
-                wrapProgram $out/bin/$filename \
-                  --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
-                  --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
-                  --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
-                  --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
-                  --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
-                  --set JUPYTER_DATA_DIR ".jupyter/data" \
-                  --set IPYTHONDIR "/path-not-set" \
-                  --set JUPYTER_RUNTIME_DIR ".jupyter/runtime" \
-                  --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations}
-              done
-
-              # add Julia for IJulia
-              allKernelPaths=${lib.concatStringsSep ":" kernelDerivations}
-              if [[ $allKernelPaths = *julia* ]]
-              then
-                echo 'Adding Julia as an available package.'
-                for i in ${pkgs.julia-bin}/bin/*; do
+            (''
+                mkdir -p $out/bin
+                for i in ${jupyterlabEnv}/bin/*; do
                   filename=$(basename $i)
-                  ln -s ${pkgs.julia-bin}/bin/$filename $out/bin/$filename
+                  ln -s ${jupyterlabEnv}/bin/$filename $out/bin/$filename
+                  wrapProgram $out/bin/$filename \
+                    --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
+                    --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
+                    --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
+                    --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
+                    --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
+                    --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
+                    --set JUPYTER_DATA_DIR ".jupyter/data" \
+                    --set IPYTHONDIR "/path-not-set" \
+                    --set JUPYTER_RUNTIME_DIR ".jupyter/runtime"
                 done
-              fi
-            '';
+              ''
+              + (lib.strings.optionalString (
+                  builtins.any
+                  (kernel: kernel.kernelInstance.language == "julia")
+                  kernelDerivations
+                ) ''
+                  # add Julia for IJulia
+                  echo 'Adding Julia as an available package.'
+                  for i in ${pkgs.julia-bin}/bin/*; do
+                    filename=$(basename $i)
+                    ln -s ${pkgs.julia-bin}/bin/$filename $out/bin/$filename
+                  done
+                ''));
 
         exampleJupyterlabKernels = (
           builtins.listToAttrs
