@@ -70,12 +70,64 @@ function getNextSibling(elem, selector) {
   }
 };
 
+/**
+ * Get previous sibling of a given selector.
+ * credit: https://gomakethings.com/finding-the-next-and-previous-sibling-elements-that-match-a-selector-with-vanilla-js/
+ */
+function getPrevSibling(elem, selector) {
+  // Get the next sibling element
+  var sibling = elem.previousElementSibling;
+
+  // If there's no selector, return the first sibling
+  if (!selector) return sibling;
+
+  // If the sibling matches our selector, use it
+  // If not, jump to the next sibling and continue the loop
+  while (sibling) {
+          if (sibling.matches(selector)) return sibling;
+          sibling = sibling.previousElementSibling;
+  }
+};
+
+/**
+ * If an anchor is in the URL, open the options ancestry and scroll to it.
+ */
+function goToAnchor() {
+  var pathOnly = window.location.origin + window.location.pathname;
+  var pathWithAnchor = window.location.href;
+  var anchor = pathWithAnchor.slice(pathWithAnchor.indexOf(pathOnly) + pathOnly.length);
+
+  if (anchor !== "") {
+    var content = document.querySelector(anchor);
+    openOptionRecursively(content);
+    setTimeout(
+      () => {
+        content.scrollIntoView({behavior: "smooth", block: "center"});
+      },
+      500
+    );
+  }
+
+}
+
+/**
+ * Recursively open options start with the furthest ancestor.
+ */
+function openOptionRecursively(content) {
+  var button = getPrevSibling(content, '.option-button');
+  var parentContent = button.closest('.collapsible-content');
+  if (parentContent !== null) {
+    openOptionRecursively(parentContent);
+  }
+  button.click();
+}
+
 function initializePage() {
   document
-    .querySelectorAll('[aria-expanded="true"]')
+    .querySelectorAll('[aria-expanded="true"].option-button')
     .forEach((elem) => {
       elem.setAttribute('aria-expanded', 'false');
-      elem.nextElementSibling.style.display = "none";
+      getNextSibling(elem, '.collapsible-content').style.display = "none";
     });
 
   document
@@ -85,4 +137,6 @@ function initializePage() {
   document
     .querySelectorAll('.toggle-children')
     .forEach(elem => elem.style.display = "block");
+
+  goToAnchor();
 }

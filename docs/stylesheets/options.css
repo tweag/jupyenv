@@ -53,7 +53,7 @@ li .option-button[aria-expanded="false"] {
 }
 
 /* nest all child content of an option */
-.option-button + * {
+.option-button ~ .collapsible-content {
   padding-left: 2em !important;
 }
 
@@ -141,6 +141,12 @@ button.toggle-children[aria-expanded="true"]::after {
   aspect-ratio: 1 / 1;
   max-width: 100% !important;
   max-height: 100% !important;
+}
+
+.option-link {
+  position: absolute;
+  top: 0.5em;
+  right: -1em;
 }
 
 /* Hide the Edit this page button. There is no markdown file to edit for options. */

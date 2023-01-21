@@ -310,17 +310,18 @@ def nest_options_in_dom(html: str) -> BeautifulSoup:
                 child_elem.replace_with(button_elem)
 
                 # Add aria info.
-                aria_controls = (button_elem.contents[0]
+                option_path = (button_elem.contents[0]
                     .replace('.', '-')
                     .replace('<', '')
                     .replace('>', '')
                 )
-                button_elem['aria-controls'] = aria_controls
-                content_container['id'] = aria_controls
-                button_elem['aria-label'] = aria_controls.replace('-', ' ')
+                button_elem['aria-controls'] = option_path
+                content_container['id'] = option_path
+                button_elem['aria-label'] = option_path.replace('-', ' ')
                 button_elem['aria-expanded'] = 'true'
 
                 add_kernel_icon(soup, button_elem)
+                add_anchor(soup, button_elem, option_path)
                 add_expand_all_button(soup, content_container)
 
             elif child_elem.name in headers[header_idx + 1:]:
@@ -352,7 +353,7 @@ def add_kernel_icon(soup: BeautifulSoup, elem: Tag) -> None:
     Mutates the tag. Looks for options with names like "kernel.<name>"
 
     Args:
-        soup: The whold HTML document.
+        soup: The whole HTML document.
         elem: The tag where the logo will be added.
     '''
     match = re.fullmatch("^kernel\.([a-z]*)$", elem.contents[0])
@@ -370,13 +371,31 @@ def add_kernel_icon(soup: BeautifulSoup, elem: Tag) -> None:
         elem.insert_before(img_cont)
 
 
+def add_anchor(soup: BeautifulSoup, button: Tag, href: str) -> None:
+    '''Adds an anchor element next to options.
+
+    Mutates the soup.
+
+    Args:
+        soup: The whole HTML document.
+        button: The button element where the anchor will be inserted after.
+        href: The content ID to link to in the anchor.
+    '''
+    anchor = soup.new_tag("a")
+    add_class(anchor, 'option-link')
+    anchor['href'] = '#' + href
+    anchor.append('#')
+
+    button.insert_after(anchor)
+
+
 def add_expand_all_button(soup: BeautifulSoup, elem: Tag) -> None:
     '''Adds a button to toggle open/close all children if it has any.
 
     Mutates the tag.
 
     Args:
-        soup: The whold HTML document.
+        soup: The whole HTML document.
         elem: The tag where the button will be added.
     '''
     if elem.find('button', {'class', 'option-button'}):
