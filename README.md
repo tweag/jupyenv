@@ -54,15 +54,13 @@ After some time, you should see the following in your terminal. Your default web
 
 ## Documentation
 
-See the [website](https://jupyterwith.tweag.io/) for further instructions about the environment, kernels, and extensions.
+See the [website](https://jupyenv.io/) for further instructions about the environment, kernels, and extensions.
 
 ## Contributing
 
 PRs are welcome!
 
 This project provides a development shell which you can enter with `nix develop`. Please run `pre-commit run -all` before submitting your pull request for review. This will run a nix formatter for consistency.
-
-See the [Developers](docs/developers.md) document for information about how jupyenv is architected.
 
 If you are new to contributing to open source, [this guide](https://opensource.guide/how-to-contribute/) helps explain why, what, and how to successfully get involved.
 

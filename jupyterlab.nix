@@ -51,12 +51,12 @@
       checker=$?
       if [ "$checker" -ne 0 ]
       then
-        >&2 echo "[$(date +'%Y-%m-%d %H:%M:%S') jupyterWith] needs to build JupyterLab."
+        >&2 echo "[$(date +'%Y-%m-%d %H:%M:%S') jupyenv] needs to build JupyterLab."
         # we need to build the jupyter lab environment before it can be used
         ${jupyterlabEnvBase}/bin/jupyter lab build
       else
-        >&2 echo "[$(date +'%Y-%m-%d %H:%M:%S') jupyterWith] does not need build JupyterLab."
-        >&2 echo "[$(date +'%Y-%m-%d %H:%M:%S') jupyterWith] Starting..."
+        >&2 echo "[$(date +'%Y-%m-%d %H:%M:%S') jupyenv] does not need build JupyterLab."
+        >&2 echo "[$(date +'%Y-%m-%d %H:%M:%S') jupyenv] Starting..."
       fi
     '';
 in

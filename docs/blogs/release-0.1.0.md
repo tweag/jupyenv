@@ -50,4 +50,4 @@ JupyterLab and all the kernels.
 
 - [djacu](https://github.com/djacu) worked on creating a [navigable
   documentation page](https://github.com/tweag/jupyenv/pull/389) for the
-  [new options](https://jupyterwith.tweag.io/options).
+  [new options](https://jupyenv.io/documentation/options).

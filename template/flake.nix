@@ -1,5 +1,5 @@
 {
-  description = "Your jupyterWith project";
+  description = "Your jupyenv project";
 
   nixConfig.extra-substituters = [
     "https://tweag-jupyter.cachix.org"
@@ -12,14 +12,14 @@
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.jupyterWith.url = "github:tweag/jupyterWith";
+  inputs.jupyenv.url = "github:tweag/jupyterWith";
 
   outputs = {
     self,
     flake-compat,
     flake-utils,
     nixpkgs,
-    jupyterWith,
+    jupyenv,
   }:
     flake-utils.lib.eachSystem
     [
@@ -27,7 +27,7 @@
     ]
     (
       system: let
-        inherit (jupyterWith.lib.${system}) mkJupyterlabNew;
+        inherit (jupyenv.lib.${system}) mkJupyterlabNew;
         jupyterlab = mkJupyterlabNew (import ./kernels.nix);
       in rec {
         packages = {inherit jupyterlab;};

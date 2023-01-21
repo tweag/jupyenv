@@ -222,7 +222,7 @@
         };
 
         docs = pkgs.stdenv.mkDerivation {
-          name = "jupyterwith-docs";
+          name = "jupyenv-docs";
           src = self;
           nativeBuildInputs = [mkdocs sass];
           buildPhase = ''
@@ -626,7 +626,7 @@
 
           See the jupyenv documentation for more information.
 
-            https://jupyterwith.tweag.io/getting-started/
+            https://jupyenv.io/documentation/getting-started/
         '';
       };
     };
