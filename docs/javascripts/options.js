@@ -135,8 +135,11 @@ function initializePage() {
     .forEach(elem => elem.style.setProperty('--icon-visibility', 'visible'));
 
   document
-    .querySelectorAll('.toggle-children')
-    .forEach(elem => elem.style.display = "block");
+    .querySelectorAll('[aria-expanded="true"].toggle-children')
+    .forEach((elem) => {
+      elem.setAttribute('aria-expanded', 'false');
+      elem.style.display = "block"
+    });
 
   goToAnchor();
 }
