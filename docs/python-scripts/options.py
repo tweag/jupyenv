@@ -8,7 +8,6 @@ Usage:
 Options:
     -h --help   Show this screen.
 '''
-import codecs
 from functools import reduce
 import json
 from pathlib import Path
@@ -210,7 +209,7 @@ def json_to_commonmark(data: dict, markdown: str = "", header: str = "## ") -> s
 
         if ('default' in value):
             default_value = json.dumps(value['default'], cls=OptionsEncoder)
-            default_value = codecs.decode(default_value, 'unicode_escape')
+            default_value = default_value.replace(u'\u2039', '<').replace(u'\u203a', '>')
 
             markdown += "".join(["_Default_:", "\n\n"])
             markdown += "".join([
