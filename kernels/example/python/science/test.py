@@ -3,7 +3,7 @@ from testbook import testbook
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-@testbook(f'{current_dir}/test.ipynb', execute=True, kernel_name="example-python-science")
+@testbook(f'{current_dir}/test.ipynb', execute=True, kernel_name="python-science-example")
 def test_nb(tb):
     np_result = tb.cell_output_text(1)
     assert np_result == "[0 1 2 3 4]"

@@ -5,8 +5,8 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "bash",
   displayName ? "Bash",
-  runtimePackages ? with pkgs; [bashInteractive coreutils],
-  extraRuntimePackages ? [],
+  requiredRuntimePackages ? with pkgs; [bashInteractive coreutils],
+  runtimePackages ? [],
   # https://github.com/nix-community/poetry2nix
   poetry2nix ? import "${self.inputs.poetry2nix}/default.nix" {inherit pkgs poetry;},
   poetry ? pkgs.callPackage "${self.inputs.poetry2nix}/pkgs/poetry" {inherit python;},
@@ -19,21 +19,26 @@
   editablePackageSources ? {},
   extraPackages ? ps: [],
   preferWheels ? false,
+  groups ? ["dev"],
+  ignoreCollisions ? false,
 }: let
-  env = poetry2nix.mkPoetryEnv {
-    inherit
-      projectDir
-      pyproject
-      poetrylock
-      overrides
-      python
-      editablePackageSources
-      extraPackages
-      preferWheels
-      ;
-  };
+  env =
+    (poetry2nix.mkPoetryEnv {
+      inherit
+        projectDir
+        pyproject
+        poetrylock
+        overrides
+        python
+        editablePackageSources
+        extraPackages
+        preferWheels
+        groups
+        ;
+    })
+    .override (args: {inherit ignoreCollisions;});
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   wrappedEnv =
     pkgs.runCommand "wrapper-${env.name}"

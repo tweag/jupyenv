@@ -4,14 +4,14 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "haskell",
   displayName ? "Haskell",
-  runtimePackages ? [pkgs.haskell.compiler.${haskellCompiler}],
-  extraRuntimePackages ? [],
+  requiredRuntimePackages ? [pkgs.haskell.compiler.${haskellCompiler}],
+  runtimePackages ? [],
   haskellKernelPkg ? import "${self.inputs.ihaskell}/release.nix",
   haskellCompiler ? "ghc902",
   extraHaskellFlags ? "-M3g -N2",
   extraHaskellPackages ? (_: []),
 }: let
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   env = haskellKernelPkg {
     compiler = haskellCompiler;

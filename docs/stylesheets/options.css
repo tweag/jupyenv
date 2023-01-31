@@ -1,0 +1,202 @@
+/* styling for clickable options */
+.option-button {
+  background-color: var(--md-default-fg-color--lighter);
+  color: var(--md-default-fg-color);
+  cursor: pointer;
+  font-size: 1.5625em;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  padding-top: 0.25em;
+  padding-right: 0.5em;
+  padding-bottom: 0.25em;
+  padding-left: 1em;
+  text-align: left;
+  width: 100%;
+  --icon-visibility: hidden;
+}
+
+/* make child options smaller font */
+li .option-button {
+  font-size: 1.25em;
+  font-weight: 400;
+}
+
+/* borders between top level options */
+div:not(:last-child) > .option-button[aria-expanded="false"] {
+  border-bottom: 1px dotted var(--md-default-fg-color--light);
+}
+
+/* borders between child options */
+li .option-button[aria-expanded="false"] {
+  border-bottom: 1px dotted var(--md-default-fg-color--light);
+}
+
+/* darken clickable options on hover or when expanded */
+.option-button:hover, .option-button[aria-expanded="true"] {
+  filter: brightness(70%);
+}
+
+/* arrow to signify option can be expanded */
+.option-button::after {
+  font-family: 'Material Icons';
+  content: "expand_more";
+  color: var(--md-default-fg-color);
+  float: right;
+  transition: all 0.2s;
+  visibility: var(--icon-visibility);
+}
+
+/* rotate arrow when expanded */
+.option-button[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
+/* nest all child content of an option */
+.option-button ~ .collapsible-content {
+  padding-left: 2em !important;
+}
+
+/* expand/collapse all buttons */
+button.toggle-children {
+  float: right;
+}
+
+button.toggle-children::after {
+  content: "expand all";
+}
+
+button.toggle-children[aria-expanded="true"]::after {
+  content: "collapse all";
+}
+
+/* remove the styling of list items */
+#options-content li {
+  list-style-type: none;
+  margin: 0;
+}
+
+/* remove the styling of unordered lists */
+#options-content .collapsible-content {
+  margin: 0;
+  position: relative;
+}
+
+/* fix so tree lines can be positioned properly */
+#options-content .collapsible-container {
+  position: relative
+}
+
+/* parent option vertical line */
+#options-content .collapsible-content::before {
+  content: '';
+  border-left: 3px solid var(--md-default-fg-color);
+  width: 3px;
+  position: absolute;
+  top: 0.2em;
+  bottom: 1.9em;
+  left: 1em;
+}
+
+/* option horizontal tree lines */
+#options-content .collapsible-content::after,
+#options-content .collapsible-container::before {
+  content: '';
+  border-bottom: 3px solid var(--md-default-fg-color);
+  border-left: 3px solid var(--md-default-fg-color);
+  border-bottom-left-radius: 0.8em;
+  position: absolute;
+  width: 0.8em;
+  height: 0.8em;
+}
+
+/* parent option horizontal line at bottom */
+#options-content .collapsible-content::after {
+  bottom: 1.1em;
+  left: 1em;
+}
+
+/* child option horizontal line to the left */
+#options-content .collapsible-container::before {
+  left: -1em;
+  top: 0.5em;
+}
+
+/* no horizontal line at top level */
+#options-content > .collapsible-container::before {
+  border: 0;
+}
+
+.kernel-logo-container {
+  position: absolute;
+  width: 2.5em !important;
+  height: 2.5em !important;
+  top: 0.25em;
+  left: -3.5em;
+  display: grid;
+  place-items: center;
+}
+
+.kernel-logo {
+  aspect-ratio: 1 / 1;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+.option-link-container {
+  position: absolute;
+  top: 0;
+  display: grid;
+  place-items: center;
+}
+
+.option-link-container {
+  right: -3.2em;
+  padding: 1.2em 1.6em;
+}
+
+#options-content > .collapsible-container > .option-link-container {
+  right: -4em;
+  padding: 1.5em 2em;
+}
+
+.option-link {
+  position: absolute;
+  padding: 0.5em !important;
+  opacity: 0;
+  color: var(--md-default-fg-color--lighter) !important;
+  transition: background-color 250ms, border-color 250ms, opacity 250ms !important;
+  z-index: 1;
+  line-height: 0;
+}
+
+#options-content > .collapsible-container > .option-link-container > .option-link {
+  padding: 0.8em !important;
+}
+
+.option-link path {
+  fill: var(--md-default-fg-color--lighter);
+  transtion: fill 250ms;
+}
+
+.option-button:hover + .option-link-container > .option-link {
+  opacity: 1;
+}
+
+.option-link-container:hover > .option-link,
+.option-link:hover {
+  opacity: 1;
+  background-color: var(--md-accent-fg-color) !important;
+  border-color: var(--md-accent-fg-color) !important;
+  color: var(--md-accent-bg-color) !important;
+}
+
+.option-link-container:hover > .option-link path,
+.option-link:hover path {
+  fill: var(--md-accent-bg-color) !important;
+}
+
+/* Hide the Edit this page button. There is no markdown file to edit for options. */
+.md-content__button {
+  display: none;
+}

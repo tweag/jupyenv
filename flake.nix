@@ -17,6 +17,9 @@
   inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
   inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
   inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
+  inputs.nix-dart.url = "github:djacu/nix-dart";
+  inputs.nix-dart.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.nix-dart.inputs.flake-utils.follows = "flake-utils";
   inputs.npmlock2nix.url = "github:nix-community/npmlock2nix/0ba0746d62974403daf717cded3f24c617622bc7";
   inputs.npmlock2nix.flake = false;
   inputs.opam-nix.url = "github:tweag/opam-nix/75199758e1954f78286e7e79c0e3916e28b732b0";
@@ -40,6 +43,7 @@
     flake-compat,
     flake-utils,
     ihaskell,
+    nix-dart,
     npmlock2nix,
     opam-nix,
     pre-commit-hooks,
@@ -206,18 +210,31 @@
           p.mkdocs
           p.mkdocs-material
           p.mkdocs-material-extensions
+          p.markdown-it-py
+          p.beautifulsoup4
+          p.docopt
         ]);
 
+        sass = pkgs.callPackage (self + "/dart-sass") {
+          inherit lib;
+          inherit (pkgs) stdenv fetchzip;
+          buildDartPackage = nix-dart.builders."${system}".buildDartPackage;
+        };
+
         docs = pkgs.stdenv.mkDerivation {
-          name = "jupyterwith-docs";
+          name = "jupyenv-docs";
           src = self;
-          nativeBuildInputs = [mkdocs];
+          nativeBuildInputs = [mkdocs sass];
           buildPhase = ''
+            sass docs/sass/home/style.scss docs/stylesheets/home.css
+            cp ${options.optionsJSON}/share/doc/nixos/options.json ./options.json
+            python docs/python-scripts/options.py html ./options.json docs/overrides/optionsContent.html
             mkdocs build --site-dir dist
           '';
           installPhase = ''
             mkdir $out
             cp -R dist/* $out/
+            cp ${options.optionsJSON}/share/doc/nixos/options.json $out/options.json
           '';
         };
 
@@ -415,7 +432,10 @@
             ''
           else
             pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
-            {nativeBuildInputs = [pkgs.makeWrapper];}
+            {
+              nativeBuildInputs = [pkgs.makeWrapper];
+              meta.mainProgram = "jupyter-lab";
+            }
             (''
                 mkdir -p $out/bin
                 for i in ${jupyterlabEnv}/bin/*; do
@@ -501,17 +521,54 @@
               (getKernelInstance availableKernels extraArgs)
               (examples.getKernelAttrsetFromPath kernelsPath []);
           };
+
+        /*
+        NixOS Modules stuff
+        */
+        mkJupyterlabEval = customModule:
+          pkgs.lib.evalModules {
+            specialArgs = {inherit self system pkgs mkJupyterlab;};
+            modules = lib.flatten (
+              [./modules]
+              ++ lib.optional (customModule != null) customModule
+            );
+          };
+
+        mkJupyterlabNew = customModule:
+          (mkJupyterlabEval customModule).config.build;
+
+        exampleJupyterlabKernelsNew = (
+          lib.mapAttrs'
+          (
+            name: value:
+              lib.nameValuePair
+              ("jupyterlab-kernel-" + name)
+              (mkJupyterlabNew value)
+          )
+          kernelsConfig.kernels
+        );
+
+        exampleJupyterlabAllKernelsNew =
+          mkJupyterlabNew (builtins.attrValues kernelsConfig.kernels);
+
+        eval = mkJupyterlabEval ({...}: {_module.check = false;});
+        options = pkgs.nixosOptionsDoc {
+          options = builtins.removeAttrs eval.options ["_module"];
+        };
       in rec {
         lib = {
           inherit
             mkJupyterlab
             mkJupyterlabFromPath
+            mkJupyterlabNew
             ;
         };
         packages =
           {
+            jupyterlab-new = mkJupyterlabNew ./config.nix;
             jupyterlab = jupyterlabEnvWrapped baseArgs;
-            jupyterlab-all-example-kernels = exampleJupyterlabAllKernels;
+            jupyterlab-all-example-kernels = exampleJupyterlabAllKernelsNew;
+            pub2nix-lock = nix-dart.packages."${system}".pub2nix-lock;
             update-poetry-lock =
               pkgs.writeShellApplication
               {
@@ -531,7 +588,7 @@
             inherit mkdocs docs;
             default = jupyterlabEnvWrapped baseArgs;
           }
-          // exampleJupyterlabKernels;
+          // exampleJupyterlabKernelsNew;
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
@@ -561,16 +618,15 @@
       jupyterKernels = builtins.mapAttrs mkKernelFlakeOutput kernelsConfig.available;
       templates.default = {
         path = ./template;
-        description = "Boilerplate for your jupyterWith project";
+        description = "Boilerplate for your jupyenv project";
         welcomeText = ''
-          You have created a jupyterWith template.
+          You have created a jupyenv template.
 
           Run `nix run` to immediately try it out.
 
-          See the jupyterWith documentation for more information.
+          See the jupyenv documentation for more information.
 
-            https://github.com/tweag/jupyterWith/blob/main/docs/how-to.md
-            https://github.com/tweag/jupyterWith/blob/main/docs/tutorials.md
+            https://jupyenv.io/documentation/getting-started/
         '';
       };
     };

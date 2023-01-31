@@ -1,17 +1,21 @@
-site_name: jupyterWith
-site_url: https://tweag.github.io/jupyterWith
-repo_url: https://github.com/tweag/jupyterWith
-repo_name: tweag/jupyterWith
+site_name: jupyenv
+site_url: https://jupyenv.io/
+repo_url: https://github.com/tweag/jupyenv
+repo_name: tweag/jupyenv
 edit_uri: tree/main/docs/
 
 nav:
     - Home: index.md
     - Documentation:
-      - Getting Started: getting-started.md
-      - How To: how-to.md
-      - Tutorials: tutorials.md
-      - Developer Guide: developers.md
-      - Roadmap: roadmap.md
+      - Getting Started: documentation/getting-started.md
+      - How To: documentation/how-to.md
+      - Options: documentation/options.md
+      - Developer Guide: documentation/developers.md
+      - Roadmap: documentation/roadmap.md
+    - Blog:
+      - blogs/release-0.1.0.md
+    - Community:
+      - Get Involved: community/get-involved.md
 
 theme:
   name: material

@@ -5,8 +5,8 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "python",
   displayName ? "Python3",
+  requiredRuntimePackages ? [],
   runtimePackages ? [],
-  extraRuntimePackages ? [],
   # https://github.com/nix-community/poetry2nix
   poetry2nix ? import "${self.inputs.poetry2nix}/default.nix" {inherit pkgs poetry;},
   poetry ? pkgs.callPackage "${self.inputs.poetry2nix}/pkgs/poetry" {inherit python;},
@@ -19,6 +19,7 @@
   editablePackageSources ? {},
   extraPackages ? ps: [],
   preferWheels ? false,
+  groups ? ["dev"],
   ignoreCollisions ? false,
 }: let
   env =
@@ -32,11 +33,12 @@
         editablePackageSources
         extraPackages
         preferWheels
+        groups
         ;
     })
     .override (args: {inherit ignoreCollisions;});
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   wrappedEnv =
     pkgs.runCommand "wrapper-${env.name}"

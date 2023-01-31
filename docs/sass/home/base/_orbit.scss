@@ -1,0 +1,88 @@
+@use "sass:math";
+
+$numPlanets: 16;
+
+@function putPlanetInOrbit($idx) {
+  @return
+    -10rem * math.cos(2 * math.$pi / $numPlanets * $idx),
+    -10rem * math.sin(2 * math.$pi / $numPlanets * $idx);
+}
+
+.orbit {
+  --speed: 20s;
+
+  margin: 14rem 0rem;
+  display: grid;
+  place-content: center;
+
+  .sun {
+    width: 8rem;
+    position: relative;
+
+    img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .planets {
+    position: relative;
+    display: grid !important;
+    place-items: center;
+    list-style: none;
+    margin: 0 !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-4rem);
+    //animation: orbit var(--speed) linear infinite;
+    transform-origin: left;
+
+    &:hover {
+      animation-play-state: paused;
+      & * {
+        animation-play-state: paused !important;
+      }
+    }
+
+    @for $idx from 0 through $numPlanets - 1 {
+      .planet:nth-child(#{$idx + 1}) {
+        transform: translate(putPlanetInOrbit($idx));
+      }
+    }
+
+    .planet{
+      --size: 2.5rem;
+      position: absolute;
+      margin: 0;
+      width: var(--size);
+      height: var(--size);
+      display: grid;
+      place-items: center;
+
+      & > * {
+        //animation: throb var(--speed) ease-in-out infinite alternate;
+        //animation: orbit var(--speed) linear reverse infinite;
+      }
+
+      img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+  }
+
+}
+
+@keyframes orbit {
+  100% {
+    rotate: 1turn;
+  }
+}
+
+@keyframes throb {
+  100% {
+    scale: 1.5;
+  }
+}

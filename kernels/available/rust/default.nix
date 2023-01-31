@@ -5,13 +5,13 @@
   pkgs ?
     import self.inputs.nixpkgs {
       inherit system;
-      overlays = [rust-overlay];
+      overlays = [rust-overlay.overlays.default];
     },
-  rust-overlay ? self.inputs.rust-overlay.overlays.default,
+  rust-overlay ? self.inputs.rust-overlay,
   name ? "rust",
   displayName ? "Rust",
-  runtimePackages ? with pkgs; [cargo gcc binutils-unwrapped],
-  extraRuntimePackages ? [],
+  requiredRuntimePackages ? with pkgs; [cargo gcc binutils-unwrapped],
+  runtimePackages ? [],
   evcxr ? pkgs.evcxr,
 }: let
   /*
@@ -24,7 +24,7 @@
     extensions = ["rust-src"];
   };
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages ++ [rust];
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages ++ [rust];
 
   env = evcxr;
   wrappedEnv =

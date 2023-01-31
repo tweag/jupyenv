@@ -1,10 +1,5 @@
-{
-  availableKernels,
-  name,
-  extraArgs,
-}:
-availableKernels.python {
-  inherit name;
-  inherit (extraArgs) system;
-  displayName = "Example Python Kernel";
+{pkgs, ...}: {
+  kernel.python.minimal-example = {
+    enable = true;
+  };
 }

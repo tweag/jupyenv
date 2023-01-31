@@ -5,8 +5,8 @@
   pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
   name ? "r",
   displayName ? "R",
+  requiredRuntimePackages ? [],
   runtimePackages ? [],
-  extraRuntimePackages ? [],
   rWrapper ? pkgs.rWrapper,
   rPackages ? pkgs.rPackages,
   extraRPackages ? (_: []),
@@ -15,7 +15,7 @@
     packages = (extraRPackages rPackages) ++ [rPackages.IRkernel];
   };
 
-  allRuntimePackages = runtimePackages ++ extraRuntimePackages;
+  allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   wrappedEnv =
     pkgs.runCommand "wrapper-${env.name}"

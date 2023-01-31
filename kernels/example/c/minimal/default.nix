@@ -1,10 +1,5 @@
-{
-  availableKernels,
-  name,
-  extraArgs,
-}:
-availableKernels.c {
-  inherit name;
-  inherit (extraArgs) system;
-  displayName = "Example C Kernel";
+{pkgs, ...}: {
+  kernel.c.minimal-example = {
+    enable = true;
+  };
 }

@@ -1,10 +1,5 @@
-{
-  availableKernels,
-  name,
-  extraArgs,
-}:
-availableKernels.rust {
-  inherit name;
-  inherit (extraArgs) system;
-  displayName = "Example Rust Kernel";
+{pkgs, ...}: {
+  kernel.rust.minimal-example = {
+    enable = true;
+  };
 }

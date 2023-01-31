@@ -42,7 +42,6 @@ jobs:
       run: |
         nix flake check --show-trace -L
 
-
   build-kernel:
     name: Build ${{ matrix.kernel }} kernel
     needs: build
@@ -77,6 +76,7 @@ jobs:
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
+        echo 'If Julia fails, see if IJulia was updated recently.'
         result/bin/python kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/test.py
 
   build-all-kernels:
@@ -135,7 +135,7 @@ jobs:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
         SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build all kernels
+    - name: Build docs
       run: |
         nix build -L .#docs
         mkdir ./public
@@ -154,7 +154,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         deploy-message: 'Published from GitHub Actions'
         enable-pull-request-comment: true
-        overwrites-pull-request-comment: true
+        overwrites-pull-request-comment: false
         enable-commit-comment: false
         enable-commit-status: true
       if: github.repository_owner == 'tweag'
@@ -191,6 +191,6 @@ jobs:
     - name: Test
       run: |
         pushd ./repo/kernels/example/python/minimal
-          sed -i -e "s|example-python-minimal|custom-python|" test.py
+          sed -i -e "s|python-minimal-example|python-minimal|" test.py
         popd
         ./example/result/bin/python ./repo/kernels/example/python/minimal/test.py
