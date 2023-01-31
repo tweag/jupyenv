@@ -143,10 +143,57 @@ button.toggle-children[aria-expanded="true"]::after {
   max-height: 100% !important;
 }
 
+.option-link-container {
+  position: absolute;
+  top: 0;
+  display: grid;
+  place-items: center;
+}
+
+.option-link-container {
+  right: -3.2em;
+  padding: 1.2em 1.6em;
+}
+
+#options-content > .collapsible-container > .option-link-container {
+  right: -4em;
+  padding: 1.5em 2em;
+}
+
 .option-link {
   position: absolute;
-  top: 0.5em;
-  right: -1em;
+  padding: 0.5em !important;
+  opacity: 0;
+  color: var(--md-default-fg-color--lighter) !important;
+  transition: background-color 250ms, border-color 250ms, opacity 250ms !important;
+  z-index: 1;
+  line-height: 0;
+}
+
+#options-content > .collapsible-container > .option-link-container > .option-link {
+  padding: 0.8em !important;
+}
+
+.option-link path {
+  fill: var(--md-default-fg-color--lighter);
+  transtion: fill 250ms;
+}
+
+.option-button:hover + .option-link-container > .option-link {
+  opacity: 1;
+}
+
+.option-link-container:hover > .option-link,
+.option-link:hover {
+  opacity: 1;
+  background-color: var(--md-accent-fg-color) !important;
+  border-color: var(--md-accent-fg-color) !important;
+  color: var(--md-accent-bg-color) !important;
+}
+
+.option-link-container:hover > .option-link path,
+.option-link:hover path {
+  fill: var(--md-accent-bg-color) !important;
 }
 
 /* Hide the Edit this page button. There is no markdown file to edit for options. */
