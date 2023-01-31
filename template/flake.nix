@@ -12,7 +12,7 @@
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.jupyenv.url = "github:tweag/jupyterWith";
+  inputs.jupyenv.url = "github:tweag/jupyenv";
 
   outputs = {
     self,
