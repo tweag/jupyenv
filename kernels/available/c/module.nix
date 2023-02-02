@@ -5,7 +5,7 @@
 } @ args:
 import ./../../../modules/poetry.nix {
   requiredRuntimePackages = [
-    config.nixpkgs.legacyPackages.${system}.stdenv.cc
+    config.nixpkgs.stdenv.cc
   ];
   kernelName = "c";
 }

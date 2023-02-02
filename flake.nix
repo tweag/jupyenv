@@ -460,9 +460,9 @@
                 ) ''
                   # add Julia for IJulia
                   echo 'Adding Julia as an available package.'
-                  for i in ${pkgs.julia-bin}/bin/*; do
+                  for i in ${pkgs.julia}/bin/*; do
                     filename=$(basename $i)
-                    ln -s ${pkgs.julia-bin}/bin/$filename $out/bin/$filename
+                    ln -s ${pkgs.julia}/bin/$filename $out/bin/$filename
                   done
                 ''));
 

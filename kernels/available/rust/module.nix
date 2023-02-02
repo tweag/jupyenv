@@ -14,9 +14,9 @@
     ...
   }: let
     requiredRuntimePackages = [
-      config.nixpkgs.legacyPackages.${system}.cargo
-      config.nixpkgs.legacyPackages.${system}.gcc
-      config.nixpkgs.legacyPackages.${system}.binutils-unwrapped
+      config.nixpkgs.cargo
+      config.nixpkgs.gcc
+      config.nixpkgs.binutils-unwrapped
     ];
     args = {inherit self system lib config name kernelName requiredRuntimePackages;};
     kernelModule = import ./../../../modules/kernel.nix args;
@@ -25,7 +25,7 @@
       {
         evcxr = lib.mkOption {
           type = types.package;
-          default = config.nixpkgs.legacyPackages.${system}.evcxr;
+          default = config.nixpkgs.evcxr;
           example = lib.literalExpression "pkgs.evcxr";
           description = lib.mdDoc ''
             An evaluation context for Rust.
@@ -48,7 +48,7 @@
         kernelModule.kernelArgs
         // {
           inherit (config) evcxr rust-overlay;
-          pkgs = import config.nixpkgs {
+          pkgs = import config.nixpkgs.path {
             inherit system;
             overlays = [config.rust-overlay.overlays.default];
           };

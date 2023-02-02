@@ -5,7 +5,7 @@
 } @ args:
 import ./../../../modules/poetry.nix {
   requiredRuntimePackages = [
-    config.nixpkgs.legacyPackages.${system}.nix
+    config.nixpkgs.nix
   ];
   kernelName = "nix";
 }

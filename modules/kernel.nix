@@ -54,15 +54,26 @@ in {
       '';
     };
 
-    nixpkgs = lib.mkOption {
-      type = types.path;
-      default = self.inputs.nixpkgs;
-      defaultText = lib.literalExpression "self.inputs.nixpkgs";
-      example = lib.literalExpression "self.inputs.nixpkgs";
-      description = lib.mdDoc ''
-        nixpkgs flake input to be used for this ${kernelName} kernel.
-      '';
-    };
+    nixpkgs = let
+      nixpkgsArg = x:
+        if (lib.hasAttr "legacyPackages" x)
+        then x.legacyPackages.${system}
+        else x;
+    in
+      lib.mkOption {
+        type = lib.mkOptionType {
+          name = "packages";
+          description = "instance of nixpkgs";
+          check = x: (lib.isAttrs (nixpkgsArg x)) && (lib.hasAttr "path" (nixpkgsArg x));
+        };
+        default = self.inputs.nixpkgs;
+        defaultText = lib.literalExpression "self.inputs.nixpkgs";
+        example = lib.literalExpression "self.inputs.nixpkgs";
+        description = lib.mdDoc ''
+          nixpkgs flake input to be used for this ${kernelName} kernel.
+        '';
+        apply = x: nixpkgsArg x;
+      };
 
     kernelArgs = lib.mkOption {
       type = types.lazyAttrsOf types.raw;
@@ -80,6 +91,6 @@ in {
       requiredRuntimePackages
       runtimePackages
       ;
-    pkgs = config.nixpkgs.legacyPackages.${system};
+    pkgs = config.nixpkgs;
   };
 }

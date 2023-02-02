@@ -163,7 +163,7 @@
             groups
             ignoreCollisions
             ;
-          pkgs = config.nixpkgs.legacyPackages.${system};
+          pkgs = config.nixpkgs;
           python = pkgs.${config.python};
           poetry = pkgs.callPackage "${config.poetry2nix}/pkgs/poetry" {inherit python;};
           poetry2nix = import "${config.poetry2nix}/default.nix" {inherit pkgs poetry;};

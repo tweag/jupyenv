@@ -51,7 +51,7 @@
       kernelArgs =
         {
           inherit (config) julia_depot_path activateDir ijuliaRev;
-          julia-bin = config.nixpkgs.legacyPackages.${system}.julia-bin;
+          julia = config.nixpkgs.julia;
         }
         // kernelModule.kernelArgs;
     };

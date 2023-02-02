@@ -20,7 +20,7 @@
       {
         rWrapper = lib.mkOption {
           type = types.package;
-          default = config.nixpkgs.legacyPackages.${system}.rWrapper;
+          default = config.nixpkgs.rWrapper;
           defaultText = lib.literalExpression "pkgs.rWrapper";
           description = lib.mdDoc ''
             R version from nixpkgs.
@@ -29,7 +29,7 @@
 
         rPackages = lib.mkOption {
           type = types.attrs;
-          default = config.nixpkgs.legacyPackages.${system}.rPackages;
+          default = config.nixpkgs.rPackages;
           defaultText = lib.literalExpression "pkgs.rPackages";
           description = lib.mdDoc ''
             A set of R packages.
