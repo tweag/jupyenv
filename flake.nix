@@ -435,6 +435,16 @@
             {
               nativeBuildInputs = [pkgs.makeWrapper];
               meta.mainProgram = "jupyter-lab";
+              passthru = {
+                kernels = builtins.listToAttrs (
+                  builtins.map
+                  (k: {
+                    name = k.name;
+                    value = k;
+                  })
+                  kernelDerivations
+                );
+              };
             }
             (''
                 mkdir -p $out/bin
