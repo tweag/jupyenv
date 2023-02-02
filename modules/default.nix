@@ -19,6 +19,13 @@ in {
         description = "A list of runtime packages available to all binaries";
         default = [];
       };
+      features = lib.mkOption {
+        type = types.listOf types.str;
+        description = "A list of features to enable";
+        default = [];
+        example = ["lsp"];
+      };
+
       jupyterlabEnvArgs = lib.mkOption {
         type = types.submodule {
           options =
@@ -39,6 +46,7 @@ in {
               });
         };
         default = {};
+        description = "Arguments for the jupyterlab poetry's environment";
       };
     };
 
@@ -86,8 +94,34 @@ in {
           poetry2nix
           ;
 
-        extraPackages = ps: (config.jupyterlab.jupyterlabEnvArgs.extraPackages ps);
+        extraPackages = let
+          findFeature = name:
+            if config.jupyterlab.features != []
+            then
+              (
+                if name == (lib.head (lib.intersectLists [name] config.jupyterlab.features))
+                then true
+                else false
+              )
+            else false;
+
+          enabledLanguage = lang: feature:
+            (
+              if config.kernel.${lang} != {}
+              then true
+              else false
+            )
+            && (findFeature feature);
+        in
+          ps:
+            (lib.optionals (enabledLanguage "python" "lsp") [
+              ps.jupyter-lsp
+              ps.python-lsp-server
+            ])
+            ++ (lib.optionals (findFeature "jupytext") [ps.jupytext])
+            ++ (config.jupyterlab.jupyterlabEnvArgs.extraPackages ps);
       };
+
       kernels = availableKernels:
         lib.flatten
         (
