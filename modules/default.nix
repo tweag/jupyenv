@@ -41,8 +41,8 @@ in {
                 '';
               };
               haskell = lib.mkOption {
-                type = types.functionTo types.package;
-                description = "Python language server";
+                type = types.package;
+                description = "Haskell language server";
                 default = config.nixpkgs.haskell-language-server;
                 example = lib.literalExample ''
                   config.nixpkgs.haskell-language-server.override { supportedGhcVersions = [ "90" "94" ]; };
@@ -140,6 +140,7 @@ in {
             poetry2nix
             ;
 
+          # all of packages should be kept in extraPackages, instead of runtimePackages
           extraPackages = ps:
             (lib.optionals (enabledLanguage "python" "lsp") [
               (config.jupyterlab.extensions.languageServers.python ps)
