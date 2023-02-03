@@ -41,7 +41,14 @@
           default = "6TIq1";
           example = "6TIq1";
           description = lib.mdDoc ''
-            Julia revision
+            iJulia revision
+          '';
+        };
+        julia = lib.mkOption {
+          type = types.package;
+          default = config.nixpkgs.julia;
+          description = lib.mdDoc ''
+            Julia Version
           '';
         };
       }
