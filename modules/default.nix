@@ -19,11 +19,38 @@ in {
         description = "A list of runtime packages available to all binaries";
         default = [];
       };
-      features = lib.mkOption {
-        type = types.listOf types.str;
-        description = "A list of features to enable";
-        default = [];
-        example = ["lsp"];
+      extensions = {
+        features = lib.mkOption {
+          type = types.listOf types.str;
+          description = "A list of features to enable";
+          default = [];
+          example = ["lsp"];
+        };
+        languageServers = lib.mkOption {
+          default = {};
+          description = "Which language servers package to use";
+          type = types.submodule {
+            options = {
+              python = lib.mkOption {
+                type = types.functionTo types.package;
+                description = "Python language server";
+                default = ps: ps.python-lsp-server;
+                example = lib.literalExample ''
+                  if you want to use pyls-mypy or othter dependencies, you can do:
+                  extraPackages = ps: [] ++ python-lsp-server.passthru.optional-dependencies.all;
+                '';
+              };
+              haskell = lib.mkOption {
+                type = types.functionTo types.package;
+                description = "Python language server";
+                default = config.nixpkgs.haskell-language-server;
+                example = lib.literalExample ''
+                  config.nixpkgs.haskell-language-server.override { supportedGhcVersions = [ "90" "94" ]; };
+                '';
+              };
+            };
+          };
+        };
       };
 
       jupyterlabEnvArgs = lib.mkOption {
@@ -82,64 +109,69 @@ in {
   #++ map (name: ./. + "/../kernels/available/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../kernels/available));
 
   config = {
-    build = mkJupyterlab {
-      jupyterlabEnvArgs = {
-        inherit
-          (config.jupyterlab.jupyterlabEnvArgs)
-          pyproject
-          projectDir
-          editablePackageSources
-          preferWheels
-          poetrylock
-          poetry2nix
-          ;
+    build = let
+      findFeature = name:
+        if config.jupyterlab.extensions.features != []
+        then
+          (
+            if (lib.intersectLists [name] config.jupyterlab.extensions.features) != []
+            then true
+            else false
+          )
+        else false;
 
-        extraPackages = let
-          findFeature = name:
-            if config.jupyterlab.features != []
-            then
-              (
-                if name == (lib.head (lib.intersectLists [name] config.jupyterlab.features))
-                then true
-                else false
-              )
-            else false;
+      enabledLanguage = lang: feature:
+        (
+          if config.kernel.${lang} != {}
+          then true
+          else false
+        )
+        && (findFeature feature);
+    in
+      mkJupyterlab {
+        jupyterlabEnvArgs = {
+          inherit
+            (config.jupyterlab.jupyterlabEnvArgs)
+            pyproject
+            projectDir
+            editablePackageSources
+            preferWheels
+            poetrylock
+            poetry2nix
+            ;
 
-          enabledLanguage = lang: feature:
-            (
-              if config.kernel.${lang} != {}
-              then true
-              else false
-            )
-            && (findFeature feature);
-        in
-          ps:
+          extraPackages = ps:
             (lib.optionals (enabledLanguage "python" "lsp") [
-              ps.jupyter-lsp
-              ps.python-lsp-server
+              (config.jupyterlab.extensions.languageServers.python ps)
             ])
             ++ (lib.optionals (findFeature "jupytext") [ps.jupytext])
+            ++ (lib.optionals (findFeature "lsp") [ps.jupyter-lsp])
             ++ (config.jupyterlab.jupyterlabEnvArgs.extraPackages ps);
-      };
+        };
 
-      kernels = availableKernels:
-        lib.flatten
-        (
-          builtins.map
+        runtimePackages =
+          config.jupyterlab.runtimePackages
+          ++ (lib.optionals (enabledLanguage "haskell" "lsp") [
+            config.jupyterlab.extensions.languageServers.haskell
+          ]);
+
+        kernels = availableKernels:
+          lib.flatten
           (
-            kernelTypeName:
-              builtins.map
-              (
-                kernelName:
-                  availableKernels.${kernelTypeName}
-                  config.kernel.${kernelTypeName}.${kernelName}.kernelArgs
-              )
-              (builtins.attrNames config.kernel.${kernelTypeName})
-          )
-          (builtins.attrNames config.kernel)
-        );
-      runtimePackages = config.jupyterlab.runtimePackages;
-      #flakes = config.flakes;
-    };
+            builtins.map
+            (
+              kernelTypeName:
+                builtins.map
+                (
+                  kernelName:
+                    availableKernels.${kernelTypeName}
+                    config.kernel.${kernelTypeName}.${kernelName}.kernelArgs
+                )
+                (builtins.attrNames config.kernel.${kernelTypeName})
+            )
+            (builtins.attrNames config.kernel)
+          );
+        #flakes = config.flakes;
+      };
   };
 }
