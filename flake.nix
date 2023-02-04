@@ -632,6 +632,10 @@
     ))
     // rec {
       jupyterKernels = builtins.mapAttrs mkKernelFlakeOutput kernelsConfig.available;
+      templates.julia2nix = {
+        path = ./template/julia2nix;
+        description = "Boilerplate for your jupyenv project with julia2nix";
+      };
       templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyenv project";

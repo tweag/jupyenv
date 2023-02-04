@@ -57,8 +57,7 @@
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          inherit (config) julia_depot_path activateDir ijuliaRev;
-          julia = config.nixpkgs.julia;
+          inherit (config) julia_depot_path activateDir ijuliaRev julia;
         }
         // kernelModule.kernelArgs;
     };
