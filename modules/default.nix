@@ -19,6 +19,13 @@ in {
         description = "A list of runtime packages available to all binaries";
         default = [];
       };
+      notebookConfig = lib.mkOption {
+        type = types.attrs;
+        description = "jupyter notebook config which will be written to jupyter_notebook_config.py";
+        default = {};
+        apply = c: lib.recursiveUpdate (lib.importJSON ./conf/jupyter_notebook_config.json) c;
+      };
+
       extensions = {
         features = lib.mkOption {
           type = types.listOf types.str;
@@ -35,7 +42,7 @@ in {
                 type = types.functionTo types.package;
                 description = "Python language server";
                 default = ps: ps.python-lsp-server;
-                example = lib.literalExample ''
+                example = lib.literalExpression ''
                   if you want to use pyls-mypy or othter dependencies, you can do:
                   extraPackages = ps: [] ++ python-lsp-server.passthru.optional-dependencies.all;
                 '';
@@ -44,7 +51,7 @@ in {
                 type = types.package;
                 description = "Haskell language server";
                 default = config.nixpkgs.haskell-language-server;
-                example = lib.literalExample ''
+                example = lib.literalExpression ''
                   config.nixpkgs.haskell-language-server.override { supportedGhcVersions = [ "90" "94" ]; };
                 '';
               };
@@ -140,7 +147,7 @@ in {
             poetry2nix
             ;
 
-          # all of packages should be kept in extraPackages, instead of runtimePackages
+          # all of python packages should be kept in extraPackages, instead of runtimePackages
           extraPackages = ps:
             (lib.optionals (enabledLanguage "python" "lsp") [
               (config.jupyterlab.extensions.languageServers.python ps)
@@ -149,6 +156,8 @@ in {
             ++ (lib.optionals (findFeature "lsp") [ps.jupyter-lsp])
             ++ (config.jupyterlab.jupyterlabEnvArgs.extraPackages ps);
         };
+
+        notebookConfig = config.jupyterlab.notebookConfig;
 
         runtimePackages =
           config.jupyterlab.runtimePackages
