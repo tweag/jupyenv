@@ -394,6 +394,7 @@
           jupyterDir = let
             mergeNotebookConfig = lib.recursiveUpdate notebookConfig {
               NotebookApp.use_redirect_file = false;
+              KernelSpecManager.whitelist = map (x: x.name) userKernels;
             };
           in
             pkgs.runCommand "jupyter-dir" {} ''
