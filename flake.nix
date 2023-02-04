@@ -543,7 +543,7 @@
         */
         mkJupyterlabEval = customModule:
           pkgs.lib.evalModules {
-            specialArgs = {inherit self system pkgs mkJupyterlab;};
+            specialArgs = {inherit self system mkJupyterlab;};
             modules = lib.flatten (
               [./modules]
               ++ lib.optional (customModule != null) customModule

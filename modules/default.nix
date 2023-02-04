@@ -183,5 +183,6 @@ in {
           );
         #flakes = config.flakes;
       };
+    _module.args.pkgs = config.nixpkgs;
   };
 }
