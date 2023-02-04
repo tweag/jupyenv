@@ -391,14 +391,18 @@
           jupyterlabEnv = jupyterlabEnvWrapped (baseArgs // jupyterlabEnvArgs);
 
           # create directories for storing jupyter configs
-          jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
-            # make jupyter config and data directories
-            mkdir -p $out/config $out/data
-            echo "c.NotebookApp.use_redirect_file = False" > $out/config/jupyter_notebook_config.py
-            echo '${builtins.toJSON notebookConfig}' > $out/config/jupyter_notebook_config.json
-            # make jupyter lab user settings and workspaces directories
-            mkdir -p $out/config/lab/{user-settings,workspaces}
-          '';
+          jupyterDir = let
+            mergeNotebookConfig = lib.recursiveUpdate notebookConfig {
+              NotebookApp.use_redirect_file = false;
+            };
+          in
+            pkgs.runCommand "jupyter-dir" {} ''
+              # make jupyter config and data directories
+              mkdir -p $out/config $out/data
+              echo '${builtins.toJSON mergeNotebookConfig}' > $out/config/jupyter_notebook_config.json
+              # make jupyter lab user settings and workspaces directories
+              mkdir -p $out/config/lab/{user-settings,workspaces}
+            '';
 
           /*
           Finds kernels from kernelDerivations that have the same kernel
