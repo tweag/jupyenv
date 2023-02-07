@@ -46,7 +46,7 @@
         };
         julia = lib.mkOption {
           type = types.package;
-          default = config.nixpkgs.julia;
+          default = config.nixpkgs.legacyPackages.${system}.julia;
           description = lib.mdDoc ''
             Julia Version
           '';
@@ -57,8 +57,7 @@
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          inherit (config) julia_depot_path activateDir ijuliaRev;
-          julia = config.nixpkgs.legacyPackages.${system}.julia;
+          inherit (config) julia_depot_path activateDir ijuliaRev julia;
         }
         // kernelModule.kernelArgs;
     };
