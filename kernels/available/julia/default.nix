@@ -12,9 +12,8 @@
   activateDir ? "",
   ijuliaRev ? "6TIq1",
 }: let
-  inherit (pkgs) writeScriptBin writeText;
+  inherit (pkgs) writeText;
   inherit (pkgs.lib) optionalString;
-
 
   startupFile = writeText "startup.jl" ''
     import Pkg
@@ -43,7 +42,7 @@ in {
   language = "julia";
   argv = [
     "${wrappedEnv}/bin/julia"
-     "-i"
+    "-i"
     "--startup-file=yes"
     "--color=yes"
     "${julia_depot_path}/packages/IJulia/${ijuliaRev}/src/kernel.jl"
