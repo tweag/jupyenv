@@ -7,30 +7,24 @@
   displayName ? "Julia",
   requiredRuntimePackages ? [],
   runtimePackages ? [],
-  julia-bin ? pkgs.julia-bin,
+  julia ? pkgs.julia,
   julia_depot_path ? "~/.julia",
   activateDir ? "",
   ijuliaRev ? "6TIq1",
 }: let
-  inherit (pkgs) writeScriptBin writeText;
+  inherit (pkgs) writeText;
+  inherit (pkgs.lib) optionalString;
 
   startupFile = writeText "startup.jl" ''
     import Pkg
     Pkg.activate("${activateDir}")
-    Pkg.update()
     Pkg.instantiate()
-  '';
-  activateJuliaPkg = writeScriptBin "activateJuliaPkg" ''
-    export JULIA_DEPOT_PATH=${julia_depot_path}
-    julia -L ${startupFile} -e 'println("Initializating DONE")'
-  '';
-  juliaStartup = writeScriptBin "juliaStartup" ''
-    julia -L ${startupFile}
   '';
 
   allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
-  env = julia-bin;
+  env = julia;
+
   wrappedEnv =
     pkgs.runCommand "wrapper-${env.name}"
     {nativeBuildInputs = [pkgs.makeWrapper];}
@@ -40,7 +34,7 @@
         filename=$(basename $i)
         ln -s ${env}/bin/$filename $out/bin/$filename
         wrapProgram $out/bin/$filename \
-          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+          --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" ${optionalString (activateDir != "") ''--add-flags "-L ${startupFile}"''}
       done
     '';
 in {
@@ -48,8 +42,6 @@ in {
   language = "julia";
   argv = [
     "${wrappedEnv}/bin/julia"
-    "-L"
-    "${startupFile}"
     "-i"
     "--startup-file=yes"
     "--color=yes"
