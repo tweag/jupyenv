@@ -41,7 +41,14 @@
           default = "6TIq1";
           example = "6TIq1";
           description = lib.mdDoc ''
-            Julia revision
+            iJulia revision
+          '';
+        };
+        julia = lib.mkOption {
+          type = types.package;
+          default = config.nixpkgs.legacyPackages.${system}.julia;
+          description = lib.mdDoc ''
+            Julia Version
           '';
         };
       }
@@ -50,8 +57,7 @@
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          inherit (config) julia_depot_path activateDir ijuliaRev;
-          julia-bin = config.nixpkgs.legacyPackages.${system}.julia-bin;
+          inherit (config) julia_depot_path activateDir ijuliaRev julia;
         }
         // kernelModule.kernelArgs;
     };
