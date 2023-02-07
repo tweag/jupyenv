@@ -54,15 +54,7 @@ in {
       '';
     };
 
-    nixpkgs = lib.mkOption {
-      type = types.path;
-      default = self.inputs.nixpkgs;
-      defaultText = lib.literalExpression "self.inputs.nixpkgs";
-      example = lib.literalExpression "self.inputs.nixpkgs";
-      description = lib.mdDoc ''
-        nixpkgs flake input to be used for this ${kernelName} kernel.
-      '';
-    };
+    nixpkgs = import ./types/nixpkgs.nix {inherit lib self system;};
 
     kernelArgs = lib.mkOption {
       type = types.lazyAttrsOf types.raw;
@@ -80,6 +72,6 @@ in {
       requiredRuntimePackages
       runtimePackages
       ;
-    pkgs = config.nixpkgs.legacyPackages.${system};
+    pkgs = config.nixpkgs;
   };
 }

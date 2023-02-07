@@ -5,8 +5,8 @@
 } @ args:
 import ./../../../modules/poetry.nix {
   requiredRuntimePackages = [
-    config.nixpkgs.legacyPackages.${system}.zsh
-    config.nixpkgs.legacyPackages.${system}.coreutils
+    config.nixpkgs.zsh
+    config.nixpkgs.coreutils
   ];
   kernelName = "zsh";
 }

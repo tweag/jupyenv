@@ -3,6 +3,7 @@
   config,
   lib,
   mkJupyterlab,
+  system,
   ...
 }: let
   types = lib.types;
@@ -27,11 +28,7 @@ in {
       internal = true;
     };
 
-    nixpkgs = lib.mkOption {
-      type = types.path;
-      default = self.inputs.nixpkgs;
-      internal = true;
-    };
+    nixpkgs = import ./types/nixpkgs.nix {inherit lib self system;};
   };
 
   imports = [
@@ -77,5 +74,6 @@ in {
       runtimePackages = config.jupyterlab.runtimePackages;
       #flakes = config.flakes;
     };
+    _module.args.pkgs = config.nixpkgs;
   };
 }

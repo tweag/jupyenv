@@ -23,7 +23,7 @@
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          ijavascript = config.nixpkgs.legacyPackages.${system}.nodePackages.ijavascript;
+          ijavascript = config.nixpkgs.nodePackages.ijavascript;
         }
         // kernelModule.kernelArgs;
     };
