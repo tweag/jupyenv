@@ -5,7 +5,7 @@
 } @ args:
 import ./../../../modules/poetry.nix {
   requiredRuntimePackages = [
-    config.nixpkgs.legacyPackages.${system}.elmPackages.elm
+    config.nixpkgs.elmPackages.elm
   ];
   kernelName = "elm";
 }

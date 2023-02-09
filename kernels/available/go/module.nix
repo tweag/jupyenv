@@ -13,7 +13,7 @@
     name,
     ...
   }: let
-    requiredRuntimePackages = [config.nixpkgs.legacyPackages.${system}.go];
+    requiredRuntimePackages = [config.nixpkgs.go];
     args = {inherit self system lib config name kernelName requiredRuntimePackages;};
     kernelModule = import ./../../../modules/kernel.nix args;
   in {
