@@ -577,6 +577,7 @@
             mkJupyterlab
             mkJupyterlabFromPath
             mkJupyterlabNew
+            mkJupyterlabEval
             ;
         };
         packages =
