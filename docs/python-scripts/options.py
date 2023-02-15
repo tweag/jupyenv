@@ -383,7 +383,7 @@ def add_anchor(soup: BeautifulSoup, button: Tag, href: str) -> None:
     anchor = soup.new_tag("a")
     add_class(anchor, 'option-link', 'md-button')
     anchor['href'] = '#' + href
-    anchor['title'] = 'Permenant link'
+    anchor['title'] = 'Copy permanent link'
     anchor.append(get_svg_anchor(soup))
 
     anchor_container = soup.new_tag("div")
