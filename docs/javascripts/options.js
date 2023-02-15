@@ -122,6 +122,27 @@ function openOptionRecursively(content) {
   button.click();
 }
 
+/**
+ * Add copy to clipboard capability to Options anchors.
+ */
+function addClipboardToAnchors() {
+  var clipboard = new ClipboardJS('.option-link', {
+    text: function(trigger) {
+      var dialog_elem = document.querySelector('.md-dialog');
+      dialog_elem.classList.toggle('md-dialog--active');
+
+      var dialog_child = dialog_elem.firstElementChild;
+      dialog_child.innerText = 'Copied to clipboard';
+
+      setTimeout(() => {
+        dialog_elem.classList.toggle('md-dialog--active');
+      }, "2000");
+
+      return window.location.origin + window.location.pathname + trigger.getAttribute('href');
+    }
+  });
+}
+
 function initializePage() {
   document
     .querySelectorAll('[aria-expanded="true"].option-button')
@@ -140,6 +161,8 @@ function initializePage() {
       elem.setAttribute('aria-expanded', 'false');
       elem.style.display = "block"
     });
+
+  addClipboardToAnchors();
 
   goToAnchor();
 }
