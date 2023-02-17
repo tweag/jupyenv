@@ -59,57 +59,6 @@
     ];
 
     /*
-    Takes a path to the kernels directory, `kernelsPath`,
-    a kernel name, `fileName`,
-    and a file type, `fileType`,
-    and verifies that a valid kernel directory exists with that name.
-    */
-    filterValidKernelPaths = kernelsPath: fileName: fileType: let
-      defaultFilePath = "${kernelsPath}/${fileName}/default.nix";
-    in
-      # Example: kernels/mykernel/default.nix
-      if
-        (fileType == "directory")
-        && fileName != "available"
-        && !lib.hasPrefix "_" fileName
-        && lib.pathExists defaultFilePath
-      then {
-        name = fileName;
-        path = defaultFilePath;
-      }
-      # Example: kernels/mykernel.nix
-      else if
-        (fileType == "regular")
-        && lib.hasSuffix ".nix" fileName
-        && !lib.hasPrefix "_" fileName
-      then {
-        name = lib.removeSuffix ".nix" fileName;
-        path = "${kernelsPath}/${fileName}";
-      }
-      # return null when path kernel path not valid
-      else null;
-
-    /*
-    Takes a path to a kernels directory, `kernelsPath`,
-    and returns path to nix file of the kernel config
-
-    Example:
-      getKernelAttrsetFromPath ./kernels ->
-      [
-        { name = "postgres"; path = "kernels/postgres/default.nix"; }
-        { name = "mypython"; path = "kernels/mypython.nix"; }
-        ...
-      ]
-    */
-    getKernelAttrsetFromPath = kernelsPath:
-      lib.remove null
-      (
-        lib.mapAttrsToList
-        (filterValidKernelPaths kernelsPath)
-        (builtins.readDir kernelsPath)
-      );
-
-    /*
     Takes a path to a kernels directory, `kernelsPath`
     and a kernel name, `kernelName`,
     and returns a set of the form:
@@ -120,35 +69,6 @@
       description = "${name} kernel";
       inherit path;
     };
-
-    /*
-    List kernels in a path.
-
-    Example:
-      mapKernelsFromPath ./kernels ->
-        {
-          "example_kernel" = ./kernels/example_kernel;
-        }
-    */
-    mapKernelsFromPath = path:
-      lib.optionalAttrs
-      (lib.pathExists path)
-      (
-        builtins.listToAttrs
-        (
-          builtins.map
-          (
-            {
-              name,
-              path,
-            }: {
-              inherit name;
-              value = path;
-            }
-          )
-          (getKernelAttrsetFromPath path)
-        )
-      );
 
     examples = import ./examples.nix {inherit lib;};
 
@@ -180,7 +100,6 @@
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
-        pkgs_stable = nixpkgs-stable.legacyPackages.${system};
 
         python = pkgs.python3;
         poetry2nixPkgs = import "${poetry2nix}/default.nix" {inherit pkgs poetry;};
@@ -475,32 +394,6 @@
                     ln -s ${pkgs.julia}/bin/$filename $out/bin/$filename
                   done
                 ''));
-
-        exampleJupyterlabKernels = (
-          builtins.listToAttrs
-          (
-            builtins.map
-            (
-              name: {
-                name = "jupyterlab-kernel-${name}";
-                value = mkJupyterlab {
-                  kernels = availableKernels: [
-                    (import kernelsConfig.kernels.${name} {
-                      inherit name availableKernels;
-                      extraArgs = {inherit system pkgs_stable;};
-                    })
-                  ];
-                };
-              }
-            )
-            (builtins.attrNames kernelsConfig.kernels)
-          )
-        );
-
-        exampleJupyterlabAllKernels =
-          mkJupyterlabFromPath
-          ./kernels/example
-          {inherit system pkgs_stable;};
 
         /*
         Returns kernel instance from a folder.
