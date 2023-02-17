@@ -1,0 +1,13 @@
+{
+  "LanguageServerManager": {
+    "language_servers": {
+      "haskell-language-server": {
+        "version": 2,
+        "argv": ["haskell-language-server-wrapper", "lsp"],
+        "languages": ["haskell"],
+        "display_name": "haskell-language-server",
+        "mimetypes": ["text/haskell", "text/x-haskell"]
+      }
+    }
+  }
+}
