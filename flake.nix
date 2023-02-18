@@ -435,7 +435,7 @@
         options = pkgs.nixosOptionsDoc {
           options = builtins.removeAttrs eval.options ["_module"];
         };
-      in rec {
+      in {
         lib = {
           inherit
             mkJupyterlab
@@ -494,7 +494,7 @@
         };
       }
     ))
-    // rec {
+    // {
       jupyterKernels = builtins.mapAttrs mkKernelFlakeOutput kernelsConfig.available;
       templates.default = {
         path = ./template;
