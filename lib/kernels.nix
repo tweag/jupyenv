@@ -153,8 +153,31 @@
         (getKernelAttrsetFromPath path prefix)
       )
     );
+
+  /*
+  Creates an attrset that contains all the available and example kernels from a
+  path to the kernels directory, `kernelsPath`.
+
+  Example:
+    _getKernelsFromPath (self + /kernels) ->
+      {
+        kernels = {
+          example-bash-minimal = "/nix/store/<hash>/kernels/example/bash/minimal/default.nix";
+          ...
+        };
+        available = {
+          bash = "/nix/store/<hash>/kernels/available/bash/default.nix";
+          ...
+        };
+      }
+  */
+  _getKernelsFromPath = kernelsPath: {
+    kernels = mapKernelsFromPath "${kernelsPath}/example" ["example"];
+    available = mapKernelsFromPath "${kernelsPath}/available" [];
+  };
 in {
   inherit
+    _getKernelsFromPath
     getKernelAttrsetFromPath
     mapKernelsFromPath
     ;

@@ -72,30 +72,7 @@
 
     kernelLib = import ./lib/kernels.nix {inherit lib;};
 
-    /*
-    Takes a path to the kernels directory, `kernelsPath`,
-    reads all files from the kernels directory and returns a set of
-    valid kernels that is in a shape of jupyterKernels flake output.
-
-    Example:
-      getKernelsFromPath ./kernels ->
-        {
-          kernels = {
-            example_kernel = ./kernels/example;
-            ...
-          };
-          available = {
-            bash = ./kernels/example;
-            ...
-          };
-        }
-    */
-    getKernelsFromPath = kernelsPath: {
-      kernels = kernelLib.mapKernelsFromPath "${kernelsPath}/example" ["example"];
-      available = kernelLib.mapKernelsFromPath "${kernelsPath}/available" [];
-    };
-
-    kernelsConfig = getKernelsFromPath (self + /kernels);
+    kernelsConfig = kernelLib._getKernelsFromPath (self + /kernels);
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
