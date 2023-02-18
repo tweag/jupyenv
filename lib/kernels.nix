@@ -175,7 +175,7 @@
       }
   */
   _getKernelsFromPath = kernelsPath: {
-    kernels = mapKernelsFromPath "${kernelsPath}/example" ["example"];
+    examples = mapKernelsFromPath "${kernelsPath}/example" ["example"];
     available = mapKernelsFromPath "${kernelsPath}/available" [];
   };
 in {

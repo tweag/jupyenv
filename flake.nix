@@ -425,11 +425,11 @@
               ("jupyterlab-kernel-" + name)
               (mkJupyterlabNew value)
           )
-          kernelsConfig.kernels
+          kernelsConfig.examples
         );
 
         exampleJupyterlabAllKernelsNew =
-          mkJupyterlabNew (builtins.attrValues kernelsConfig.kernels);
+          mkJupyterlabNew (builtins.attrValues kernelsConfig.examples);
 
         eval = mkJupyterlabEval ({...}: {_module.check = false;});
         options = pkgs.nixosOptionsDoc {
