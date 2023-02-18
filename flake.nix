@@ -70,7 +70,7 @@
       inherit path;
     };
 
-    examples = import ./examples.nix {inherit lib;};
+    kernelLib = import ./lib/kernels.nix {inherit lib;};
 
     /*
     Takes a path to the kernels directory, `kernelsPath`,
@@ -91,8 +91,8 @@
         }
     */
     getKernelsFromPath = kernelsPath: {
-      kernels = examples.mapKernelsFromPath "${kernelsPath}/example" ["example"];
-      available = examples.mapKernelsFromPath "${kernelsPath}/available" [];
+      kernels = kernelLib.mapKernelsFromPath "${kernelsPath}/example" ["example"];
+      available = kernelLib.mapKernelsFromPath "${kernelsPath}/available" [];
     };
 
     kernelsConfig = getKernelsFromPath (self + /kernels);
@@ -422,7 +422,7 @@
             kernels = availableKernels:
               builtins.map
               (getKernelInstance availableKernels extraArgs)
-              (examples.getKernelAttrsetFromPath kernelsPath []);
+              (kernelLib.getKernelAttrsetFromPath kernelsPath []);
           };
 
         /*
