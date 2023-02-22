@@ -40,7 +40,8 @@
 in {
   inherit name displayName;
   language = "haskell";
-  argv = kernelspec.argv;
-  codemirrorMode = "haskell";
+  # See https://github.com/IHaskell/IHaskell/pull/1191
+  argv = kernelspec.argv ++ ["--codemirror" "Haskell"];
+  codemirrorMode = "Haskell";
   logo64 = ./logo64.png;
 }
