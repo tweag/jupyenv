@@ -178,10 +178,136 @@
     examples = mapKernelsFromPath "${kernelsPath}/example" ["example"];
     available = mapKernelsFromPath "${kernelsPath}/available" [];
   };
+
+  /*
+  Creates a shell command as a string that copies kernel logo images to a path
+  in the nix store.
+
+  `kernelLogos` is an array of strings whose values should match attribute
+  names in `kernelInstance` whose value is a path to a logo image file.
+
+  If no match from `kernelLogos` is found in `kernelInstance`, the resulting
+  string will be empty.
+
+  Type: [String] -> <KernelInstance> -> String
+
+  Example:
+    let
+      kernelInstance = {
+        name = "pythontest";
+        logo64 = ./kernels/available/python/logo64.png;
+      };
+    in
+      kernelLib.copyKernelLogos ["logo64"] kernelInstance
+    ->
+    "cp /nix/store/<hash>-logo64.png $out/kernels/pythontest/logo64.png\n"
+
+  Example:
+    let
+      kernelInstance = {
+        name = "pythontest";
+        logo64 = ./kernels/available/python/logo64.png;
+      };
+    in
+      kernelLib.copyKernelLogos ["logo32"] kernelInstance
+    ->
+    ""
+  */
+  copyKernelLogos = kernelLogos: kernelInstance:
+    builtins.concatStringsSep "\n"
+    (
+      builtins.map
+      (
+        logo: let
+          kernelLogoPath = kernelInstance.${logo};
+        in
+          lib.optionalString (builtins.hasAttr logo kernelInstance) ''
+            cp ${kernelLogoPath} $out/kernels/${kernelInstance.name}/${baseNameOf kernelLogoPath}
+          ''
+      )
+      kernelLogos
+    );
+
+  /*
+  Fixes many of the attribute names in the kernel instance attribute set in
+  preparation for converting to a kernel spec JSON file for Jupyter. Jupyter
+  kernel spec files have particular field names and uses snake.
+
+  Type: [String] -> <KernelInstance> -> AttrSet
+
+  Example:
+    let
+      kernelInstance = {
+        name = "pythontest";
+        displayName = "Python Test";
+        codemirrorMode = "python";
+        logo64 = ./kernels/available/python/logo64.png;
+      };
+    in
+      kernelLib.fixKernelJSON ["logo64" "logo32"] kernelInstance
+    ->
+    {
+      name = "pythontest";
+      display_name = "Python Test";
+      codemirror_mode = "python";
+      logo64 = "logo64.png";
+    }
+
+  */
+  createKernelSpec = kernelLogos: kernelInstance:
+    lib.mapAttrs'
+    (
+      name: value:
+        if builtins.elem name kernelLogos
+        then {
+          inherit name;
+          value = baseNameOf value;
+        }
+        else if name == "displayName"
+        then {
+          name = "display_name";
+          inherit value;
+        }
+        else if name == "codemirrorMode"
+        then {
+          name = "codemirror_mode";
+          inherit value;
+        }
+        else {inherit name value;}
+    )
+    kernelInstance;
+
+  /*
+  Takes the kernel instance and copies it as the kernel spec JSON file to a
+  path in the nix store.
+
+  Type: [String] -> <KernelInstance> -> AttrSet
+
+  Example:
+    let
+      kernelInstance = {
+        name = "pythontest";
+        displayName = "Python Test";
+        codemirrorMode = "python";
+        logo64 = ./kernels/available/python/logo64.png;
+      };
+    in
+      kernelLib.fixKernelJSON ["logo64" "logo32"] kernelInstance
+    ->
+    "echo '{\"codemirror_mode\":\"python\",\"display_name\":\"Python Test\",\"logo64\":\"logo64.png\",\"name\":\"pythontest\"}' > $out/kernels/pythontest/kernel.json\n"
+  */
+  copyKernelSpec = kernelLogos: kernelInstance: let
+    kernelSpec = createKernelSpec kernelLogos kernelInstance;
+  in ''
+    echo '${builtins.toJSON kernelSpec}' > $out/kernels/${kernelInstance.name}/kernel.json
+  '';
 in {
   inherit
     _getKernelsFromPath
     getKernelAttrsetFromPath
     mapKernelsFromPath
+    copyKernelLogos
+    createKernelSpec
+    copyKernelSpec
     ;
 }

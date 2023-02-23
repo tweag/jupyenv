@@ -151,44 +151,6 @@
             builtins.removeAttrs kernelInstance_ ["path"];
 
           kernelLogos = ["logo32" "logo64"];
-
-          kernelJSON =
-            lib.mapAttrs'
-            (
-              name: value:
-                if builtins.elem name kernelLogos
-                then {
-                  inherit name;
-                  value = baseNameOf value;
-                }
-                else if name == "displayName"
-                then {
-                  name = "display_name";
-                  inherit value;
-                }
-                else if name == "codemirrorMode"
-                then {
-                  name = "codemirror_mode";
-                  inherit value;
-                }
-                else {inherit name value;}
-            )
-            kernelInstance;
-
-          copyKernelLogos =
-            builtins.concatStringsSep "\n"
-            (
-              builtins.map
-              (
-                logo: let
-                  kernelLogoPath = kernelInstance.${logo};
-                in
-                  lib.optionalString (builtins.hasAttr logo kernelInstance) ''
-                    cp ${kernelLogoPath} $out/kernels/${kernelInstance.name}/${baseNameOf kernelLogoPath}
-                  ''
-              )
-              kernelLogos
-            );
         in
           pkgs.runCommand "${kernelInstance.name}-jupyter-kernel"
           {
@@ -200,10 +162,9 @@
           (
             ''
               mkdir -p $out/kernels/${kernelInstance.name}
-              echo '${builtins.toJSON kernelJSON}' \
-                > $out/kernels/${kernelInstance.name}/kernel.json
             ''
-            + copyKernelLogos
+            + (kernelLib.copyKernelSpec kernelLogos kernelInstance)
+            + (kernelLib.copyKernelLogos kernelLogos kernelInstance)
           );
 
         /*
