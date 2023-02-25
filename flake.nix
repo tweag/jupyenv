@@ -70,7 +70,7 @@
       inherit path;
     };
 
-    kernelLib = import ./lib/kernels.nix {inherit lib;};
+    kernelLib = import ./lib/kernels.nix {inherit self lib;};
 
     kernelsConfig = kernelLib._getKernelsFromPath (self + /kernels);
   in
@@ -186,63 +186,9 @@
               nodePackages.npm
             ]);
 
-          /*
-          An attribute set of all the available and valid kernels where the
-          attribute name is the kernel name and the attribute value is the
-          overridable version of the kernel's default.nix file.
-          returns:
-          {
-            <kernelName> = <kernelFactory>;
-          }
-          */
-          availableKernels =
-            builtins.listToAttrs
-            (
-              lib.flatten
-              (
-                builtins.map
-                (
-                  flake:
-                    if builtins.hasAttr "jupyterKernels" flake
-                    then
-                      (
-                        lib.mapAttrsToList
-                        (
-                          name: kernel: {
-                            inherit name;
-                            value = args: {
-                              inherit args;
-                              inherit (kernel) path;
-                            };
-                          }
-                        )
-                        flake.jupyterKernels
-                      )
-                    else []
-                )
-                ([self] ++ flakes)
-              )
-            );
-
-          # user kernels (imported and initialized)
-          userKernels =
-            builtins.map
-            (
-              kernelConfig:
-                (
-                  if builtins.isFunction kernelsConfig
-                  then let
-                    kernelConfig_ = kernelsConfig {};
-                  in
-                    import kernelConfig_.path (baseArgs // kernelConfig_.args)
-                  else import kernelConfig.path (baseArgs // kernelConfig.args)
-                )
-                // {inherit (kernelConfig) path;}
-            )
-            (kernels availableKernels);
-
-          kernelDerivations =
-            builtins.map mkKernel userKernels;
+          availableKernels = kernelLib.getAvailableKernels flakes;
+          userKernels = kernelLib.getUserKernels baseArgs kernelsConfig availableKernels kernels;
+          kernelDerivations = builtins.map mkKernel userKernels;
 
           jupyterlabEnv = jupyterlabEnvWrapped (baseArgs // jupyterlabEnvArgs);
 
@@ -256,37 +202,11 @@
             mkdir -p $out/config/lab/{user-settings,workspaces}
           '';
 
-          /*
-          Finds kernels from kernelDerivations that have the same kernel
-          instance name and adds them to a list.
-          */
-          duplicateKernelNames =
-            lib.foldl'
-            (
-              acc: e:
-                if
-                  let
-                    allNames = map (k: k.name) userKernels;
-                  in
-                    (lib.count (x: x == e.name) allNames) > 1
-                then acc ++ [e]
-                else acc
-            )
-            []
-            userKernels;
+          duplicateKernelNames = kernelLib.getDuplicateKernelNames userKernels;
         in
           # If any duplicates are found, throw an error and list them.
           if duplicateKernelNames != []
-          then let
-            listOfDuplicates =
-              map
-              (k: "Kernel name ${k.name} in ${k.path}")
-              duplicateKernelNames;
-          in
-            builtins.throw ''
-              Kernel names must be unique. Duplicate kernel names found:
-              ${lib.concatStringsSep "\n" listOfDuplicates}
-            ''
+          then (kernelLib.reportDuplicateKernelNames duplicateKernelNames)
           else
             pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
             {
