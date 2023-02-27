@@ -149,6 +149,51 @@ kernel.python.python-with-numpy.projectDir = ./my-custom-python;
    Eventually, you will see the recognizable messages from JupyterLab in your terminal.
    Open up the Web UI in your browser and use your custom kernel.
 
+??? question "Did something go wrong?"
+
+    If nix fails to build a kernel with an error like the following.
+
+    ```shell
+    error: builder for '/nix/store/y44r14sxadnk0pccy8ciz8p1g6wpwbzq-python3.10-pathspec-0.11.0.drv' failed with exit code 2;
+           last 10 log lines:
+           >   File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+           >   File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+           >   File "<frozen importlib._bootstrap>", line 992, in _find_and_load_unlocked
+           >   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+           >   File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+           >   File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+           >   File "<frozen importlib._bootstrap>", line 1004, in _find_and_load_unlocked
+           > ModuleNotFoundError: No module named 'flit_core'
+    ```
+
+    There is some python package with a build dependency that poetry2nix is
+    unaware about. To fix this you need to tell jupyenv about the dependency
+    through an override. Create an `overrides.nix`.
+
+    ```nix title="overrides.nix"
+    final: prev: let
+      addNativeBuildInputs = drvName: inputs: {
+        "${drvName}" = prev.${drvName}.overridePythonAttrs (
+          old: {
+            nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
+          }
+        );
+      };
+    in
+      {} // addNativeBuildInputs "pathspec" [final.flit-core]
+    ```
+
+    Note we used `"pathspec"` here as that was the package which generated the
+    error and `final.flit-core` as that was the missing module.Add the override
+    to your kernel.
+
+    ```nix title="kernels.nix"
+    kernel.python.python-with-numpy.overrides = overrides.nix;
+    ```
+
+    Start the jupyter environment with `nix run`.
+
+
 ### Julia kernel
 
 The Julia kernel requires some stateful operations to work properly.
