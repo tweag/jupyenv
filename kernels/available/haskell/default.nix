@@ -13,7 +13,13 @@
 }: let
   allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
-  env = haskellKernelPkg {
+  patchedIhaskell = pkgs.runCommand "pathc" {} ''
+    cp -r ${self.inputs.ihaskell} $out
+    chmod -R +w $out
+    sed -i -e 's/ghc-options: -threaded -rtsopts -Wall/ghc-options: -threaded -rtsopts -Wall -dynamic/g' $out/ihaskell.cabal
+  '';
+
+  env = import "${patchedIhaskell}/release.nix" {
     compiler = haskellCompiler;
     nixpkgs = pkgs;
     packages = extraHaskellPackages;

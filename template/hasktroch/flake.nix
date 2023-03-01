@@ -12,7 +12,7 @@
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.jupyenv.url = "github:tweag/jupyenv";
+  inputs.jupyenv.url = "../..";
   inputs.hasktorch.url = "github:hasktorch/hasktorch";
 
   outputs = {
@@ -32,9 +32,20 @@
         inherit (jupyenv.lib.${system}) mkJupyterlabNew;
         jupyterlab = mkJupyterlabNew ({...}: {
           nixpkgs = inputs.nixpkgs;
-          imports = [(import ./kernels.nix { inherit (inputs) hasktorch; })];
+          imports = [(import ./kernels.nix {inherit (inputs) hasktorch nixpkgs;})];
         });
       in rec {
+        nixpkgs =
+          ((import inputs.hasktorch.inputs.nixpkgs {
+            inherit system;
+            config.allowBroken = true;
+          })
+          .appendOverlays [
+            inputs.hasktorch.overlays.cpu-config
+            inputs.hasktorch.inputs.haskell-nix.overlay
+            (inputs.hasktorch.overlays.hasktorch-project "cuda-11")
+          ]).pkgs;
+
         packages = {inherit jupyterlab;};
         packages.default = jupyterlab;
         apps.default.program = "${jupyterlab}/bin/jupyter-lab";
