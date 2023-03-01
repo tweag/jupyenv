@@ -254,36 +254,6 @@
                 ''));
 
         /*
-        Returns kernel instance from a folder.
-
-        Example:
-          getKernelInstance "python" (self + /kernels) ->
-            <kernelInstance>
-        */
-        getKernelInstance = availableKernels: extraArgs: {
-          name,
-          path,
-        }:
-          import path {
-            inherit availableKernels name;
-            extraArgs = baseArgs // extraArgs;
-          };
-
-        /*
-        Return jupyterEnvironment with kernels
-        Example:
-          mkJupyterlabFromPath ./kernels ->
-            <jupyterEnvironment>
-        */
-        mkJupyterlabFromPath = kernelsPath: extraArgs:
-          mkJupyterlab {
-            kernels = availableKernels:
-              builtins.map
-              (getKernelInstance availableKernels extraArgs)
-              (kernelLib.getKernelAttrsetFromPath kernelsPath []);
-          };
-
-        /*
         NixOS Modules stuff
         */
         mkJupyterlabEval = customModule:
@@ -320,7 +290,6 @@
         lib = {
           inherit
             mkJupyterlab
-            mkJupyterlabFromPath
             mkJupyterlabNew
             ;
         };
