@@ -90,171 +90,11 @@
           };
         };
 
-        mkdocs = python.withPackages (p: [
-          p.mkdocs
-          p.mkdocs-material
-          p.mkdocs-material-extensions
-          p.markdown-it-py
-          p.beautifulsoup4
-          p.docopt
-        ]);
-
-        sass = pkgs.callPackage (self + "/dart-sass") {
-          inherit lib;
-          inherit (pkgs) stdenv fetchzip;
-          buildDartPackage = nix-dart.builders."${system}".buildDartPackage;
-        };
-
-        docs = pkgs.stdenv.mkDerivation {
-          name = "jupyenv-docs";
-          src = self;
-          nativeBuildInputs = [mkdocs sass];
-          buildPhase = ''
-            sass docs/sass/home/style.scss docs/stylesheets/home.css
-            cp ${options.optionsJSON}/share/doc/nixos/options.json ./options.json
-            python docs/python-scripts/options.py html ./options.json docs/overrides/optionsContent.html
-            mkdocs build --site-dir dist
-          '';
-          installPhase = ''
-            mkdir $out
-            cp -R dist/* $out/
-            cp ${options.optionsJSON}/share/doc/nixos/options.json $out/options.json
-          '';
-        };
-
-        jupyterlabEnvWrapped = import (self + "/jupyterlab.nix");
-
-        # Creates a derivation with kernel.json and logos
-        mkKernel = kernelInstance_: let
-          # TODO: we should probably assert that the kernelInstance is correctly shaped.
-          #{ name,                    # required; type: string
-          #, language,                # required; type: enum or string
-          #, argv,                    # required; type: list of strings
-          #, displayName ? name       # optional; type: string
-          #, codemirrorMode ? "yaml"  # optional; type: enum or string
-          #, logo32,                  # optional; type: absolute store path
-          #, logo64,                  # optional; type: absolute store path
-          #}:
-          kernelInstance =
-            builtins.removeAttrs kernelInstance_ ["path"];
-
-          kernelLogos = ["logo32" "logo64"];
-        in
-          pkgs.runCommand "${kernelInstance.name}-jupyter-kernel"
-          {
-            passthru = {
-              inherit kernelInstance;
-              IS_JUPYTER_KERNEL = true;
-            };
-          }
-          (
-            ''
-              mkdir -p $out/kernels/${kernelInstance.name}
-            ''
-            + (kernelLib.copyKernelSpec kernelLogos kernelInstance)
-            + (kernelLib.copyKernelLogos kernelLogos kernelInstance)
-          );
-
-        /*
-        TODO:
-        */
-
-        mkJupyterlab = {
-          jupyterlabEnvArgs ? {},
-          kernels ? k: [], # k: [ (k.python {}) k.bash ],
-          # extensions ? e: [], # e: [ e.jupy-ext ]
-          runtimePackages ? [], # runtime package available to all binaries
-          flakes ? [], # flakes where to detect custom kernels/extensions
-        }: let
-          allRuntimePackages =
-            runtimePackages
-            # nodejs and npm are needed to be able to install extensions
-            ++ (with pkgs; [
-              nodejs
-              nodePackages.npm
-            ]);
-
-          availableKernels = kernelLib.getAvailableKernels flakes;
-          userKernels = kernelLib.getUserKernels baseArgs kernelsConfig availableKernels kernels;
-          kernelDerivations = builtins.map mkKernel userKernels;
-
-          jupyterlabEnv = jupyterlabEnvWrapped (baseArgs // jupyterlabEnvArgs);
-
-          # create directories for storing jupyter configs
-          jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
-            # make jupyter config and data directories
-            mkdir -p $out/config $out/data
-            echo "c.NotebookApp.use_redirect_file = False" > $out/config/jupyter_notebook_config.py
-
-            # make jupyter lab user settings and workspaces directories
-            mkdir -p $out/config/lab/{user-settings,workspaces}
-          '';
-
-          duplicateKernelNames = kernelLib.getDuplicateKernelNames userKernels;
-        in
-          # If any duplicates are found, throw an error and list them.
-          if duplicateKernelNames != []
-          then (kernelLib.reportDuplicateKernelNames duplicateKernelNames)
-          else
-            pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
-            {
-              nativeBuildInputs = [pkgs.makeWrapper];
-              meta.mainProgram = "jupyter-lab";
-              passthru = {
-                kernels = builtins.listToAttrs (
-                  builtins.map
-                  (k: {
-                    name = k.name;
-                    value = k;
-                  })
-                  kernelDerivations
-                );
-              };
-            }
-            (''
-                mkdir -p $out/bin
-                for i in ${jupyterlabEnv}/bin/*; do
-                  filename=$(basename $i)
-                  ln -s ${jupyterlabEnv}/bin/$filename $out/bin/$filename
-                  wrapProgram $out/bin/$filename \
-                    --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
-                    --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
-                    --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
-                    --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
-                    --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
-                    --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
-                    --set JUPYTER_DATA_DIR ".jupyter/data" \
-                    --set IPYTHONDIR "/path-not-set" \
-                    --set JUPYTER_RUNTIME_DIR ".jupyter/runtime"
-                done
-              ''
-              + (lib.strings.optionalString (
-                  builtins.any
-                  (kernel: kernel.kernelInstance.language == "julia")
-                  kernelDerivations
-                ) ''
-                  # add Julia for IJulia
-                  echo 'Adding Julia as an available package.'
-                  for i in ${pkgs.julia}/bin/*; do
-                    filename=$(basename $i)
-                    ln -s ${pkgs.julia}/bin/$filename $out/bin/$filename
-                  done
-                ''));
-
-        /*
-        NixOS Modules stuff
-        */
-        mkJupyterlabEval = customModule:
-          pkgs.lib.evalModules {
-            specialArgs = {inherit self system mkJupyterlab;};
-            modules = lib.flatten (
-              [./modules]
-              ++ lib.optional (customModule != null) customModule
-            );
-          };
-
-        mkJupyterlabNew = customModule:
-          (mkJupyterlabEval customModule).config.build;
+        jupyenvLib = lib.makeScope lib.callPackageWith (final: {
+          inherit self system pkgs lib python nix-dart baseArgs kernelsConfig kernelLib;
+          docsLib = final.callPackage ./lib/docs.nix {};
+          jupyterLib = final.callPackage ./lib/jupyter.nix {};
+        });
 
         exampleJupyterlabKernelsNew = (
           lib.mapAttrs'
@@ -262,29 +102,22 @@
             name: value:
               lib.nameValuePair
               ("jupyterlab-kernel-" + name)
-              (mkJupyterlabNew value)
+              (jupyenvLib.jupyterLib.mkJupyterlabNew value)
           )
           kernelsConfig.examples
         );
 
         exampleJupyterlabAllKernelsNew =
-          mkJupyterlabNew (builtins.attrValues kernelsConfig.examples);
-
-        eval = mkJupyterlabEval ({...}: {_module.check = false;});
-        options = pkgs.nixosOptionsDoc {
-          options = builtins.removeAttrs eval.options ["_module"];
-        };
+          jupyenvLib.jupyterLib.mkJupyterlabNew (builtins.attrValues kernelsConfig.examples);
       in {
         lib = {
-          inherit
-            mkJupyterlab
-            mkJupyterlabNew
-            ;
+          mkJupyterlab = jupyenvLib.jupyterLib.mkJupyterlab;
+          mkJupyterlabNew = jupyenvLib.jupyterLib.mkJupyterlabNew;
         };
         packages =
           {
-            jupyterlab-new = mkJupyterlabNew ./config.nix;
-            jupyterlab = jupyterlabEnvWrapped baseArgs;
+            jupyterlab-new = jupyenvLib.jupyterLib.mkJupyterlabNew ./config.nix;
+            jupyterlab = jupyenvLib.jupyterLib.jupyterlabEnvWrapped baseArgs;
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernelsNew;
             pub2nix-lock = nix-dart.packages."${system}".pub2nix-lock;
             update-poetry-lock =
@@ -303,8 +136,9 @@
                   done
                 '';
               };
-            inherit mkdocs docs;
-            default = jupyterlabEnvWrapped baseArgs;
+            docs = jupyenvLib.docsLib.docs;
+            mkdocs = jupyenvLib.docsLib.mkdocs;
+            default = jupyenvLib.jupyterLib.jupyterlabEnvWrapped baseArgs;
           }
           // exampleJupyterlabKernelsNew;
         devShells.default = pkgs.mkShell {
@@ -315,7 +149,7 @@
             poetry
             pkgs.rnix-lsp
             self.packages."${system}".update-poetry-lock
-            mkdocs
+            jupyenvLib.docsLib.mkdocs
           ];
           shellHook = ''
             ${pre-commit.shellHook}
@@ -323,7 +157,7 @@
         };
         checks = {
           inherit pre-commit;
-          jupyterlabEnv = jupyterlabEnvWrapped baseArgs;
+          jupyterlabEnv = jupyenvLib.jupyterLib.jupyterlabEnvWrapped baseArgs;
         };
         apps = {
           update-poetry-lock =
