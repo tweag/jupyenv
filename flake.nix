@@ -59,11 +59,37 @@
     ];
 
     /*
-    Takes a path to a kernels directory, `kernelsPath`
-    and a kernel name, `kernelName`,
-    and returns a set of the form:
-      { description = "<kernelName> kernel"; path = <PATH> }
-    where `PATH` is in the Nix store.
+    Takes a path to a kernels directory, `path` and a kernel name, `name`, and
+    returns a set of the form: { description = "<name> kernel"; path = <path> }
+    where <path> is in the Nix store.
+
+    Primarily used with the available kernels from `kernelsConfig.available`.
+
+    Example:
+      let
+        availableKernels = {
+          bash = "/nix/store/<hash>/kernels/available/bash/default.nix";
+          julia = "/nix/store/<hash>/kernels/available/julia/default.nix";
+          python = "/nix/store/<hash>/kernels/available/python/default.nix";
+          ...
+        };
+      in
+        builtins.mapAttrs mkKernelFlakeOutput availableKernels
+      ->
+      {
+        bash = {
+          description = "bash kernel";
+          path = "/nix/store/<hash>/kernels/available/bash/default.nix";
+        };
+        julia = {
+          description = "julia kernel";
+          path = "/nix/store/<hash>/kernels/available/julia/default.nix";
+        };
+        python = {
+          description = "python kernel";
+          path = "/nix/store/<hash>/kernels/available/python/default.nix";
+        };
+      }
     */
     mkKernelFlakeOutput = name: path: {
       description = "${name} kernel";
