@@ -16,7 +16,7 @@ runs:
         nix_path: nixpkgs=channel:nixpkgs-unstable
         github_access_token: ${{ inputs.SECRET_GITHUB_TOKEN }}
 
-    - uses: cachix/cachix-action@v10
+    - uses: cachix/cachix-action@v12
       with:
         name: tweag-jupyter
         authToken: '${{ inputs.CACHIX_AUTH_TOKEN }}'
