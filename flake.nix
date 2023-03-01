@@ -58,44 +58,6 @@
       # flake-utils.lib.system.x86_64-darwin
     ];
 
-    /*
-    Takes a path to a kernels directory, `path` and a kernel name, `name`, and
-    returns a set of the form: { description = "<name> kernel"; path = <path> }
-    where <path> is in the Nix store.
-
-    Primarily used with the available kernels from `kernelsConfig.available`.
-
-    Example:
-      let
-        availableKernels = {
-          bash = "/nix/store/<hash>/kernels/available/bash/default.nix";
-          julia = "/nix/store/<hash>/kernels/available/julia/default.nix";
-          python = "/nix/store/<hash>/kernels/available/python/default.nix";
-          ...
-        };
-      in
-        builtins.mapAttrs mkKernelFlakeOutput availableKernels
-      ->
-      {
-        bash = {
-          description = "bash kernel";
-          path = "/nix/store/<hash>/kernels/available/bash/default.nix";
-        };
-        julia = {
-          description = "julia kernel";
-          path = "/nix/store/<hash>/kernels/available/julia/default.nix";
-        };
-        python = {
-          description = "python kernel";
-          path = "/nix/store/<hash>/kernels/available/python/default.nix";
-        };
-      }
-    */
-    mkKernelFlakeOutput = name: path: {
-      description = "${name} kernel";
-      inherit path;
-    };
-
     kernelLib = import ./lib/kernels.nix {inherit self lib;};
 
     kernelsConfig = kernelLib._getKernelsFromPath (self + /kernels);
@@ -371,7 +333,7 @@
       }
     ))
     // {
-      jupyterKernels = builtins.mapAttrs mkKernelFlakeOutput kernelsConfig.available;
+      jupyterKernels = builtins.mapAttrs kernelLib.mkKernelFlakeOutput kernelsConfig.available;
       templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyenv project";
