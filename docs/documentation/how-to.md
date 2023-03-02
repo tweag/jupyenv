@@ -188,7 +188,7 @@ kernel.python.python-with-numpy.projectDir = ./my-custom-python;
     to your kernel.
 
     ```nix title="kernels.nix"
-    kernel.python.python-with-numpy.overrides = overrides.nix;
+    kernel.python.python-with-numpy.overrides = ./overrides.nix;
     ```
 
     Start the jupyter environment with `nix run`.
