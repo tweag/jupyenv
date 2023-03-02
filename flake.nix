@@ -90,6 +90,23 @@
           };
         };
 
+        update-poetry-lock =
+          pkgs.writeShellApplication
+          {
+            name = "update-poetry-lock";
+            runtimeInputs = [poetry];
+            text = ''
+              shopt -s globstar
+              for lock in **/poetry.lock; do
+              (
+                echo Updating "$lock"
+                cd "$(dirname "$lock")"
+                poetry update
+              )
+              done
+            '';
+          };
+
         jupyenvLib = lib.makeScope lib.callPackageWith (final: {
           inherit self system pkgs lib python nix-dart baseArgs kernelsConfig kernelLib;
           docsLib = final.callPackage ./lib/docs.nix {};
@@ -120,22 +137,7 @@
             jupyterlab = jupyterLib.jupyterlabEnvWrapped baseArgs;
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernelsNew;
             pub2nix-lock = nix-dart.packages."${system}".pub2nix-lock;
-            update-poetry-lock =
-              pkgs.writeShellApplication
-              {
-                name = "update-poetry-lock";
-                runtimeInputs = [poetry];
-                text = ''
-                  shopt -s globstar
-                  for lock in **/poetry.lock; do
-                  (
-                    echo Updating "$lock"
-                    cd "$(dirname "$lock")"
-                    poetry update
-                  )
-                  done
-                '';
-              };
+            inherit update-poetry-lock;
             inherit (docsLib) docs mkdocs;
             default = jupyterLib.jupyterlabEnvWrapped baseArgs;
           }
