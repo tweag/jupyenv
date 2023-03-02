@@ -4,7 +4,6 @@
   pkgs,
   lib,
   baseArgs,
-  kernelsConfig,
   kernelLib,
 }: rec {
   jupyterlabEnvWrapped = {
@@ -139,7 +138,7 @@
       ]);
 
     availableKernels = kernelLib.getAvailableKernels flakes;
-    userKernels = kernelLib.getUserKernels baseArgs kernelsConfig availableKernels kernels;
+    userKernels = kernelLib.getUserKernels baseArgs availableKernels kernels;
     kernelDerivations = builtins.map mkKernel userKernels;
 
     jupyterlabEnv = jupyterlabEnvWrapped (baseArgs // jupyterlabEnvArgs);

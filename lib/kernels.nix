@@ -417,7 +417,6 @@
     (
       getUserKernels
       {self = self; system = "x86_64-linux";}
-      kernelsConfig # TODO pretty sure this needs to go
       (getAvailableKernels [])
       (k: [(k.bash {})])
     )
@@ -435,22 +434,14 @@
     ]
     getUserKernels
   */
-  getUserKernels = baseArgs: kernelsConfig: availableKernels: kernels:
+  getUserKernels = baseArgs: availableKernels: kernels:
     builtins.map
     (
       kernelConfig:
         (
-          # I think this is a mistake and it should not be kernelsConfig but
-          # kernelConfig. (no 's').
-          # Yeah it should because the API defined in mkKernel specifies that
-          # you can pass `k: [k.bash]` or `k: [(k.bash {})]` as an argument
-          # for `kernels.`
-          # If so then `kernelsConfig` isn't needed as an argument.
-          # Also the Type definition above can remove the second AttrSet.
-          # Double check with @garbas
-          if builtins.isFunction kernelsConfig
+          if builtins.isFunction kernelConfig
           then let
-            kernelConfig_ = kernelsConfig {};
+            kernelConfig_ = kernelConfig {};
           in
             import kernelConfig_.path (baseArgs // kernelConfig_.args)
           else import kernelConfig.path (baseArgs // kernelConfig.args)

@@ -108,7 +108,7 @@
           };
 
         jupyenvLib = lib.makeScope lib.callPackageWith (final: {
-          inherit self system pkgs lib python nix-dart baseArgs kernelsConfig kernelLib;
+          inherit self system pkgs lib python nix-dart baseArgs kernelLib;
           docsLib = final.callPackage ./lib/docs.nix {};
           jupyterLib = final.callPackage ./lib/jupyter.nix {};
         });
