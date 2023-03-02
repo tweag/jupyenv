@@ -95,6 +95,7 @@
           docsLib = final.callPackage ./lib/docs.nix {};
           jupyterLib = final.callPackage ./lib/jupyter.nix {};
         });
+        inherit (jupyenvLib) docsLib jupyterLib;
 
         exampleJupyterlabKernelsNew = (
           lib.mapAttrs'
@@ -102,22 +103,21 @@
             name: value:
               lib.nameValuePair
               ("jupyterlab-kernel-" + name)
-              (jupyenvLib.jupyterLib.mkJupyterlabNew value)
+              (jupyterLib.mkJupyterlabNew value)
           )
           kernelsConfig.examples
         );
 
         exampleJupyterlabAllKernelsNew =
-          jupyenvLib.jupyterLib.mkJupyterlabNew (builtins.attrValues kernelsConfig.examples);
+          jupyterLib.mkJupyterlabNew (builtins.attrValues kernelsConfig.examples);
       in {
-        lib = {
-          mkJupyterlab = jupyenvLib.jupyterLib.mkJupyterlab;
-          mkJupyterlabNew = jupyenvLib.jupyterLib.mkJupyterlabNew;
-        };
+        lib =
+          jupyterLib
+          // {};
         packages =
           {
-            jupyterlab-new = jupyenvLib.jupyterLib.mkJupyterlabNew ./config.nix;
-            jupyterlab = jupyenvLib.jupyterLib.jupyterlabEnvWrapped baseArgs;
+            jupyterlab-new = jupyterLib.mkJupyterlabNew ./config.nix;
+            jupyterlab = jupyterLib.jupyterlabEnvWrapped baseArgs;
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernelsNew;
             pub2nix-lock = nix-dart.packages."${system}".pub2nix-lock;
             update-poetry-lock =
@@ -136,9 +136,8 @@
                   done
                 '';
               };
-            docs = jupyenvLib.docsLib.docs;
-            mkdocs = jupyenvLib.docsLib.mkdocs;
-            default = jupyenvLib.jupyterLib.jupyterlabEnvWrapped baseArgs;
+            inherit (docsLib) docs mkdocs;
+            default = jupyterLib.jupyterlabEnvWrapped baseArgs;
           }
           // exampleJupyterlabKernelsNew;
         devShells.default = pkgs.mkShell {
@@ -149,7 +148,7 @@
             poetry
             pkgs.rnix-lsp
             self.packages."${system}".update-poetry-lock
-            jupyenvLib.docsLib.mkdocs
+            docsLib.mkdocs
           ];
           shellHook = ''
             ${pre-commit.shellHook}
@@ -157,7 +156,7 @@
         };
         checks = {
           inherit pre-commit;
-          jupyterlabEnv = jupyenvLib.jupyterLib.jupyterlabEnvWrapped baseArgs;
+          jupyterlabEnv = jupyterLib.jupyterlabEnvWrapped baseArgs;
         };
         apps = {
           update-poetry-lock =
