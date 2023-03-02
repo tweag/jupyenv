@@ -130,6 +130,7 @@
       in {
         lib =
           jupyterLib
+          // kernelLib
           // {};
         packages =
           {
