@@ -12,6 +12,7 @@ nav:
       - Options: documentation/options.md
       - Developer Guide: documentation/developers.md
       - Roadmap: documentation/roadmap.md
+      - Examples: documentation/examples.md
     - Blog:
       - blogs/release-0.1.0.md
     - Community:
