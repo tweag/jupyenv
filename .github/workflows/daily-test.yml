@@ -31,9 +31,12 @@ jobs:
         cd example/
         nix build
 
-    - name: Slack Notify
-      uses: act10ns/slack@v2.0.0
+    - name: Send message to matrix
+      id: matrix-chat-message
+      uses: fadenb/matrix-chat-message@v0.0.6
       with:
-        webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-        status: ${{ job.status }}
-        channel: '#jupyter'
+        homeserver: 'matrix.org'
+        token: ${{ secrets.MATRIX_TOKEN }}
+        channel: '<!JVjIaYhrLXOiLWJfnL:matrix.org>'
+        message: |
+          ${{ job.status }}
