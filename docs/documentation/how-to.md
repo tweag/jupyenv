@@ -184,11 +184,11 @@ kernel.python.python-with-numpy.projectDir = ./my-custom-python;
     ```
 
     Note we used `"pathspec"` here as that was the package which generated the
-    error and `final.flit-core` as that was the missing module.Add the override
+    error and `final.flit-core` as that was the missing module. Add the override
     to your kernel.
 
     ```nix title="kernels.nix"
-    kernel.python.python-with-numpy.overrides = ./overrides.nix;
+    kernel.python.<yourKernelName>.overrides = ./overrides.nix;
     ```
 
     Start the jupyter environment with `nix run`.
