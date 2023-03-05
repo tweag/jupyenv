@@ -54,7 +54,10 @@ in {
       '';
     };
 
-    nixpkgs = import ./types/nixpkgs.nix {inherit lib self system;};
+    nixpkgs = import ./types/nixpkgs.nix {
+      inherit lib self system;
+      overlays = import ./types/overlays.nix {inherit lib self config kernelName;};
+    };
 
     kernelArgs = lib.mkOption {
       type = types.lazyAttrsOf types.raw;
@@ -63,9 +66,7 @@ in {
     };
   };
 
-  kernelArgs = let
-    overlays = import ./overlays.nix {inherit lib self config kernelName;};
-  in {
+  kernelArgs = {
     inherit
       (config)
       name
@@ -73,6 +74,6 @@ in {
       requiredRuntimePackages
       runtimePackages
       ;
-    pkgs = config.nixpkgs.appendOverlays overlays;
+    pkgs = config.nixpkgs;
   };
 }

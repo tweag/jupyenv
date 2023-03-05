@@ -40,7 +40,7 @@ in {
   };
 
   overrides = lib.mkOption {
-    type = types.anything;
+    type = types.either types.path (types.listOf types.anything);
     default = self + "/kernels/available/${kernelName}/overrides.nix";
     defaultText = lib.literalExpression "self + \"/kernels/available/${kernelName}/overrides.nix\"";
     example = lib.literalExpression "self + \"/kernels/${kernelName}/overrides.nix\"";
@@ -61,7 +61,7 @@ in {
 
   python = lib.mkOption {
     type = types.package;
-    default = config.kernelArgs.pkgs.python3;
+    default = config.nixpkgs.python3;
     example = "python310";
     description = lib.mdDoc ''
       Name of the python interpreter (from nixpkgs) to be used for this
@@ -135,7 +135,7 @@ in {
 
   poetryEnv = lib.mkOption {
     type = types.nullOr types.package;
-    default = config.kernelArgs.pkgs.poetry2nix.mkPoetryEnv {
+    default = config.nixpkgs.poetry2nix.mkPoetryEnv {
       inherit
         (config)
         projectDir
@@ -150,7 +150,7 @@ in {
 
       overrides =
         if config.withDefaultOverrides == true
-        then config.kernelArgs.pkgs.poetry2nix.overrides.withDefaults (import config.overrides)
+        then config.nixpkgs.poetry2nix.overrides.withDefaults (import config.overrides)
         else config.overrides;
     };
     defaultText = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv";

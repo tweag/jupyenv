@@ -33,7 +33,13 @@ in {
             }
             // (lib.recursiveUpdate (import ./types/poetry.nix {
                 inherit lib self;
-                config = config.jupyterlab.jupyterlabEnvArgs // {kernelArgs = {pkgs = config.nixpkgs;};};
+                config =
+                  config.jupyterlab.jupyterlabEnvArgs
+                  // {
+                    nixpkgs = config.nixpkgs.appendOverlays [
+                      self.inputs.poetry2nix.overlay
+                    ];
+                  };
               })
               {
                 projectDir.default = self.outPath;
@@ -79,9 +85,7 @@ in {
   config = {
     build = mkJupyterlab {
       jupyterlabEnvArgs = {
-        pkgs = config.nixpkgs.appendOverlays [
-          self.inputs.poetry2nix.overlay
-        ];
+        pkgs = config.nixpkgs;
         inherit
           (config.jupyterlab.jupyterlabEnvArgs)
           poetryEnv

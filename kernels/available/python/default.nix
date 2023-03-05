@@ -5,7 +5,7 @@
   requiredRuntimePackages,
   runtimePackages,
   ignoreCollisions,
-  poetryEnv
+  poetryEnv,
 }: let
   env = poetryEnv.override (args: {inherit ignoreCollisions;});
 

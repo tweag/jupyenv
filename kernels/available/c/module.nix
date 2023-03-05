@@ -2,11 +2,13 @@
   config,
   system,
   ...
-} @ args:
-import ./../../../modules/poetry.nix {
-  requiredRuntimePackages = [
-    config.nixpkgs.stdenv.cc
+}: {
+  imports = [
+    (import ./../../../modules/poetry.nix {
+      requiredRuntimePackages = [
+        config.nixpkgs.stdenv.cc
+      ];
+      kernelName = "c";
+    })
   ];
-  kernelName = "c";
 }
-args

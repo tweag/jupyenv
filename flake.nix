@@ -127,14 +127,14 @@
           // kernelLib
           // {};
         packages =
-          {
+          rec {
             jupyterlab-new = jupyterLib.mkJupyterlabNew ./config.nix;
-            # jupyterlab = jupyterLib.jupyterlabEnvWrapped baseArgs;
+            jupyterlab = jupyterLib.mkJupyterlabNew {};
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernelsNew;
             pub2nix-lock = nix-dart.packages."${system}".pub2nix-lock;
             inherit update-poetry-lock;
-            # inherit (docsLib) docs mkdocs;
-            # default = jupyterLib.jupyterlabEnvWrapped baseArgs;
+            inherit (docsLib) docs mkdocs;
+            default = jupyterlab;
           }
           // exampleJupyterlabKernelsNew;
         devShells.default = pkgs.mkShell {
@@ -153,7 +153,7 @@
         };
         checks = {
           inherit pre-commit;
-          jupyterlabEnv = jupyterLib.eval.config.build;
+          jupyterlabEnv = self.packages."${system}".default;
         };
         apps = {
           update-poetry-lock =

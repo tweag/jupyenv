@@ -179,7 +179,7 @@
               --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
               --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
               --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
-              --set JUPYTER_PATH ${lib.concatStringsSep ":" kernelDerivations} \
+              --set JUPYTER_PATH "${lib.concatStringsSep ":" kernelDerivations}" \
               --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
               --set JUPYTER_DATA_DIR ".jupyter/data" \
               --set IPYTHONDIR "/path-not-set" \
