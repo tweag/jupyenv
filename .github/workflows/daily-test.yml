@@ -33,7 +33,7 @@ jobs:
 
     - name: Get current date
       id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      run: echo "::set-output name=date::$(TZ=GMT date +'%Y-%m-%d %H:%M:%S %Z')"
 
     - name: Get status
       id: status
@@ -52,8 +52,8 @@ jobs:
           Workflow ***${{ github.workflow }}***\
           Job ***${{ github.job }}***\
           Triggered by ***${{ github.event_name }}***\
-          Is ***${{ steps.status.outputs.uppercase }}***
+          Is ***${{ steps.status.outputs.uppercase }}***\
           For `${{ github.ref }}`\
           On `${{ github.sha }}`\
-          At ${{ steps.date.outputs.date }}
-          With schedule ${{ github.context.payload.schedule }}
+          At ${{ steps.date.outputs.date }}\
+          With schedule ${{ github.events.schedule }}
