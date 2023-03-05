@@ -85,10 +85,13 @@ in {
   config = {
     build = mkJupyterlab {
       jupyterlabEnvArgs = {
-        pkgs = config.nixpkgs;
+        pkgs = config.nixpkgs.appendOverlays [
+          self.inputs.poetry2nix.overlay
+        ];
         inherit
           (config.jupyterlab.jupyterlabEnvArgs)
           poetryEnv
+          extraPackages
           ;
       };
 

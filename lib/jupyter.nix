@@ -15,7 +15,7 @@
     python ? pkgs.python3,
     editablePackageSources ? {},
     extraPackages ? (ps: []),
-    preferWheels ? false,
+    preferWheels ? true,
   }: let
     jupyterlabEnvBase =
       if poetryEnv == null
