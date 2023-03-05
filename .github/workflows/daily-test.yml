@@ -43,6 +43,7 @@ jobs:
 
     - name: Send message to matrix
       id: matrix-chat-message
+      if: always()
       uses: fadenb/matrix-chat-message@v0.0.6
       with:
         homeserver: 'matrix.org'
