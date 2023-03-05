@@ -31,6 +31,16 @@ jobs:
         cd example/
         nix build
 
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+    - name: Get status
+      id: status
+      uses: ASzc/change-string-case-action@v5
+      with:
+        string: ${{ job.status }}
+
     - name: Send message to matrix
       id: matrix-chat-message
       uses: fadenb/matrix-chat-message@v0.0.6
@@ -39,4 +49,11 @@ jobs:
         token: ${{ secrets.MATRIX_TOKEN }}
         channel: '!JVjIaYhrLXOiLWJfnL:matrix.org'
         message: |
-          Workflow ***${{ github.workflow }}*** job ***${{ github.job }}*** triggered by ***${{ github.event_name }}*** is ***${{ job.status }}*** for ***${{ github.ref }}***
+          Workflow ***${{ github.workflow }}***\
+          Job ***${{ github.job }}***\
+          Triggered by ***${{ github.event_name }}***\
+          Is ***${{ steps.status.outputs.uppercase }}***
+          For `${{ github.ref }}`\
+          On `${{ github.sha }}`\
+          At ${{ steps.date.outputs.date }}
+          With schedule ${{ github.context.payload.schedule }}
