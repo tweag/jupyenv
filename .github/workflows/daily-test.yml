@@ -49,8 +49,8 @@ jobs:
       uses: haya14busa/action-cond@v1
       with:
         cond: ${{ steps.status.outputs == 'success' }}
-        if_true: ":tada:"
-        if_false: ":hankey:"
+        if_true: "🎉"
+        if_false: "💩"
 
     - name: Send message to matrix
       id: matrix-chat-message
