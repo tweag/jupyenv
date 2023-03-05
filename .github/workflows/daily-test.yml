@@ -31,12 +31,41 @@ jobs:
         cd example/
         nix build
 
+    - name: Get current date
+      id: date
+      if: always()
+      run: echo "::set-output name=date::$(TZ=GMT date +'%Y-%m-%d %H:%M:%S %Z')"
+
+    - name: Get status
+      id: status
+      if: always()
+      uses: ASzc/change-string-case-action@v5
+      with:
+        string: ${{ job.status }}
+
+    - name: Get status emoji
+      id: status_emoji
+      if: always()
+      uses: haya14busa/action-cond@v1
+      with:
+        cond: ${{ steps.status.outputs.lowercase == 'success' }}
+        if_true: "🎉"
+        if_false: "💩"
+
     - name: Send message to matrix
       id: matrix-chat-message
+      if: always()
       uses: fadenb/matrix-chat-message@v0.0.6
       with:
         homeserver: 'matrix.org'
         token: ${{ secrets.MATRIX_TOKEN }}
-        channel: '<!JVjIaYhrLXOiLWJfnL:matrix.org>'
+        channel: '!JVjIaYhrLXOiLWJfnL:matrix.org'
         message: |
-          ${{ job.status }}
+          ${{ steps.status_emoji.outputs.value }} ***${{ steps.status.outputs.uppercase }}***\
+          Workflow ***${{ github.workflow }}***\
+          Job ***${{ github.job }}***\
+          Triggered by ***${{ github.event_name }}***\
+          For `${{ github.ref }}`\
+          On `${{ github.sha }}`\
+          At ${{ steps.date.outputs.date }}\
+          With schedule `${{ github.event.schedule }}`
