@@ -48,7 +48,7 @@ jobs:
       if: always()
       uses: haya14busa/action-cond@v1
       with:
-        cond: ${{ steps.status.outputs == 'success' }}
+        cond: ${{ steps.status.outputs.lowercase == 'success' }}
         if_true: "🎉"
         if_false: "💩"
 
