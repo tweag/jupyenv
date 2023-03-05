@@ -33,10 +33,12 @@ jobs:
 
     - name: Get current date
       id: date
+      if: always()
       run: echo "::set-output name=date::$(TZ=GMT date +'%Y-%m-%d %H:%M:%S %Z')"
 
     - name: Get status
       id: status
+      if: always()
       uses: ASzc/change-string-case-action@v5
       with:
         string: ${{ job.status }}
@@ -50,10 +52,10 @@ jobs:
         token: ${{ secrets.MATRIX_TOKEN }}
         channel: '!JVjIaYhrLXOiLWJfnL:matrix.org'
         message: |
+          /rainbow ***${{ steps.status.outputs.uppercase }}***\
           Workflow ***${{ github.workflow }}***\
           Job ***${{ github.job }}***\
           Triggered by ***${{ github.event_name }}***\
-          Is ***${{ steps.status.outputs.uppercase }}***\
           For `${{ github.ref }}`\
           On `${{ github.sha }}`\
           At ${{ steps.date.outputs.date }}\
