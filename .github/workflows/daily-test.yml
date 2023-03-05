@@ -56,4 +56,4 @@ jobs:
           For `${{ github.ref }}`\
           On `${{ github.sha }}`\
           At ${{ steps.date.outputs.date }}\
-          With schedule ${{ github.events.schedule }}
+          With schedule ${{ github.event.schedule }}
