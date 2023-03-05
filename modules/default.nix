@@ -19,6 +19,37 @@ in {
         description = "A list of runtime packages available to all binaries";
         default = [];
       };
+
+      jupyterlabEnvArgs = lib.mkOption {
+        type = types.submodule {
+          options =
+            {
+              extraPackages = lib.mkOption {
+                type = types.functionTo (types.listOf types.package);
+                default = ps: [];
+                example = ps: [ps.jupytext];
+                description = lib.mdDoc "A list of packages for extending the jupyterlab environment";
+              };
+            }
+            // (lib.recursiveUpdate (import ./types/poetry.nix {
+                inherit lib self;
+                config =
+                  config.jupyterlab.jupyterlabEnvArgs
+                  // {
+                    nixpkgs = config.nixpkgs.appendOverlays [
+                      self.inputs.poetry2nix.overlay
+                    ];
+                  };
+              })
+              {
+                withDefaultOverrides.default = false;
+                overrides.default = import ../lib/overrides.nix config.nixpkgs;
+                projectDir.default = self.outPath;
+              });
+        };
+        default = {};
+        description = "Arguments for the jupyterlab poetry's environment";
+      };
     };
 
     # flakes ? [], # flakes where to detect custom kernels/extensions
@@ -54,7 +85,14 @@ in {
 
   config = {
     build = mkJupyterlab {
-      #jupyterlabEnvArgs = config.jupyterlabEnvArgs;
+      jupyterlabEnvArgs = {
+        pkgs = config.nixpkgs;
+        inherit
+          (config.jupyterlab.jupyterlabEnvArgs)
+          poetryEnv
+          ;
+      };
+
       kernels = availableKernels:
         lib.flatten
         (

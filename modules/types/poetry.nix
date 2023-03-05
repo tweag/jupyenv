@@ -40,7 +40,8 @@ in {
   };
 
   overrides = lib.mkOption {
-    type = types.path;
+    # type = types.either types.path (types.listOf types.anything);
+    type = types.anything;
     default = self + "/kernels/available/${kernelName}/overrides.nix";
     defaultText = lib.literalExpression "self + \"/kernels/available/${kernelName}/overrides.nix\"";
     example = lib.literalExpression "self + \"/kernels/${kernelName}/overrides.nix\"";
@@ -60,8 +61,8 @@ in {
   };
 
   python = lib.mkOption {
-    type = types.str;
-    default = "python3";
+    type = types.package;
+    default = config.kernelArgs.pkgs.python3;
     example = "python310";
     description = lib.mdDoc ''
       Name of the python interpreter (from nixpkgs) to be used for this
@@ -130,6 +131,33 @@ in {
     example = lib.literalExpression "true";
     description = lib.mdDoc ''
       Ignore file collisions inside the environment.
+    '';
+  };
+
+  poetryEnv = lib.mkOption {
+    type = types.package;
+    default = config.kernelArgs.pkgs.poetry2nix.mkPoetryEnv {
+      inherit
+        (config)
+        projectDir
+        pyproject
+        poetrylock
+        editablePackageSources
+        extraPackages
+        preferWheels
+        groups
+        python
+        ;
+
+      overrides =
+        if config.withDefaultOverrides == true
+        then config.kernelArgs.pkgs.poetry2nix.overrides.withDefaults (import config.overrides)
+        else config.overrides;
+    };
+    defaultText = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv";
+    example = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv";
+    description = lib.mdDoc ''
+      The poetry environment for this ${kernelName} kernel.
     '';
   };
 }

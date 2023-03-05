@@ -1,15 +1,13 @@
 {
-  self,
-  system,
-  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-  name ? "haskell",
+  pkgs,
+  name,
   displayName ? "Haskell",
-  requiredRuntimePackages ? [pkgs.haskell.compiler.${haskellCompiler}],
-  runtimePackages ? [],
-  haskellKernelPkg ? import "${self.inputs.ihaskell}/release.nix",
-  haskellCompiler ? "ghc902",
-  extraHaskellFlags ? "-M3g -N2",
-  extraHaskellPackages ? (_: []),
+  requiredRuntimePackages,
+  runtimePackages,
+  haskellKernelPkg,
+  haskellCompiler,
+  extraHaskellFlags,
+  extraHaskellPackages,
 }: let
   allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 

@@ -27,23 +27,9 @@
         rec {
           inherit
             (config)
-            projectDir
-            pyproject
-            poetrylock
-            editablePackageSources
-            extraPackages
-            preferWheels
-            groups
             ignoreCollisions
+            poetryEnv
             ;
-          pkgs = config.nixpkgs;
-          python = pkgs.${config.python};
-          poetry = pkgs.callPackage "${config.poetry2nix}/pkgs/poetry" {inherit python;};
-          poetry2nix = import "${config.poetry2nix}/default.nix" {inherit pkgs poetry;};
-          overrides =
-            if config.withDefaultOverrides == true
-            then poetry2nix.overrides.withDefaults (import config.overrides)
-            else import config.overrides;
         }
         // kernelModule.kernelArgs;
     };

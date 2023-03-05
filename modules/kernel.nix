@@ -63,8 +63,9 @@ in {
     };
   };
 
-  kernelArgs = {
-    inherit self system;
+  kernelArgs = let
+    overlays = import ./overlays.nix {inherit lib self config kernelName;};
+  in {
     inherit
       (config)
       name
@@ -72,6 +73,6 @@ in {
       requiredRuntimePackages
       runtimePackages
       ;
-    pkgs = config.nixpkgs;
+    pkgs = config.nixpkgs.appendOverlays overlays;
   };
 }

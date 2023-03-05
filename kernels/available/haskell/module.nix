@@ -64,7 +64,7 @@
     config = lib.mkIf config.enable {
       kernelArgs =
         {
-          inherit (config) extraHaskellFlags extraHaskellPackages;
+          inherit (config) extraHaskellFlags extraHaskellPackages haskellCompiler;
           haskellKernelPkg = import "${config.ihaskell}/release.nix";
         }
         // kernelModule.kernelArgs;

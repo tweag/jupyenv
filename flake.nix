@@ -71,7 +71,7 @@
         poetry = pkgs.callPackage "${poetry2nix}/pkgs/poetry" {inherit python;};
 
         baseArgs = {
-          inherit self system;
+          # inherit self system;
         };
 
         pre-commit = pre-commit-hooks.lib.${system}.run {
