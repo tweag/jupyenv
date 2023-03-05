@@ -39,4 +39,4 @@ jobs:
         token: ${{ secrets.MATRIX_TOKEN }}
         channel: '!JVjIaYhrLXOiLWJfnL:matrix.org'
         message: |
-          Workflow ${{ github.workflow }} job ${{ github.job }} triggered by ${{ github.event_name }} is ${{ job.status }} for ${{ github.ref }}
+          Workflow ***${{ github.workflow }}*** job ***${{ github.job }}*** triggered by ***${{ github.event_name }}*** is ***${{ job.status }}*** for ***${{ github.ref }}***
