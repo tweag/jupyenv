@@ -1,13 +1,10 @@
 {
-  self,
-  system,
-  # custom arguments
-  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-  name ? "go",
-  displayName ? "Go",
-  requiredRuntimePackages ? with pkgs; [go],
-  runtimePackages ? [],
-  gophernotes ? pkgs.gophernotes,
+  pkgs,
+  name,
+  displayName,
+  requiredRuntimePackages,
+  runtimePackages,
+  gophernotes,
 }: let
   inherit (pkgs) lib stdenv writeScriptBin;
 

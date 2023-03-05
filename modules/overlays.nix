@@ -4,8 +4,13 @@
   self,
   kernelName,
 }: let
+  findKernel = name: list:
+    if (lib.intersectLists [name] list) != []
+    then true
+    else false;
+
   overlays =
-    if (kernelName) == "python"
+    if (findKernel kernelName ["python" "bash" "c" "elm" "zsh"])
     then [
       self.inputs.poetry2nix.overlay
     ]
@@ -13,11 +18,6 @@
     then [
       self.inputs.rust-overlay.overlays.default
     ]
-    else if kernelName == "bash"
-    then [
-      self.inputs.poetry2nix.overlay
-    ]
-    else [
-    ];
+    else [];
 in
   overlays

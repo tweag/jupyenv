@@ -33,4 +33,4 @@ pkgs: let
       });
     };
 in
-  [((pkgs.poetry2nix.defaultPoetryOverrides.overrideOverlay preOverlay).extend postOverlay)]
+  (pkgs.poetry2nix.defaultPoetryOverrides.overrideOverlay preOverlay).extend postOverlay

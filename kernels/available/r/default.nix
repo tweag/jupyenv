@@ -1,15 +1,12 @@
 {
-  self,
-  system,
-  # custom arguments
-  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-  name ? "r",
-  displayName ? "R",
-  requiredRuntimePackages ? [],
-  runtimePackages ? [],
-  rWrapper ? pkgs.rWrapper,
-  rPackages ? pkgs.rPackages,
-  extraRPackages ? (_: []),
+  pkgs,
+  name,
+  displayName,
+  requiredRuntimePackages,
+  runtimePackages,
+  rWrapper,
+  rPackages,
+  extraRPackages,
 }: let
   env = rWrapper.override {
     packages = (extraRPackages rPackages) ++ [rPackages.IRkernel];

@@ -434,7 +434,7 @@
     ]
     getUserKernels
   */
-  getUserKernels = baseArgs: availableKernels: kernels:
+  getUserKernels = availableKernels: kernels:
     builtins.map
     (
       kernelConfig:
@@ -443,8 +443,8 @@
           then let
             kernelConfig_ = kernelConfig {};
           in
-            import kernelConfig_.path (baseArgs // kernelConfig_.args)
-          else import kernelConfig.path (baseArgs // kernelConfig.args)
+            import kernelConfig_.path kernelConfig_.args
+          else import kernelConfig.path kernelConfig.args
         )
         // {inherit (kernelConfig) path;}
     )

@@ -1,26 +1,23 @@
 {
-  self,
-  system,
-  # custom arguments
-  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-  name ? "ocaml",
-  displayName ? "OCaml",
-  requiredRuntimePackages ? [],
-  runtimePackages ? [],
+  pkgs,
+  name,
+  displayName,
+  requiredRuntimePackages,
+  runtimePackages,
   # https://github.com/tweag/opam-nix
-  opam-nix ? self.inputs.opam-nix,
+  opam-nix,
   # Set of required packages
-  requiredOcamlPackages ? {merlin = "*";},
+  requiredOcamlPackages,
   # Set of user desired packages
-  ocamlPackages ? {}, # { hex = "*"; owl = "*"; },
+  ocamlPackages, # { hex = "*"; owl = "*"; },
   # List of directories containing .opam files
-  opamProjects ? [], # [ self.inputs.myOpamProject ],
+  opamProjects, # [ self.inputs.myOpamProject ],
   # See opam-nix.buildDuneProject first argument
-  opamNixArgs ? {},
+  opamNixArgs,
 }: let
   allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
-  _opam-nix = opam-nix.lib.${system};
+  _opam-nix = opam-nix.lib.${pkgs.system};
 
   customOpamRepo = _opam-nix.joinRepos (map _opam-nix.makeOpamRepo opamProjects);
   customOpamPackages = __mapAttrs (_: pkgs.lib.last) (_opam-nix.listRepo customOpamRepo);

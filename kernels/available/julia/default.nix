@@ -1,16 +1,13 @@
 {
-  self,
-  system,
-  # custom arguments
-  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-  name ? "julia",
-  displayName ? "Julia",
-  requiredRuntimePackages ? [],
-  runtimePackages ? [],
-  julia ? pkgs.julia,
-  julia_depot_path ? "~/.julia",
-  activateDir ? "",
-  ijuliaRev ? "6TIq1",
+  pkgs,
+  name,
+  displayName,
+  requiredRuntimePackages,
+  runtimePackages,
+  julia,
+  julia_depot_path,
+  activateDir,
+  ijuliaRev,
 }: let
   inherit (pkgs) writeText;
   inherit (pkgs.lib) optionalString;

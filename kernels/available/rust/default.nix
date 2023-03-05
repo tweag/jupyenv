@@ -1,18 +1,10 @@
 {
-  self,
-  system,
-  # custom arguments
-  pkgs ?
-    import self.inputs.nixpkgs {
-      inherit system;
-      overlays = [rust-overlay.overlays.default];
-    },
-  rust-overlay ? self.inputs.rust-overlay,
-  name ? "rust",
-  displayName ? "Rust",
-  requiredRuntimePackages ? with pkgs; [cargo gcc binutils-unwrapped],
-  runtimePackages ? [],
-  evcxr ? pkgs.evcxr,
+  pkgs,
+  name,
+  displayName,
+  requiredRuntimePackages,
+  runtimePackages,
+  evcxr,
 }: let
   /*
   rust-overlay recommends using `default` over `rust`.

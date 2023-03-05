@@ -1,16 +1,13 @@
 {
-  self,
-  system,
-  # custom arguments
-  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-  name ? "scala",
-  displayName ? "Scala",
-  requiredRuntimePackages ? [],
-  runtimePackages ? [],
-  scala ? pkgs.scala,
-  coursier ? pkgs.coursier,
-  jdk ? pkgs.jdk,
-  jre ? pkgs.jre,
+  pkgs,
+  name,
+  displayName,
+  requiredRuntimePackages,
+  runtimePackages,
+  scala,
+  coursier,
+  jdk,
+  jre,
 }: let
   inherit (pkgs) lib makeWrapper stdenv;
 

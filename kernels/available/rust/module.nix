@@ -31,27 +31,14 @@
             An evaluation context for Rust.
           '';
         };
-
-        rust-overlay = lib.mkOption {
-          type = types.path;
-          default = self.inputs.rust-overlay;
-          defaultText = lib.literalExpression "self.inputs.rust-overlay";
-          example = lib.literalExpression "self.inputs.rust-overlay";
-          description = lib.mdDoc ''
-            An overlay for binary distributed rust toolchains. Adds `rust-bin` to nixpkgs which is needed for the Rust kernel.
-          '';
-        };
       }
       // kernelModule.options;
+
     config = lib.mkIf config.enable {
       kernelArgs =
         kernelModule.kernelArgs
         // {
-          inherit (config) evcxr rust-overlay;
-          pkgs = import config.nixpkgs.path {
-            inherit system;
-            overlays = [config.rust-overlay.overlays.default];
-          };
+          inherit (config) evcxr;
         };
     };
   };

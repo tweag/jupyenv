@@ -3,17 +3,36 @@
   system,
   pkgs,
   lib,
-  baseArgs,
   kernelLib,
 }: rec {
   jupyterlabEnvWrapped = {
     pkgs,
     poetryEnv,
+    projectDir ? self, # TODO: only include relevant files/folders
+    pyproject ? projectDir + "/pyproject.toml",
+    poetrylock ? projectDir + "/poetry.lock",
+    overrides ? import ./overrides.nix pkgs,
+    python ? pkgs.python3,
+    editablePackageSources ? {},
+    extraPackages ? (ps: []),
+    preferWheels ? false,
   }: let
-    jupyterlabEnvBase = pkgs.poetry2nix.mkPoetryEnv {
-      projectDir = ../.;
-      overrides = import ./overrides.nix pkgs;
-    };
+    jupyterlabEnvBase =
+      if poetryEnv == null
+      then
+        pkgs.poetry2nix.mkPoetryEnv {
+          inherit
+            pyproject
+            poetrylock
+            preferWheels
+            projectDir
+            python
+            editablePackageSources
+            extraPackages
+            overrides
+            ;
+        }
+      else poetryEnv;
     jupyterlab-checker =
       pkgs.writeText "jupyterlab-checker"
       ''
@@ -114,10 +133,10 @@
       ]);
 
     availableKernels = kernelLib.getAvailableKernels flakes;
-    userKernels = kernelLib.getUserKernels baseArgs availableKernels kernels;
+    userKernels = kernelLib.getUserKernels availableKernels kernels;
     kernelDerivations = builtins.map mkKernel userKernels;
 
-    jupyterlabEnv = jupyterlabEnvWrapped (baseArgs // jupyterlabEnvArgs);
+    jupyterlabEnv = jupyterlabEnvWrapped jupyterlabEnvArgs;
 
     # create directories for storing jupyter configs
     jupyterDir = pkgs.runCommand "jupyter-dir" {} ''

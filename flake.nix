@@ -64,15 +64,9 @@
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
-        pkgs = nixpkgs.legacyPackages.${system};
-
-        python = pkgs.python3;
-        poetry2nixPkgs = import "${poetry2nix}/default.nix" {inherit pkgs poetry;};
-        poetry = pkgs.callPackage "${poetry2nix}/pkgs/poetry" {inherit python;};
-
-        baseArgs = {
-          # inherit self system;
-        };
+        pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
+          self.inputs.poetry2nix.overlay
+        ];
 
         pre-commit = pre-commit-hooks.lib.${system}.run {
           src = self;
@@ -94,7 +88,7 @@
           pkgs.writeShellApplication
           {
             name = "update-poetry-lock";
-            runtimeInputs = [poetry];
+            runtimeInputs = [pkgs.poetry];
             text = ''
               shopt -s globstar
               for lock in **/poetry.lock; do
@@ -108,7 +102,7 @@
           };
 
         jupyenvLib = lib.makeScope lib.callPackageWith (final: {
-          inherit self system pkgs lib python nix-dart baseArgs kernelLib;
+          inherit self system pkgs lib nix-dart kernelLib;
           docsLib = final.callPackage ./lib/docs.nix {};
           jupyterLib = final.callPackage ./lib/jupyter.nix {};
         });
@@ -135,20 +129,20 @@
         packages =
           {
             jupyterlab-new = jupyterLib.mkJupyterlabNew ./config.nix;
-            jupyterlab = jupyterLib.jupyterlabEnvWrapped baseArgs;
+            # jupyterlab = jupyterLib.jupyterlabEnvWrapped baseArgs;
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernelsNew;
             pub2nix-lock = nix-dart.packages."${system}".pub2nix-lock;
             inherit update-poetry-lock;
-            inherit (docsLib) docs mkdocs;
-            default = jupyterLib.jupyterlabEnvWrapped baseArgs;
+            # inherit (docsLib) docs mkdocs;
+            # default = jupyterLib.jupyterlabEnvWrapped baseArgs;
           }
           // exampleJupyterlabKernelsNew;
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
             pkgs.typos
-            poetry2nixPkgs.cli
-            poetry
+            pkgs.poetry2nix.cli
+            pkgs.poetry
             pkgs.rnix-lsp
             self.packages."${system}".update-poetry-lock
             docsLib.mkdocs
@@ -159,7 +153,7 @@
         };
         checks = {
           inherit pre-commit;
-          jupyterlabEnv = jupyterLib.jupyterlabEnvWrapped baseArgs;
+          jupyterlabEnv = jupyterLib.eval.config.build;
         };
         apps = {
           update-poetry-lock =

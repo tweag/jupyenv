@@ -40,7 +40,6 @@ in {
   };
 
   overrides = lib.mkOption {
-    # type = types.either types.path (types.listOf types.anything);
     type = types.anything;
     default = self + "/kernels/available/${kernelName}/overrides.nix";
     defaultText = lib.literalExpression "self + \"/kernels/available/${kernelName}/overrides.nix\"";
@@ -106,7 +105,7 @@ in {
 
   groups = lib.mkOption {
     type = types.listOf types.str;
-    default = ["dev"];
+    default = [];
     defaultText = lib.literalExpression "[\"dev\"]";
     example = lib.literalExpression ''["dev" "doc"]'';
     description = lib.mdDoc ''
@@ -135,7 +134,7 @@ in {
   };
 
   poetryEnv = lib.mkOption {
-    type = types.package;
+    type = types.nullOr types.package;
     default = config.kernelArgs.pkgs.poetry2nix.mkPoetryEnv {
       inherit
         (config)

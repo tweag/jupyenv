@@ -1,42 +1,13 @@
 {
-  self,
-  system,
-  # custom arguments
-  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-  name ? "elm",
-  displayName ? "Elm",
-  requiredRuntimePackages ? with pkgs.elmPackages; [elm],
-  runtimePackages ? [],
-  # https://github.com/nix-community/poetry2nix
-  poetry2nix ? import "${self.inputs.poetry2nix}/default.nix" {inherit pkgs poetry;},
-  poetry ? pkgs.callPackage "${self.inputs.poetry2nix}/pkgs/poetry" {inherit python;},
-  # https://github.com/nix-community/poetry2nix#mkPoetryEnv
-  projectDir ? self + "/kernels/available/elm",
-  pyproject ? projectDir + "/pyproject.toml",
-  poetrylock ? projectDir + "/poetry.lock",
-  overrides ? poetry2nix.overrides.withDefaults (import ./overrides.nix),
-  python ? pkgs.python3,
-  editablePackageSources ? {},
-  extraPackages ? ps: [],
-  preferWheels ? false,
-  groups ? ["dev"],
-  ignoreCollisions ? false,
+  pkgs,
+  name,
+  displayName,
+  requiredRuntimePackages,
+  runtimePackages,
+  ignoreCollisions,
+  poetryEnv,
 }: let
-  env =
-    (poetry2nix.mkPoetryEnv {
-      inherit
-        projectDir
-        pyproject
-        poetrylock
-        overrides
-        python
-        editablePackageSources
-        extraPackages
-        preferWheels
-        groups
-        ;
-    })
-    .override (args: {inherit ignoreCollisions;});
+  env = poetryEnv.override (args: {inherit ignoreCollisions;});
 
   allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 

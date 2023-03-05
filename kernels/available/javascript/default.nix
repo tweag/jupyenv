@@ -1,13 +1,10 @@
 {
-  self,
-  system,
-  # custom arguments
-  pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-  name ? "javascript",
-  displayName ? "Javascript",
-  requiredRuntimePackages ? [],
-  runtimePackages ? [],
-  ijavascript ? pkgs.nodePackages.ijavascript,
+  pkgs,
+  name,
+  displayName,
+  requiredRuntimePackages,
+  runtimePackages,
+  ijavascript,
 }: let
   inherit (pkgs) lib stdenv writeScriptBin;
   inherit (lib) makeBinPath;
