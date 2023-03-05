@@ -43,6 +43,15 @@ jobs:
       with:
         string: ${{ job.status }}
 
+    - name: Get status emoji
+      id: status_emoji
+      if: always()
+      uses: haya14busa/action-cond@v1
+      with:
+        cond: ${{ steps.status.outputs == 'success' }}
+        if_true: ":tada:"
+        if_false: ":hankey:"
+
     - name: Send message to matrix
       id: matrix-chat-message
       if: always()
@@ -52,7 +61,7 @@ jobs:
         token: ${{ secrets.MATRIX_TOKEN }}
         channel: '!JVjIaYhrLXOiLWJfnL:matrix.org'
         message: |
-          /rainbow ***${{ steps.status.outputs.uppercase }}***\
+          ${{ steps.status_emoji.outputs.value }} ***${{ steps.status.outputs.uppercase }}***\
           Workflow ***${{ github.workflow }}***\
           Job ***${{ github.job }}***\
           Triggered by ***${{ github.event_name }}***\
