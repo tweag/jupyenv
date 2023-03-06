@@ -23,7 +23,7 @@
     python ? pkgs.python3,
     editablePackageSources ? {},
     extraPackages ? (ps: []),
-    preferWheels ? true,
+    preferWheels ? false,
     # groups ? ["devs"], # TODO: add groups after updating to latest poetry2nix. make sure to inherit below
   }: let
     jupyterlabEnvBase = pkgs.poetry2nix.mkPoetryEnv {
