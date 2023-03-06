@@ -5,20 +5,11 @@ pkgs: let
     });
   };
 
-  # A fix is on the way soon, https://github.com/nix-community/poetry2nix/pull/787
-  preOverlay = final: prev: {
-    babel = null;
-    Babel = null;
-    babel_ = prev.babel.overridePythonAttrs (old: {
-      nativeBuildInputs = (old.nativeBuildInputs or []) ++ [final.setuptools];
-    });
-  };
+  preOverlay = final: prev: {};
 
   postOverlay = final: prev:
     {}
     // {
-      babel = prev.babel_;
-      Babel = prev.babel_;
       testbook = prev.testbook.overridePythonAttrs (old: {
         postPatch = ''
           mkdir ./tmp
