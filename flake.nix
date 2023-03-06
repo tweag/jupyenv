@@ -164,18 +164,33 @@
     ))
     // {
       jupyterKernels = builtins.mapAttrs kernelLib.mkKernelFlakeOutput kernelsConfig.available;
-      templates.default = {
-        path = ./template;
-        description = "Boilerplate for your jupyenv project";
-        welcomeText = ''
-          You have created a jupyenv template.
+      templates = {
+        default = {
+          path = ./templates/default;
+          description = "Boilerplate for your jupyenv project";
+          welcomeText = ''
+            You have created a jupyenv template.
 
-          Run `nix run` to immediately try it out.
+            Run `nix run` to immediately try it out.
 
-          See the jupyenv documentation for more information.
+            See the jupyenv documentation for more information.
 
-            https://jupyenv.io/documentation/getting-started/
-        '';
+              https://jupyenv.io/documentation/getting-started/
+          '';
+        };
+        preferWheels = {
+          path = ./templates/preferWheels;
+          description = "Boilerplate for your jupyenv project, python wheels preferred";
+          welcomeText = ''
+            You have created a jupyenv template.
+
+            Run `nix run` to immediately try it out.
+
+            See the jupyenv documentation for more information.
+
+              https://jupyenv.io/documentation/getting-started/
+          '';
+        };
       };
     };
 }

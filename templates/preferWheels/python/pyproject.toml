@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "python-data-science"
+version = "0.1.0"
+description = ""
+authors = ["guangtao <gtrunsec@hardenedlinux.org>"]
+readme = "README.md"
+packages = [{include = "python_data_science"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+polars = "^0.16.11"
+pandas = "^1.5.3"
+numpy = "^1.24.2"
+matplotlib = "^3.7.1"
+
+
+[tool.poetry.group.jupyter.dependencies]
+ipykernel = "^6.21.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
