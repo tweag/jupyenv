@@ -24,7 +24,7 @@
     editablePackageSources ? {},
     extraPackages ? (ps: []),
     preferWheels ? false,
-    # groups ? ["devs"], # TODO: add groups after updating to latest poetry2nix. make sure to inherit below
+    groups ? [],
   }: let
     jupyterlabEnvBase = pkgs.poetry2nix.mkPoetryEnv {
       inherit
