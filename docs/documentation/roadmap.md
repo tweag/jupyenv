@@ -4,13 +4,13 @@
 
 - [ ] Internal
 
-  - [ ] Refactor jupyenv internals.
-  - [ ] Make `nixpkgs` configurable per kernel.
+    - [ ] Refactor jupyenv internals.
+    - [ ] Make `nixpkgs` configurable per kernel.
 
 - [ ] Documentation
 
-  - [ ] Add more examples that execise all the kernel arguments.
-  - [ ] Add example configurations to the site.
+    - [ ] Add more examples that execise all the kernel arguments.
+    - [ ] Add example configurations to the site.
 
 ## Future work
 
