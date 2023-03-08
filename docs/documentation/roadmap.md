@@ -1,32 +1,33 @@
 # Roadmap
 
-- [ ] Flake Template
+## Immediate Work
 
-    - [ ] Update and Fix
-    - [ ] Test Continuously
+- [ ] Internal
+
+  - [ ] Refactor jupyenv internals.
+  - [ ] Make `nixpkgs` configurable per kernel.
 
 - [ ] Documentation
 
-    - [x] How to get up and running quickly with `nix run`, #117.
-    - [x] How to use a template.
-    - [x] How to configure existing kernels.
-    - [x] How to package new kernels.
+  - [ ] Add more examples that execise all the kernel arguments.
+  - [ ] Add example configurations to the site.
+
+## Future work
 
 - [ ] MacOS
 
     - [ ] Better support.
     - [ ] Document what does not work, #144.
 
+- [ ] Kernels
+
+    - [ ] [Add F# kernel](https://github.com/tweag/jupyenv/issues/393)
+    - [ ] [Add Scheme kernel](https://github.com/tweag/jupyenv/issues/441)
+    - [ ] See [this list](https://github.com/tweag/jupyenv/issues/79#issuecomment-670774373).
+
 - [ ] Docker
 
     - [ ] Build docker image with all extensions and kernels in CI.
-
-- [ ] Add/Improve kernels
-
-    - [ ] See [this list](https://github.com/tweag/jupyenv/issues/79#issuecomment-670774373).
-    - [x] Add Scala kernel, #80. Possibly uses [IScala](https://github.com/mattpap/IScala).
-    - [ ] Fix Ruby kernel.
-    - [x] Fix OCaml kernel.
 
 - [ ] Declarative JupyterLab extensions with Nix
 
