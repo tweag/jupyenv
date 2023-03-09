@@ -72,12 +72,12 @@ jobs:
     - name: Install IJulia
       if: contains(matrix.kernel, 'julia')
       run: |
-        result/bin/julia kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/installDeps.jl
+        result/bin/julia examples/$( echo "${{ matrix.kernel }}" | sed -e "s|examples-||" | sed -e "s|-|/|g" )/installDeps.jl
 
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
         echo 'If Julia fails, see if IJulia was updated recently.'
-        result/bin/python kernels/$( echo "${{ matrix.kernel }}" | sed -e "s|-|/|g" )/test.py
+        result/bin/python examples/$( echo "${{ matrix.kernel }}" | sed -e "s|examples-||" | sed -e "s|-|/|g" )/test.py
 
   build-all-kernels:
     name: Build all kernels
