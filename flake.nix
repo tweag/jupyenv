@@ -60,7 +60,7 @@
 
     kernelLib = import ./lib/kernels.nix {inherit self lib;};
 
-    kernelsConfig = kernelLib._getKernelsFromPath (self + /kernels);
+    kernelsConfig = kernelLib._getKernelsFromPath (self + /modules/kernels);
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
@@ -114,6 +114,7 @@
         });
         inherit (jupyenvLib) docsLib jupyterLib;
 
+        examples = kernelLib.mapKernelsFromPath (self + /examples) ["example"];
         exampleJupyterlabKernelsNew = (
           lib.mapAttrs'
           (
@@ -122,11 +123,11 @@
               ("jupyterlab-kernel-" + name)
               (jupyterLib.mkJupyterlabNew value)
           )
-          kernelsConfig.examples
+          examples
         );
 
         exampleJupyterlabAllKernelsNew =
-          jupyterLib.mkJupyterlabNew (builtins.attrValues kernelsConfig.examples);
+          jupyterLib.mkJupyterlabNew (builtins.attrValues examples);
       in {
         lib =
           jupyterLib
@@ -169,7 +170,7 @@
       }
     ))
     // {
-      jupyterKernels = builtins.mapAttrs kernelLib.mkKernelFlakeOutput kernelsConfig.available;
+      jupyterKernels = builtins.mapAttrs kernelLib.mkKernelFlakeOutput kernelsConfig;
       templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyenv project";

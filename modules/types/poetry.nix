@@ -8,8 +8,8 @@
 in {
   projectDir = lib.mkOption {
     type = types.path;
-    default = self + "/kernels/available/${kernelName}";
-    defaultText = lib.literalExpression "self + \"/kernels/available/${kernelName}\"";
+    default = self + "/modules/kernels/${kernelName}";
+    defaultText = lib.literalExpression "self + \"/modules/kernels/${kernelName}\"";
     example = lib.literalExpression "self + \"/kernels/${kernelName}\"";
     description = lib.mdDoc ''
       Path to the root of the poetry project that provides this ${kernelName}
@@ -41,8 +41,8 @@ in {
 
   overrides = lib.mkOption {
     type = types.path;
-    default = self + "/kernels/available/${kernelName}/overrides.nix";
-    defaultText = lib.literalExpression "self + \"/kernels/available/${kernelName}/overrides.nix\"";
+    default = self + "/modules/kernels/${kernelName}/overrides.nix";
+    defaultText = lib.literalExpression "self + \"/modules/kernels/${kernelName}/overrides.nix\"";
     example = lib.literalExpression "self + \"/kernels/${kernelName}/overrides.nix\"";
     description = ''
       Path to `overrides.nix` file which provides python package overrides
