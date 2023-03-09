@@ -3,7 +3,7 @@
   system,
   ...
 } @ args:
-import ./../../../modules/poetry.nix {
+import ./../../poetry.nix {
   kernelName = "bash";
   requiredRuntimePackages = [
     config.nixpkgs.bashInteractive

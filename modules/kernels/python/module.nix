@@ -1,1 +1,1 @@
-import ./../../../modules/poetry.nix {kernelName = "python";}
+import ./../../poetry.nix {kernelName = "python";}

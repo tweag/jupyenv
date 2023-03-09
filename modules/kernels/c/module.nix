@@ -3,7 +3,7 @@
   system,
   ...
 } @ args:
-import ./../../../modules/poetry.nix {
+import ./../../poetry.nix {
   requiredRuntimePackages = [
     config.nixpkgs.stdenv.cc
   ];

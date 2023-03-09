@@ -17,7 +17,7 @@
       config.nixpkgs.haskell.compiler.${config.haskellCompiler}
     ];
     args = {inherit self system lib config name kernelName requiredRuntimePackages;};
-    kernelModule = import ./../../../modules/kernel.nix args;
+    kernelModule = import ./../../kernel.nix args;
   in {
     options =
       {

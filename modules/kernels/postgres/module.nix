@@ -1,1 +1,1 @@
-import ./../../../modules/poetry.nix {kernelName = "postgres";}
+import ./../../poetry.nix {kernelName = "postgres";}

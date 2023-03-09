@@ -14,7 +14,7 @@
     ...
   }: let
     args = {inherit self system lib config name kernelName;};
-    kernelModule = import ./../../../modules/kernel.nix args;
+    kernelModule = import ./../../kernel.nix args;
   in {
     options =
       {}
