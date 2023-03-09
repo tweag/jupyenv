@@ -59,7 +59,25 @@ jobs:
       with:
         homeserver: 'matrix.org'
         token: ${{ secrets.MATRIX_TOKEN }}
-        channel: '!JVjIaYhrLXOiLWJfnL:matrix.org'
+        channel: '!JVjIaYhrLXOiLWJfnL:matrix.org' # notifications room
+        message: |
+          ${{ steps.status_emoji.outputs.value }} ***${{ steps.status.outputs.uppercase }}***\
+          Workflow ***${{ github.workflow }}***\
+          Job ***${{ github.job }}***\
+          Triggered by ***${{ github.event_name }}***\
+          For `${{ github.ref }}`\
+          On `${{ github.sha }}`\
+          At ${{ steps.date.outputs.date }}\
+          With schedule `${{ github.event.schedule }}`
+
+    - name: Send message to matrix
+      id: matrix-chat-message
+      if: ${{ steps.status_emoji.outputs.value == 'failure' }}
+      uses: fadenb/matrix-chat-message@v0.0.6
+      with:
+        homeserver: 'matrix.org'
+        token: ${{ secrets.MATRIX_TOKEN }}
+        channel: '!hrqXNOEWKJRLLIJlcS:matrix.org' # dev room
         message: |
           ${{ steps.status_emoji.outputs.value }} ***${{ steps.status.outputs.uppercase }}***\
           Workflow ***${{ github.workflow }}***\
