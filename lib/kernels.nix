@@ -199,26 +199,18 @@
     );
 
   /*
-  Creates an attrset that contains all the available and example kernels from a
-  path to the kernels directory, `kernelsPath`.
+  Creates an attrset that contains all the kernels from a path to the kernels
+  directory, `kernelsPath`.
 
   Example:
-    _getKernelsFromPath (self + /kernels) ->
+    _getKernelsFromPath (self + /modules/kernels) ->
       {
-        kernels = {
-          example-bash-minimal = "/nix/store/<hash>/kernels/example/bash/minimal/default.nix";
-          ...
-        };
-        available = {
-          bash = "/nix/store/<hash>/kernels/available/bash/default.nix";
-          ...
-        };
+        bash = "/nix/store/<hash>/modules/kernels/bash/default.nix";
+        ...
       }
   */
-  _getKernelsFromPath = kernelsPath: {
-    examples = mapKernelsFromPath "${kernelsPath}/example" ["example"];
-    available = mapKernelsFromPath "${kernelsPath}/available" [];
-  };
+  _getKernelsFromPath = kernelsPath:
+    mapKernelsFromPath kernelsPath [];
 
   /*
   Creates a shell command as a string that copies kernel logo images to a path
@@ -236,7 +228,7 @@
     let
       kernelInstance = {
         name = "pythontest";
-        logo64 = ./kernels/available/python/logo64.png;
+        logo64 = ./kernels/python/logo64.png;
       };
     in
       kernelLib.copyKernelLogos ["logo64"] kernelInstance
@@ -247,7 +239,7 @@
     let
       kernelInstance = {
         name = "pythontest";
-        logo64 = ./kernels/available/python/logo64.png;
+        logo64 = ./kernels//python/logo64.png;
       };
     in
       kernelLib.copyKernelLogos ["logo32"] kernelInstance
@@ -282,7 +274,7 @@
         name = "pythontest";
         displayName = "Python Test";
         codemirrorMode = "python";
-        logo64 = ./kernels/available/python/logo64.png;
+        logo64 = ./kernels/python/logo64.png;
       };
     in
       kernelLib.fixKernelJSON ["logo64" "logo32"] kernelInstance
@@ -330,7 +322,7 @@
         name = "pythontest";
         displayName = "Python Test";
         codemirrorMode = "python";
-        logo64 = ./kernels/available/python/logo64.png;
+        logo64 = ./kernels/python/logo64.png;
       };
     in
       kernelLib.fixKernelJSON ["logo64" "logo32"] kernelInstance

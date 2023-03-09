@@ -32,25 +32,25 @@ in {
   };
 
   imports = [
-    ./../kernels/available/bash/module.nix
-    ./../kernels/available/c/module.nix
-    ./../kernels/available/elm/module.nix
-    ./../kernels/available/go/module.nix
-    ./../kernels/available/haskell/module.nix
-    ./../kernels/available/javascript/module.nix
-    ./../kernels/available/julia/module.nix
-    ./../kernels/available/nix/module.nix
-    ./../kernels/available/ocaml/module.nix
-    ./../kernels/available/postgres/module.nix
-    ./../kernels/available/python/module.nix
-    ./../kernels/available/r/module.nix
-    ./../kernels/available/rust/module.nix
-    ./../kernels/available/scala/module.nix
-    ./../kernels/available/typescript/module.nix
-    ./../kernels/available/zsh/module.nix
+    ./../modules/kernels/bash/module.nix
+    ./../modules/kernels/c/module.nix
+    ./../modules/kernels/elm/module.nix
+    ./../modules/kernels/go/module.nix
+    ./../modules/kernels/haskell/module.nix
+    ./../modules/kernels/javascript/module.nix
+    ./../modules/kernels/julia/module.nix
+    ./../modules/kernels/nix/module.nix
+    ./../modules/kernels/ocaml/module.nix
+    ./../modules/kernels/postgres/module.nix
+    ./../modules/kernels/python/module.nix
+    ./../modules/kernels/r/module.nix
+    ./../modules/kernels/rust/module.nix
+    ./../modules/kernels/scala/module.nix
+    ./../modules/kernels/typescript/module.nix
+    ./../modules/kernels/zsh/module.nix
   ];
   # TODO: add kernels
-  #++ map (name: ./. + "/../kernels/available/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../kernels/available));
+  #++ map (name: ./. + "/../modules/kernels/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../modules/kernels));
 
   config = {
     build = mkJupyterlab {

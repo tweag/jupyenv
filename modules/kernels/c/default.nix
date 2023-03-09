@@ -11,7 +11,7 @@
   poetry2nix ? import "${self.inputs.poetry2nix}/default.nix" {inherit pkgs poetry;},
   poetry ? pkgs.callPackage "${self.inputs.poetry2nix}/pkgs/poetry" {inherit python;},
   # https://github.com/nix-community/poetry2nix#mkPoetryEnv
-  projectDir ? self + "/kernels/available/c",
+  projectDir ? self + "/modules/kernels/c",
   pyproject ? projectDir + "/pyproject.toml",
   poetrylock ? projectDir + "/poetry.lock",
   overrides ? poetry2nix.overrides.withDefaults (import ./overrides.nix),

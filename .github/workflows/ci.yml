@@ -26,7 +26,7 @@ jobs:
         CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_TWEAG_JUPYTER_NIX_AUTH_TOKEN }}
         SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: List all available kernels
+    - name: List all example kernels
       id: kernels
       env:
         # Should only be needed until we use a `cachinx/install-nix` action that contains
@@ -190,7 +190,7 @@ jobs:
     # TODO this should not be dependent on the example kernels tests as the kernel names are different
     - name: Test
       run: |
-        pushd ./repo/kernels/example/python/minimal
+        pushd ./repo/examples/python/minimal
           sed -i -e "s|python-minimal-example|python-minimal|" test.py
         popd
-        ./example/result/bin/python ./repo/kernels/example/python/minimal/test.py
+        ./example/result/bin/python ./repo/examples/python/minimal/test.py
