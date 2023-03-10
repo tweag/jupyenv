@@ -7,6 +7,8 @@
   ...
 }: let
   types = lib.types;
+
+  mkJupyterlab = ...
 in {
   options = {
     # jupyterlabEnvArgs ? {},
@@ -32,22 +34,22 @@ in {
   };
 
   imports = [
-    ./../modules/kernels/bash/module.nix
-    ./../modules/kernels/c/module.nix
-    ./../modules/kernels/elm/module.nix
-    ./../modules/kernels/go/module.nix
-    ./../modules/kernels/haskell/module.nix
-    ./../modules/kernels/javascript/module.nix
-    ./../modules/kernels/julia/module.nix
-    ./../modules/kernels/nix/module.nix
-    ./../modules/kernels/ocaml/module.nix
-    ./../modules/kernels/postgres/module.nix
-    ./../modules/kernels/python/module.nix
-    ./../modules/kernels/r/module.nix
-    ./../modules/kernels/rust/module.nix
-    ./../modules/kernels/scala/module.nix
-    ./../modules/kernels/typescript/module.nix
-    ./../modules/kernels/zsh/module.nix
+    ./../modules/kernels/bash/default.nix
+#    ./../modules/kernels/c/module.nix
+#    ./../modules/kernels/elm/module.nix
+#    ./../modules/kernels/go/module.nix
+#    ./../modules/kernels/haskell/module.nix
+#    ./../modules/kernels/javascript/module.nix
+#    ./../modules/kernels/julia/module.nix
+#    ./../modules/kernels/nix/module.nix
+#    ./../modules/kernels/ocaml/module.nix
+#    ./../modules/kernels/postgres/module.nix
+#    ./../modules/kernels/python/module.nix
+#    ./../modules/kernels/r/module.nix
+#    ./../modules/kernels/rust/module.nix
+#    ./../modules/kernels/scala/module.nix
+#    ./../modules/kernels/typescript/module.nix
+#    ./../modules/kernels/zsh/module.nix
   ];
   # TODO: add kernels
   #++ map (name: ./. + "/../modules/kernels/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../modules/kernels));
@@ -55,7 +57,9 @@ in {
   config = {
     build = mkJupyterlab {
       #jupyterlabEnvArgs = config.jupyterlabEnvArgs;
-      kernels = availableKernels:
+      #runtimePackages = config.jupyterlab.runtimePackages;
+      #flakes = config.flakes;
+      kernels =
         lib.flatten
         (
           builtins.map
@@ -64,15 +68,12 @@ in {
               builtins.map
               (
                 kernelName:
-                  availableKernels.${kernelTypeName}
-                  config.kernel.${kernelTypeName}.${kernelName}.kernelArgs
+                  config.kernel.${kernelTypeName}.${kernelName}.build
               )
               (builtins.attrNames config.kernel.${kernelTypeName})
           )
           (builtins.attrNames config.kernel)
         );
-      runtimePackages = config.jupyterlab.runtimePackages;
-      #flakes = config.flakes;
     };
     _module.args.pkgs = config.nixpkgs;
   };

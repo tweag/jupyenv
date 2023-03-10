@@ -10,6 +10,8 @@
 }: let
   inherit (lib) types;
 
+  mkKernel = ...
+
   kernelOptions = {
     config,
     name,
@@ -23,6 +25,7 @@
       // kernelModule.options;
 
     config = lib.mkIf config.enable {
+      build = mkKernel { ...}
       kernelArgs =
         rec {
           inherit
