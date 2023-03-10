@@ -53,7 +53,7 @@ jobs:
         if_false: "💩"
 
     - name: Send message to matrix
-      id: matrix-chat-message
+      id: matrix-chat-message-always-notifiy
       if: always()
       uses: fadenb/matrix-chat-message@v0.0.6
       with:
@@ -71,7 +71,7 @@ jobs:
           With schedule `${{ github.event.schedule }}`
 
     - name: Send message to matrix
-      id: matrix-chat-message
+      id: matrix-chat-message-failure-notifiy
       if: ${{ steps.status_emoji.outputs.value == 'failure' }}
       uses: fadenb/matrix-chat-message@v0.0.6
       with:
