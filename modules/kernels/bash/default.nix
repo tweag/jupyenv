@@ -1,6 +1,7 @@
 {
   config,
   system,
+  mkKernel,
   ...
 } @ args:
 import ./../../poetry.nix {
@@ -9,5 +10,6 @@ import ./../../poetry.nix {
     config.nixpkgs.bashInteractive
     config.nixpkgs.coreutils
   ];
+  inherit mkKernel;
 }
 args

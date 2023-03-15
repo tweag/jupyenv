@@ -137,9 +137,10 @@
         nodePackages.npm
       ]);
 
-    availableKernels = kernelLib.getAvailableKernels flakes;
-    userKernels = kernelLib.getUserKernels baseArgs availableKernels kernels;
-    kernelDerivations = builtins.map mkKernel userKernels;
+    #availableKernels = kernelLib.getAvailableKernels flakes;
+    #userKernels = builtins.trace (builtins.head kernels).outPath (kernelLib.getUserKernels baseArgs availableKernels kernels);
+    #kernelDerivations = builtins.map mkKernel userKernels;
+    kernelDerivations = kernels;
 
     jupyterlabEnv = jupyterlabEnvWrapped (baseArgs // jupyterlabEnvArgs);
 
@@ -152,64 +153,63 @@
       # make jupyter lab user settings and workspaces directories
       mkdir -p $out/config/lab/{user-settings,workspaces}
     '';
-
-    duplicateKernelNames = kernelLib.getDuplicateKernelNames userKernels;
+    #duplicateKernelNames = kernelLib.getDuplicateKernelNames userKernels;
   in
     # If any duplicates are found, throw an error and list them.
-    if duplicateKernelNames != []
-    then (kernelLib.reportDuplicateKernelNames duplicateKernelNames)
-    else
-      pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
-      {
-        nativeBuildInputs = [pkgs.makeWrapper];
-        meta.mainProgram = "jupyter-lab";
-        passthru = {
-          kernels = builtins.listToAttrs (
-            builtins.map
-            (k: {
-              name = k.name;
-              value = k;
-            })
-            kernelDerivations
-          );
-        };
-      }
-      (''
-          mkdir -p $out/bin
-          for i in ${jupyterlabEnv}/bin/*; do
+    #if duplicateKernelNames != []
+    #then (kernelLib.reportDuplicateKernelNames duplicateKernelNames)
+    #else
+    pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
+    {
+      nativeBuildInputs = [pkgs.makeWrapper];
+      meta.mainProgram = "jupyter-lab";
+      passthru = {
+        kernels = builtins.listToAttrs (
+          builtins.map
+          (k: {
+            name = k.name;
+            value = k;
+          })
+          kernelDerivations
+        );
+      };
+    }
+    (''
+        mkdir -p $out/bin
+        for i in ${jupyterlabEnv}/bin/*; do
+          filename=$(basename $i)
+          ln -s ${jupyterlabEnv}/bin/$filename $out/bin/$filename
+          wrapProgram $out/bin/$filename \
+            --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
+            --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
+            --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
+            --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
+            --set JUPYTER_PATH "${lib.concatStringsSep ":" kernelDerivations}" \
+            --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
+            --set JUPYTER_DATA_DIR ".jupyter/data" \
+            --set IPYTHONDIR "/path-not-set" \
+            --set JUPYTER_RUNTIME_DIR ".jupyter/runtime"
+        done
+      ''
+      + (lib.strings.optionalString (
+          builtins.any
+          (kernel: kernel.kernelInstance.language == "julia")
+          kernelDerivations
+        ) ''
+          # add Julia for IJulia
+          echo 'Adding Julia as an available package.'
+          for i in ${pkgs.julia}/bin/*; do
             filename=$(basename $i)
-            ln -s ${jupyterlabEnv}/bin/$filename $out/bin/$filename
-            wrapProgram $out/bin/$filename \
-              --prefix PATH : ${lib.makeBinPath allRuntimePackages} \
-              --set JUPYTERLAB_DIR .jupyter/lab/share/jupyter/lab \
-              --set JUPYTERLAB_SETTINGS_DIR ".jupyter/lab/user-settings" \
-              --set JUPYTERLAB_WORKSPACES_DIR ".jupyter/lab/workspaces" \
-              --set JUPYTER_PATH "${lib.concatStringsSep ":" kernelDerivations}" \
-              --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
-              --set JUPYTER_DATA_DIR ".jupyter/data" \
-              --set IPYTHONDIR "/path-not-set" \
-              --set JUPYTER_RUNTIME_DIR ".jupyter/runtime"
+            ln -s ${pkgs.julia}/bin/$filename $out/bin/$filename
           done
-        ''
-        + (lib.strings.optionalString (
-            builtins.any
-            (kernel: kernel.kernelInstance.language == "julia")
-            kernelDerivations
-          ) ''
-            # add Julia for IJulia
-            echo 'Adding Julia as an available package.'
-            for i in ${pkgs.julia}/bin/*; do
-              filename=$(basename $i)
-              ln -s ${pkgs.julia}/bin/$filename $out/bin/$filename
-            done
-          ''));
+        ''));
 
   /*
   NixOS Modules stuff
   */
   mkJupyterlabEval = customModule:
     pkgs.lib.evalModules {
-      specialArgs = {inherit self system mkJupyterlab;};
+      specialArgs = {inherit self system mkJupyterlab mkKernel;};
       modules = lib.flatten (
         [../modules]
         ++ lib.optional (customModule != null) customModule
