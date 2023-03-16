@@ -10,10 +10,6 @@
   types = lib.types;
 in {
   options = {
-    # jupyterlabEnvArgs ? {},
-    # kernels ? k: [], # k: [ (k.python {}) k.bash ],
-    # # extensions ? e: [], # e: [ e.jupy-ext ]
-
     jupyterlab = {
       runtimePackages = lib.mkOption {
         type = types.listOf types.package;
@@ -21,8 +17,6 @@ in {
         default = [];
       };
     };
-
-    # flakes ? [], # flakes where to detect custom kernels/extensions
 
     build = lib.mkOption {
       type = types.package;
@@ -55,9 +49,6 @@ in {
 
   config = {
     build = mkJupyterlab {
-      #jupyterlabEnvArgs = config.jupyterlabEnvArgs;
-      #runtimePackages = config.jupyterlab.runtimePackages;
-      #flakes = config.flakes;
       kernels =
         lib.flatten
         (
