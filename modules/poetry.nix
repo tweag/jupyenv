@@ -1,6 +1,8 @@
 {
   kernelName,
   requiredRuntimePackages ? [],
+  mkKernel,
+  kernelFunc,
 }: {
   self,
   system,
@@ -20,9 +22,16 @@
   in {
     options =
       import ./types/poetry.nix {inherit lib self config kernelName;}
-      // kernelModule.options;
+      // kernelModule.options
+      // {
+        build = lib.mkOption {
+          type = types.package;
+          internal = true;
+        };
+      };
 
     config = lib.mkIf config.enable {
+      build = mkKernel (kernelFunc config.kernelArgs);
       kernelArgs =
         rec {
           inherit

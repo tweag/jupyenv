@@ -3,44 +3,6 @@
   lib,
 }: let
   /*
-  Takes a path to a kernels directory, `path` and a kernel name, `name`, and
-  returns a set of the form: { description = "<name> kernel"; path = <path> }
-  where <path> is in the Nix store.
-
-  Primarily used with the available kernels from `kernelsConfig.available`.
-
-  Example:
-    let
-      availableKernels = {
-        bash = "/nix/store/<hash>/kernels/available/bash/default.nix";
-        julia = "/nix/store/<hash>/kernels/available/julia/default.nix";
-        python = "/nix/store/<hash>/kernels/available/python/default.nix";
-        ...
-      };
-    in
-      builtins.mapAttrs mkKernelFlakeOutput availableKernels
-    ->
-    {
-      bash = {
-        description = "bash kernel";
-        path = "/nix/store/<hash>/kernels/available/bash/default.nix";
-      };
-      julia = {
-        description = "julia kernel";
-        path = "/nix/store/<hash>/kernels/available/julia/default.nix";
-      };
-      python = {
-        description = "python kernel";
-        path = "/nix/store/<hash>/kernels/available/python/default.nix";
-      };
-    }
-  */
-  mkKernelFlakeOutput = name: path: {
-    description = "${name} kernel";
-    inherit path;
-  };
-
-  /*
   Creates a nested list of kernels instances from a path, `parentPath`, and a
   prefix name list, `prefix`.
 
@@ -199,20 +161,6 @@
     );
 
   /*
-  Creates an attrset that contains all the kernels from a path to the kernels
-  directory, `kernelsPath`.
-
-  Example:
-    _getKernelsFromPath (self + /modules/kernels) ->
-      {
-        bash = "/nix/store/<hash>/modules/kernels/bash/default.nix";
-        ...
-      }
-  */
-  _getKernelsFromPath = kernelsPath:
-    mapKernelsFromPath kernelsPath [];
-
-  /*
   Creates a shell command as a string that copies kernel logo images to a path
   in the nix store.
 
@@ -334,203 +282,12 @@
   in ''
     echo '${builtins.toJSON kernelSpec}' > $out/kernels/${kernelInstance.name}/kernel.json
   '';
-
-  /*
-  An attribute set of all the available and valid kernels where the
-  attribute name is the kernel name and the attribute value is the
-  overridable version of the kernel's default.nix file.
-  returns:
-  {
-    <kernelName> = <kernelFactory>;
-  }
-
-  Returns kernels that are available for use.
-
-  The input `flakes` must contain an attribute set with name `jupyterKernels`.
-  The attribute set must be made of attributes that map kernel names to kernel
-  configuration functions that exist in the Nix store.
-
-  Each kernel is mapped to a function that takes an attribute set as an input
-  which can later be applied as part of the kernel configuration.
-
-  Type: [AttrSet] -> (AttrSet -> AttrSet)
-
-  Example:
-    getAvailableKernels [] -> {
-      bash = <lambda>;
-      c = <lambda>;
-      ...
-    }
-
-  Example:
-    (getAvailableKernels []).bash {inherit self system;} -> {
-      args = {self = ...; system = ...;};
-      path = "/nix/store/<hash>/kernels/available/bash/default.nix";
-    }
-  */
-  getAvailableKernels = flakes:
-    builtins.listToAttrs
-    (
-      lib.flatten
-      (
-        builtins.map
-        (
-          flake:
-            if builtins.hasAttr "jupyterKernels" flake
-            then
-              (
-                lib.mapAttrsToList
-                (
-                  name: kernel: {
-                    inherit name;
-                    value = args: {
-                      inherit args;
-                      inherit (kernel) path;
-                    };
-                  }
-                )
-                flake.jupyterKernels
-              )
-            else []
-        )
-        ([self] ++ flakes)
-      )
-    );
-
-  /*
-  Initializes user specified kernels. Imports a kernel configuration via
-  its default.nix file and applies base arguments as well as user provided
-  arguments. Returns a list of attribute sets; each set contains sufficient
-  information to create a kernel spec file that Jupyter can use.
-
-  Type: AttrSet -> AttrSet -> AttrSet -> <lambda> -> [AttrSet]
-
-  Example:
-    (
-      getUserKernels
-      {self = self; system = "x86_64-linux";}
-      (getAvailableKernels [])
-      (k: [(k.bash {})])
-    )
-    ->
-    [
-      {
-        argv = [ "/nix/store/<hash>/bin/python" "-m" "bash_kernel" "-f" "{connection_file}" ];
-        codemirrorMode = "shell";
-        displayName = "Bash";
-        language = "bash";
-        logo64 = /nix/store/<hash>/kernels/available/bash/logo64.png;
-        name = "bash";
-        path = "/nix/store/<hash>/kernels/available/bash/default.nix";
-      }
-    ]
-    getUserKernels
-  */
-  getUserKernels = baseArgs: availableKernels: kernels:
-    builtins.map
-    (
-      kernelConfig:
-        (
-          if builtins.isFunction kernelConfig
-          then let
-            kernelConfig_ = kernelConfig {};
-          in
-            import kernelConfig_.path (baseArgs // kernelConfig_.args)
-          else import kernelConfig.path (baseArgs // kernelConfig.args)
-        )
-        // {inherit (kernelConfig) path;}
-    )
-    (kernels availableKernels);
-
-  /*
-  Finds kernels that have the same instance name and adds them to a list.
-
-  Kernels must have unique `name` attribute values which is what Jupyter uses
-  to differentiate kernels via their kernel spec.
-
-  Type: [AttrSet] -> [AttrSet]
-
-  Example:
-    let
-      userKernels = [
-        {name = "dupe0"; path = /nopath0;}
-        {name = "dupe0"; path = /nopath1;}
-      ];
-    in
-      getDuplicateKernelNames userKernels
-    ->
-    [
-      { name = "dupe0"; path = /nopath0; }
-      { name = "dupe0"; path = /nopath1; }
-    ]
-
-  Example:
-    let
-      userKernels = [
-        {name = "dupe0"; path = /nopath0;}
-        {name = "dupe1"; path = /nopath1;}
-      ];
-    in
-      getDuplicateKernelNames userKernels
-    ->
-    [ ]
-  */
-  getDuplicateKernelNames = userKernels:
-    lib.foldl'
-    (
-      acc: e:
-        if
-          let
-            allNames = map (k: k.name) userKernels;
-          in
-            (lib.count (x: x == e.name) allNames) > 1
-        then acc ++ [e]
-        else acc
-    )
-    []
-    userKernels;
-
-  /*
-  Throws an error listing out duplicate kernels by their `name` and `path`
-  attribute values.
-
-  Type: [AttrSet] -> Error
-
-  Example:
-    let
-      userKernels = [
-        {name = "dupe0"; path = ./.;}
-        {name = "dupe0"; path = ./.;}
-      ];
-    in
-      reportDuplicateKernelNames userKernels
-    ->
-    error: Kernel names must be unique. Duplicate kernel names found:
-           Kernel name dupe0 in /nix/store/<hash>
-           Kernel name dupe0 in /nix/store/<hash>
-  */
-  reportDuplicateKernelNames = duplicateKernelNames: let
-    listOfDuplicates =
-      map
-      (k: "Kernel name ${k.name} in ${k.path}")
-      duplicateKernelNames;
-  in
-    builtins.throw ''
-      Kernel names must be unique. Duplicate kernel names found:
-      ${lib.concatStringsSep "\n" listOfDuplicates}
-    '';
 in {
   inherit
-    mkKernelFlakeOutput
-    _getKernelsFromPath
     getKernelAttrsetFromPath
     mapKernelsFromPath
     copyKernelLogos
     createKernelSpec
     copyKernelSpec
-    getAvailableKernels
-    getUserKernels
-    getDuplicateKernelNames
-    reportDuplicateKernelNames
     ;
 }

@@ -3,16 +3,13 @@
   config,
   lib,
   mkJupyterlab,
+  mkKernel,
   system,
   ...
 }: let
   types = lib.types;
 in {
   options = {
-    # jupyterlabEnvArgs ? {},
-    # kernels ? k: [], # k: [ (k.python {}) k.bash ],
-    # # extensions ? e: [], # e: [ e.jupy-ext ]
-
     jupyterlab = {
       runtimePackages = lib.mkOption {
         type = types.listOf types.package;
@@ -20,8 +17,6 @@ in {
         default = [];
       };
     };
-
-    # flakes ? [], # flakes where to detect custom kernels/extensions
 
     build = lib.mkOption {
       type = types.package;
@@ -32,30 +27,29 @@ in {
   };
 
   imports = [
-    ./../modules/kernels/bash/module.nix
-    ./../modules/kernels/c/module.nix
-    ./../modules/kernels/elm/module.nix
-    ./../modules/kernels/go/module.nix
-    ./../modules/kernels/haskell/module.nix
-    ./../modules/kernels/javascript/module.nix
-    ./../modules/kernels/julia/module.nix
-    ./../modules/kernels/nix/module.nix
-    ./../modules/kernels/ocaml/module.nix
-    ./../modules/kernels/postgres/module.nix
-    ./../modules/kernels/python/module.nix
-    ./../modules/kernels/r/module.nix
-    ./../modules/kernels/rust/module.nix
-    ./../modules/kernels/scala/module.nix
-    ./../modules/kernels/typescript/module.nix
-    ./../modules/kernels/zsh/module.nix
+    ./../modules/kernels/bash/default.nix
+    ./../modules/kernels/c/default.nix
+    ./../modules/kernels/elm/default.nix
+    ./../modules/kernels/go/default.nix
+    ./../modules/kernels/haskell/default.nix
+    ./../modules/kernels/javascript/default.nix
+    ./../modules/kernels/julia/default.nix
+    ./../modules/kernels/nix/default.nix
+    ./../modules/kernels/ocaml/default.nix
+    ./../modules/kernels/postgres/default.nix
+    ./../modules/kernels/python/default.nix
+    ./../modules/kernels/r/default.nix
+    ./../modules/kernels/rust/default.nix
+    ./../modules/kernels/scala/default.nix
+    ./../modules/kernels/typescript/default.nix
+    ./../modules/kernels/zsh/default.nix
   ];
   # TODO: add kernels
   #++ map (name: ./. + "/../modules/kernels/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../modules/kernels));
 
   config = {
     build = mkJupyterlab {
-      #jupyterlabEnvArgs = config.jupyterlabEnvArgs;
-      kernels = availableKernels:
+      kernels =
         lib.flatten
         (
           builtins.map
@@ -64,15 +58,12 @@ in {
               builtins.map
               (
                 kernelName:
-                  availableKernels.${kernelTypeName}
-                  config.kernel.${kernelTypeName}.${kernelName}.kernelArgs
+                  config.kernel.${kernelTypeName}.${kernelName}.build
               )
               (builtins.attrNames config.kernel.${kernelTypeName})
           )
           (builtins.attrNames config.kernel)
         );
-      runtimePackages = config.jupyterlab.runtimePackages;
-      #flakes = config.flakes;
     };
     _module.args.pkgs = config.nixpkgs;
   };

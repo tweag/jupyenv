@@ -61,6 +61,11 @@ in {
       readOnly = true;
       internal = true;
     };
+
+    build = lib.mkOption {
+      type = types.package;
+      internal = true;
+    };
   };
 
   kernelArgs = {
