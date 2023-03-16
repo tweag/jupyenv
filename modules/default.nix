@@ -44,7 +44,7 @@ in {
     ./../modules/kernels/ocaml/default.nix
     ./../modules/kernels/postgres/default.nix
     ./../modules/kernels/python/default.nix
-    #    ./../modules/kernels/r/module.nix
+    ./../modules/kernels/r/default.nix
     #    ./../modules/kernels/rust/module.nix
     #    ./../modules/kernels/scala/module.nix
     #    ./../modules/kernels/typescript/module.nix
