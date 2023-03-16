@@ -43,7 +43,7 @@ in {
     ./../modules/kernels/nix/default.nix
     #    ./../modules/kernels/ocaml/module.nix
     ./../modules/kernels/postgres/default.nix
-    #    ./../modules/kernels/python/module.nix
+    ./../modules/kernels/python/default.nix
     #    ./../modules/kernels/r/module.nix
     #    ./../modules/kernels/rust/module.nix
     #    ./../modules/kernels/scala/module.nix
