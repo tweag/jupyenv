@@ -40,7 +40,7 @@ in {
     #    ./../modules/kernels/haskell/module.nix
     #    ./../modules/kernels/javascript/module.nix
     #    ./../modules/kernels/julia/module.nix
-    #    ./../modules/kernels/nix/module.nix
+    ./../modules/kernels/nix/default.nix
     #    ./../modules/kernels/ocaml/module.nix
     #    ./../modules/kernels/postgres/module.nix
     #    ./../modules/kernels/python/module.nix
