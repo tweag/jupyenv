@@ -37,7 +37,7 @@ in {
     ./../modules/kernels/c/default.nix
     ./../modules/kernels/elm/default.nix
     ./../modules/kernels/go/default.nix
-    #    ./../modules/kernels/haskell/module.nix
+    ./../modules/kernels/haskell/default.nix
     #    ./../modules/kernels/javascript/module.nix
     #    ./../modules/kernels/julia/module.nix
     ./../modules/kernels/nix/default.nix
