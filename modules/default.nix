@@ -38,7 +38,7 @@ in {
     ./../modules/kernels/elm/default.nix
     ./../modules/kernels/go/default.nix
     ./../modules/kernels/haskell/default.nix
-    #    ./../modules/kernels/javascript/module.nix
+    ./../modules/kernels/javascript/default.nix
     #    ./../modules/kernels/julia/module.nix
     ./../modules/kernels/nix/default.nix
     #    ./../modules/kernels/ocaml/module.nix
