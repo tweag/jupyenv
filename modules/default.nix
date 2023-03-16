@@ -42,7 +42,7 @@ in {
     #    ./../modules/kernels/julia/module.nix
     ./../modules/kernels/nix/default.nix
     #    ./../modules/kernels/ocaml/module.nix
-    #    ./../modules/kernels/postgres/module.nix
+    ./../modules/kernels/postgres/default.nix
     #    ./../modules/kernels/python/module.nix
     #    ./../modules/kernels/r/module.nix
     #    ./../modules/kernels/rust/module.nix
