@@ -41,7 +41,7 @@ in {
     ./../modules/kernels/javascript/default.nix
     ./../modules/kernels/julia/default.nix
     ./../modules/kernels/nix/default.nix
-    #    ./../modules/kernels/ocaml/module.nix
+    ./../modules/kernels/ocaml/default.nix
     ./../modules/kernels/postgres/default.nix
     ./../modules/kernels/python/default.nix
     #    ./../modules/kernels/r/module.nix
