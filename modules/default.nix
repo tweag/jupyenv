@@ -46,7 +46,7 @@ in {
     ./../modules/kernels/python/default.nix
     ./../modules/kernels/r/default.nix
     ./../modules/kernels/rust/default.nix
-    #    ./../modules/kernels/scala/module.nix
+    ./../modules/kernels/scala/default.nix
     #    ./../modules/kernels/typescript/module.nix
     ./../modules/kernels/zsh/default.nix
   ];
