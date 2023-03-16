@@ -3,44 +3,6 @@
   lib,
 }: let
   /*
-  Takes a path to a kernels directory, `path` and a kernel name, `name`, and
-  returns a set of the form: { description = "<name> kernel"; path = <path> }
-  where <path> is in the Nix store.
-
-  Primarily used with the available kernels from `kernelsConfig.available`.
-
-  Example:
-    let
-      availableKernels = {
-        bash = "/nix/store/<hash>/kernels/available/bash/default.nix";
-        julia = "/nix/store/<hash>/kernels/available/julia/default.nix";
-        python = "/nix/store/<hash>/kernels/available/python/default.nix";
-        ...
-      };
-    in
-      builtins.mapAttrs mkKernelFlakeOutput availableKernels
-    ->
-    {
-      bash = {
-        description = "bash kernel";
-        path = "/nix/store/<hash>/kernels/available/bash/default.nix";
-      };
-      julia = {
-        description = "julia kernel";
-        path = "/nix/store/<hash>/kernels/available/julia/default.nix";
-      };
-      python = {
-        description = "python kernel";
-        path = "/nix/store/<hash>/kernels/available/python/default.nix";
-      };
-    }
-  */
-  mkKernelFlakeOutput = name: path: {
-    description = "${name} kernel";
-    inherit path;
-  };
-
-  /*
   Creates a nested list of kernels instances from a path, `parentPath`, and a
   prefix name list, `prefix`.
 
@@ -199,20 +161,6 @@
     );
 
   /*
-  Creates an attrset that contains all the kernels from a path to the kernels
-  directory, `kernelsPath`.
-
-  Example:
-    _getKernelsFromPath (self + /modules/kernels) ->
-      {
-        bash = "/nix/store/<hash>/modules/kernels/bash/default.nix";
-        ...
-      }
-  */
-  _getKernelsFromPath = kernelsPath:
-    mapKernelsFromPath kernelsPath [];
-
-  /*
   Creates a shell command as a string that copies kernel logo images to a path
   in the nix store.
 
@@ -336,8 +284,6 @@
   '';
 in {
   inherit
-    mkKernelFlakeOutput
-    _getKernelsFromPath
     getKernelAttrsetFromPath
     mapKernelsFromPath
     copyKernelLogos
