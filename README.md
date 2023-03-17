@@ -1,22 +1,22 @@
 # Jupyter :heart: Nix
 
 <p float="left">
-  <img src="kernels/available/bash/logo64.png" width="45" />
-  <img src="kernels/available/c/logo64.png" width="45" />
-  <img src="kernels/available/elm/logo64.png" width="45" />
-  <img src="kernels/available/go/logo64.png" width="45" />
-  <img src="kernels/available/haskell/logo64.png" width="45" />
-  <img src="kernels/available/python/logo64.png" width="45" />
-  <img src="kernels/available/javascript/logo64.png" width="45" />
-  <img src="kernels/available/julia/logo64.png" width="45" />
-  <img src="kernels/available/nix/logo64.png" width="45" />
-  <img src="kernels/available/ocaml/logo64.png" width="45" />
-  <img src="kernels/available/postgres/logo64.png" width="45" />
-  <img src="kernels/available/r/logo64.png" width="45" />
-  <img src="kernels/available/rust/logo64.png" width="45" />
-  <img src="kernels/available/scala/logo64.png" width="45" />
-  <img src="kernels/available/typescript/logo64.png" width="45" />
-  <img src="kernels/available/zsh/logo64.png" width="45" />
+  <img src="modules/kernels/bash/logo64.png" width="45" />
+  <img src="modules/kernels/c/logo64.png" width="45" />
+  <img src="modules/kernels/elm/logo64.png" width="45" />
+  <img src="modules/kernels/go/logo64.png" width="45" />
+  <img src="modules/kernels/haskell/logo64.png" width="45" />
+  <img src="modules/kernels/python/logo64.png" width="45" />
+  <img src="modules/kernels/javascript/logo64.png" width="45" />
+  <img src="modules/kernels/julia/logo64.png" width="45" />
+  <img src="modules/kernels/nix/logo64.png" width="45" />
+  <img src="modules/kernels/ocaml/logo64.png" width="45" />
+  <img src="modules/kernels/postgres/logo64.png" width="45" />
+  <img src="modules/kernels/r/logo64.png" width="45" />
+  <img src="modules/kernels/rust/logo64.png" width="45" />
+  <img src="modules/kernels/scala/logo64.png" width="45" />
+  <img src="modules/kernels/typescript/logo64.png" width="45" />
+  <img src="modules/kernels/zsh/logo64.png" width="45" />
 </p>
 
 This repository provides a Nix-based framework for the definition of
