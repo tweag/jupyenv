@@ -121,7 +121,7 @@
           type = types.path;
           default = self.inputs.opam-nix;
           defaultText = lib.literalExpression "self.inputs.opam-nix";
-          example = lib.literalExpression "self.inputs.opam-nix";
+          example = lib.literalExpression ''builtins.getFlake "github:tweag/opam-nix"'';
           description = lib.mdDoc ''
             opam-nix flake input to be used for this ${kernelName} kernel.
           '';
@@ -130,12 +130,7 @@
         requiredOcamlPackages = lib.mkOption {
           type = types.attrs;
           default = {merlin = "*";};
-          defaultText = lib.literalExpression ''
-            { merlin = "*"; }
-          '';
-          example = lib.literalExpression ''
-            { merlin = "4.7.1-500"; }
-          '';
+          example = {merlin = "4.7.1-500";};
           description = lib.mdDoc ''
             Attribute set of required OCaml packages.
           '';
@@ -144,14 +139,18 @@
         ocamlPackages = lib.mkOption {
           type = types.attrs;
           default = {};
-          example = lib.literalExpression ''
-            {
-              hex = "*";
-              owl = "*";
-            }
-          '';
+          example = {
+            hex = "1.2.0";
+            owl = "*";
+
+            my-custom-package = "dev";
+          };
           description = lib.mdDoc ''
             Attribute set of user desired OCaml packages.
+
+            If you wish to add custom packages (not from opam-repository), see also the `opamProjects` option.
+
+            See https://github.com/tweag/opam-nix#query for more details.
           '';
         };
 
@@ -160,11 +159,16 @@
           default = [];
           example = lib.literalExpression ''
             [
+              ./.
               self.inputs.myOpamProject
             ]
           '';
           description = ''
             List of directories containing `.opam` files.
+
+            These directories will be passed as the `repos` argument to `buildDuneProject`.
+
+            See https://github.com/tweag/opam-nix#repos-env--version-resolution and https://github.com/tweag/opam-nix#makeopamrepo--makeopamreporec for more details.
           '';
         };
 
@@ -172,7 +176,9 @@
           type = types.attrs;
           default = {};
           description = ''
-            See the opam-nix [queryToScope](https://github.com/tweag/opam-nix#querytoscope) first argument which is the same as `buildDunePackage`.
+            Extra arguments passed to `buildDuneProject`.
+
+            See the opam-nix [queryToScope](https://github.com/tweag/opam-nix#querytoscope) first argument which is the same as `buildDuneProject`.
           '';
         };
       }
