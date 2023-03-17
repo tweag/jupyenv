@@ -1,11 +1,41 @@
 {
-  lib,
   self,
-  kernelName ? "",
+  lib,
   config,
+  argvKernelName ? "",
+  codemirrorMode ? "",
+  kernelName ? "",
+  language ? "",
 }: let
   inherit (lib) types;
 in {
+  argvKernelName = lib.mkOption {
+    type = types.str;
+    default = argvKernelName;
+    internal = true;
+    description = ''
+      Name of the kernel that gets used in argv.
+    '';
+  };
+
+  codemirrorMode = lib.mkOption {
+    type = types.str;
+    default = codemirrorMode;
+    internal = true;
+    description = ''
+      The kernel language to be used with codemirror.
+    '';
+  };
+
+  language = lib.mkOption {
+    type = types.str;
+    default = language;
+    internal = true;
+    description = ''
+      The kernel language to be used in the kernelspec.
+    '';
+  };
+
   projectDir = lib.mkOption {
     type = types.path;
     default = self + "/modules/kernels/${kernelName}";

@@ -2,7 +2,9 @@
   kernelName,
   requiredRuntimePackages ? [],
   mkKernel,
-  kernelFunc,
+  argvKernelName,
+  codemirrorMode,
+  language,
 }: {
   self,
   system,
@@ -19,9 +21,78 @@
   }: let
     args = {inherit self system lib config name kernelName requiredRuntimePackages;};
     kernelModule = import ./kernel.nix args;
+
+    kernelFunc = {
+      self,
+      system,
+      # custom arguments
+      pkgs,
+      name,
+      argvKernelName,
+      codemirrorMode,
+      displayName,
+      language,
+      requiredRuntimePackages,
+      runtimePackages,
+      # https://github.com/nix-community/poetry2nix
+      poetry2nix,
+      poetry,
+      # https://github.com/nix-community/poetry2nix#mkPoetryPackages
+      projectDir,
+      pyproject,
+      poetrylock,
+      overrides,
+      python,
+      editablePackageSources,
+      extraPackages,
+      preferWheels,
+      groups,
+      ignoreCollisions,
+    }: let
+      env =
+        (poetry2nix.mkPoetryEnv {
+          inherit
+            projectDir
+            pyproject
+            poetrylock
+            overrides
+            python
+            editablePackageSources
+            extraPackages
+            preferWheels
+            groups
+            ;
+        })
+        .override (args: {inherit ignoreCollisions;});
+
+      allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
+
+      wrappedEnv =
+        pkgs.runCommand "wrapper-${env.name}"
+        {nativeBuildInputs = [pkgs.makeWrapper];}
+        ''
+          mkdir -p $out/bin
+          for i in ${env}/bin/*; do
+            filename=$(basename $i)
+            ln -s ${env}/bin/$filename $out/bin/$filename
+            wrapProgram $out/bin/$filename \
+              --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+          done
+        '';
+    in {
+      inherit name codemirrorMode displayName language;
+      argv = [
+        "${wrappedEnv}/bin/python"
+        "-m"
+        "${argvKernelName}"
+        "-f"
+        "{connection_file}"
+      ];
+      logo64 = projectDir + "/logo64.png";
+    };
   in {
     options =
-      import ./types/poetry.nix {inherit lib self config kernelName;}
+      import ./types/poetry.nix {inherit self lib config argvKernelName codemirrorMode kernelName language;}
       // kernelModule.options
       // {
         build = lib.mkOption {
@@ -36,6 +107,9 @@
         rec {
           inherit
             (config)
+            argvKernelName
+            codemirrorMode
+            language
             projectDir
             pyproject
             poetrylock
