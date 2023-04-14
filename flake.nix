@@ -54,6 +54,7 @@
 
     SYSTEMS = [
       flake-utils.lib.system.x86_64-linux
+      flake-utils.lib.system.aarch64-linux
       # TODO - Fix linux first and then get macos working.
       # flake-utils.lib.system.x86_64-darwin
     ];
