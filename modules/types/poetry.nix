@@ -6,6 +6,15 @@
 }: let
   inherit (lib) types;
 in {
+  poetryEnv = lib.mkOption {
+    type = types.nullOr types.attrs;
+    default = null;
+    example = lib.literalExpression ''poetry2nix.mkPoetryEnv { projectDir = ./.; }'';
+    description = lib.mdDoc ''
+      An existing poetry environment to use instead of creating a new one.
+    '';
+  };
+
   projectDir = lib.mkOption {
     type = types.path;
     default = self + "/modules/kernels/${kernelName}";
