@@ -36,6 +36,7 @@
         rec {
           inherit
             (config)
+            poetryEnv
             projectDir
             pyproject
             poetrylock

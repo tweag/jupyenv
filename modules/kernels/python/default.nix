@@ -13,6 +13,7 @@ import ./../../poetry.nix {
     self,
     system,
     # custom arguments
+    poetryEnv ? null,
     pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
     name ? "python",
     displayName ? "Python3",
@@ -34,20 +35,23 @@ import ./../../poetry.nix {
     ignoreCollisions ? false,
   }: let
     env =
-      (poetry2nix.mkPoetryEnv {
-        inherit
-          projectDir
-          pyproject
-          poetrylock
-          overrides
-          python
-          editablePackageSources
-          extraPackages
-          preferWheels
-          groups
-          ;
-      })
-      .override (args: {inherit ignoreCollisions;});
+      if poetryEnv != null
+      then poetryEnv
+      else
+        (poetry2nix.mkPoetryEnv {
+          inherit
+            projectDir
+            pyproject
+            poetrylock
+            overrides
+            python
+            editablePackageSources
+            extraPackages
+            preferWheels
+            groups
+            ;
+        })
+        .override (args: {inherit ignoreCollisions;});
 
     allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
