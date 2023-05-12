@@ -61,7 +61,7 @@
         then
           >&2 echo "[$(date +'%Y-%m-%d %H:%M:%S') jupyenv] needs to build JupyterLab."
           # we need to build the jupyter lab environment before it can be used
-          PATH='${jupyterlabEnvBase}/bin':$PATH ${jupyterlabEnvBase}/bin/jupyter lab build
+          PATH='${jupyterlabEnvBase}/bin':$PATH ${jupyterlabEnvBase}/bin/jupyter lab --core-mode --ip=0.0.0.0
         else
           >&2 echo "[$(date +'%Y-%m-%d %H:%M:%S') jupyenv] does not need build JupyterLab."
           >&2 echo "[$(date +'%Y-%m-%d %H:%M:%S') jupyenv] Starting..."
