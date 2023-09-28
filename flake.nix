@@ -168,6 +168,14 @@
       }
     ))
     // {
+      # https://flake.parts/options/jupyenv
+      flakeModule = {
+        _file = "${toString ./.}/flake.nix#flakeModule";
+        imports = [
+          ./flake-module.nix
+          {jupyenv.flake = self;}
+        ];
+      };
       templates.default = {
         path = ./template;
         description = "Boilerplate for your jupyenv project";
