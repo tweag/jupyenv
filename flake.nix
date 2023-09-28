@@ -177,7 +177,7 @@
         ];
       };
       templates.default = {
-        path = ./template;
+        path = ./template/flake-utils;
         description = "Boilerplate for your jupyenv project";
         welcomeText = ''
           You have created a jupyenv template.
