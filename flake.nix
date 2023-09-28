@@ -176,8 +176,22 @@
           {jupyenv.flake = self;}
         ];
       };
-      templates.default = {
+      templates.default = self.templates.flake-utils;
+      templates.flake-utils = {
         path = ./template/flake-utils;
+        description = "Boilerplate for your jupyenv project";
+        welcomeText = ''
+          You have created a jupyenv template.
+
+          Run `nix run` to immediately try it out.
+
+          See the jupyenv documentation for more information.
+
+            https://jupyenv.io/documentation/getting-started/
+        '';
+      };
+      templates.flake-parts = {
+        path = ./template/flake-parts;
         description = "Boilerplate for your jupyenv project";
         welcomeText = ''
           You have created a jupyenv template.
