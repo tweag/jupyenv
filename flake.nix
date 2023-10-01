@@ -8,8 +8,8 @@
     "tweag-jupyter.cachix.org-1:UtNH4Zs6hVUFpFBTLaA4ejYavPo5EFFqgd7G7FxGW9g="
   ];
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/2de8efefb6ce7f5e4e75bdf57376a96555986841";
+  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.05";
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -63,11 +63,11 @@
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
+          poetry2nix.overlay
+        ];
 
         python = pkgs.python3;
-        poetry2nixPkgs = import "${poetry2nix}/default.nix" {inherit pkgs poetry;};
-        poetry = pkgs.callPackage "${poetry2nix}/pkgs/poetry" {inherit python;};
 
         baseArgs = {
           inherit self system;
@@ -93,7 +93,10 @@
           pkgs.writeShellApplication
           {
             name = "update-poetry-lock";
-            runtimeInputs = [poetry];
+            runtimeInputs = [
+              # pkgs.poetry
+              nixpkgs-stable.legacyPackages."${system}".poetry
+            ];
             text = ''
               shopt -s globstar
               for lock in **/poetry.lock; do
@@ -147,10 +150,12 @@
           packages = [
             pkgs.alejandra
             pkgs.typos
-            poetry2nixPkgs.cli
-            poetry
-            pkgs.rnix-lsp
-            self.packages."${system}".update-poetry-lock
+            pkgs.poetry2nix.cli
+            # FIXME: pkgs.poetry is segfaulting on nixpkgs-unstable & poetry2nix
+            # https://github.com/nix-community/poetry2nix/issues/1291
+            nixpkgs-stable.legacyPackages."${system}".poetry
+            # pkgs.poetry
+            # self.packages."${system}".update-poetry-lock
             docsLib.mkdocs
           ];
           shellHook = ''
