@@ -53,9 +53,10 @@
     inherit (nixpkgs) lib;
 
     SYSTEMS = [
-      flake-utils.lib.system.x86_64-linux
-      # TODO - Fix linux first and then get macos working.
-      # flake-utils.lib.system.x86_64-darwin
+      "x86_64-linux"
+      "x86_64-darwin"
+      "aarch64-linux"
+      "aarch64-darwin"
     ];
 
     kernelLib = import ./lib/kernels.nix {inherit self lib;};
