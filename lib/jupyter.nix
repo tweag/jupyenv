@@ -100,6 +100,7 @@
 
   mkJupyterlab = {
     jupyterlabEnvArgs ? {},
+    notebookConfig ? {},
     kernels ? k: [], # k: [ (k.python {}) k.bash ],
     # extensions ? e: [], # e: [ e.jupy-ext ]
     runtimePackages ? [], # runtime package available to all binaries
@@ -118,14 +119,20 @@
     jupyterlabEnv = jupyterlabEnvWrapped (baseArgs // jupyterlabEnvArgs);
 
     # create directories for storing jupyter configs
-    jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
-      # make jupyter config and data directories
-      mkdir -p $out/config $out/data
-      echo "c.NotebookApp.use_redirect_file = False" > $out/config/jupyter_notebook_config.py
+    jupyterDir = let
+      mergedNotebookConfig = lib.recursiveUpdate notebookConfig {
+        NotebookApp.use_redirect_file = false;
+        KernelSpecManager.whitelist = map (x: "${pkgs.lib.removeSuffix "-jupyter-kernel" x.name}") kernelDerivations;
+      };
+    in
+      pkgs.runCommand "jupyter-dir" {} ''
+        # make jupyter config and data directories
+        mkdir -p $out/config $out/data
+        echo '${builtins.toJSON mergedNotebookConfig}' > $out/config/jupyter_lab_config.json
 
-      # make jupyter lab user settings and workspaces directories
-      mkdir -p $out/config/lab/{user-settings,workspaces}
-    '';
+        # make jupyter lab user settings and workspaces directories
+        mkdir -p $out/config/lab/{user-settings,workspaces}
+      '';
   in
     pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
     {

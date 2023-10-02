@@ -20,6 +20,13 @@ in {
         default = [];
       };
 
+      notebookConfig = lib.mkOption {
+        type = types.attrs;
+        description = "jupyter notebook config which will be written to jupyter_notebook_config.py";
+        default = {};
+        apply = c: lib.recursiveUpdate (lib.importJSON ./conf/jupyter_notebook_config.json) c;
+      };
+
       jupyterlabEnvArgs = lib.mkOption {
         type = types.submodule {
           options =
@@ -93,6 +100,7 @@ in {
       inherit
         (config.jupyterlab)
         runtimePackages
+        notebookConfig
         ;
       kernels =
         lib.flatten
