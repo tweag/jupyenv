@@ -8,6 +8,9 @@
   ...
 }: let
   types = lib.types;
+  nixpkgs-poetry = config.nixpkgs.appendOverlays [
+    self.inputs.poetry2nix.overlay
+  ];
 in {
   options = {
     jupyterlab = {
@@ -15,6 +18,37 @@ in {
         type = types.listOf types.package;
         description = "A list of runtime packages available to all binaries";
         default = [];
+      };
+
+      jupyterlabEnvArgs = lib.mkOption {
+        type = types.submodule {
+          options =
+            {
+              extraPackages = lib.mkOption {
+                type = types.functionTo (types.listOf types.package);
+                default = ps: [];
+                example = ps: [ps.jupytext];
+                description = lib.mdDoc "A list of packages for extending the jupyterlab environment";
+              };
+            }
+            // (
+              lib.recursiveUpdate (import ./types/poetry.nix {
+                inherit lib self;
+                config =
+                  config.jupyterlab.jupyterlabEnvArgs
+                  // {
+                    nixpkgs = nixpkgs-poetry;
+                  };
+              })
+              {
+                projectDir.default = self.outPath;
+                withDefaultOverrides.default = false;
+                overrides.default = import (self.outPath + "/lib/overrides.nix") nixpkgs-poetry;
+              }
+            );
+        };
+        default = {};
+        description = "Arguments for the jupyterlab poetry's environment";
       };
     };
 
@@ -49,6 +83,17 @@ in {
 
   config = {
     build = mkJupyterlab {
+      jupyterlabEnvArgs = {
+        pkgs = nixpkgs-poetry;
+        inherit
+          (config.jupyterlab.jupyterlabEnvArgs)
+          env
+          ;
+      };
+      inherit
+        (config.jupyterlab)
+        runtimePackages
+        ;
       kernels =
         lib.flatten
         (
