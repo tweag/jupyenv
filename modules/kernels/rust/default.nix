@@ -25,11 +25,7 @@
       self,
       system,
       # custom arguments
-      pkgs ?
-        import self.inputs.nixpkgs {
-          inherit system;
-          overlays = [rust-overlay.overlays.default];
-        },
+      pkgs,
       rust-overlay ? self.inputs.rust-overlay,
       name ? "rust",
       displayName ? "Rust",
