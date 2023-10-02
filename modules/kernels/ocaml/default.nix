@@ -48,12 +48,12 @@
 
       scope = let
         name = "jupyter";
-        version = "2.8.0";
+        version = "2.8.3";
         src = pkgs.fetchFromGitHub {
           owner = "akabe";
           repo = "ocaml-jupyter";
           rev = "v${version}";
-          sha256 = "sha256-IWbM6rOjcE1QHO+GVl8ZwiZQpNmdBbTdfMZe69D5lIU=";
+          sha256 = "sha256-uMk0rsLqlwkkzB52V5khMyr3rYsn7Mfyq31ybH69KgI=";
         };
       in
         _opam-nix.buildDuneProject
