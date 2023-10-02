@@ -1,7 +1,6 @@
 {
   kernelName,
   requiredRuntimePackages ? [],
-  mkKernel,
   argvKernelName,
   codemirrorMode,
   language,
@@ -10,6 +9,7 @@
   system,
   config,
   lib,
+  mkKernel,
   ...
 }: let
   inherit (lib) types;

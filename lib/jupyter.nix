@@ -184,7 +184,15 @@
   */
   mkJupyterlabEval = customModule:
     pkgs.lib.evalModules {
-      specialArgs = {inherit self system mkJupyterlab mkKernel;};
+      specialArgs = {
+        inherit
+          self
+          system
+          mkJupyterlab
+          mkKernel
+          ;
+        mkPoetryKernel = import ../modules/poetry.nix;
+      };
       modules = lib.flatten (
         [../modules]
         ++ lib.optional (customModule != null) customModule
