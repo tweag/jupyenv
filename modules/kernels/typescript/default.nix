@@ -30,7 +30,14 @@
       inherit (pkgs) lib stdenv writeScriptBin;
       inherit (lib) makeBinPath;
 
-      _npmlock2nix = pkgs.callPackage npmlock2nix {};
+      pkgs' = import pkgs.path {
+        inherit system;
+        config.permittedInsecurePackages = [
+          "nodejs-14.21.3"
+          "openssl-1.1.1u"
+        ];
+      };
+      _npmlock2nix = pkgs'.callPackage npmlock2nix {};
 
       version = "1.0.15";
 
