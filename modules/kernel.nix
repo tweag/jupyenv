@@ -55,7 +55,7 @@ in {
     };
 
     nixpkgs = import ./types/nixpkgs.nix {
-      inherit lib self system;
+      inherit lib self system kernelName;
       overlays = import ./types/overlays.nix {inherit lib self config kernelName;};
     };
 

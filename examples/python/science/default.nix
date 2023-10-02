@@ -16,8 +16,7 @@ in {
     # extraPackages = ps: [
     #   ps.numpy
     #   ps.scipy
-    #   # issue with matplotlib
-    #   # ps.matplotlib
+    #   ps.matplotlib
     # ];
   };
 }

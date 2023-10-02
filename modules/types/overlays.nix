@@ -4,13 +4,8 @@
   self,
   kernelName,
 }: let
-  findKernel = name: list:
-    if (lib.intersectLists [name] list) != []
-    then true
-    else false;
-
   overlays =
-    if (findKernel kernelName ["python" "bash" "c" "elm" "zsh"])
+    if (lib.elem kernelName ["python" "bash" "c" "elm" "zsh"])
     then [
       self.inputs.poetry2nix.overlay
     ]

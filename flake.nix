@@ -8,7 +8,7 @@
     "tweag-jupyter.cachix.org-1:UtNH4Zs6hVUFpFBTLaA4ejYavPo5EFFqgd7G7FxGW9g="
   ];
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/2de8efefb6ce7f5e4e75bdf57376a96555986841";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
   inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.05";
   inputs.nixpkgs-julia.url = "github:NixOS/nixpkgs/?ref=refs/pull/225513/head";
   inputs.flake-compat.url = "github:edolstra/flake-compat";
@@ -30,7 +30,8 @@
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
+  # https://github.com/nix-community/poetry2nix/pull/1329
+  inputs.poetry2nix.url = "github:nix-community/poetry2nix/?ref=refs/pull/1329/head";
   inputs.poetry2nix.inputs.flake-utils.follows = "flake-utils";
   inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
   inputs.rust-overlay.url = "github:oxalica/rust-overlay";
@@ -96,8 +97,7 @@
           {
             name = "update-poetry-lock";
             runtimeInputs = [
-              # pkgs.poetry
-              nixpkgs-stable.legacyPackages."${system}".poetry
+              pkgs.poetry
             ];
             text = ''
               shopt -s globstar
@@ -155,8 +155,7 @@
             pkgs.poetry2nix.cli
             # FIXME: pkgs.poetry is segfaulting on nixpkgs-unstable & poetry2nix
             # https://github.com/nix-community/poetry2nix/issues/1291
-            nixpkgs-stable.legacyPackages."${system}".poetry
-            # pkgs.poetry
+            pkgs.poetry
             self.packages."${system}".update-poetry-lock
           ];
           shellHook = ''

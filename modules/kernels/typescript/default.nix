@@ -34,7 +34,7 @@
         inherit system;
         config.permittedInsecurePackages = [
           "nodejs-14.21.3"
-          "openssl-1.1.1u"
+          "openssl-1.1.1w"
         ];
       };
       _npmlock2nix = pkgs'.callPackage npmlock2nix {};

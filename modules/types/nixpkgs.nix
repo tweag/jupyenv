@@ -2,6 +2,7 @@
   lib,
   self,
   system,
+  kernelName ? "",
   overlays ? [],
 }: let
   nixpkgsArg = x:
@@ -15,7 +16,10 @@ in
       description = "instance of nixpkgs";
       check = x: (lib.isAttrs (nixpkgsArg x)) && (lib.hasAttr "path" (nixpkgsArg x));
     };
-    default = self.inputs.nixpkgs;
+    default =
+      if kernelName == "scala"
+      then self.inputs.nixpkgs-stable
+      else self.inputs.nixpkgs;
     defaultText = lib.literalExpression "self.inputs.nixpkgs";
     example = lib.literalExpression "self.inputs.nixpkgs";
     description = lib.mdDoc ''
