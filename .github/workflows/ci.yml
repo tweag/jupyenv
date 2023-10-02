@@ -67,13 +67,6 @@ jobs:
       run: |
         nix build -L .#jupyterlab-kernel-${{ matrix.kernel }}
 
-    # TODO remove once we have a better solution. For more info see
-    # https://github.com/tweag/jupyterWith/pull/280
-    - name: Install IJulia
-      if: contains(matrix.kernel, 'julia')
-      run: |
-        result/bin/julia examples/$( echo "${{ matrix.kernel }}" | sed -e "s|example-||" | sed -e "s|-|/|g" )/installDeps.jl
-
     - name: Test notebook for ${{ matrix.kernel }} kernel
       run: |
         echo 'If Julia fails, see if IJulia was updated recently.'

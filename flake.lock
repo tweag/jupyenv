@@ -244,6 +244,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-julia": {
+      "locked": {
+        "lastModified": 1694073329,
+        "narHash": "sha256-F6+k1FSgtFSXaGSQqf00u/jBHhvUvrsTx9qjEWAk0E0=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "ddadf5f46ac96423efbd67228ffe84361743c253",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "refs/pull/225513/head",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1695825837,
@@ -492,6 +508,7 @@
         "ihaskell": "ihaskell",
         "nix-dart": "nix-dart",
         "nixpkgs": "nixpkgs_2",
+        "nixpkgs-julia": "nixpkgs-julia",
         "nixpkgs-stable": "nixpkgs-stable",
         "npmlock2nix": "npmlock2nix",
         "opam-nix": "opam-nix",

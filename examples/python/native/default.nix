@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  kernel.python.science-example = {
+  kernel.python.native-example = {
     enable = true;
     env = pkgs.python3.withPackages (ps:
       with ps; [

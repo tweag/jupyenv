@@ -20,28 +20,25 @@
       self,
       system,
       # custom arguments
-      pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
+      pkgs,
       name ? "julia",
       displayName ? "Julia",
       requiredRuntimePackages ? [],
       runtimePackages ? [],
       julia ? pkgs.julia,
-      julia_depot_path ? "~/.julia",
-      activateDir ? "",
-      ijuliaRev ? "6TIq1",
+      ijuliaRev ? "Vo51o",
+      extraJuliaPackages ? [],
+      override ? {},
     }: let
       inherit (pkgs) writeText;
       inherit (pkgs.lib) optionalString;
 
-      startupFile = writeText "startup.jl" ''
-        import Pkg
-        Pkg.activate("${activateDir}")
-        Pkg.instantiate()
-      '';
-
       allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
-      env = julia;
+      env = (self.inputs.nixpkgs-julia.legacyPackages.${system}.julia_19.withPackages.override override) ([
+          "IJulia"
+        ]
+        ++ extraJuliaPackages);
 
       wrappedEnv =
         pkgs.runCommand "wrapper-${env.name}"
@@ -52,7 +49,7 @@
             filename=$(basename $i)
             ln -s ${env}/bin/$filename $out/bin/$filename
             wrapProgram $out/bin/$filename \
-              --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}" ${optionalString (activateDir != "") ''--add-flags "-L ${startupFile}"''}
+              --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
           done
         '';
     in {
@@ -63,7 +60,7 @@
         "-i"
         "--startup-file=yes"
         "--color=yes"
-        "${julia_depot_path}/packages/IJulia/${ijuliaRev}/src/kernel.jl"
+        "${env.projectAndDepot}/depot/packages/IJulia/${ijuliaRev}/src/kernel.jl"
         "{connection_file}"
       ];
       codemirrorMode = "julia";
@@ -72,30 +69,11 @@
   in {
     options =
       {
-        julia_depot_path = lib.mkOption {
-          type = types.str;
-          default = "~/.julia";
-          example = "~/.julia";
-          description = lib.mdDoc ''
-            Julia path
-          '';
-        };
-
-        activateDir = lib.mkOption {
-          type = types.str;
-          default = "";
-          example = "";
-          description = lib.mdDoc ''
-            Julia activate directory
-          '';
-        };
-
         ijuliaRev = lib.mkOption {
           type = types.str;
-          default = "6TIq1";
-          example = "6TIq1";
+          default = "Vo51o";
           description = lib.mdDoc ''
-            iJulia revision
+            IJulia revision
           '';
         };
         julia = lib.mkOption {
@@ -105,6 +83,20 @@
             Julia Version
           '';
         };
+        extraJuliaPackages = lib.mkOption {
+          type = types.listOf types.str;
+          default = [];
+          description = lib.mdDoc ''
+            Extra Julia packages to install
+          '';
+        };
+        override = lib.mkOption {
+          type = types.attrs;
+          default = {};
+          description = lib.mdDoc ''
+            Override JuliaWithPackages
+          '';
+        };
       }
       // kernelModule.options;
 
@@ -112,7 +104,7 @@
       build = mkKernel (kernelFunc config.kernelArgs);
       kernelArgs =
         {
-          inherit (config) julia_depot_path activateDir ijuliaRev julia;
+          inherit (config) override extraJuliaPackages ijuliaRev julia;
         }
         // kernelModule.kernelArgs;
     };

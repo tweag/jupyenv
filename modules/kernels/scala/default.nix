@@ -36,7 +36,7 @@
 
       almondSh = let
         baseName = "almond";
-        version = "0.13.1";
+        version = "0.14.0-RC7";
         scalaVersion = scala.version;
         deps = stdenv.mkDerivation {
           name = "${baseName}-deps-${version}";
@@ -50,7 +50,7 @@
 
           outputHashMode = "recursive";
           outputHashAlgo = "sha256";
-          outputHash = "iPWMAvEW83aETWrxt9CmBAYMNouWsHHDoEa+Qy9inyE=";
+          outputHash = "sha256-JIYAuhV3+PQBceGEIgn5DkHTG80cKNV11FeJTefRHi8=";
         };
       in
         stdenv.mkDerivation {
