@@ -156,7 +156,6 @@
             nixpkgs-stable.legacyPackages."${system}".poetry
             # pkgs.poetry
             self.packages."${system}".update-poetry-lock
-            docsLib.mkdocs
           ];
           shellHook = ''
             ${pre-commit.shellHook}

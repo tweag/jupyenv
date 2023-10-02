@@ -185,7 +185,9 @@ in {
           ;
 
         overrides =
-          if config.withDefaultOverrides == true
+          if kernelName == "elm"
+          then import config.overrides config.nixpkgs
+          else if config.withDefaultOverrides == true
           then config.nixpkgs.poetry2nix.overrides.withDefaults (import config.overrides)
           else config.overrides;
       })
