@@ -2,6 +2,7 @@
   lib,
   self,
   system,
+  overlays ? [],
 }: let
   nixpkgsArg = x:
     if (lib.hasAttr "legacyPackages" x)
@@ -20,5 +21,5 @@ in
     description = lib.mdDoc ''
       nixpkgs flake input to be used for jupyenv
     '';
-    apply = x: nixpkgsArg x;
+    apply = x: (nixpkgsArg x).appendOverlays overlays;
   }

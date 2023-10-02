@@ -1,6 +1,5 @@
 {
   config,
-  system,
   mkKernel,
   ...
 } @ args:

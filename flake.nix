@@ -155,7 +155,7 @@
             # https://github.com/nix-community/poetry2nix/issues/1291
             nixpkgs-stable.legacyPackages."${system}".poetry
             # pkgs.poetry
-            # self.packages."${system}".update-poetry-lock
+            self.packages."${system}".update-poetry-lock
             docsLib.mkdocs
           ];
           shellHook = ''

@@ -23,48 +23,16 @@
     kernelModule = import ./kernel.nix args;
 
     kernelFunc = {
-      self,
-      system,
-      # custom arguments
       pkgs,
       name,
-      argvKernelName,
-      codemirrorMode,
       displayName,
-      language,
       requiredRuntimePackages,
       runtimePackages,
-      # https://github.com/nix-community/poetry2nix
-      poetry2nix,
-      poetry,
-      # https://github.com/nix-community/poetry2nix#mkPoetryPackages
       projectDir,
-      pyproject,
-      poetrylock,
-      overrides,
-      python,
-      editablePackageSources,
-      extraPackages,
-      preferWheels,
-      groups,
-      ignoreCollisions,
+      env,
+      self,
+      system,
     }: let
-      env =
-        (poetry2nix.mkPoetryEnv {
-          inherit
-            projectDir
-            pyproject
-            poetrylock
-            overrides
-            python
-            editablePackageSources
-            extraPackages
-            preferWheels
-            groups
-            ;
-        })
-        .override (args: {inherit ignoreCollisions;});
-
       allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
       wrappedEnv =
@@ -104,29 +72,12 @@
     config = lib.mkIf config.enable {
       build = mkKernel (kernelFunc config.kernelArgs);
       kernelArgs =
-        rec {
+        {
           inherit
             (config)
-            argvKernelName
-            codemirrorMode
-            language
+            env
             projectDir
-            pyproject
-            poetrylock
-            editablePackageSources
-            extraPackages
-            preferWheels
-            groups
-            ignoreCollisions
             ;
-          pkgs = config.nixpkgs;
-          python = pkgs.${config.python};
-          poetry = pkgs.callPackage "${config.poetry2nix}/pkgs/poetry" {inherit python;};
-          poetry2nix = import "${config.poetry2nix}/default.nix" {inherit pkgs poetry;};
-          overrides =
-            if config.withDefaultOverrides == true
-            then poetry2nix.overrides.withDefaults (import config.overrides)
-            else import config.overrides;
         }
         // kernelModule.kernelArgs;
     };

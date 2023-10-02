@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "jupyter-nix-kernel-ansible"
+name = "jupyter-nix-kernel-postgres"
 version = "0.1.0"
 description = ""
 authors = []
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 postgres_kernel = "^0.2.2"
 
 [tool.poetry.dev-dependencies]

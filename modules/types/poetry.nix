@@ -90,8 +90,8 @@ in {
   };
 
   python = lib.mkOption {
-    type = types.str;
-    default = "python3";
+    type = types.package;
+    default = config.nixpkgs.python3;
     example = "python310";
     description = lib.mdDoc ''
       Name of the python interpreter (from nixpkgs) to be used for this
@@ -160,6 +160,36 @@ in {
     example = lib.literalExpression "true";
     description = lib.mdDoc ''
       Ignore file collisions inside the environment.
+    '';
+  };
+
+  env = lib.mkOption {
+    type = types.nullOr types.package;
+    default =
+      (config.nixpkgs.poetry2nix.mkPoetryEnv {
+        inherit
+          (config)
+          projectDir
+          pyproject
+          poetrylock
+          editablePackageSources
+          extraPackages
+          preferWheels
+          groups
+          python
+          ;
+
+        overrides =
+          if config.withDefaultOverrides == true
+          then config.nixpkgs.poetry2nix.overrides.withDefaults (import config.overrides)
+          else config.overrides;
+      })
+      .override (args: {inherit (config) ignoreCollisions;});
+
+    defaultText = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv or pkgs.python3.buildEnv";
+    example = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv or pkgs.python3.buildEnv";
+    description = lib.mdDoc ''
+      The poetry environment for this ${kernelName} kernel.
     '';
   };
 }

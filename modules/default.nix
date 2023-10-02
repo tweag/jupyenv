@@ -27,22 +27,22 @@ in {
   };
 
   imports = [
-    ./../modules/kernels/bash/default.nix
-    ./../modules/kernels/c/default.nix
-    ./../modules/kernels/elm/default.nix
-    ./../modules/kernels/go/default.nix
-    ./../modules/kernels/haskell/default.nix
-    ./../modules/kernels/javascript/default.nix
-    ./../modules/kernels/julia/default.nix
-    ./../modules/kernels/nix/default.nix
-    ./../modules/kernels/ocaml/default.nix
-    ./../modules/kernels/postgres/default.nix
-    ./../modules/kernels/python/default.nix
-    ./../modules/kernels/r/default.nix
-    ./../modules/kernels/rust/default.nix
-    ./../modules/kernels/scala/default.nix
-    ./../modules/kernels/typescript/default.nix
-    ./../modules/kernels/zsh/default.nix
+    ./../modules/kernels/bash
+    ./../modules/kernels/c
+    ./../modules/kernels/elm
+    ./../modules/kernels/go
+    ./../modules/kernels/haskell
+    ./../modules/kernels/javascript
+    ./../modules/kernels/julia
+    ./../modules/kernels/nix
+    ./../modules/kernels/ocaml
+    ./../modules/kernels/postgres
+    ./../modules/kernels/python
+    ./../modules/kernels/r
+    ./../modules/kernels/rust
+    ./../modules/kernels/scala
+    ./../modules/kernels/typescript
+    ./../modules/kernels/zsh
   ];
   # TODO: add kernels
   #++ map (name: ./. + "/../modules/kernels/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../modules/kernels));
