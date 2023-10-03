@@ -22,13 +22,13 @@
     kernelFunc = {
       self,
       system,
-      pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-      name ? "haskell",
-      displayName ? "Haskell",
-      requiredRuntimePackages ? [pkgs.haskell.compiler.${haskellCompiler}],
+      pkgs,
+      name,
+      displayName,
+      requiredRuntimePackages,
       runtimePackages ? [],
       haskellKernelPkg ? import "${self.inputs.ihaskell}/release.nix",
-      haskellCompiler ? "ghc902",
+      haskellCompiler,
       extraHaskellFlags ? "-M3g -N2",
       extraHaskellPackages ? (_: []),
     }: let
@@ -81,7 +81,7 @@
 
         haskellCompiler = lib.mkOption {
           type = types.str;
-          default = "ghc902";
+          default = "ghc943";
           example = "ghc943";
           description = lib.mdDoc ''
             haskell compiler
@@ -113,7 +113,7 @@
       build = mkKernel (kernelFunc config.kernelArgs);
       kernelArgs =
         {
-          inherit (config) extraHaskellFlags extraHaskellPackages;
+          inherit (config) extraHaskellFlags extraHaskellPackages haskellCompiler;
           haskellKernelPkg = import "${config.ihaskell}/release.nix";
         }
         // kernelModule.kernelArgs;
