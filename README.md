@@ -1,22 +1,22 @@
 # Jupyter :heart: Nix
 
 <p float="left">
-  <img src="modules/kernels/bash/logo64.png" width="45" />
-  <img src="modules/kernels/c/logo64.png" width="45" />
-  <img src="modules/kernels/elm/logo64.png" width="45" />
-  <img src="modules/kernels/go/logo64.png" width="45" />
-  <img src="modules/kernels/haskell/logo64.png" width="45" />
-  <img src="modules/kernels/python/logo64.png" width="45" />
-  <img src="modules/kernels/javascript/logo64.png" width="45" />
-  <img src="modules/kernels/julia/logo64.png" width="45" />
-  <img src="modules/kernels/nix/logo64.png" width="45" />
-  <img src="modules/kernels/ocaml/logo64.png" width="45" />
-  <img src="modules/kernels/postgres/logo64.png" width="45" />
-  <img src="modules/kernels/r/logo64.png" width="45" />
-  <img src="modules/kernels/rust/logo64.png" width="45" />
-  <img src="modules/kernels/scala/logo64.png" width="45" />
-  <img src="modules/kernels/typescript/logo64.png" width="45" />
-  <img src="modules/kernels/zsh/logo64.png" width="45" />
+  <img src="modules/kernels/bash/logo-64x64.png" width="45" />
+  <img src="modules/kernels/c/logo-64x64.png" width="45" />
+  <img src="modules/kernels/elm/logo-64x64.png" width="45" />
+  <img src="modules/kernels/go/logo-64x64.png" width="45" />
+  <img src="modules/kernels/haskell/logo-64x64.png" width="45" />
+  <img src="modules/kernels/python/logo-64x64.png" width="45" />
+  <img src="modules/kernels/javascript/logo-64x64.png" width="45" />
+  <img src="modules/kernels/julia/logo-64x64.png" width="45" />
+  <img src="modules/kernels/nix/logo-64x64.png" width="45" />
+  <img src="modules/kernels/ocaml/logo-64x64.png" width="45" />
+  <img src="modules/kernels/postgres/logo-64x64.png" width="45" />
+  <img src="modules/kernels/r/logo-64x64.png" width="45" />
+  <img src="modules/kernels/rust/logo-64x64.png" width="45" />
+  <img src="modules/kernels/scala/logo-64x64.png" width="45" />
+  <img src="modules/kernels/typescript/logo-64x64.png" width="45" />
+  <img src="modules/kernels/zsh/logo-64x64.png" width="45" />
 </p>
 
 This repository provides a Nix-based framework for the definition of

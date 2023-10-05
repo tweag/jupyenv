@@ -56,7 +56,7 @@
         "-f"
         "{connection_file}"
       ];
-      logo64 = projectDir + "/logo64.png";
+      logo64 = projectDir + "/logo-64x64.png";
     };
   in {
     options =
