@@ -47,6 +47,17 @@ in {
     '';
   };
 
+  kernelModuleDir = lib.mkOption {
+    type = types.path;
+    internal = true;
+    default = self + "/modules/kernels/${kernelName}";
+    defaultText = lib.literalExpression "self + \"/modules/kernels/${kernelName}\"";
+    example = lib.literalExpression "self + \"/kernels/${kernelName}\"";
+    description = lib.mdDoc ''
+      Path to the root of the kernel module
+    '';
+  };
+
   pyproject = lib.mkOption {
     type = types.path;
     default = config.projectDir + "/pyproject.toml";

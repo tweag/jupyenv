@@ -32,6 +32,7 @@
       env,
       self,
       system,
+      kernelModuleDir,
     }: let
       allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
@@ -56,7 +57,7 @@
         "-f"
         "{connection_file}"
       ];
-      logo64 = projectDir + "/logo-64x64.png";
+      logo64 = kernelModuleDir + "/logo-64x64.png";
     };
   in {
     options =
@@ -77,6 +78,7 @@
             (config)
             env
             projectDir
+            kernelModuleDir
             ;
         }
         // kernelModule.kernelArgs;
