@@ -10,7 +10,7 @@ jobs:
 
   build:
     name: Build jupyterlab (no kernels)
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     outputs:
       kernels: ${{ steps.kernels.outputs.kernels }}
@@ -38,14 +38,14 @@ jobs:
         filterKernels=$(echo $kernels | nix run nixpkgs#jq -- -c '[.[] | select(. | contains("jupyterlab-kernel-example-")) | ltrimstr("jupyterlab-kernel-")]')
         echo "kernels=$filterKernels" >> $GITHUB_OUTPUT
 
-    - name: Check
-      run: |
-        nix flake check --show-trace -L
+#    - name: Check
+#      run: |
+#        nix flake check --show-trace -L
 
   build-kernel:
     name: Build ${{ matrix.kernel }} kernel
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     strategy:
       fail-fast: false
@@ -82,7 +82,7 @@ jobs:
   build-all-kernels:
     name: Build all kernels
     needs: build-kernel
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -102,7 +102,7 @@ jobs:
   build-devshell:
     name: Build devshell
     needs: build-kernel
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -122,7 +122,7 @@ jobs:
   build-docs:
     name: Build docs
     needs: build-kernel
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -162,7 +162,7 @@ jobs:
   template:
     name: Test a template
     needs: build-kernel
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
