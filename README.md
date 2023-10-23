@@ -1,22 +1,22 @@
 # Jupyter :heart: Nix
 
 <p float="left">
-  <img src="modules/kernels/bash/logo64.png" width="45" />
-  <img src="modules/kernels/c/logo64.png" width="45" />
-  <img src="modules/kernels/elm/logo64.png" width="45" />
-  <img src="modules/kernels/go/logo64.png" width="45" />
-  <img src="modules/kernels/haskell/logo64.png" width="45" />
-  <img src="modules/kernels/python/logo64.png" width="45" />
-  <img src="modules/kernels/javascript/logo64.png" width="45" />
-  <img src="modules/kernels/julia/logo64.png" width="45" />
-  <img src="modules/kernels/nix/logo64.png" width="45" />
-  <img src="modules/kernels/ocaml/logo64.png" width="45" />
-  <img src="modules/kernels/postgres/logo64.png" width="45" />
-  <img src="modules/kernels/r/logo64.png" width="45" />
-  <img src="modules/kernels/rust/logo64.png" width="45" />
-  <img src="modules/kernels/scala/logo64.png" width="45" />
-  <img src="modules/kernels/typescript/logo64.png" width="45" />
-  <img src="modules/kernels/zsh/logo64.png" width="45" />
+  <a href="https://jupyenv.io/documentation/options/#kernel-bash"><img src="modules/kernels/bash/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-c"><img src="modules/kernels/c/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-elm"><img src="modules/kernels/elm/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-go"><img src="modules/kernels/go/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-haskell"><img src="modules/kernels/haskell/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-python"><img src="modules/kernels/python/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-javascript"><img src="modules/kernels/javascript/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-julia"><img src="modules/kernels/julia/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-nix"><img src="modules/kernels/nix/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-ocaml"><img src="modules/kernels/ocaml/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-postgres"><img src="modules/kernels/postgres/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-r"><img src="modules/kernels/r/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-rust"><img src="modules/kernels/rust/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-scala"><img src="modules/kernels/scala/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-typescript"><img src="modules/kernels/typescript/logo64.png" width="45" /></a>
+  <a href="https://jupyenv.io/documentation/options/#kernel-zsh"><img src="modules/kernels/zsh/logo64.png" width="45" /></a>
 </p>
 
 This repository provides a Nix-based framework for the definition of
