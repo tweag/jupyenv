@@ -16,7 +16,7 @@
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.ihaskell.url = "github:ihaskell/ihaskell";
   inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
+  inputs.ihaskell.inputs.flake-compat.follows = "";
   inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
   inputs.nix-dart.url = "github:djacu/nix-dart";
   inputs.nix-dart.inputs.nixpkgs.follows = "nixpkgs";
@@ -24,16 +24,18 @@
   inputs.npmlock2nix.url = "github:nix-community/npmlock2nix/0ba0746d62974403daf717cded3f24c617622bc7";
   inputs.npmlock2nix.flake = false;
   inputs.opam-nix.url = "github:tweag/opam-nix";
-  inputs.opam-nix.inputs.flake-compat.follows = "flake-compat";
+  inputs.opam-nix.inputs.flake-compat.follows = "";
   inputs.opam-nix.inputs.flake-utils.follows = "flake-utils";
   inputs.opam-nix.inputs.nixpkgs.follows = "nixpkgs";
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.pre-commit-hooks.inputs.flake-compat.follows = "";
   # https://github.com/nix-community/poetry2nix/pull/1329
-  inputs.poetry2nix.url = "github:nix-community/poetry2nix/?ref=refs/pull/1329/head";
+  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
   inputs.poetry2nix.inputs.flake-utils.follows = "flake-utils";
   inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.poetry2nix.inputs.treefmt-nix.follows = "";
   inputs.rust-overlay.url = "github:oxalica/rust-overlay";
   inputs.rust-overlay.inputs.flake-utils.follows = "flake-utils";
   inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
