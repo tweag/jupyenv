@@ -19,6 +19,8 @@ in
     default =
       if kernelName == "scala"
       then nixpkgsArg self.inputs.nixpkgs-stable
+      else if kernelName == "julia"
+      then nixpkgsArg self.inputs.nixpkgs-julia
       else nixpkgsArg self.inputs.nixpkgs;
     defaultText = lib.literalExpression "self.inputs.nixpkgs";
     example = lib.literalExpression "self.inputs.nixpkgs";

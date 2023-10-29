@@ -25,7 +25,7 @@
       displayName ? "Julia",
       requiredRuntimePackages ? [],
       runtimePackages ? [],
-      julia ? pkgs.julia,
+      julia,
       ijuliaRev ? "Vo51o",
       extraJuliaPackages ? [],
       override ? {},
@@ -35,7 +35,7 @@
 
       allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
-      env = (self.inputs.nixpkgs-julia.legacyPackages.${system}.julia_19.withPackages.override override) ([
+      env = (julia.withPackages.override override) ([
           "IJulia"
         ]
         ++ extraJuliaPackages);
@@ -78,7 +78,7 @@
         };
         julia = lib.mkOption {
           type = types.package;
-          default = config.nixpkgs.julia;
+          default = config.nixpkgs.julia_19;
           description = lib.mdDoc ''
             Julia Version
           '';
