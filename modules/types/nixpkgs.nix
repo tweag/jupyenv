@@ -7,8 +7,9 @@
 }: let
   nixpkgsArg = x:
     if (lib.hasAttr "legacyPackages" x)
-    then x.legacyPackages.${system}.appendOverlays overlays
-    else x.appendOverlays overlays;
+    then x.legacyPackages.${system}
+    else x;
+  applyOverlays = x: (nixpkgsArg x).appendOverlays overlays;
 in
   lib.mkOption {
     type = lib.mkOptionType {
@@ -18,13 +19,14 @@ in
     };
     default =
       if kernelName == "scala"
-      then nixpkgsArg self.inputs.nixpkgs-stable
+      then applyOverlays self.inputs.nixpkgs-stable
       else if kernelName == "julia"
-      then nixpkgsArg self.inputs.nixpkgs-julia
-      else nixpkgsArg self.inputs.nixpkgs;
+      then applyOverlays self.inputs.nixpkgs-julia
+      else applyOverlays self.inputs.nixpkgs;
     defaultText = lib.literalExpression "self.inputs.nixpkgs";
     example = lib.literalExpression "self.inputs.nixpkgs";
     description = lib.mdDoc ''
       nixpkgs flake input to be used for jupyenv
     '';
+    apply = x: nixpkgsArg x;
   }

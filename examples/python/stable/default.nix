@@ -5,6 +5,6 @@
 }: {
   kernel.python.stable-example = {
     enable = true;
-    nixpkgs = self.inputs.nixpkgs-stable.legacyPackages.${system};
+    nixpkgs = self.inputs.nixpkgs-stable;
   };
 }
