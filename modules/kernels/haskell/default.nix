@@ -98,7 +98,7 @@
         };
 
         extraHaskellPackages = lib.mkOption {
-          type = types.functionTo (types.listOf types.package);
+          type = types.functionTo (types.listOf (types.nullOr types.package));
           default = _: [];
           defaultText = lib.literalExpression "ps: []";
           example = lib.literalExpression "ps: [ps.lens ps.vector]";
