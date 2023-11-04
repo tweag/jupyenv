@@ -7,6 +7,9 @@
 in {
   kernel.python.science-example = {
     enable = true;
+    runtimePackages = [
+      pkgs.coreutils
+    ];
     env = cfg-science-example.nixpkgs.python3.withPackages (ps:
       with ps; [
         ps.ipykernel
