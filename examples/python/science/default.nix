@@ -15,6 +15,8 @@ in {
         ps.ipykernel
         ps.scipy
         ps.matplotlib
+        # required for debugging mode
+        ps.debugpy
       ]);
     # extraPackages = ps: [
     #   ps.numpy

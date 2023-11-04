@@ -31,6 +31,7 @@
       displayName ? "Rust",
       requiredRuntimePackages ? with pkgs; [cargo gcc binutils-unwrapped],
       runtimePackages ? [],
+      extraKernelSpc,
       evcxr ? pkgs.evcxr,
     }: let
       /*
@@ -59,18 +60,20 @@
               --set RUST_SRC_PATH "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}"
           done
         '';
-    in {
-      inherit name displayName;
-      language = "rust";
-      argv = [
-        "${wrappedEnv}/bin/evcxr_jupyter"
-        "--control_file"
-        "{connection_file}"
-      ];
-      codemirrorMode = "rust";
-      logo64 = ./logo-64x64.png;
-      logo32 = ./logo32.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "rust";
+        argv = [
+          "${wrappedEnv}/bin/evcxr_jupyter"
+          "--control_file"
+          "{connection_file}"
+        ];
+        codemirrorMode = "rust";
+        logo64 = ./logo-64x64.png;
+        logo32 = ./logo32.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {

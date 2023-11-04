@@ -65,6 +65,18 @@ in {
       internal = true;
     };
 
+    extraKernelSpc = lib.mkOption {
+      default = {
+        metadata = {
+          debugger = true;
+        };
+      };
+      type = types.attrs;
+      description = lib.mdDoc ''
+        Extra kernel spec attributes.
+      '';
+    };
+
     build = lib.mkOption {
       type = types.package;
       internal = true;
@@ -79,6 +91,7 @@ in {
       displayName
       requiredRuntimePackages
       runtimePackages
+      extraKernelSpc
       ;
     pkgs = config.nixpkgs;
   };

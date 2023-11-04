@@ -31,6 +31,7 @@
       haskellCompiler,
       extraHaskellFlags ? "-M3g -N2",
       extraHaskellPackages ? (_: []),
+      extraKernelSpc,
     }: let
       allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
@@ -58,14 +59,16 @@
         env.ihaskellKernelFileFunc
         wrappedEnv
         extraHaskellFlags;
-    in {
-      inherit name displayName;
-      language = "haskell";
-      # See https://github.com/IHaskell/IHaskell/pull/1191
-      argv = kernelspec.argv ++ ["--codemirror" "Haskell"];
-      codemirrorMode = "Haskell";
-      logo64 = ./logo-64x64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "haskell";
+        # See https://github.com/IHaskell/IHaskell/pull/1191
+        argv = kernelspec.argv ++ ["--codemirror" "Haskell"];
+        codemirrorMode = "Haskell";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {

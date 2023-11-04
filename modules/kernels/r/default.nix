@@ -25,6 +25,7 @@
       displayName ? "R",
       requiredRuntimePackages ? [],
       runtimePackages ? [],
+      extraKernelSpc,
       rWrapper ? pkgs.rWrapper,
       rPackages ? pkgs.rPackages,
       extraRPackages ? (_: []),
@@ -47,20 +48,22 @@
               --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
           done
         '';
-    in {
-      inherit name displayName;
-      language = "r";
-      argv = [
-        "${wrappedEnv}/bin/R"
-        "--slave"
-        "-e"
-        "IRkernel::main()"
-        "--args"
-        "{connection_file}"
-      ];
-      codemirrorMode = "R";
-      logo64 = ./logo-64x64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "r";
+        argv = [
+          "${wrappedEnv}/bin/R"
+          "--slave"
+          "-e"
+          "IRkernel::main()"
+          "--args"
+          "{connection_file}"
+        ];
+        codemirrorMode = "R";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {

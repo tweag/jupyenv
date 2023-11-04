@@ -33,6 +33,7 @@
       self,
       system,
       kernelModuleDir,
+      extraKernelSpc,
     }: let
       allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
@@ -48,17 +49,19 @@
               --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
           done
         '';
-    in {
-      inherit name codemirrorMode displayName language;
-      argv = [
-        "${wrappedEnv}/bin/python"
-        "-m"
-        "${argvKernelName}"
-        "-f"
-        "{connection_file}"
-      ];
-      logo64 = kernelModuleDir + "/logo-64x64.png";
-    };
+    in
+      {
+        inherit name codemirrorMode displayName language;
+        argv = [
+          "${wrappedEnv}/bin/python"
+          "-m"
+          "${argvKernelName}"
+          "-f"
+          "{connection_file}"
+        ];
+        logo64 = kernelModuleDir + "/logo-64x64.png";
+      }
+      // extraKernelSpc;
   in {
     options =
       import ./types/poetry.nix {inherit self lib config argvKernelName codemirrorMode kernelName language;}

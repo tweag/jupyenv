@@ -25,6 +25,7 @@
       displayName ? "OCaml",
       requiredRuntimePackages ? [],
       runtimePackages ? [],
+      extraKernelSpc,
       # https://github.com/tweag/opam-nix
       opam-nix ? self.inputs.opam-nix,
       # Set of required packages
@@ -97,23 +98,25 @@
           done
         '';
       });
-    in {
-      inherit name displayName;
-      language = "ocaml";
-      argv = [
-        "${wrappedKernel}/bin/ocaml-jupyter-kernel"
-        "-init"
-        (pkgs.writeText "ocamlinit" ocamlinit)
-        "--merlin"
-        "${scope.merlin}/bin/ocamlmerlin"
-        "--verbosity"
-        "app"
-        "--connection-file"
-        "{connection_file}"
-      ];
-      codemirrorMode = "ocaml";
-      logo64 = ./logo-64x64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "ocaml";
+        argv = [
+          "${wrappedKernel}/bin/ocaml-jupyter-kernel"
+          "-init"
+          (pkgs.writeText "ocamlinit" ocamlinit)
+          "--merlin"
+          "${scope.merlin}/bin/ocamlmerlin"
+          "--verbosity"
+          "app"
+          "--connection-file"
+          "{connection_file}"
+        ];
+        codemirrorMode = "ocaml";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {

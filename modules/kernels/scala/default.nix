@@ -25,6 +25,7 @@
       displayName ? "Scala",
       requiredRuntimePackages ? [],
       runtimePackages ? [],
+      extraKernelSpc,
       scala ? pkgs.scala,
       coursier ? pkgs.coursier,
       jdk ? pkgs.jdk,
@@ -95,17 +96,19 @@
               --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
           done
         '';
-    in {
-      inherit name displayName;
-      language = "scala";
-      argv = [
-        "${wrappedEnv}/bin/almond"
-        "--connection-file"
-        "{connection_file}"
-      ];
-      codemirrorMode = "scala";
-      logo64 = ./logo-64x64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "scala";
+        argv = [
+          "${wrappedEnv}/bin/almond"
+          "--connection-file"
+          "{connection_file}"
+        ];
+        codemirrorMode = "scala";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {

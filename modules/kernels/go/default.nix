@@ -27,6 +27,7 @@
       requiredRuntimePackages ? with pkgs; [go],
       runtimePackages ? [],
       gophernotes ? pkgs.gophernotes,
+      extraKernelSpc,
     }: let
       inherit (pkgs) lib stdenv writeScriptBin;
 
@@ -50,16 +51,18 @@
               --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
           done
         '';
-    in {
-      inherit name displayName;
-      language = "go";
-      argv = [
-        "${wrappedEnv}/bin/gophernotes"
-        "{connection_file}"
-      ];
-      codemirrorMode = "go";
-      logo64 = ./logo-64x64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "go";
+        argv = [
+          "${wrappedEnv}/bin/gophernotes"
+          "{connection_file}"
+        ];
+        codemirrorMode = "go";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {}

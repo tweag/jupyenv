@@ -29,6 +29,7 @@
       ijuliaRev ? "Vo51o",
       extraJuliaPackages ? [],
       override ? {},
+      extraKernelSpc,
     }: let
       inherit (pkgs) writeText;
       inherit (pkgs.lib) optionalString;
@@ -52,20 +53,22 @@
               --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
           done
         '';
-    in {
-      inherit name displayName;
-      language = "julia";
-      argv = [
-        "${wrappedEnv}/bin/julia"
-        "-i"
-        "--startup-file=yes"
-        "--color=yes"
-        "${env.projectAndDepot}/depot/packages/IJulia/${ijuliaRev}/src/kernel.jl"
-        "{connection_file}"
-      ];
-      codemirrorMode = "julia";
-      logo64 = ./logo-64x64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "julia";
+        argv = [
+          "${wrappedEnv}/bin/julia"
+          "-i"
+          "--startup-file=yes"
+          "--color=yes"
+          "${env.projectAndDepot}/depot/packages/IJulia/${ijuliaRev}/src/kernel.jl"
+          "{connection_file}"
+        ];
+        codemirrorMode = "julia";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {

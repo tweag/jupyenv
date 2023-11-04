@@ -25,6 +25,7 @@
       displayName ? "Nix",
       requiredRuntimePackages ? [],
       runtimePackages ? [],
+      extraKernelSpc,
       nix ? pkgs.nix,
     }: let
       allRuntimePackages =
@@ -49,19 +50,21 @@
               --set NIX_PATH "nixpkgs=${pkgs.path}"
           done
         '';
-    in {
-      inherit name displayName;
-      language = "nix";
-      argv = [
-        "${wrappedEnv}/bin/python"
-        "-m"
-        "nix-kernel"
-        "-f"
-        "{connection_file}"
-      ];
-      codemirrorMode = "nix";
-      logo64 = ./logo-64x64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "nix";
+        argv = [
+          "${wrappedEnv}/bin/python"
+          "-m"
+          "nix-kernel"
+          "-f"
+          "{connection_file}"
+        ];
+        codemirrorMode = "nix";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {
