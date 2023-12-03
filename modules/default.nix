@@ -9,7 +9,7 @@
 }: let
   types = lib.types;
   nixpkgs-poetry = config.nixpkgs.appendOverlays [
-    self.inputs.poetry2nix.overlay
+    self.inputs.poetry2nix.overlays.default
   ];
 in {
   options = {

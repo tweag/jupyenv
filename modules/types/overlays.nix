@@ -7,7 +7,7 @@
   overlays =
     if (lib.elem kernelName ["python" "bash" "c" "elm" "zsh"])
     then [
-      self.inputs.poetry2nix.overlay
+      self.inputs.poetry2nix.overlays.default
     ]
     else if kernelName == "rust"
     then [

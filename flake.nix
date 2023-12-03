@@ -69,7 +69,7 @@
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
         pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
-          poetry2nix.overlay
+          poetry2nix.overlays.default
         ];
 
         python = pkgs.python3;
