@@ -226,22 +226,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-julia": {
-      "locked": {
-        "lastModified": 1694073329,
-        "narHash": "sha256-F6+k1FSgtFSXaGSQqf00u/jBHhvUvrsTx9qjEWAk0E0=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "ddadf5f46ac96423efbd67228ffe84361743c253",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "refs/pull/225513/head",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1698288402,
@@ -276,11 +260,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1697379843,
-        "narHash": "sha256-RcnGuJgC2K/UpTy+d32piEoBXq2M+nVFzM3ah/ZdJzg=",
+        "lastModified": 1702938738,
+        "narHash": "sha256-O7Vb0xC9s4Dmgxj8APEpuuMj7HsLgPbpy1UKvNVJp7o=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "12bdeb01ff9e2d3917e6a44037ed7df6e6c3df9d",
+        "rev": "dd8e82f3b4017b8faa52c2b1897a38d53c3c26cb",
         "type": "github"
       },
       "original": {
@@ -401,11 +385,11 @@
         "treefmt-nix": []
       },
       "locked": {
-        "lastModified": 1701642265,
-        "narHash": "sha256-d2fUQQCONzQ8nZuHqqsR4Vu603D1LZ4atxEGx7YrcpQ=",
+        "lastModified": 1703076010,
+        "narHash": "sha256-VaoDgib09zqtF0rREUvD2inmE9N4ECT1i02DVAhmOPk=",
         "owner": "nix-community",
         "repo": "poetry2nix",
-        "rev": "2edc0addf15d1fbbb86e7c58f5278e3604a93827",
+        "rev": "b76e91da74ad7af0bc397561a59a19fcbc2ad488",
         "type": "github"
       },
       "original": {
@@ -490,7 +474,6 @@
         "ihaskell": "ihaskell",
         "nix-dart": "nix-dart",
         "nixpkgs": "nixpkgs_2",
-        "nixpkgs-julia": "nixpkgs-julia",
         "nixpkgs-stable": "nixpkgs-stable",
         "npmlock2nix": "npmlock2nix",
         "opam-nix": "opam-nix",

@@ -5,7 +5,7 @@
   kernelName,
 }: let
   overlays =
-    if (lib.elem kernelName ["python" "bash" "c" "elm" "zsh"])
+    if (lib.elem kernelName ["python" "bash" "c" "elm" "zsh" "postgres"])
     then [
       self.inputs.poetry2nix.overlays.default
     ]

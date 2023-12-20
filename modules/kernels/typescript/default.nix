@@ -31,7 +31,7 @@
       inherit (pkgs) lib stdenv writeScriptBin;
       inherit (lib) makeBinPath;
 
-      pkgs' = import pkgs.path {
+      pkgs' = import self.inputs.nixpkgs-stable.outPath {
         inherit system;
         config.permittedInsecurePackages = [
           "nodejs-14.21.3"

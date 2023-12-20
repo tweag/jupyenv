@@ -20,8 +20,6 @@ in
     default =
       if kernelName == "scala"
       then applyOverlays self.inputs.nixpkgs-stable
-      else if kernelName == "julia"
-      then applyOverlays self.inputs.nixpkgs-julia
       else applyOverlays self.inputs.nixpkgs;
     defaultText = lib.literalExpression "self.inputs.nixpkgs";
     example = lib.literalExpression "self.inputs.nixpkgs";
