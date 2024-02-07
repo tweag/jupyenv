@@ -26,11 +26,19 @@
       requiredRuntimePackages ? [],
       runtimePackages ? [],
       npmlock2nix ? self.inputs.npmlock2nix,
+      extraKernelSpc,
     }: let
       inherit (pkgs) lib stdenv writeScriptBin;
       inherit (lib) makeBinPath;
 
-      _npmlock2nix = pkgs.callPackage npmlock2nix {};
+      pkgs' = import self.inputs.nixpkgs-stable.outPath {
+        inherit system;
+        config.permittedInsecurePackages = [
+          "nodejs-14.21.3"
+          "openssl-1.1.1w"
+        ];
+      };
+      _npmlock2nix = pkgs'.callPackage npmlock2nix {};
 
       version = "1.0.15";
 
@@ -108,18 +116,20 @@
           ${wrappedEnv}/bin/tslab "$@"
         fi
       '';
-    in {
-      inherit name displayName;
-      language = "typescript";
-      argv = [
-        "${tslabSh}/bin/tslab"
-        "kernel"
-        "--config-path"
-        "{connection_file}"
-      ];
-      codemirrorMode = "typescript";
-      logo64 = ./logo64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "typescript";
+        argv = [
+          "${tslabSh}/bin/tslab"
+          "kernel"
+          "--config-path"
+          "{connection_file}"
+        ];
+        codemirrorMode = "typescript";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {

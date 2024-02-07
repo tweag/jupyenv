@@ -54,12 +54,27 @@ in {
       '';
     };
 
-    nixpkgs = import ./types/nixpkgs.nix {inherit lib self system;};
+    nixpkgs = import ./types/nixpkgs.nix {
+      inherit lib self system kernelName;
+      overlays = import ./types/overlays.nix {inherit lib self config kernelName;};
+    };
 
     kernelArgs = lib.mkOption {
       type = types.lazyAttrsOf types.raw;
       readOnly = true;
       internal = true;
+    };
+
+    extraKernelSpc = lib.mkOption {
+      default = {
+        metadata = {
+          debugger = true;
+        };
+      };
+      type = types.attrs;
+      description = lib.mdDoc ''
+        Extra kernel spec attributes.
+      '';
     };
 
     build = lib.mkOption {
@@ -76,6 +91,7 @@ in {
       displayName
       requiredRuntimePackages
       runtimePackages
+      extraKernelSpc
       ;
     pkgs = config.nixpkgs;
   };

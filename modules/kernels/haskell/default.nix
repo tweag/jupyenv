@@ -22,15 +22,16 @@
     kernelFunc = {
       self,
       system,
-      pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-      name ? "haskell",
-      displayName ? "Haskell",
-      requiredRuntimePackages ? [pkgs.haskell.compiler.${haskellCompiler}],
+      pkgs,
+      name,
+      displayName,
+      requiredRuntimePackages,
       runtimePackages ? [],
       haskellKernelPkg ? import "${self.inputs.ihaskell}/release.nix",
-      haskellCompiler ? "ghc902",
+      haskellCompiler,
       extraHaskellFlags ? "-M3g -N2",
       extraHaskellPackages ? (_: []),
+      extraKernelSpc,
     }: let
       allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
@@ -58,14 +59,16 @@
         env.ihaskellKernelFileFunc
         wrappedEnv
         extraHaskellFlags;
-    in {
-      inherit name displayName;
-      language = "haskell";
-      # See https://github.com/IHaskell/IHaskell/pull/1191
-      argv = kernelspec.argv ++ ["--codemirror" "Haskell"];
-      codemirrorMode = "Haskell";
-      logo64 = ./logo64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "haskell";
+        # See https://github.com/IHaskell/IHaskell/pull/1191
+        argv = kernelspec.argv ++ ["--codemirror" "Haskell"];
+        codemirrorMode = "Haskell";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {
@@ -81,7 +84,7 @@
 
         haskellCompiler = lib.mkOption {
           type = types.str;
-          default = "ghc902";
+          default = "ghc943";
           example = "ghc943";
           description = lib.mdDoc ''
             haskell compiler
@@ -98,7 +101,7 @@
         };
 
         extraHaskellPackages = lib.mkOption {
-          type = types.functionTo (types.listOf types.package);
+          type = types.functionTo (types.listOf (types.nullOr types.package));
           default = _: [];
           defaultText = lib.literalExpression "ps: []";
           example = lib.literalExpression "ps: [ps.lens ps.vector]";
@@ -113,7 +116,7 @@
       build = mkKernel (kernelFunc config.kernelArgs);
       kernelArgs =
         {
-          inherit (config) extraHaskellFlags extraHaskellPackages;
+          inherit (config) extraHaskellFlags extraHaskellPackages haskellCompiler;
           haskellKernelPkg = import "${config.ihaskell}/release.nix";
         }
         // kernelModule.kernelArgs;
