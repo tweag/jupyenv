@@ -54,7 +54,7 @@
         if [[ "$filename" == jupyter* ]]; then
           cat <<EOF > $out/bin/$filename
       #!${pkgs.runtimeShell} -e
-      trap "chmod +w --recursive \$PWD/.jupyter" EXIT
+      trap "chmod +w --recursive \"\$PWD\"/.jupyter" EXIT
       ${jupyterlab-cond-build}
       ${jupyterlabEnvBase}/bin/$filename "\$@"
       EOF
