@@ -43,6 +43,7 @@ in {
     ./../modules/kernels/scala/default.nix
     ./../modules/kernels/typescript/default.nix
     ./../modules/kernels/zsh/default.nix
+    ./../modules/kernels/sage/default.nix
   ];
   # TODO: add kernels
   #++ map (name: ./. + "/../modules/kernels/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../modules/kernels));
