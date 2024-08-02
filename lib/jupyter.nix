@@ -13,20 +13,21 @@
     pkgs ?
       import self.inputs.nixpkgs {
         inherit system;
-        overlays = [poetry2nix.overlay];
+        overlays = [poetry2nix.overlays.default];
       },
     # https://github.com/nix-community/poetry2nix#mkPoetryEnv
     projectDir ? self, # TODO: only include relevant files/folders
     pyproject ? projectDir + "/pyproject.toml",
     poetrylock ? projectDir + "/poetry.lock",
     overrides ? import ./overrides.nix pkgs,
-    python ? pkgs.python3,
+    # TODO: better to inherit this from the toplevel flake.nix or pyproject.toml?
+    python ? pkgs.python310,
     editablePackageSources ? {},
     extraPackages ? (ps: []),
     preferWheels ? false,
     groups ? [],
   }: let
-    jupyterlabEnvBase = pkgs.poetry2nix.mkPoetryEnv {
+    jupyterlabEnvBase = (poetry2nix.lib.mkPoetry2Nix {inherit pkgs;}).mkPoetryEnv {
       inherit
         projectDir
         pyproject

@@ -36,7 +36,7 @@
       runtimePackages,
       # https://github.com/nix-community/poetry2nix
       poetry2nix,
-      poetry,
+      # poetry,
       # https://github.com/nix-community/poetry2nix#mkPoetryPackages
       projectDir,
       pyproject,
@@ -121,8 +121,8 @@
             ;
           pkgs = config.nixpkgs;
           python = pkgs.${config.python};
-          poetry = pkgs.callPackage "${config.poetry2nix}/pkgs/poetry" {inherit python;};
-          poetry2nix = import "${config.poetry2nix}/default.nix" {inherit pkgs poetry;};
+          # poetry = pkgs.callPackage "${config.poetry2nix}/pkgs/poetry" {inherit python;};
+          poetry2nix = import "${config.poetry2nix}/default.nix" {inherit pkgs;};
           overrides =
             if config.withDefaultOverrides == true
             then poetry2nix.overrides.withDefaults (import config.overrides)

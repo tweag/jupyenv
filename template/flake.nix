@@ -34,7 +34,7 @@
           nixpkgs = inputs.nixpkgs;
           imports = [(import ./kernels.nix)];
         });
-      in rec {
+      in {
         packages = {inherit jupyterlab;};
         packages.default = jupyterlab;
         apps.default.program = "${jupyterlab}/bin/jupyter-lab";

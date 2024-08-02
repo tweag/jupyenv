@@ -9,7 +9,7 @@
   ];
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05";
+  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -29,7 +29,8 @@
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
+  # inputs.poetry2nix.url = "github:nix-community/poetry2nix";
+  inputs.poetry2nix.url = "github:steveej/poetry2nix/patch-1";
   inputs.poetry2nix.inputs.flake-utils.follows = "flake-utils";
   inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
   inputs.rust-overlay.url = "github:oxalica/rust-overlay";
@@ -66,9 +67,6 @@
         pkgs = nixpkgs.legacyPackages.${system};
 
         python = pkgs.python3;
-        poetry2nixPkgs = import "${poetry2nix}/default.nix" {inherit pkgs poetry;};
-        poetry = pkgs.callPackage "${poetry2nix}/pkgs/poetry" {inherit python;};
-
         baseArgs = {
           inherit self system;
         };
@@ -88,23 +86,6 @@
             typos.write = true;
           };
         };
-
-        update-poetry-lock =
-          pkgs.writeShellApplication
-          {
-            name = "update-poetry-lock";
-            runtimeInputs = [poetry];
-            text = ''
-              shopt -s globstar
-              for lock in **/poetry.lock; do
-              (
-                echo Updating "$lock"
-                cd "$(dirname "$lock")"
-                poetry update
-              )
-              done
-            '';
-          };
 
         jupyenvLib = lib.makeScope lib.callPackageWith (final: {
           inherit self system pkgs lib python nix-dart baseArgs kernelLib;
@@ -138,7 +119,6 @@
             jupyterlab = jupyterLib.jupyterlabEnvWrapped baseArgs;
             jupyterlab-all-example-kernels = exampleJupyterlabAllKernelsNew;
             pub2nix-lock = nix-dart.packages."${system}".pub2nix-lock;
-            inherit update-poetry-lock;
             inherit (docsLib) docs mkdocs;
             default = jupyterLib.jupyterlabEnvWrapped baseArgs;
           }
@@ -147,10 +127,9 @@
           packages = [
             pkgs.alejandra
             pkgs.typos
-            poetry2nixPkgs.cli
-            poetry
-            pkgs.rnix-lsp
-            self.packages."${system}".update-poetry-lock
+            poetry2nix.outputs.packages.${system}.poetry2nix
+            pkgs.poetry
+            pkgs.nil
             docsLib.mkdocs
           ];
           shellHook = ''
@@ -162,9 +141,6 @@
           jupyterlabEnv = jupyterLib.jupyterlabEnvWrapped baseArgs;
         };
         apps = {
-          update-poetry-lock =
-            flake-utils.lib.mkApp
-            {drv = self.packages."${system}".update-poetry-lock;};
         };
       }
     ))
