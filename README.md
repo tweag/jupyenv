@@ -17,6 +17,7 @@
   <img src="modules/kernels/scala/logo-64x64.png" width="45" />
   <img src="modules/kernels/typescript/logo-64x64.png" width="45" />
   <img src="modules/kernels/zsh/logo-64x64.png" width="45" />
+  <img src="modules/kernels/dotnet/logo-64x64.png" width="45" />
 </p>
 
 This repository provides a Nix-based framework for the definition of

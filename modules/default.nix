@@ -84,6 +84,7 @@ in {
     ./../modules/kernels/scala
     ./../modules/kernels/typescript
     ./../modules/kernels/zsh
+    ./../modules/kernels/dotnet
   ];
   # TODO: add kernels
   #++ map (name: ./. + "/../modules/kernels/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../modules/kernels));
