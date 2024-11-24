@@ -63,6 +63,16 @@
       "aarch64-darwin"
     ];
 
+    welcomeText = ''
+      You have created a jupyenv template.
+
+      Run `nix run` to immediately try it out.
+
+      See the jupyenv documentation for more information.
+
+        https://jupyenv.io/documentation/getting-started/
+    '';
+
     kernelLib = import ./lib/kernels.nix {inherit self lib;};
   in
     (flake-utils.lib.eachSystem SYSTEMS (
@@ -174,18 +184,24 @@
       }
     ))
     // {
-      templates.default = {
-        path = ./template;
+      # https://flake.parts/options/jupyenv
+      flakeModule = {
+        _file = "${toString ./.}/flake.nix#flakeModule";
+        imports = [
+          ./flake-module.nix
+          {jupyenv.flake = self;}
+        ];
+      };
+      templates.default = self.templates.flake-utils;
+      templates.flake-utils = {
+        path = ./template/flake-utils;
         description = "Boilerplate for your jupyenv project";
-        welcomeText = ''
-          You have created a jupyenv template.
-
-          Run `nix run` to immediately try it out.
-
-          See the jupyenv documentation for more information.
-
-            https://jupyenv.io/documentation/getting-started/
-        '';
+        inherit welcomeText;
+      };
+      templates.flake-parts = {
+        path = ./template/flake-parts;
+        description = "Boilerplate for your jupyenv project";
+        inherit welcomeText;
       };
     };
 }
