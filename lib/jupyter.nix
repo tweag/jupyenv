@@ -9,35 +9,11 @@
   jupyterlabEnvWrapped = {
     self,
     system,
-    poetry2nix ? self.inputs.poetry2nix,
-    pkgs ?
-      import self.inputs.nixpkgs {
-        inherit system;
-        overlays = [poetry2nix.overlay];
-      },
-    # https://github.com/nix-community/poetry2nix#mkPoetryEnv
-    projectDir ? self, # TODO: only include relevant files/folders
-    pyproject ? projectDir + "/pyproject.toml",
-    poetrylock ? projectDir + "/poetry.lock",
-    overrides ? import ./overrides.nix pkgs,
-    python ? pkgs.python3,
-    editablePackageSources ? {},
-    extraPackages ? (ps: []),
-    preferWheels ? false,
-    groups ? [],
+    env,
+    pkgs,
+    ...
   }: let
-    jupyterlabEnvBase = pkgs.poetry2nix.mkPoetryEnv {
-      inherit
-        projectDir
-        pyproject
-        poetrylock
-        overrides
-        python
-        editablePackageSources
-        extraPackages
-        preferWheels
-        ;
-    };
+    jupyterlabEnvBase = env;
     jupyterlab-checker =
       pkgs.writeText "jupyterlab-checker"
       ''
@@ -78,7 +54,7 @@
         if [[ "$filename" == jupyter* ]]; then
           cat <<EOF > $out/bin/$filename
       #!${pkgs.runtimeShell} -e
-      trap "chmod +w --recursive \$PWD/.jupyter" EXIT
+      trap "chmod +w --recursive \"\$PWD\"/.jupyter" EXIT
       ${jupyterlab-cond-build}
       ${jupyterlabEnvBase}/bin/$filename "\$@"
       EOF
@@ -124,6 +100,7 @@
 
   mkJupyterlab = {
     jupyterlabEnvArgs ? {},
+    notebookConfig ? {},
     kernels ? k: [], # k: [ (k.python {}) k.bash ],
     # extensions ? e: [], # e: [ e.jupy-ext ]
     runtimePackages ? [], # runtime package available to all binaries
@@ -142,14 +119,20 @@
     jupyterlabEnv = jupyterlabEnvWrapped (baseArgs // jupyterlabEnvArgs);
 
     # create directories for storing jupyter configs
-    jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
-      # make jupyter config and data directories
-      mkdir -p $out/config $out/data
-      echo "c.NotebookApp.use_redirect_file = False" > $out/config/jupyter_notebook_config.py
+    jupyterDir = let
+      mergedNotebookConfig = lib.recursiveUpdate notebookConfig {
+        NotebookApp.use_redirect_file = false;
+        KernelSpecManager.whitelist = map (x: "${pkgs.lib.removeSuffix "-jupyter-kernel" x.name}") kernelDerivations;
+      };
+    in
+      pkgs.runCommand "jupyter-dir" {} ''
+        # make jupyter config and data directories
+        mkdir -p $out/config $out/data
+        echo '${builtins.toJSON mergedNotebookConfig}' > $out/config/jupyter_lab_config.json
 
-      # make jupyter lab user settings and workspaces directories
-      mkdir -p $out/config/lab/{user-settings,workspaces}
-    '';
+        # make jupyter lab user settings and workspaces directories
+        mkdir -p $out/config/lab/{user-settings,workspaces}
+      '';
   in
     pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
     {
@@ -201,7 +184,15 @@
   */
   mkJupyterlabEval = customModule:
     pkgs.lib.evalModules {
-      specialArgs = {inherit self system mkJupyterlab mkKernel;};
+      specialArgs = {
+        inherit
+          self
+          system
+          mkJupyterlab
+          mkKernel
+          ;
+        mkPoetryKernel = import ../modules/poetry.nix;
+      };
       modules = lib.flatten (
         [../modules]
         ++ lib.optional (customModule != null) customModule

@@ -1,13 +1,15 @@
 {
   kernelName,
   requiredRuntimePackages ? [],
-  mkKernel,
-  kernelFunc,
+  argvKernelName,
+  codemirrorMode,
+  language,
 }: {
   self,
   system,
   config,
   lib,
+  mkKernel,
   ...
 }: let
   inherit (lib) types;
@@ -19,9 +21,50 @@
   }: let
     args = {inherit self system lib config name kernelName requiredRuntimePackages;};
     kernelModule = import ./kernel.nix args;
+
+    kernelFunc = {
+      pkgs,
+      name,
+      displayName,
+      requiredRuntimePackages,
+      runtimePackages,
+      projectDir,
+      env,
+      self,
+      system,
+      kernelModuleDir,
+      extraKernelSpc,
+    }: let
+      allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
+
+      wrappedEnv =
+        pkgs.runCommand "wrapper-${env.name}"
+        {nativeBuildInputs = [pkgs.makeWrapper];}
+        ''
+          mkdir -p $out/bin
+          for i in ${env}/bin/*; do
+            filename=$(basename $i)
+            ln -s ${env}/bin/$filename $out/bin/$filename
+            wrapProgram $out/bin/$filename \
+              --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
+          done
+        '';
+    in
+      {
+        inherit name codemirrorMode displayName language;
+        argv = [
+          "${wrappedEnv}/bin/python"
+          "-m"
+          "${argvKernelName}"
+          "-f"
+          "{connection_file}"
+        ];
+        logo64 = kernelModuleDir + "/logo-64x64.png";
+      }
+      // extraKernelSpc;
   in {
     options =
-      import ./types/poetry.nix {inherit lib self config kernelName;}
+      import ./types/poetry.nix {inherit self lib config argvKernelName codemirrorMode kernelName language;}
       // kernelModule.options
       // {
         build = lib.mkOption {
@@ -33,26 +76,13 @@
     config = lib.mkIf config.enable {
       build = mkKernel (kernelFunc config.kernelArgs);
       kernelArgs =
-        rec {
+        {
           inherit
             (config)
+            env
             projectDir
-            pyproject
-            poetrylock
-            editablePackageSources
-            extraPackages
-            preferWheels
-            groups
-            ignoreCollisions
+            kernelModuleDir
             ;
-          pkgs = config.nixpkgs;
-          python = pkgs.${config.python};
-          poetry = pkgs.callPackage "${config.poetry2nix}/pkgs/poetry" {inherit python;};
-          poetry2nix = import "${config.poetry2nix}/default.nix" {inherit pkgs poetry;};
-          overrides =
-            if config.withDefaultOverrides == true
-            then poetry2nix.overrides.withDefaults (import config.overrides)
-            else import config.overrides;
         }
         // kernelModule.kernelArgs;
     };

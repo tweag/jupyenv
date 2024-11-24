@@ -16,16 +16,10 @@
     p.docopt
   ]);
 
-  sass = pkgs.callPackage (self + "/dart-sass") {
-    inherit lib;
-    inherit (pkgs) stdenv fetchzip;
-    buildDartPackage = nix-dart.builders."${system}".buildDartPackage;
-  };
-
   docs = pkgs.stdenv.mkDerivation {
     name = "jupyenv-docs";
     src = self;
-    nativeBuildInputs = [mkdocs sass];
+    nativeBuildInputs = [mkdocs pkgs.dart-sass];
     buildPhase = ''
       sass docs/sass/home/style.scss docs/stylesheets/home.css
       cp ${jupyterLib.options.optionsJSON}/share/doc/nixos/options.json ./options.json

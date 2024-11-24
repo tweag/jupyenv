@@ -1,85 +1,103 @@
 {
-  config,
+  self,
   system,
+  config,
+  lib,
   mkKernel,
   ...
-} @ args:
-import ./../../poetry.nix {
-  inherit mkKernel;
+}: let
+  inherit (lib) types;
 
-  requiredRuntimePackages = [
-    config.nixpkgs.nix
-  ];
   kernelName = "nix";
-
-  kernelFunc = {
-    self,
-    system,
-    # custom arguments
-    pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-    name ? "nix",
-    displayName ? "Nix",
-    nix ? pkgs.nixVersions.stable,
-    requiredRuntimePackages ? [nix],
-    runtimePackages ? [],
-    nixpkgsPath ? pkgs.path,
-    # https://github.com/nix-community/poetry2nix
-    poetry2nix ? import "${self.inputs.poetry2nix}/default.nix" {inherit pkgs poetry;},
-    poetry ? pkgs.callPackage "${self.inputs.poetry2nix}/pkgs/poetry" {inherit python;},
-    # https://github.com/nix-community/poetry2nix#mkPoetryPackages
-    projectDir ? self + "/modules/kernels/nix",
-    pyproject ? projectDir + "/pyproject.toml",
-    poetrylock ? projectDir + "/poetry.lock",
-    overrides ? poetry2nix.overrides.withDefaults (import ./overrides.nix),
-    python ? pkgs.python3,
-    editablePackageSources ? {},
-    extraPackages ? ps: [],
-    preferWheels ? false,
-    groups ? ["dev"],
-    ignoreCollisions ? false,
+  kernelOptions = {
+    config,
+    name,
+    ...
   }: let
-    env =
-      (poetry2nix.mkPoetryEnv {
-        inherit
-          projectDir
-          pyproject
-          poetrylock
-          overrides
-          python
-          editablePackageSources
-          extraPackages
-          preferWheels
-          groups
-          ;
-      })
-      .override (args: {inherit ignoreCollisions;});
+    args = {inherit self system lib config name kernelName;};
+    kernelModule = import ./../../kernel.nix args;
+    kernelFunc = {
+      self,
+      system,
+      # custom arguments
+      pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
+      name ? "nix",
+      displayName ? "Nix",
+      requiredRuntimePackages ? [],
+      runtimePackages ? [],
+      extraKernelSpc,
+      nix ? pkgs.nix,
+    }: let
+      allRuntimePackages =
+        requiredRuntimePackages
+        ++ runtimePackages
+        ++ [
+          nix
+        ];
 
-    allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
+      env = pkgs.python3.withPackages (ps: with ps; [nix-kernel]);
 
-    wrappedEnv =
-      pkgs.runCommand "wrapper-${env.name}"
-      {nativeBuildInputs = [pkgs.makeWrapper];}
-      ''
-        mkdir -p $out/bin
-        for i in ${env}/bin/*; do
-          filename=$(basename $i)
-          ln -s ${env}/bin/$filename $out/bin/$filename
-          wrapProgram $out/bin/$filename \
-            --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"\
-            --set NIX_PATH "nixpkgs=${nixpkgsPath}"
-        done
-      '';
+      wrappedEnv =
+        pkgs.runCommand "wrapper-${env.name}"
+        {nativeBuildInputs = [pkgs.makeWrapper];}
+        ''
+          mkdir -p $out/bin
+          for i in ${env}/bin/*; do
+            filename=$(basename $i)
+            ln -s ${env}/bin/$filename $out/bin/$filename
+            wrapProgram $out/bin/$filename \
+              --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"\
+              --set NIX_PATH "nixpkgs=${pkgs.path}"
+          done
+        '';
+    in
+      {
+        inherit name displayName;
+        language = "nix";
+        argv = [
+          "${wrappedEnv}/bin/python"
+          "-m"
+          "nix-kernel"
+          "-f"
+          "{connection_file}"
+        ];
+        codemirrorMode = "nix";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
-    inherit name displayName;
-    language = "Nix";
-    argv = [
-      "${wrappedEnv}/bin/python"
-      "-m"
-      "nix-kernel"
-      "-f"
-      "{connection_file}"
-    ];
-    logo64 = ./logo64.png;
+    options =
+      {
+        nix = lib.mkOption {
+          type = types.package;
+          default = config.nixpkgs.nix;
+          description = lib.mdDoc ''
+            Nix Version
+          '';
+        };
+      }
+      // kernelModule.options;
+
+    config = lib.mkIf config.enable {
+      build = mkKernel (kernelFunc config.kernelArgs);
+      kernelArgs =
+        {
+          inherit (config) nix;
+        }
+        // kernelModule.kernelArgs;
+    };
+  };
+in {
+  options.kernel.${kernelName} = lib.mkOption {
+    type = types.attrsOf (types.submodule kernelOptions);
+    default = {};
+    example = lib.literalExpression ''
+      {
+        kernel.${kernelName}."example".enable = true;
+      }
+    '';
+    description = lib.mdDoc ''
+      A ${kernelName} kernel for IPython.
+    '';
   };
 }
-args
