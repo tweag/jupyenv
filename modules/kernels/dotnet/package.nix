@@ -2,6 +2,8 @@
   lib,
   buildDotnetGlobalTool,
   dotnetCorePackages,
+  zlib,
+  openssl,
 }: let
   inherit (dotnetCorePackages) sdk_8_0;
 in
@@ -14,7 +16,10 @@ in
     dotnet-sdk = sdk_8_0;
     dotnet-runtime = sdk_8_0;
     executables = "dotnet-interactive";
-
+    runtimeDeps = [
+      zlib
+      openssl
+    ];
     meta = with lib; {
       description = ".NET Interactive";
       mainProgram = "dotnet-interactive";
