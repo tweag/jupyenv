@@ -25,6 +25,7 @@
       displayName ? "Javascript",
       requiredRuntimePackages ? [],
       runtimePackages ? [],
+      extraKernelSpc,
       ijavascript ? pkgs.nodePackages.ijavascript,
     }: let
       inherit (pkgs) lib stdenv writeScriptBin;
@@ -56,16 +57,18 @@
               --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
           done
         '';
-    in {
-      inherit name displayName;
-      language = "javascript";
-      argv = [
-        "${wrappedEnv}/bin/ijavascript"
-        "{connection_file}"
-      ];
-      codemirrorMode = "javascript";
-      logo64 = ./logo64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "javascript";
+        argv = [
+          "${wrappedEnv}/bin/ijavascript"
+          "{connection_file}"
+        ];
+        codemirrorMode = "javascript";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {}
