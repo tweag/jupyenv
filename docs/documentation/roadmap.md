@@ -9,7 +9,7 @@
 
 - [ ] Documentation
 
-    - [ ] Add more examples that execise all the kernel arguments.
+    - [ ] Add more examples that exercise all the kernel arguments.
     - [ ] Add example configurations to the site.
 
 ## Future work

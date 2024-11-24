@@ -25,6 +25,7 @@
       displayName ? "OCaml",
       requiredRuntimePackages ? [],
       runtimePackages ? [],
+      extraKernelSpc,
       # https://github.com/tweag/opam-nix
       opam-nix ? self.inputs.opam-nix,
       # Set of required packages
@@ -48,12 +49,12 @@
 
       scope = let
         name = "jupyter";
-        version = "2.8.0";
+        version = "2.8.3";
         src = pkgs.fetchFromGitHub {
           owner = "akabe";
           repo = "ocaml-jupyter";
           rev = "v${version}";
-          sha256 = "sha256-IWbM6rOjcE1QHO+GVl8ZwiZQpNmdBbTdfMZe69D5lIU=";
+          sha256 = "sha256-uMk0rsLqlwkkzB52V5khMyr3rYsn7Mfyq31ybH69KgI=";
         };
       in
         _opam-nix.buildDuneProject
@@ -97,23 +98,25 @@
           done
         '';
       });
-    in {
-      inherit name displayName;
-      language = "ocaml";
-      argv = [
-        "${wrappedKernel}/bin/ocaml-jupyter-kernel"
-        "-init"
-        (pkgs.writeText "ocamlinit" ocamlinit)
-        "--merlin"
-        "${scope.merlin}/bin/ocamlmerlin"
-        "--verbosity"
-        "app"
-        "--connection-file"
-        "{connection_file}"
-      ];
-      codemirrorMode = "ocaml";
-      logo64 = ./logo64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "ocaml";
+        argv = [
+          "${wrappedKernel}/bin/ocaml-jupyter-kernel"
+          "-init"
+          (pkgs.writeText "ocamlinit" ocamlinit)
+          "--merlin"
+          "${scope.merlin}/bin/ocamlmerlin"
+          "--verbosity"
+          "app"
+          "--connection-file"
+          "{connection_file}"
+        ];
+        codemirrorMode = "ocaml";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {
