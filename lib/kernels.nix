@@ -176,18 +176,18 @@
     let
       kernelInstance = {
         name = "pythontest";
-        logo64 = ./kernels/python/logo64.png;
+        logo64 = ./kernels/python/logo-64x64.png;
       };
     in
       kernelLib.copyKernelLogos ["logo64"] kernelInstance
     ->
-    "cp /nix/store/<hash>-logo64.png $out/kernels/pythontest/logo64.png\n"
+    "cp /nix/store/<hash>-logo-64x64.png $out/kernels/pythontest/logo-64x64.png\n"
 
   Example:
     let
       kernelInstance = {
         name = "pythontest";
-        logo64 = ./kernels//python/logo64.png;
+        logo64 = ./kernels//python/logo-64x64.png;
       };
     in
       kernelLib.copyKernelLogos ["logo32"] kernelInstance
@@ -222,7 +222,7 @@
         name = "pythontest";
         displayName = "Python Test";
         codemirrorMode = "python";
-        logo64 = ./kernels/python/logo64.png;
+        logo64 = ./kernels/python/logo-64x64.png;
       };
     in
       kernelLib.fixKernelJSON ["logo64" "logo32"] kernelInstance
@@ -231,7 +231,7 @@
       name = "pythontest";
       display_name = "Python Test";
       codemirror_mode = "python";
-      logo64 = "logo64.png";
+      logo64 = "logo-64x64.png";
     }
 
   */
@@ -270,12 +270,12 @@
         name = "pythontest";
         displayName = "Python Test";
         codemirrorMode = "python";
-        logo64 = ./kernels/python/logo64.png;
+        logo64 = ./kernels/python/logo-64x64.png;
       };
     in
       kernelLib.fixKernelJSON ["logo64" "logo32"] kernelInstance
     ->
-    "echo '{\"codemirror_mode\":\"python\",\"display_name\":\"Python Test\",\"logo64\":\"logo64.png\",\"name\":\"pythontest\"}' > $out/kernels/pythontest/kernel.json\n"
+    "echo '{\"codemirror_mode\":\"python\",\"display_name\":\"Python Test\",\"logo64\":\"logo-64x64.png\",\"name\":\"pythontest\"}' > $out/kernels/pythontest/kernel.json\n"
   */
   copyKernelSpec = kernelLogos: kernelInstance: let
     kernelSpec = createKernelSpec kernelLogos kernelInstance;

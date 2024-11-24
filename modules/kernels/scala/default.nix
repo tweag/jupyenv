@@ -25,6 +25,7 @@
       displayName ? "Scala",
       requiredRuntimePackages ? [],
       runtimePackages ? [],
+      extraKernelSpc,
       scala ? pkgs.scala,
       coursier ? pkgs.coursier,
       jdk ? pkgs.jdk,
@@ -36,7 +37,7 @@
 
       almondSh = let
         baseName = "almond";
-        version = "0.13.1";
+        version = "0.14.0-RC7";
         scalaVersion = scala.version;
         deps = stdenv.mkDerivation {
           name = "${baseName}-deps-${version}";
@@ -50,7 +51,7 @@
 
           outputHashMode = "recursive";
           outputHashAlgo = "sha256";
-          outputHash = "iPWMAvEW83aETWrxt9CmBAYMNouWsHHDoEa+Qy9inyE=";
+          outputHash = "sha256-LJ9eWV3FRhNl8pZvMQgwD43uMmeQoIi9v9d4SOzYcmg=";
         };
       in
         stdenv.mkDerivation {
@@ -95,17 +96,19 @@
               --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
           done
         '';
-    in {
-      inherit name displayName;
-      language = "scala";
-      argv = [
-        "${wrappedEnv}/bin/almond"
-        "--connection-file"
-        "{connection_file}"
-      ];
-      codemirrorMode = "scala";
-      logo64 = ./logo64.png;
-    };
+    in
+      {
+        inherit name displayName;
+        language = "scala";
+        argv = [
+          "${wrappedEnv}/bin/almond"
+          "--connection-file"
+          "{connection_file}"
+        ];
+        codemirrorMode = "scala";
+        logo64 = ./logo-64x64.png;
+      }
+      // extraKernelSpc;
   in {
     options =
       {
