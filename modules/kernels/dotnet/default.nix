@@ -8,13 +8,19 @@
 }: let
   inherit (lib) types;
 
-  kernelName = "go";
+  kernelName = "dotnet";
   kernelOptions = {
     config,
     name,
     ...
   }: let
-    requiredRuntimePackages = [config.nixpkgs.go];
+    dotnet-interactive =
+      config.nixpkgs.callPackage ./package.nix {
+      };
+
+    requiredRuntimePackages = [
+      dotnet-interactive
+    ];
     args = {inherit self system lib config name kernelName requiredRuntimePackages;};
     kernelModule = import ./../../kernel.nix args;
     kernelFunc = {
@@ -22,57 +28,45 @@
       system,
       # custom arguments
       pkgs ? self.inputs.nixpkgs.legacyPackages.${system},
-      name ? "go",
-      displayName ? "Go",
-      requiredRuntimePackages ? with pkgs; [go],
+      name ? "dotnet",
+      displayName ? "dotnet",
+      requiredRuntimePackages ? with pkgs; [dotnet-interactive],
       runtimePackages ? [],
-      gophernotes ? pkgs.gophernotes,
       extraKernelSpc,
-    }: let
-      inherit (pkgs) lib stdenv writeScriptBin;
-
-      gophernotesSh = writeScriptBin "gophernotes" ''
-        #! ${stdenv.shell}
-        export PATH="${lib.makeBinPath [gophernotes]}:$PATH"
-        ${gophernotes}/bin/gophernotes "$@"'';
-
-      allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
-
-      env = gophernotesSh;
-      wrappedEnv =
-        pkgs.runCommand "wrapper-${env.name}"
-        {nativeBuildInputs = [pkgs.makeWrapper];}
-        ''
-          mkdir -p $out/bin
-          for i in ${env}/bin/*; do
-            filename=$(basename $i)
-            ln -s ${env}/bin/$filename $out/bin/$filename
-            wrapProgram $out/bin/$filename \
-              --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
-          done
-        '';
-    in
+      language ? "csharp",
+    }:
       {
         inherit name displayName;
-        language = "go";
+        language = "dotnet";
         argv = [
-          "${wrappedEnv}/bin/gophernotes"
+          "${dotnet-interactive}/bin/dotnet-interactive"
+          "jupyter"
           "{connection_file}"
+          "--default-kernel"
+          "${language}"
         ];
-        codemirrorMode = "go";
+        codemirrorMode = "dotnet";
         logo64 = ./logo-64x64.png;
       }
       // extraKernelSpc;
   in {
     options =
-      {}
+      {
+        language = lib.mkOption {
+          type = lib.types.enum ["csharp" "fsharp"];
+          default = "csharp";
+          description = lib.mdDoc ''
+            Language flavour of dotnet-interactive kernel
+          '';
+        };
+      }
       // kernelModule.options;
 
     config = lib.mkIf config.enable {
       build = mkKernel (kernelFunc config.kernelArgs);
       kernelArgs =
         {
-          gophernotes = kernelModule.kernelArgs.pkgs.gophernotes;
+          inherit (config) language;
         }
         // kernelModule.kernelArgs;
     };
