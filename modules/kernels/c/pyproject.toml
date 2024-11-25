@@ -6,10 +6,10 @@ authors = []
 
 [tool.poetry.dependencies]
 python = "^3.11"
-ipykernel = "*"
-jupyter_c_kernel = "*"
 
 [tool.poetry.dev-dependencies]
+ipykernel = "*"
+jupyter_c_kernel = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
