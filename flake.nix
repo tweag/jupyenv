@@ -9,7 +9,7 @@
   ];
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.05";
+  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -18,7 +18,7 @@
   inputs.nix-dart.url = "github:djacu/nix-dart";
   inputs.nix-dart.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nix-dart.inputs.flake-utils.follows = "flake-utils";
-  inputs.npmlock2nix.url = "github:nix-community/npmlock2nix/0ba0746d62974403daf717cded3f24c617622bc7";
+  inputs.npmlock2nix.url = "github:nix-community/npmlock2nix";
   inputs.npmlock2nix.flake = false;
   inputs.opam-nix.url = "github:tweag/opam-nix";
   inputs.opam-nix.inputs.flake-compat.follows = "";

@@ -35,6 +35,7 @@
 
       env = haskellKernelPkg {
         packages = extraHaskellPackages;
+        rtsopts = extraHaskellFlags;
       };
 
       kernelspec = let
