@@ -39,7 +39,7 @@ jobs:
     - name: Get status
       id: status
       if: always()
-      uses: ASzc/change-string-case-action@v5
+      uses: ASzc/change-string-case-action@v6
       with:
         string: ${{ job.status }}
 
