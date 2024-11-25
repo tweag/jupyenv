@@ -21,7 +21,7 @@ The licensor cannot revoke these freedoms as long as you follow the license term
   measures that legally restrict others from doing anything the license permits.
 
 If you wish to use the Julia logo as is or derive another logo from it for commercial
-purposes, you must conact the licensor, [Stefan Karpinski](stefan@karpinski.org), for
+purposes, you must contact the licensor, [Stefan Karpinski](stefan@karpinski.org), for
 permission to do so as such usage is not covered under this license.
 
 ______________________________________________________________________

@@ -1,9 +1,7 @@
 {
   self,
   system,
-  config,
   lib,
-  mkKernel,
   ...
 }: let
   inherit (lib) types;
@@ -27,7 +25,7 @@
       displayName,
       requiredRuntimePackages,
       runtimePackages ? [],
-      haskellKernelPkg ? import "${self.inputs.ihaskell}/release.nix",
+      haskellKernelPkg,
       haskellCompiler,
       extraHaskellFlags ? "-M3g -N2",
       extraHaskellPackages ? (_: []),
@@ -36,35 +34,31 @@
       allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
       env = haskellKernelPkg {
-        compiler = haskellCompiler;
-        nixpkgs = pkgs;
         packages = extraHaskellPackages;
       };
 
       kernelspec = let
-        ihaskellGhcLib = env.ihaskellGhcLibFunc env.ihaskellExe env.ihaskellEnv;
         wrappedEnv =
-          pkgs.runCommand "wrapper-${ihaskellGhcLib.name}"
+          pkgs.runCommand "wrapper-${env.name}"
           {nativeBuildInputs = [pkgs.makeWrapper];}
           ''
             mkdir -p $out/bin
-            for i in ${ihaskellGhcLib}/bin/*; do
+            for i in ${env}/bin/*; do
               filename=$(basename $i)
-              ln -s ${ihaskellGhcLib}/bin/$filename $out/bin/$filename
+              ln -s ${env}/bin/$filename $out/bin/$filename
               wrapProgram $out/bin/$filename \
                 --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
             done
           '';
       in
-        env.ihaskellKernelFileFunc
-        wrappedEnv
-        extraHaskellFlags;
+        wrappedEnv;
     in
       {
         inherit name displayName;
         language = "haskell";
         # See https://github.com/IHaskell/IHaskell/pull/1191
-        argv = kernelspec.argv ++ ["--codemirror" "Haskell"];
+        # argv = kernelspec.argv ++ ["--codemirror" "Haskell"];
+        env = kernelspec;
         codemirrorMode = "Haskell";
         logo64 = ./logo-64x64.png;
       }
@@ -84,8 +78,8 @@
 
         haskellCompiler = lib.mkOption {
           type = types.str;
-          default = "ghc943";
-          example = "ghc943";
+          default = "ghc910";
+          example = "ghc910";
           description = lib.mdDoc ''
             haskell compiler
           '';
@@ -113,11 +107,20 @@
       // kernelModule.options;
 
     config = lib.mkIf config.enable {
-      build = mkKernel (kernelFunc config.kernelArgs);
+      build = (kernelFunc config.kernelArgs).env;
       kernelArgs =
         {
           inherit (config) extraHaskellFlags extraHaskellPackages haskellCompiler;
-          haskellKernelPkg = import "${config.ihaskell}/release.nix";
+          haskellKernelPkg =
+            ((config.nixpkgs).appendOverlays [
+              (_: _: {nix-filter = self.inputs.ihaskell.inputs.nix-filter;})
+              (import (config.ihaskell + "/nix/overlay-9.8.nix"))
+              (import (config.ihaskell + "/nix/overlay-9.6.nix"))
+              (import (config.ihaskell + "/nix/overlay-9.10.nix"))
+            ])
+            .callPackage "${config.ihaskell}/nix/release.nix" {
+              compiler = config.haskellCompiler;
+            };
         }
         // kernelModule.kernelArgs;
     };
