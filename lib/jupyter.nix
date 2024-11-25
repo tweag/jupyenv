@@ -168,7 +168,7 @@
       ''
       + (lib.strings.optionalString (
           builtins.any
-          (kernel: kernel.kernelInstance.language == "julia")
+          (kernel: (kernel ? kernelInstance && kernel.kernelInstance.language == "julia"))
           kernelDerivations
         ) ''
           # add Julia for IJulia
