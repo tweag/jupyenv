@@ -137,6 +137,34 @@
 
         exampleJupyterlabAllKernelsNew =
           jupyterLib.mkJupyterlabNew (builtins.attrValues examples);
+
+        checkKernel = name: example:
+          with import (nixpkgs + "/nixos/lib/testing-python.nix") {inherit system;}; let
+            kernel = jupyterLib.mkJupyterlabNew example;
+            test_py = (builtins.dirOf example) + "/test.py";
+          in
+            makeTest {
+              inherit name;
+              nodes.machine = {config, ...}: {
+                config = {
+                  environment.systemPackages = [kernel];
+                };
+              };
+              testScript = ''
+                start_all()
+                machine.wait_until_succeeds("${kernel}/bin/python ${test_py}",timeout=30)
+              '';
+            };
+        exampleCheck = (
+          lib.mapAttrs'
+          (
+            name: value:
+              lib.nameValuePair
+              ("check-" + name)
+              (checkKernel name value)
+          )
+          examples
+        );
       in {
         lib =
           jupyterLib
@@ -167,9 +195,11 @@
             ${pre-commit.shellHook}
           '';
         };
-        checks = {
-          inherit pre-commit;
-        };
+        checks =
+          {
+            inherit pre-commit;
+          }
+          // exampleCheck;
         apps = {
           update-poetry-lock =
             flake-utils.lib.mkApp
