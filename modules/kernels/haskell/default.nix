@@ -13,7 +13,9 @@
     ...
   }: let
     requiredRuntimePackages = [
-      # config.nixpkgs.haskell.compiler.${config.haskellCompiler}
+      # https://github.com/IHaskell/IHaskell/issues/1434#issuecomment-2500706338
+      # requiredRuntimePackages can't be empty
+      config.nixpkgs.hello
     ];
     args = {inherit self system lib config name kernelName requiredRuntimePackages;};
     kernelModule = import ./../../kernel.nix args;
