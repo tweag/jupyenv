@@ -16,6 +16,7 @@
       # https://github.com/IHaskell/IHaskell/issues/1434#issuecomment-2500706338
       # requiredRuntimePackages can't be empty
       config.nixpkgs.hello
+      # config.nixpkgs.haskell.compiler.${config.haskellCompiler}
     ];
     args = {inherit self system lib config name kernelName requiredRuntimePackages;};
     kernelModule = import ./../../kernel.nix args;
@@ -36,32 +37,22 @@
       allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
       env = haskellKernelPkg {
+        inherit name;
         packages = extraHaskellPackages;
         rtsopts = extraHaskellFlags;
         extraEnvironmentBinaries = allRuntimePackages;
       };
-      # kernelspec = let
-      #   wrappedEnv =
-      #     pkgs.runCommand "wrapper-${env.name}"
-      #     {nativeBuildInputs = [pkgs.makeWrapper];}
-      #     ''
-      #       mkdir -p $out/bin
-      #       for i in ${env}/bin/*; do
-      #         filename=$(basename $i)
-      #         ln -s ${env}/bin/$filename $out/bin/$filename
-      #         wrapProgram $out/bin/$filename \
-      #           --set PATH "${pkgs.lib.makeSearchPath "bin" allRuntimePackages}"
-      #       done
-      #     '';
-      # in
-      #   wrappedEnv;
     in
       {
-        inherit name displayName env;
+        inherit name displayName;
         language = "haskell";
-        # See https://github.com/IHaskell/IHaskell/pull/1191
-        # argv = kernelspec.argv ++ ["--codemirror" "Haskell"];
-        # env = kernelspec;
+        env = pkgs.symlinkJoin {
+          inherit name;
+          paths = [
+            env
+            env.ihaskellDataDir
+          ];
+        };
         codemirrorMode = "Haskell";
         logo64 = ./logo-64x64.png;
       }
@@ -153,8 +144,10 @@
                   };
               })
             ])
-            .callPackage "${config.ihaskell}/nix/release.nix" {
+            .callPackage
+            ./release.nix {
               compiler = config.haskellCompiler;
+              ihaskell = config.ihaskell;
             };
         }
         // kernelModule.kernelArgs;
