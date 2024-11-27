@@ -1,65 +1,33 @@
 pkgs: let
-  addNativeBuildInputs = prev: drvName: inputs: {
-    "${drvName}" = prev.${drvName}.overridePythonAttrs (old: {
-      nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
-    });
-  };
-
   preOverlay = final: prev: {
     arrow = prev.arrow.override {
       preferWheel = true;
     };
   };
-
+  pypkgs-build-requirements = {
+    pdm = ["pdm-backend"];
+    webcolors = ["pdm-backend"];
+    dep-logic = ["pdm-backend"];
+    findpython = ["pdm-backend"];
+    pbs-installer = ["pdm-backend"];
+    unearth = ["pdm-backend"];
+    hishel = ["hatch-fancy-pypi-readme"];
+  };
   postOverlay = final: prev:
-    {}
+    (builtins.mapAttrs (
+        package: build-requirements:
+          (builtins.getAttr package prev).overridePythonAttrs (old: {
+            buildInputs =
+              (old.buildInputs or [])
+              ++ (builtins.map (pkg:
+                if builtins.isString pkg
+                then builtins.getAttr pkg prev
+                else pkg)
+              build-requirements);
+          })
+      )
+      pypkgs-build-requirements)
     // {
-      pdm = prev.pdm.overridePythonAttrs (
-        old: {
-          buildInputs = (old.buildInputs or []) ++ [prev.pdm-backend];
-        }
-      );
-      webcolors = prev.webcolors.overridePythonAttrs (
-        old: {
-          buildInputs = (old.buildInputs or []) ++ [prev.pdm-backend];
-        }
-      );
-      dep-logic = prev.dep-logic.overridePythonAttrs (
-        old: {
-          buildInputs = (old.buildInputs or []) ++ [prev.pdm-pep517 prev.pdm-backend];
-        }
-      );
-      findpython = prev.findpython.overridePythonAttrs (
-        old: {
-          buildInputs = (old.buildInputs or []) ++ [prev.pdm-pep517 prev.pdm-backend];
-        }
-      );
-      pbs-installer = prev.pbs-installer.overridePythonAttrs (
-        old: {
-          buildInputs = (old.buildInputs or []) ++ [prev.pdm-pep517 prev.pdm-backend];
-        }
-      );
-      rpds-py = prev.rpds-py.overridePythonAttrs (old: {
-        cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
-          inherit (old) src;
-          name = "${old.pname}-${old.version}";
-          hash = "sha256-VOmMNEdKHrPKJzs+D735Y52y47MubPwLlfkvB7Glh14=";
-        };
-      });
-      unearth = prev.unearth.overridePythonAttrs (
-        old: {
-          buildInputs = (old.buildInputs or []) ++ [prev.pdm-pep517 prev.pdm-backend];
-        }
-      );
-      hishel = prev.hishel.overridePythonAttrs (
-        old: {
-          buildInputs =
-            (old.buildInputs or [])
-            ++ [
-              prev.hatch-fancy-pypi-readme
-            ];
-        }
-      );
       testbook = prev.testbook.overridePythonAttrs (old: {
         postPatch = ''
           mkdir ./tmp
@@ -71,6 +39,13 @@ pkgs: let
           popd
           rm -rf tmp
         '';
+      });
+      rpds-py = prev.rpds-py.overridePythonAttrs (old: {
+        cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
+          inherit (old) src;
+          name = "${old.pname}-${old.version}";
+          hash = "sha256-VOmMNEdKHrPKJzs+D735Y52y47MubPwLlfkvB7Glh14=";
+        };
       });
     };
 in [preOverlay pkgs.poetry2nix.defaultPoetryOverrides postOverlay]
