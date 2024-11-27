@@ -5,11 +5,11 @@ description = ""
 authors = []
 
 [tool.poetry.dependencies]
-python = "^3.10"
-ipykernel = "*"
-jupyter_c_kernel = "*"
+python = "^3.11"
 
 [tool.poetry.dev-dependencies]
+ipykernel = "*"
+jupyter_c_kernel = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

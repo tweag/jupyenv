@@ -5,11 +5,10 @@ description = ""
 authors = []
 
 [tool.poetry.dependencies]
-python = "^3.10"
-postgres_kernel = "^0.2.2"
+python = "^3.11"
 
 [tool.poetry.dev-dependencies]
-# build systems for dependencies
+postgres_kernel = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

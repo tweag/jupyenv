@@ -26,7 +26,7 @@
       requiredRuntimePackages ? [],
       runtimePackages ? [],
       julia,
-      ijuliaRev ? "Vo51o",
+      ijuliaRev ? "bHdNn",
       extraJuliaPackages ? [],
       override ? {},
       extraKernelSpc,
@@ -74,7 +74,7 @@
       {
         ijuliaRev = lib.mkOption {
           type = types.str;
-          default = "Vo51o";
+          default = "bHdNn";
           description = lib.mdDoc ''
             IJulia revision
           '';

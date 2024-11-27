@@ -7,7 +7,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 def test_nb(tb):
     result = tb.execute_cell(0)["outputs"][0]["data"]
     assert "text/html" in result
-    assert "elm-div" in result["text/html"]
+    assert "elm-div-2" in result["text/html"]
 
 if __name__ == '__main__':
     test_nb()
