@@ -12,6 +12,9 @@ pkgs: let
     pbs-installer = ["pdm-backend"];
     unearth = ["pdm-backend"];
     hishel = ["hatch-fancy-pypi-readme"];
+    jinja2 = ["flit-core"];
+    pyzmq = ["scikit-build-core"];
+    urllib3 = ["hatchling" "hatch-vcs"];
   };
   postOverlay = final: prev:
     (builtins.mapAttrs (
@@ -46,6 +49,20 @@ pkgs: let
           name = "${old.pname}-${old.version}";
           hash = "sha256-VOmMNEdKHrPKJzs+D735Y52y47MubPwLlfkvB7Glh14=";
         };
+      });
+      rfc3986-validator = prev.rfc3986-validator.overridePythonAttrs (old: {
+        nativeBuildInputs = (old.buildInputs or []) ++ [prev.setuptools prev.wheel pkgs.patchutils];
+        patchPhase = ''
+          # Patch setup.py to remove pytest-runner
+          substituteInPlace setup.py \
+            --replace-fail "setup_requirements = ['pytest-runner', ]" "setup_requirements = []" \
+        '';
+        buildPhase = ''
+          python setup.py sdist bdist_wheel
+        '';
+      });
+      tinycss2 = prev.tinycss2.overridePythonAttrs (old: {
+        buildInputs = [];
       });
     };
 in [preOverlay pkgs.poetry2nix.defaultPoetryOverrides postOverlay]
