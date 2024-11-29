@@ -44,6 +44,9 @@ in {
     description = lib.mdDoc ''
       Path to the root of the poetry project that provides this ${kernelName}
       kernel.
+
+      This poetry project must have the required kernel as a dependency.
+      You can also add your own dependencies to it, and they will end up in the resulting environment.
     '';
   };
 
@@ -146,6 +149,8 @@ in {
     example = lib.literalExpression "true";
     description = lib.mdDoc ''
       Use wheels rather than sdist as much as possible.
+
+      This may be a viable workaround when packages do not build with Nix but there are wheels available.
     '';
   };
 
