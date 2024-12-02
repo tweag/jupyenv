@@ -184,8 +184,7 @@ jobs:
     - name: Build
       run: |
         pushd ./example
-          sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../repo|" flake.nix
-          nix build
+          nix build --override-input jupyenv ../repo --show-trace -L
         popd
 
     # TODO this should not be dependent on the example kernels tests as the kernel names are different
