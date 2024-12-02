@@ -65,7 +65,7 @@
           default = self.inputs.ihaskell;
           defaultText = lib.literalExpression "self.inputs.ihaskell";
           example = lib.literalExpression "self.inputs.ihaskell";
-          description = lib.mdDoc ''
+          description = ''
             ihaskell flake input to be used for this ${kernelName} kernel.
           '';
         };
@@ -74,7 +74,7 @@
           type = types.str;
           default = "ghc910";
           example = "ghc910";
-          description = lib.mdDoc ''
+          description = ''
             haskell compiler
           '';
         };
@@ -83,7 +83,7 @@
           type = types.str;
           default = "-M3g -N2";
           example = "-M3g -N2";
-          description = lib.mdDoc ''
+          description = ''
             haskell compiler flags
           '';
         };
@@ -93,7 +93,7 @@
           default = _: [];
           defaultText = lib.literalExpression "ps: []";
           example = lib.literalExpression "ps: [ps.lens ps.vector]";
-          description = lib.mdDoc ''
+          description = ''
             extra haskell packages
           '';
         };
@@ -162,7 +162,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };

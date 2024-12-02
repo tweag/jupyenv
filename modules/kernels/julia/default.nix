@@ -75,28 +75,28 @@
         ijuliaRev = lib.mkOption {
           type = types.str;
           default = "bHdNn";
-          description = lib.mdDoc ''
+          description = ''
             IJulia revision
           '';
         };
         julia = lib.mkOption {
           type = types.package;
           default = config.nixpkgs.julia_19;
-          description = lib.mdDoc ''
+          description = ''
             Julia Version
           '';
         };
         extraJuliaPackages = lib.mkOption {
           type = types.listOf types.str;
           default = [];
-          description = lib.mdDoc ''
+          description = ''
             Extra Julia packages to install
           '';
         };
         override = lib.mkOption {
           type = types.attrs;
           default = {};
-          description = lib.mdDoc ''
+          description = ''
             Override JuliaWithPackages
           '';
         };
@@ -121,7 +121,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };

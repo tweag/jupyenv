@@ -71,7 +71,7 @@
           type = types.package;
           default = config.nixpkgs.rWrapper;
           defaultText = lib.literalExpression "pkgs.rWrapper";
-          description = lib.mdDoc ''
+          description = ''
             R version from nixpkgs.
           '';
         };
@@ -80,7 +80,7 @@
           type = types.attrs;
           default = config.nixpkgs.rPackages;
           defaultText = lib.literalExpression "pkgs.rPackages";
-          description = lib.mdDoc ''
+          description = ''
             A set of R packages.
           '';
         };
@@ -90,7 +90,7 @@
           default = _: [];
           defaultText = lib.literalExpression "_: []";
           example = lib.literalExpression "ps: [ps.foreign ps.ggplot2]";
-          description = lib.mdDoc ''
+          description = ''
             Extra R packages.
           '';
         };
@@ -115,7 +115,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };

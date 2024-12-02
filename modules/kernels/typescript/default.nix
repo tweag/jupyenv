@@ -140,7 +140,7 @@
           default = self.inputs.npmlock2nix;
           defaultText = lib.literalExpression "self.inputs.npmlock2nix";
           example = lib.literalExpression "self.inputs.npmlock2nix";
-          description = lib.mdDoc ''
+          description = ''
             npmlock2nix flake input to be used to build this ${kernelName} kernel.
           '';
         };
@@ -165,7 +165,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };

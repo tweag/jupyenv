@@ -125,7 +125,7 @@
           default = self.inputs.opam-nix;
           defaultText = lib.literalExpression "self.inputs.opam-nix";
           example = lib.literalExpression ''builtins.getFlake "github:tweag/opam-nix"'';
-          description = lib.mdDoc ''
+          description = ''
             opam-nix flake input to be used for this ${kernelName} kernel.
           '';
         };
@@ -134,7 +134,7 @@
           type = types.attrs;
           default = {merlin = "*";};
           example = {merlin = "4.7.1-500";};
-          description = lib.mdDoc ''
+          description = ''
             Attribute set of required OCaml packages.
           '';
         };
@@ -148,7 +148,7 @@
 
             my-custom-package = "dev";
           };
-          description = lib.mdDoc ''
+          description = ''
             Attribute set of user desired OCaml packages.
 
             If you wish to add custom packages (not from opam-repository), see also the `opamProjects` option.
@@ -205,7 +205,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };

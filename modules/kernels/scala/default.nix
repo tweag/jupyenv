@@ -116,7 +116,7 @@
           type = types.package;
           default = config.nixpkgs.scala_2_12;
           example = lib.literalExpression "pkgs.scala";
-          description = lib.mdDoc ''
+          description = ''
             Scala package to use with almond.
           '';
         };
@@ -125,7 +125,7 @@
           type = types.package;
           default = config.nixpkgs.coursier;
           example = lib.literalExpression "pkgs.coursier";
-          description = lib.mdDoc ''
+          description = ''
             Coursier package to use with almond.
           '';
         };
@@ -134,7 +134,7 @@
           type = types.package;
           default = config.nixpkgs.jdk;
           example = lib.literalExpression "pkgs.jdk";
-          description = lib.mdDoc ''
+          description = ''
             JDK package to use with almond.
           '';
         };
@@ -143,7 +143,7 @@
           type = types.package;
           default = config.nixpkgs.jre;
           example = lib.literalExpression "pkgs.jre";
-          description = lib.mdDoc ''
+          description = ''
             JRE package to use with almond.
           '';
         };
@@ -167,7 +167,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };
