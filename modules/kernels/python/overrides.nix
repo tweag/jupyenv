@@ -55,5 +55,19 @@ pkgs: let
           export PATH="$PATH:${pkgs.cmake}/bin"
         '';
       });
+
+      setuptools =
+        if prev.setuptools.version == "75.1.1"
+        then
+          prev.setuptools.overridePythonAttrs (old: rec {
+            version = "75.6.0";
+            src = pkgs.fetchFromGitHub {
+              owner = "pypa";
+              repo = "setuptools";
+              rev = "refs/tags/v${version}";
+              hash = "sha256-5sXgaSKED9OleB903DdEH1X53weW+Bd39P5Bm5OTRzg=";
+            };
+          })
+        else prev.setuptools;
     });
 in [overlay]
