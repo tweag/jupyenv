@@ -55,7 +55,7 @@
         language = lib.mkOption {
           type = lib.types.enum ["csharp" "fsharp"];
           default = "csharp";
-          description = lib.mdDoc ''
+          description = ''
             Language flavour of dotnet-interactive kernel
           '';
         };
@@ -80,7 +80,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };

@@ -5,6 +5,11 @@
 }: {
   kernel.python.stable-example = {
     enable = true;
-    nixpkgs = self.inputs.nixpkgs-stable;
+    nixpkgs = import self.inputs.nixpkgs-stable {
+      inherit system;
+      overlays = [
+        self.inputs.poetry2nix.overlays.default
+      ];
+    };
   };
 }

@@ -71,7 +71,7 @@
         nix = lib.mkOption {
           type = types.package;
           default = config.nixpkgs.nix;
-          description = lib.mdDoc ''
+          description = ''
             Nix Version
           '';
         };
@@ -96,7 +96,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };

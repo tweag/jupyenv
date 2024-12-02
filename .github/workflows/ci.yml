@@ -82,6 +82,14 @@ jobs:
       with:
         fetch-depth: 0
 
+    # Workaround for System.IO.IOException: No space left on device 
+    # https://github.com/actions/runner-images/issues/10699#issuecomment-2402475892
+    - name: Clean up disk space
+      run: |
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /opt/ghc
+
     - name: Setup
       uses: ./.github/actions/common-setup
       with:
@@ -176,8 +184,7 @@ jobs:
     - name: Build
       run: |
         pushd ./example
-          sed -i -e "s|github:tweag/jupyterWith|path:$PWD/../repo|" flake.nix
-          nix build
+          nix build --override-input jupyenv ../repo --show-trace -L
         popd
 
     # TODO this should not be dependent on the example kernels tests as the kernel names are different

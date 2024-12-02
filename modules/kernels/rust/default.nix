@@ -81,7 +81,7 @@
           type = types.package;
           default = config.nixpkgs.evcxr;
           example = lib.literalExpression "pkgs.evcxr";
-          description = lib.mdDoc ''
+          description = ''
             An evaluation context for Rust.
           '';
         };
@@ -91,7 +91,7 @@
           default = self.inputs.rust-overlay;
           defaultText = lib.literalExpression "self.inputs.rust-overlay";
           example = lib.literalExpression "self.inputs.rust-overlay";
-          description = lib.mdDoc ''
+          description = ''
             An overlay for binary distributed rust toolchains. Adds `rust-bin` to nixpkgs which is needed for the Rust kernel.
           '';
         };
@@ -119,7 +119,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };

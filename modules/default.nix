@@ -35,7 +35,7 @@ in {
                 type = types.functionTo (types.listOf types.package);
                 default = ps: [];
                 example = ps: [ps.jupytext];
-                description = lib.mdDoc "A list of packages for extending the jupyterlab environment";
+                description = "A list of packages for extending the jupyterlab environment";
               };
             }
             // (

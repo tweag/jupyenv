@@ -33,21 +33,23 @@
 
       pkgs' = import self.inputs.nixpkgs-stable.outPath {
         inherit system;
-        config.permittedInsecurePackages = [
-          "nodejs-14.21.3"
-          "openssl-1.1.1w"
+
+        overlays = [
+          # https://github.com/nix-community/npmlock2nix/issues/194
+          (final: prev: {nodejs-16_x = prev.nodePackages.nodejs;})
         ];
       };
       _npmlock2nix = pkgs'.callPackage npmlock2nix {};
 
-      version = "1.0.15";
+      version = "1.0.21";
 
       tslabSrc = fetchTarball {
         url = "https://github.com/yunabe/tslab/archive/v${version}.tar.gz";
-        sha256 = "1q2wsdcgha6qivs238pysgmiabjhyflpd1bqbx0cgisgiz2nq3vs";
+        sha256 = "sha256:17krhjn7sl23333bddbjqrwjbx49c6s6ykdhfj8vg8g3jdc5i4n9";
       };
 
-      tslab = _npmlock2nix.build {
+      tslab = _npmlock2nix.v2.build {
+        nodejs = pkgs'.nodejs;
         src = tslabSrc;
         node_modules_attrs.packageLockJson = ./package-lock.json;
         buildInputs = [pkgs.makeWrapper];
@@ -138,7 +140,7 @@
           default = self.inputs.npmlock2nix;
           defaultText = lib.literalExpression "self.inputs.npmlock2nix";
           example = lib.literalExpression "self.inputs.npmlock2nix";
-          description = lib.mdDoc ''
+          description = ''
             npmlock2nix flake input to be used to build this ${kernelName} kernel.
           '';
         };
@@ -163,7 +165,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };

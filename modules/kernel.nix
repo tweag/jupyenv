@@ -14,7 +14,7 @@ in {
       type = types.bool;
       default = false;
       example = true;
-      description = lib.mdDoc ''
+      description = ''
         Enable ${kernelName} kernel.
       '';
     };
@@ -23,7 +23,7 @@ in {
       type = types.str;
       default = "${kernelName}-${name}";
       example = "${kernelName}-example";
-      description = lib.mdDoc ''
+      description = ''
         Name of the ${kernelName} kernel.
       '';
     };
@@ -32,7 +32,7 @@ in {
       type = types.str;
       default = "${config.name} kernel";
       example = "${kernelName} example kernel";
-      description = lib.mdDoc ''
+      description = ''
         Display name of the ${kernelName} kernel.
       '';
     };
@@ -41,7 +41,7 @@ in {
       type = types.listOf types.package;
       default = requiredRuntimePackages;
       example = lib.literalExpression "[pkgs.example]";
-      description = lib.mdDoc ''
+      description = ''
         A list of required runtime packages for this ${kernelName} kernel.
       '';
     };
@@ -49,7 +49,7 @@ in {
     runtimePackages = lib.mkOption {
       type = types.listOf types.package;
       default = [];
-      description = lib.mdDoc ''
+      description = ''
         A list of user desired runtime packages for this ${kernelName} kernel.
       '';
     };
@@ -72,7 +72,7 @@ in {
         };
       };
       type = types.attrs;
-      description = lib.mdDoc ''
+      description = ''
         Extra kernel spec attributes.
       '';
     };
