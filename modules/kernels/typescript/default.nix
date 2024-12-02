@@ -33,9 +33,10 @@
 
       pkgs' = import self.inputs.nixpkgs-stable.outPath {
         inherit system;
-        config.permittedInsecurePackages = [
-          # "nodejs-14.21.3"
-          # "openssl-1.1.1w"
+
+        overlays = [
+          # https://github.com/nix-community/npmlock2nix/issues/194
+          (final: prev: {nodejs-16_x = prev.nodePackages.nodejs;})
         ];
       };
       _npmlock2nix = pkgs'.callPackage npmlock2nix {};
