@@ -3,6 +3,17 @@ pkgs: let
     arrow = prev.arrow.override {
       preferWheel = true;
     };
+    pyzmq = prev.pyzmq.overridePythonAttrs (old: {
+      nativeBuildInputs =
+        old.nativeBuildInputs
+        or []
+        ++ [
+          pkgs.which
+        ];
+      patchPhase = ''
+        export PATH="$PATH:${pkgs.cmake}/bin"
+      '';
+    });
   };
   pypkgs-build-requirements = {
     pdm = ["pdm-backend"];

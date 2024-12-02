@@ -196,7 +196,7 @@ in {
           ;
 
         overrides =
-          if kernelName == "elm"
+          if kernelName == "elm" || kernelName == "python"
           then import config.overrides config.nixpkgs
           else if config.withDefaultOverrides == true
           then config.nixpkgs.poetry2nix.overrides.withDefaults (import config.overrides)
