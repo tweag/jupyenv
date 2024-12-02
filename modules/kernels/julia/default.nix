@@ -81,7 +81,7 @@
         };
         julia = lib.mkOption {
           type = types.package;
-          default = config.nixpkgs.julia_19;
+          default = config.nixpkgs.julia;
           description = ''
             Julia Version
           '';
