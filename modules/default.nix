@@ -85,6 +85,7 @@ in {
     ./../modules/kernels/typescript
     ./../modules/kernels/zsh
     ./../modules/kernels/dotnet
+    ./../modules/kernels/sage
   ];
   # TODO: add kernels
   #++ map (name: ./. + "/../modules/kernels/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../modules/kernels));
