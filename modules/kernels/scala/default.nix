@@ -26,7 +26,7 @@
       requiredRuntimePackages ? [],
       runtimePackages ? [],
       extraKernelSpc,
-      scala ? pkgs.scala,
+      scala ? pkgs.scala_2_12,
       coursier ? pkgs.coursier,
       jdk ? pkgs.jdk,
       jre ? pkgs.jre,
@@ -37,7 +37,7 @@
 
       almondSh = let
         baseName = "almond";
-        version = "0.14.0-RC7";
+        version = "0.14.0-RC8";
         scalaVersion = scala.version;
         deps = stdenv.mkDerivation {
           name = "${baseName}-deps-${version}";
@@ -51,7 +51,7 @@
 
           outputHashMode = "recursive";
           outputHashAlgo = "sha256";
-          outputHash = "sha256-LJ9eWV3FRhNl8pZvMQgwD43uMmeQoIi9v9d4SOzYcmg=";
+          outputHash = "sha256-fJ+CaFA5uUkoBPFddxAWJGHdIduHc9ao1kBRcvnSstY=";
         };
       in
         stdenv.mkDerivation {
@@ -114,9 +114,9 @@
       {
         scala = lib.mkOption {
           type = types.package;
-          default = config.nixpkgs.scala;
+          default = config.nixpkgs.scala_2_12;
           example = lib.literalExpression "pkgs.scala";
-          description = lib.mdDoc ''
+          description = ''
             Scala package to use with almond.
           '';
         };
@@ -125,7 +125,7 @@
           type = types.package;
           default = config.nixpkgs.coursier;
           example = lib.literalExpression "pkgs.coursier";
-          description = lib.mdDoc ''
+          description = ''
             Coursier package to use with almond.
           '';
         };
@@ -134,7 +134,7 @@
           type = types.package;
           default = config.nixpkgs.jdk;
           example = lib.literalExpression "pkgs.jdk";
-          description = lib.mdDoc ''
+          description = ''
             JDK package to use with almond.
           '';
         };
@@ -143,7 +143,7 @@
           type = types.package;
           default = config.nixpkgs.jre;
           example = lib.literalExpression "pkgs.jre";
-          description = lib.mdDoc ''
+          description = ''
             JRE package to use with almond.
           '';
         };
@@ -167,7 +167,7 @@ in {
         kernel.${kernelName}."example".enable = true;
       }
     '';
-    description = lib.mdDoc ''
+    description = ''
       A ${kernelName} kernel for IPython.
     '';
   };

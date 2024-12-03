@@ -23,7 +23,7 @@ in
       else applyOverlays self.inputs.nixpkgs;
     defaultText = lib.literalExpression "self.inputs.nixpkgs";
     example = lib.literalExpression "self.inputs.nixpkgs";
-    description = lib.mdDoc ''
+    description = ''
       nixpkgs flake input to be used for jupyenv
     '';
     apply = x: nixpkgsArg x;

@@ -41,7 +41,7 @@ in {
     default = self + "/modules/kernels/${kernelName}";
     defaultText = lib.literalExpression "self + \"/modules/kernels/${kernelName}\"";
     example = lib.literalExpression "self + \"/kernels/${kernelName}\"";
-    description = lib.mdDoc ''
+    description = ''
       Path to the root of the poetry project that provides this ${kernelName}
       kernel.
     '';
@@ -53,7 +53,7 @@ in {
     default = self + "/modules/kernels/${kernelName}";
     defaultText = lib.literalExpression "self + \"/modules/kernels/${kernelName}\"";
     example = lib.literalExpression "self + \"/kernels/${kernelName}\"";
-    description = lib.mdDoc ''
+    description = ''
       Path to the root of the kernel module
     '';
   };
@@ -109,7 +109,7 @@ in {
     type = types.package;
     default = config.nixpkgs.python3;
     example = "python310";
-    description = lib.mdDoc ''
+    description = ''
       Name of the python interpreter (from nixpkgs) to be used for this
       ${kernelName} kernel.
     '';
@@ -144,7 +144,7 @@ in {
     type = types.bool;
     default = false;
     example = lib.literalExpression "true";
-    description = lib.mdDoc ''
+    description = ''
       Use wheels rather than sdist as much as possible.
     '';
   };
@@ -154,7 +154,7 @@ in {
     default = ["dev"];
     defaultText = lib.literalExpression "[\"dev\"]";
     example = lib.literalExpression ''["dev" "doc"]'';
-    description = lib.mdDoc ''
+    description = ''
       Which Poetry 1.2.0+ dependency groups to install for this ${kernelName}
       kernel.
     '';
@@ -165,7 +165,7 @@ in {
     default = self.inputs.poetry2nix;
     defaultText = lib.literalExpression "self.inputs.poetry2nix";
     example = lib.literalExpression "self.inputs.poetry2nix";
-    description = lib.mdDoc ''
+    description = ''
       poetry2nix flake input to be used for this ${kernelName} kernel.
     '';
   };
@@ -174,7 +174,7 @@ in {
     type = types.bool;
     default = false;
     example = lib.literalExpression "true";
-    description = lib.mdDoc ''
+    description = ''
       Ignore file collisions inside the environment.
     '';
   };
@@ -196,7 +196,7 @@ in {
           ;
 
         overrides =
-          if kernelName == "elm"
+          if kernelName == "elm" || kernelName == "python"
           then import config.overrides config.nixpkgs
           else if config.withDefaultOverrides == true
           then config.nixpkgs.poetry2nix.overrides.withDefaults (import config.overrides)
@@ -206,7 +206,7 @@ in {
 
     defaultText = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv or pkgs.python3.buildEnv";
     example = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv or pkgs.python3.buildEnv";
-    description = lib.mdDoc ''
+    description = ''
       The poetry environment for this ${kernelName} kernel.
     '';
   };
