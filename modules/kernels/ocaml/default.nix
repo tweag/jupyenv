@@ -132,8 +132,14 @@
 
         requiredOcamlPackages = lib.mkOption {
           type = types.attrs;
-          default = {merlin = "*";};
-          example = {merlin = "4.7.1-500";};
+          default = {
+            merlin = "*";
+            ocaml-base-compiler = "*";
+          };
+          example = {
+            merlin = "4.7.1-500";
+            ocaml-base-compiler = "5.3.0";
+          };
           description = ''
             Attribute set of required OCaml packages.
           '';
