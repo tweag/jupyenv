@@ -24,10 +24,10 @@ pkgs: let
       pypkgs-build-requirements)
     // {
       rpds-py = prev.rpds-py.overridePythonAttrs (old: {
-        cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
+        cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
           inherit (old) src;
           name = "${old.pname}-${old.version}";
-          hash = "sha256-VOmMNEdKHrPKJzs+D735Y52y47MubPwLlfkvB7Glh14=";
+          hash = "sha256-2skrDC80g0EKvTEeBI4t4LD7ZXb6jp2Gw+owKFrkZzc=";
         };
       });
     });
