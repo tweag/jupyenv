@@ -7,7 +7,7 @@ authors = []
 [tool.poetry.dependencies]
 python = "^3.11"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 ipykernel = "*"
 
 [build-system]
