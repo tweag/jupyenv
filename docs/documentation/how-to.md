@@ -126,11 +126,11 @@ authors = []
 [tool.poetry.dependencies]
 python = "^3.9"
 numpy = "^1.23.0"
-ipykernel = "^6.15.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 # build systems for dependencies
 hatchling = "^1.3.1"
+ipykernel = "^6.15.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
