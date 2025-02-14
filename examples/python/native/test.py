@@ -12,7 +12,7 @@ def test_nb(tb):
     assert sp_result == "[ 0.5  2.5  6.5 12.5]"
 
     mpl_result = tb.cell_output_text(3)
-    assert mpl_result == "(0.122312, 0.633153, 0.530398, 1.0)"
+    assert mpl_result == "(np.float64(0.122312), np.float64(0.633153), np.float64(0.530398), np.float64(1.0))"
 
 if __name__ == '__main__':
     test_nb()
