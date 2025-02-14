@@ -76,9 +76,14 @@
 
     config = lib.mkIf config.enable {
       build = mkKernel (kernelFunc config.kernelArgs);
-      kernelArgs =
+      kernelArgs = let
+        pkgs' = import config.nixpkgs.path {
+          inherit system;
+          overlays = [(final': prev': {nodejs = prev'.nodejs_20;})];
+        };
+      in
         {
-          ijavascript = config.nixpkgs.nodePackages.ijavascript;
+          ijavascript = pkgs'.nodePackages.ijavascript;
         }
         // kernelModule.kernelArgs;
     };
