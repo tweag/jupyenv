@@ -9,24 +9,10 @@
   ];
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
-  inputs.nixpkgs-master.url = "github:nixos/nixpkgs/master";
-  inputs.flake-compat.url = "github:edolstra/flake-compat";
-  inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.ihaskell.url = "github:ihaskell/ihaskell";
-  inputs.ihaskell.inputs.flake-utils.follows = "flake-utils";
-  inputs.ihaskell.inputs.nixpkgsMaster.follows = "nixpkgs-master";
-  inputs.ihaskell.inputs.nixpkgs24_11.follows = "nixpkgs-stable";
   inputs.nix-dart.url = "github:djacu/nix-dart";
   inputs.nix-dart.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nix-dart.inputs.flake-utils.follows = "flake-utils";
-  inputs.npmlock2nix.url = "github:nix-community/npmlock2nix";
-  inputs.npmlock2nix.flake = false;
-  inputs.opam-nix.url = "github:tweag/opam-nix";
-  inputs.opam-nix.inputs.flake-compat.follows = "";
-  inputs.opam-nix.inputs.flake-utils.follows = "flake-utils";
-  inputs.opam-nix.inputs.nixpkgs.follows = "nixpkgs";
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
   inputs.pre-commit-hooks.inputs.flake-compat.follows = "";
@@ -35,24 +21,16 @@
   inputs.poetry2nix.inputs.flake-utils.follows = "flake-utils";
   inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
   inputs.poetry2nix.inputs.treefmt-nix.follows = "";
-  inputs.rust-overlay.url = "github:oxalica/rust-overlay";
-  inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
   outputs = {
     self,
     nixpkgs,
-    nixpkgs-stable,
-    flake-compat,
     flake-utils,
-    ihaskell,
     nix-dart,
-    npmlock2nix,
-    opam-nix,
     pre-commit-hooks,
     poetry2nix,
-    rust-overlay,
     ...
-  } @ inputs: let
+  }: let
     inherit (nixpkgs) lib;
 
     SYSTEMS = [
